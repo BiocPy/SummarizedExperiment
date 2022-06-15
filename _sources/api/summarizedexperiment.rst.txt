@@ -1,0 +1,37 @@
+summarizedexperiment package
+============================
+
+Submodules
+----------
+
+summarizedexperiment.RangeSummarizedExperiment module
+-----------------------------------------------------
+
+.. automodule:: summarizedexperiment.RangeSummarizedExperiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+summarizedexperiment.SummarizedExperiment module
+------------------------------------------------
+
+.. automodule:: summarizedexperiment.SummarizedExperiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+summarizedexperiment.interface module
+-------------------------------------
+
+.. automodule:: summarizedexperiment.interface
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+Module contents
+---------------
+
+.. automodule:: summarizedexperiment
+   :members:
+   :undoc-members:
+   :show-inheritance:

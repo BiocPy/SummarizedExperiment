@@ -1,0 +1,7 @@
+summarizedexperiment
+====================
+
+.. toctree::
+   :maxdepth: 4
+
+   summarizedexperiment

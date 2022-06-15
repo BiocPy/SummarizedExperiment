@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>summarizedexperiment.RangeSummarizedExperiment &mdash; SummarizedExperiment 0.1 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> SummarizedExperiment
+          </a>
+              <div class="version">
+                0.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api/modules.html">Module Reference</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">SummarizedExperiment</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>summarizedexperiment.RangeSummarizedExperiment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for summarizedexperiment.RangeSummarizedExperiment</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">sp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="kn">from</span> <span class="nn">.SummarizedExperiment</span> <span class="kn">import</span> <span class="n">SummarizedExperiment</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
+
+
+<div class="viewcode-block" id="RangeSummarizedExperiment"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment">[docs]</a><span class="k">class</span> <span class="nc">RangeSummarizedExperiment</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;SummarizedExperiment class to represent genomic experiment data,</span>
+<span class="sd">    features, sample data and any other metadata</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rows</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span>
+        <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]],</span>
+        <span class="n">cols</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize an instance of `RangeSummarizedExperiment`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            rows (pd.DataFrame): features</span>
+<span class="sd">            assays (Dict[str, Union[np.ndarray, sp.spmatrix]]): list of matrices,</span>
+<span class="sd">                represented as dense (numpy) or sparse (scipy) matrices</span>
+<span class="sd">            cols (pd.DataFrame): sample metadata</span>
+<span class="sd">            metadata (Any, optional): experiment metadata describing the</span>
+<span class="sd">                methods. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">assays</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+
+<div class="viewcode-block" id="RangeSummarizedExperiment.rowRanges"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.rowRanges">[docs]</a>    <span class="k">def</span> <span class="nf">rowRanges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Accessor to retrieve features</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            GenomicRanges: returns features in the container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Subset a SummarizedExperiment</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            args (tuple): indices to slice. tuple can</span>
+<span class="sd">                contains slices along dimensions</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            RangeSummarizedExperiment: new SummarizedExperiment object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">rowIndices</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">colIndices</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">colIndices</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">new_rows</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">new_cols</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">new_assays</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="n">rowIndices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_rows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="p">[</span><span class="n">rowIndices</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">colIndices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">colIndices</span><span class="p">]</span>
+
+        <span class="n">new_assays</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subsetAssays</span><span class="p">(</span>
+            <span class="n">rowIndices</span><span class="o">=</span><span class="n">rowIndices</span><span class="p">,</span> <span class="n">colIndices</span><span class="o">=</span><span class="n">colIndices</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">RangeSummarizedExperiment</span><span class="p">(</span>
+            <span class="n">new_rows</span><span class="p">,</span> <span class="n">new_assays</span><span class="p">,</span> <span class="n">new_cols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="RangeSummarizedExperiment.subsetByOverlaps"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.subsetByOverlaps">[docs]</a>    <span class="k">def</span> <span class="nf">subsetByOverlaps</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="n">GenomicRanges</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Subset a RangeSummarizedExperiment by feature overlaps</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            query (GenomicRanges): query genomic intervals</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: Currently not implemented</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            RangeSummarizedExperiment: new SummarizedExperiment object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, jkanche.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

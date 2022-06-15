@@ -69,3 +69,10 @@ def test_RSE_creation():
 
     assert trse is not None
     assert isinstance(trse, rse)
+
+
+def test_SE_none():
+    tse = SummarizedExperiment(assays={"counts": counts})
+
+    assert tse is not None
+    assert isinstance(tse, se)

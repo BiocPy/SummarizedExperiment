@@ -16,21 +16,31 @@ class SummarizedExperiment:
 
     def __init__(
         self,
-        rows: pd.DataFrame,
         assays: Dict[str, Union[np.ndarray, sp.spmatrix]],
-        cols: pd.DataFrame,
+        rows: pd.DataFrame = None,
+        cols: pd.DataFrame = None,
         metadata: Any = None,
     ) -> None:
         """Initialize an instance of `SummarizedExperiment`
 
         Args:
-            rows (pd.DataFrame): features
             assays (Dict[str, Union[np.ndarray, sp.spmatrix]]): list of matrices,
                 represented as dense (numpy) or sparse (scipy) matrices
-            cols (pd.DataFrame): sample metadata
+            rows (pd.DataFrame): features. Defaults to None.
+            cols (pd.DataFrame): sample metadata. Defaults to None.
             metadata (Any, optional): experiment metadata describing the
                 methods. Defaults to None.
         """
+
+        if (
+            assays is None
+            or not isinstance(assays, dict)
+            or len(assays.keys()) == 0
+        ):
+            raise Exception(
+                f"{assays} must be a dictionary and contain atleast a single numpy/scipy matrix"
+            )
+
         self.rows = rows
         self._assays = assays
         self.cols = cols
@@ -116,10 +126,10 @@ class SummarizedExperiment:
         new_cols = None
         new_assays = None
 
-        if rowIndices is not None:
+        if rowIndices is not None and self.rows is not None:
             new_rows = self.rows.iloc[rowIndices]
 
-        if colIndices is not None:
+        if colIndices is not None and self.cols is not None:
             new_cols = self.cols.iloc[colIndices]
 
         new_assays = self.subsetAssays(
@@ -127,7 +137,7 @@ class SummarizedExperiment:
         )
 
         return SummarizedExperiment(
-            new_rows, new_assays, new_cols, self.metadata
+            new_assays, new_rows, new_cols, self.metadata
         )
 
     def metadata(self) -> Any:
@@ -145,7 +155,8 @@ class SummarizedExperiment:
         Returns:
             tuple: dimensions of the experiment; (rows, cols)
         """
-        return (len(self.rows), len(self.cols))
+        a_mat = self._assays[self._assays.keys()[0]]
+        return a_mat.shape
 
     def __str__(self) -> str:
         """string representation
@@ -157,6 +168,6 @@ class SummarizedExperiment:
             "Class: SummarizedExperiment\n"
             f"\tshape: {self.shape}\n"
             f"\tcontains assays: {self._assays.keys()}\n"
-            f"\tsample metadata: {self.cols.columns}\n"
-            f"\tfeatures: {self.rows.columns}\n"
+            f"\tsample metadata: {self.cols.columns if self.cols is not None else None}\n"
+            f"\tfeatures: {self.rows.columns if self.rows is not None else None}\n"
         )

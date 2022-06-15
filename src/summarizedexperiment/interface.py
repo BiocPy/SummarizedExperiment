@@ -38,8 +38,17 @@ def SummarizedExperiment(
     cls = se
     _rows = rowData
 
-    if rowData is None and rowRanges is None:
-        raise Exception("Must provide either rowData or rowRanges")
+    # if rowData is None and rowRanges is None:
+    #     raise Exception("Must provide either rowData or rowRanges")
+
+    if (
+        assays is None
+        or (not isinstance(assays, dict))
+        or len(assays.keys()) == 0
+    ):
+        raise Exception(
+            f"{assays} must be a dictionary and contain atleast a single numpy/scipy matrix"
+        )
 
     row_lengths = None
     if rowRanges is not None and isinstance(rowRanges, GenomicRanges):
@@ -49,7 +58,8 @@ def SummarizedExperiment(
     elif rowData is not None:
         row_lengths = rowData.shape[0]
 
-    col_lengths = colData.shape[0]
+    if colData is not None:
+        col_lengths = colData.shape[0]
 
     # make sure all matrices are the same shape
 
@@ -64,15 +74,15 @@ def SummarizedExperiment(
             )
 
     # are rows same length ?
-    if row_lengths != matrix_lengths[0]:
+    if rowData is not None and row_lengths != matrix_lengths[0]:
         raise Exception(
             f"matrix dimensions does not match rowData/rowRanges: {row_lengths} :: {matrix_lengths[0]}"
         )
 
     # are cols same length ?
-    if col_lengths != matrix_lengths[1]:
+    if colData is not None and col_lengths != matrix_lengths[1]:
         raise Exception(
             f"matrix dimensions does not match rowData/rowRanges: {col_lengths} :: {matrix_lengths[1]}"
         )
 
-    return cls(rows=_rows, assays=assays, cols=colData, metadata=metadata)
+    return cls(assays=assays, rows=_rows, cols=colData, metadata=metadata)

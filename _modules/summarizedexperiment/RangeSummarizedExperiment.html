@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>summarizedexperiment.RangeSummarizedExperiment &mdash; SummarizedExperiment 0.1.1 documentation</title>
+  <title>summarizedexperiment.RangeSummarizedExperiment &mdash; SummarizedExperiment 0.1.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../../index.html" class="icon icon-home"> SummarizedExperiment
           </a>
               <div class="version">
-                0.1.1
+                0.1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -91,22 +91,22 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">rows</span><span class="p">:</span> <span class="n">GenomicRanges</span><span class="p">,</span>
         <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]],</span>
-        <span class="n">cols</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+        <span class="n">rows</span><span class="p">:</span> <span class="n">GenomicRanges</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">cols</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">metadata</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Initialize an instance of `RangeSummarizedExperiment`</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            rows (pd.DataFrame): features</span>
 <span class="sd">            assays (Dict[str, Union[np.ndarray, sp.spmatrix]]): list of matrices,</span>
 <span class="sd">                represented as dense (numpy) or sparse (scipy) matrices</span>
-<span class="sd">            cols (pd.DataFrame): sample metadata</span>
+<span class="sd">            rows (pd.DataFrame): features. Defaults to None.</span>
+<span class="sd">            cols (pd.DataFrame): sample metadata. Defaults to None.</span>
 <span class="sd">            metadata (Any, optional): experiment metadata describing the</span>
 <span class="sd">                methods. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">assays</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.rowRanges"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.rowRanges">[docs]</a>    <span class="k">def</span> <span class="nf">rowRanges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;Accessor to retrieve features</span>
@@ -146,7 +146,7 @@
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">RangeSummarizedExperiment</span><span class="p">(</span>
-            <span class="n">new_rows</span><span class="p">,</span> <span class="n">new_assays</span><span class="p">,</span> <span class="n">new_cols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
+            <span class="n">new_assays</span><span class="p">,</span> <span class="n">new_rows</span><span class="p">,</span> <span class="n">new_cols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.subsetByOverlaps"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.subsetByOverlaps">[docs]</a>    <span class="k">def</span> <span class="nf">subsetByOverlaps</span><span class="p">(</span>

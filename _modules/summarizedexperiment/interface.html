@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>summarizedexperiment.interface &mdash; SummarizedExperiment 0.1.1 documentation</title>
+  <title>summarizedexperiment.interface &mdash; SummarizedExperiment 0.1.2 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="../../index.html" class="icon icon-home"> SummarizedExperiment
           </a>
               <div class="version">
-                0.1.1
+                0.1.2
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -112,8 +112,17 @@
     <span class="bp">cls</span> <span class="o">=</span> <span class="n">se</span>
     <span class="n">_rows</span> <span class="o">=</span> <span class="n">rowData</span>
 
-    <span class="k">if</span> <span class="n">rowData</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rowRanges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Must provide either rowData or rowRanges&quot;</span><span class="p">)</span>
+    <span class="c1"># if rowData is None and rowRanges is None:</span>
+    <span class="c1">#     raise Exception(&quot;Must provide either rowData or rowRanges&quot;)</span>
+
+    <span class="k">if</span> <span class="p">(</span>
+        <span class="n">assays</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="nb">dict</span><span class="p">))</span>
+        <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span>
+    <span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">assays</span><span class="si">}</span><span class="s2"> must be a dictionary and contain atleast a single numpy/scipy matrix&quot;</span>
+        <span class="p">)</span>
 
     <span class="n">row_lengths</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">rowRanges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rowRanges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
@@ -123,7 +132,8 @@
     <span class="k">elif</span> <span class="n">rowData</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">row_lengths</span> <span class="o">=</span> <span class="n">rowData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="n">col_lengths</span> <span class="o">=</span> <span class="n">colData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">colData</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">col_lengths</span> <span class="o">=</span> <span class="n">colData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="c1"># make sure all matrices are the same shape</span>
 
@@ -138,18 +148,18 @@
             <span class="p">)</span>
 
     <span class="c1"># are rows same length ?</span>
-    <span class="k">if</span> <span class="n">row_lengths</span> <span class="o">!=</span> <span class="n">matrix_lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">rowData</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">row_lengths</span> <span class="o">!=</span> <span class="n">matrix_lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;matrix dimensions does not match rowData/rowRanges: </span><span class="si">{</span><span class="n">row_lengths</span><span class="si">}</span><span class="s2"> :: </span><span class="si">{</span><span class="n">matrix_lengths</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
     <span class="c1"># are cols same length ?</span>
-    <span class="k">if</span> <span class="n">col_lengths</span> <span class="o">!=</span> <span class="n">matrix_lengths</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">colData</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">col_lengths</span> <span class="o">!=</span> <span class="n">matrix_lengths</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;matrix dimensions does not match rowData/rowRanges: </span><span class="si">{</span><span class="n">col_lengths</span><span class="si">}</span><span class="s2"> :: </span><span class="si">{</span><span class="n">matrix_lengths</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
-    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">_rows</span><span class="p">,</span> <span class="n">assays</span><span class="o">=</span><span class="n">assays</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="n">colData</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">assays</span><span class="o">=</span><span class="n">assays</span><span class="p">,</span> <span class="n">rows</span><span class="o">=</span><span class="n">_rows</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="n">colData</span><span class="p">,</span> <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

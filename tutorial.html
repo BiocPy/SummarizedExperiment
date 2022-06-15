@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial &mdash; SummarizedExperiment 0.1 documentation</title>
+  <title>Tutorial &mdash; SummarizedExperiment 0.1.1 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <a href="index.html" class="icon icon-home"> SummarizedExperiment
           </a>
               <div class="version">
-                0.1
+                0.1.1
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -43,7 +43,15 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mock-sample-data">Mock sample data</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#summarizedexperiment"><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rangesummarizedexperiment"><code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#subset-an-experiment">Subset an experiment</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -77,7 +85,9 @@
   <section id="tutorial">
 <h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this heading"></a></h1>
 <p>Currently supports both <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code> objects</p>
-<p>First create necessary sample data</p>
+<section id="mock-sample-data">
+<h2>Mock sample data<a class="headerlink" href="#mock-sample-data" title="Permalink to this heading"></a></h2>
+<p>we first create a mock dataset of 200 rows and 6 columns, also adding a few sample_data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nrows</span> <span class="o">=</span> <span class="mi">200</span>
 <span class="n">ncols</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">)</span>
@@ -113,18 +123,33 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>To create a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code>,</p>
+<section id="summarizedexperiment">
+<h3><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code><a class="headerlink" href="#summarizedexperiment" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> represents features as a Pandas DataFrame</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tse</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
     <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">rowData</span><span class="o">=</span><span class="n">df_gr</span><span class="p">,</span> <span class="n">colData</span><span class="o">=</span><span class="n">colData</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>To create a <code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code></p>
+</section>
+<section id="rangesummarizedexperiment">
+<h3><code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code><a class="headerlink" href="#rangesummarizedexperiment" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code> represents features as <a class="reference external" href="https://github.com/BiocPy/GenomicRanges"><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code></a></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">trse</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
     <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">rowRanges</span><span class="o">=</span><span class="n">gr</span><span class="p">,</span> <span class="n">colData</span><span class="o">=</span><span class="n">colData</span>
 <span class="p">)</span>
 </pre></div>
 </div>
+</section>
+</section>
+<section id="subset-an-experiment">
+<h2>Subset an experiment<a class="headerlink" href="#subset-an-experiment" title="Permalink to this heading"></a></h2>
+<p>Currently, the package provides methods to subset by indices</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># subset the first 10 rows and the first 3 samples</span>
+<span class="n">subset_tse</span> <span class="o">=</span> <span class="n">tse</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
 </section>
 
 

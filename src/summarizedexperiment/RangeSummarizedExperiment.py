@@ -90,3 +90,17 @@ class RangeSummarizedExperiment(SummarizedExperiment):
             RangeSummarizedExperiment: new SummarizedExperiment object
         """
         raise NotImplementedError
+
+    def __str__(self) -> str:
+        """string representation
+
+        Returns:
+            str: description of the class
+        """
+        return (
+            "Class: RangeSummarizedExperiment\n"
+            f"\tshape: {self.shape}\n"
+            f"\tcontains assays: {self._assays.keys()}\n"
+            f"\tsample metadata: {self.cols.columns}\n"
+            f"\tfeatures: {self.rows}\n"
+        )

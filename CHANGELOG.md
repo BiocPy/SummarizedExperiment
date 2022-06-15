@@ -1,6 +1,10 @@
 # Changelog
 
-## Version 0.1.1 (development)
+## Version 0.1.2 (development)
+- row/col data can be empty/None
+- update tests and documentation
+
+## Version 0.1.1 
 - Add subset, shape and custom print for the class
 - Tests for subset
 - Documentation update

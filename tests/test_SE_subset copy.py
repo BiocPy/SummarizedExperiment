@@ -60,12 +60,9 @@ def test_SE_creation():
     assert tse is not None
     assert isinstance(tse, se)
 
+    subset_tse = tse[0:10:, 0:3]
+    assert subset_tse is not None
+    assert isinstance(subset_tse, se)
 
-def test_RSE_creation():
-
-    trse = SummarizedExperiment(
-        assays={"counts": counts}, rowRanges=gr, colData=colData
-    )
-
-    assert trse is not None
-    assert isinstance(trse, rse)
+    assert len(subset_tse.rowData()) == 10
+    assert len(subset_tse.colData()) == 3

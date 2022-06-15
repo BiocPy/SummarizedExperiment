@@ -2,7 +2,9 @@
 
 Currently supports both `SummarizedExperiment` & `RangeSummarizedExperiment` objects
 
-First create necessary sample data 
+## Mock sample data 
+
+we first create a mock dataset of 200 rows and 6 columns, also adding a few sample_data.
 
 ```python
 nrows = 200
@@ -40,7 +42,9 @@ colData = pd.DataFrame(
 )
 ```
 
-To create a `SummarizedExperiment`,
+### `SummarizedExperiment`
+
+`SummarizedExperiment` represents features as a Pandas DataFrame
 
 ```python
 tse = SummarizedExperiment(
@@ -48,10 +52,21 @@ tse = SummarizedExperiment(
 )
 ```
 
-To create a `RangeSummarizedExperiment`
+###  `RangeSummarizedExperiment`
+
+`RangeSummarizedExperiment` represents features as [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges)
 
 ```python
 trse = SummarizedExperiment(
     assays={"counts": counts}, rowRanges=gr, colData=colData
 )
+```
+
+## Subset an experiment
+
+Currently, the package provides methods to subset by indices
+
+```python
+# subset the first 10 rows and the first 3 samples
+subset_tse = tse[0:10, 0:3]
 ```

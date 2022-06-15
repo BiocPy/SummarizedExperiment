@@ -1,4 +1,3 @@
-from ast import In
 from typing import Any, Dict, List, Union
 from scipy import sparse as sp
 import numpy as np
@@ -33,7 +32,7 @@ class SummarizedExperiment:
                 methods. Defaults to None.
         """
         self.rows = rows
-        self.assays = assays
+        self._assays = assays
         self.cols = cols
         self.metadata = metadata
 
@@ -45,7 +44,7 @@ class SummarizedExperiment:
         Returns:
             Dict[str, Union[np.ndarray, sp.spmatrix]]: Dictionary of experiments
         """
-        return self.assays
+        return self._assays
 
     def rowData(self) -> pd.DataFrame:
         """Accessor to retrieve features
@@ -77,8 +76,8 @@ class SummarizedExperiment:
         """
 
         new_assays = {}
-        for key in self.assays:
-            mat = self.assays[key]
+        for key in self._assays:
+            mat = self._assays[key]
             if rowIndices is not None:
                 mat = mat[rowIndices, :]
 
@@ -104,6 +103,7 @@ class SummarizedExperiment:
         """
         rowIndices = args[0]
         colIndices = None
+
         if len(args) > 1:
             colIndices = args[1]
         elif len(args) > 2:
@@ -137,3 +137,26 @@ class SummarizedExperiment:
             Any: metadata (could be anything)
         """
         return self.metadata
+
+    @property
+    def shape(self) -> tuple:
+        """Get shape of the object
+
+        Returns:
+            tuple: dimensions of the experiment; (rows, cols)
+        """
+        return (len(self.rows), len(self.cols))
+
+    def __str__(self) -> str:
+        """string representation
+
+        Returns:
+            str: description of the class
+        """
+        return (
+            "Class: SummarizedExperiment\n"
+            f"\tshape: {self.shape}\n"
+            f"\tcontains assays: {self._assays.keys()}\n"
+            f"\tsample metadata: {self.cols.columns}\n"
+            f"\tfeatures: {self.rows.columns}\n"
+        )

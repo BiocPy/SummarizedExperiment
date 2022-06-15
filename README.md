@@ -5,7 +5,7 @@ Container to represent data from genomic experiments, follows Bioconductor's [Su
 
 ## Install
 
-Package is deployed to [PyPI](https://pypi.org/project/summarizedexperiment/)
+Package is published to [PyPI](https://pypi.org/project/summarizedexperiment/)
 
 ```shell
 pip install summarizedexperiment

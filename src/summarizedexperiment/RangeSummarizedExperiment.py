@@ -17,22 +17,22 @@ class RangeSummarizedExperiment(SummarizedExperiment):
 
     def __init__(
         self,
-        rows: GenomicRanges,
         assays: Dict[str, Union[np.ndarray, sp.spmatrix]],
-        cols: pd.DataFrame,
+        rows: GenomicRanges = None,
+        cols: pd.DataFrame = None,
         metadata: Any = None,
     ) -> None:
         """Initialize an instance of `RangeSummarizedExperiment`
 
         Args:
-            rows (pd.DataFrame): features
             assays (Dict[str, Union[np.ndarray, sp.spmatrix]]): list of matrices,
                 represented as dense (numpy) or sparse (scipy) matrices
-            cols (pd.DataFrame): sample metadata
+            rows (pd.DataFrame): features. Defaults to None.
+            cols (pd.DataFrame): sample metadata. Defaults to None.
             metadata (Any, optional): experiment metadata describing the
                 methods. Defaults to None.
         """
-        super().__init__(rows, assays, cols, metadata=metadata)
+        super().__init__(assays, rows, cols, metadata=metadata)
 
     def rowRanges(self) -> GenomicRanges:
         """Accessor to retrieve features
@@ -72,7 +72,7 @@ class RangeSummarizedExperiment(SummarizedExperiment):
         )
 
         return RangeSummarizedExperiment(
-            new_rows, new_assays, new_cols, self.metadata
+            new_assays, new_rows, new_cols, self.metadata
         )
 
     def subsetByOverlaps(

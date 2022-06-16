@@ -30,7 +30,7 @@ def SummarizedExperiment(
         metadata (Any): experiment metadata
 
     Raises:
-        Exception: Either rowData or rowRanges must be provided
+        Exception: Assay must contain atleast one experiment data matrix
 
     Returns:
         Union[SummarizedExperiment, RangeSummarizedExperiment]: either SummarizedExperiment or RangeSummarizedExperiment

@@ -59,6 +59,7 @@ def test_SE_creation():
 
     assert tse is not None
     assert isinstance(tse, se)
+    assert tse.shape == (200, 6)
 
 
 def test_RSE_creation():

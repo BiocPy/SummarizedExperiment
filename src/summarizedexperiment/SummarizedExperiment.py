@@ -155,7 +155,7 @@ class SummarizedExperiment:
         Returns:
             tuple: dimensions of the experiment; (rows, cols)
         """
-        a_mat = self._assays[self._assays.keys()[0]]
+        a_mat = self._assays[list(self._assays.keys())[0]]
         return a_mat.shape
 
     def __str__(self) -> str:
@@ -167,7 +167,25 @@ class SummarizedExperiment:
         return (
             "Class: SummarizedExperiment\n"
             f"\tshape: {self.shape}\n"
-            f"\tcontains assays: {self._assays.keys()}\n"
+            f"\tcontains assays: {list(self._assays.keys())}\n"
             f"\tsample metadata: {self.cols.columns if self.cols is not None else None}\n"
             f"\tfeatures: {self.rows.columns if self.rows is not None else None}\n"
         )
+
+    def assay(self, name: str) -> Union[np.ndarray, sp.spmatrix]:
+        """Convenience function to access an assay by name
+
+        Args:
+            name (str): name of the assay
+
+        Raises:
+            Exception: if assay name does not exist
+
+        Returns:
+            Union[np.ndarray, sp.spmatrix]: the experiment data
+        """
+        if name not in self._assays:
+            logging.error(f"Assay {name} does not exist")
+            raise Exception(f"Assay {name} does not exist")
+
+        return self._assays[name]

@@ -1,6 +1,12 @@
 # Changelog
 
-## Version 0.1.2 (development)
+## Version 0.1.3 (development)
+- more accessors to assays
+- fix bug with defining shape of an experiment
+- tests
+- docs
+
+## Version 0.1.2
 - row/col data can be empty/None
 - update tests and documentation
 

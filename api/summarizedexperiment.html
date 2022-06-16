@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>summarizedexperiment package &mdash; SummarizedExperiment 0.1.2 documentation</title>
+  <title>summarizedexperiment package &mdash; SummarizedExperiment 0.1.3 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> SummarizedExperiment
           </a>
               <div class="version">
-                0.1.2
+                0.1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -142,6 +142,26 @@ features, sample data and any other metadata</p>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>SummarizedExperiment class to represent genomic experiment data,
 features, sample data and any other metadata</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="summarizedexperiment.SummarizedExperiment.SummarizedExperiment.assay">
+<span class="sig-name descname"><span class="pre">assay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.spmatrix.html#scipy.sparse.spmatrix" title="(in SciPy v1.8.1)"><span class="pre">spmatrix</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/summarizedexperiment/SummarizedExperiment.html#SummarizedExperiment.assay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.SummarizedExperiment.SummarizedExperiment.assay" title="Permalink to this definition"></a></dt>
+<dd><p>Convenience function to access an assay by name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of the assay</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#Exception" title="(in Python v3.9)"><strong>Exception</strong></a> – if assay name does not exist</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the experiment data</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Union[np.ndarray, sp.spmatrix]</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.SummarizedExperiment.SummarizedExperiment.assays">
 <span class="sig-name descname"><span class="pre">assays</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Dict" title="(in Python v3.9)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.spmatrix.html#scipy.sparse.spmatrix" title="(in SciPy v1.8.1)"><span class="pre">spmatrix</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/summarizedexperiment/SummarizedExperiment.html#SummarizedExperiment.assays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.SummarizedExperiment.SummarizedExperiment.assays" title="Permalink to this definition"></a></dt>
@@ -255,7 +275,7 @@ or <cite>RangeSummarizedExperiment</cite> (if features is <cite>GenomicRanges</c
 </ul>
 </dd>
 <dt class="field-even">Raises</dt>
-<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#Exception" title="(in Python v3.9)"><strong>Exception</strong></a> – Either rowData or rowRanges must be provided</p>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#Exception" title="(in Python v3.9)"><strong>Exception</strong></a> – Assay must contain atleast one experiment data matrix</p>
 </dd>
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>either SummarizedExperiment or RangeSummarizedExperiment</p>

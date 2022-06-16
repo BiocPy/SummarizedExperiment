@@ -62,6 +62,16 @@ trse = SummarizedExperiment(
 )
 ```
 
+### Accessors
+
+Multiple methods are available to access various slots of a `SummarizedExperiment` object
+
+```python
+tse.assays()
+tse.rowData()
+tse.colData()
+```
+
 ## Subset an experiment
 
 Currently, the package provides methods to subset by indices

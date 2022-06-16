@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tutorial &mdash; SummarizedExperiment 0.1.2 documentation</title>
+  <title>Tutorial &mdash; SummarizedExperiment 0.1.3 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -31,7 +31,7 @@
             <a href="index.html" class="icon icon-home"> SummarizedExperiment
           </a>
               <div class="version">
-                0.1.2
+                0.1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,6 +47,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#mock-sample-data">Mock sample data</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#summarizedexperiment"><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="#rangesummarizedexperiment"><code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accessors">Accessors</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#subset-an-experiment">Subset an experiment</a></li>
@@ -138,6 +139,15 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">trse</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
     <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">rowRanges</span><span class="o">=</span><span class="n">gr</span><span class="p">,</span> <span class="n">colData</span><span class="o">=</span><span class="n">colData</span>
 <span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="accessors">
+<h3>Accessors<a class="headerlink" href="#accessors" title="Permalink to this heading"></a></h3>
+<p>Multiple methods are available to access various slots of a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> object</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tse</span><span class="o">.</span><span class="n">assays</span><span class="p">()</span>
+<span class="n">tse</span><span class="o">.</span><span class="n">rowData</span><span class="p">()</span>
+<span class="n">tse</span><span class="o">.</span><span class="n">colData</span><span class="p">()</span>
 </pre></div>
 </div>
 </section>

@@ -1,16 +1,10 @@
 import pytest
 
-from summarizedexperiment import SummarizedExperiment
 from genomicranges import GenomicRanges
 import numpy as np
 from random import random
 import pandas as pd
-from summarizedexperiment.RangeSummarizedExperiment import (
-    RangeSummarizedExperiment as rse,
-)
-from summarizedexperiment.SummarizedExperiment import (
-    SummarizedExperiment as se,
-)
+from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -45,35 +39,30 @@ df_gr = pd.DataFrame(
 
 gr = GenomicRanges.fromPandas(df_gr)
 
-colData = pd.DataFrame(
-    {
-        "treatment": ["ChIP", "Input"] * 3,
-    }
-)
+colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
 
 
 def test_SE_creation():
+    tse = SummarizedExperiment(assays={"counts": counts}, rowData=gr, colData=colData)
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+    assert tse.shape == (200, 6)
+
+
+def test_SE_df():
     tse = SummarizedExperiment(
         assays={"counts": counts}, rowData=df_gr, colData=colData
     )
 
     assert tse is not None
-    assert isinstance(tse, se)
+    assert isinstance(tse, SummarizedExperiment)
     assert tse.shape == (200, 6)
-
-
-def test_RSE_creation():
-
-    trse = SummarizedExperiment(
-        assays={"counts": counts}, rowRanges=gr, colData=colData
-    )
-
-    assert trse is not None
-    assert isinstance(trse, rse)
 
 
 def test_SE_none():
     tse = SummarizedExperiment(assays={"counts": counts})
 
     assert tse is not None
-    assert isinstance(tse, se)
+    assert isinstance(tse, SummarizedExperiment)
+    assert tse.shape == (200, 6)

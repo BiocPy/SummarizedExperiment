@@ -1,6 +1,6 @@
 # SummarizedExperiment
 
-Container to represent data from genomic experiments, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html). It uses efficient structures already available in the Pandas/numpy eco-system & adds a familiar interface.
+Container to represent genomic experiments, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html).
 
 
 ## Install
@@ -13,11 +13,15 @@ pip install summarizedexperiment
 
 ## Usage
 
-Currently supports both `SummarizedExperiment` & `RangeSummarizedExperiment` objects
+Currently supports `SummarizedExperiment` & `RangeSummarizedExperiment` classes
 
 First create necessary sample data 
 
 ```python
+import pandas as pd
+import numpy as np
+from genomicranges import GenomicRanges
+
 nrows = 200
 ncols = 6
 counts = np.random.rand(nrows, ncols)
@@ -56,6 +60,8 @@ colData = pd.DataFrame(
 To create a `SummarizedExperiment`,
 
 ```python
+from summarizedexperiment import SummarizedExperiment
+
 tse = SummarizedExperiment(
     assays={"counts": counts}, rowData=df_gr, colData=colData
 )
@@ -64,7 +70,9 @@ tse = SummarizedExperiment(
 To create a `RangeSummarizedExperiment`
 
 ```python
-trse = SummarizedExperiment(
+from summarizedexperiment import RangeSummarizedExperiment
+
+trse = RangeSummarizedExperiment(
     assays={"counts": counts}, rowRanges=gr, colData=colData
 )
 ```

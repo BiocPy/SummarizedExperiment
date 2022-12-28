@@ -4,6 +4,14 @@ summarizedexperiment package
 Submodules
 ----------
 
+summarizedexperiment.BaseSE module
+----------------------------------
+
+.. automodule:: summarizedexperiment.BaseSE
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 summarizedexperiment.RangeSummarizedExperiment module
 -----------------------------------------------------
 
@@ -16,14 +24,6 @@ summarizedexperiment.SummarizedExperiment module
 ------------------------------------------------
 
 .. automodule:: summarizedexperiment.SummarizedExperiment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-summarizedexperiment.interface module
--------------------------------------
-
-.. automodule:: summarizedexperiment.interface
    :members:
    :undoc-members:
    :show-inheritance:

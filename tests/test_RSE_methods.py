@@ -2,6 +2,7 @@ from genomicranges import GenomicRanges
 import numpy as np
 from random import random
 import pandas as pd
+import pytest
 
 from summarizedexperiment.RangeSummarizedExperiment import RangeSummarizedExperiment
 
@@ -100,3 +101,96 @@ def test_RSE_subsetAssays():
 
     assert len(subset_asys.keys()) == 1
     assert subset_asys["counts"].shape == (9, 3)
+
+
+def test_RSE_coverage():
+    tse = RangeSummarizedExperiment(
+        assays={"counts": counts}, rowRanges=gr, colData=colData
+    )
+
+    assert tse is not None
+    assert isinstance(tse, RangeSummarizedExperiment)
+
+    cov = tse.coverage()
+    assert cov is not None
+    assert len(cov.keys()) == 3
+
+
+def test_RSE_distance_methods():
+    tse = RangeSummarizedExperiment(
+        assays={"counts": counts}, rowRanges=gr, colData=colData
+    )
+
+    assert tse is not None
+    assert isinstance(tse, RangeSummarizedExperiment)
+
+    nearest = tse.nearest(tse)
+    assert nearest is not None
+
+    precede = tse.precede(tse)
+    assert precede is not None
+
+    follow = tse.follow(tse)
+    assert follow is not None
+
+    distNear = tse.distanceToNearest(tse)
+    assert distNear is not None
+
+
+def test_RSE_range_methods():
+    tse = RangeSummarizedExperiment(
+        assays={"counts": counts}, rowRanges=gr, colData=colData
+    )
+
+    assert tse is not None
+    assert isinstance(tse, RangeSummarizedExperiment)
+
+    res = tse.flank(width=10)
+    assert res is not None
+
+    res = tse.resize(width=15)
+    assert res is not None
+
+    with pytest.raises(Exception):
+        res = tse.restrict(start=400)
+
+    res = tse.shift(shift=25)
+    assert res is not None
+
+    res = tse.promoters()
+    assert res is not None
+
+    res = tse.narrow(start=40)
+    assert res is not None
+
+
+def test_RSE_search():
+    tse = RangeSummarizedExperiment(
+        assays={"counts": counts}, rowRanges=gr, colData=colData
+    )
+
+    assert tse is not None
+    assert isinstance(tse, RangeSummarizedExperiment)
+
+    res = tse.findOverlaps(tse)
+    assert res is not None
+
+    res = tse.subsetByOverlaps(tse)
+    assert res is not None
+
+
+def test_RSE_sort_order():
+    tse = RangeSummarizedExperiment(
+        assays={"counts": counts}, rowRanges=gr, colData=colData
+    )
+
+    assert tse is not None
+    assert isinstance(tse, RangeSummarizedExperiment)
+
+    res = tse.order()
+    assert res is not None
+    assert len(res) == tse.shape[0]
+
+    res = tse.sort(decreasing=True)
+    assert res is not None
+    assert res.rowRanges.shape == tse.rowRanges.shape

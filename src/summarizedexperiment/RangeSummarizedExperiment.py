@@ -179,19 +179,19 @@ class RangeSummarizedExperiment(BaseSE):
 
     def nearest(
         self, query: "RangeSummarizedExperiment", ignoreStrand: bool = False,
-    ) -> Optional["RangeSummarizedExperiment"]:
+    ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions both upstream and downstream that overlap with the 
             each genomics interval in `query`. Adds a new column to query called `hits`.
 
         Args:
-            query (GenomicRanges): input GenomicRanges to find nearest positions.
+            query (RangeSummarizedExperiment): input to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
             ValueError: rowRanges is empty
 
         Returns:
-            "RangeSummarizedExperiment": List of possible hit indices for each interval in `query`
+            Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
         """
 
         if self.rowRanges is None:
@@ -200,16 +200,17 @@ class RangeSummarizedExperiment(BaseSE):
         if not isinstance(query, RangeSummarizedExperiment):
             raise TypeError("query is not a `RangeSummarizedExperiment`")
 
-        return self.rowRanges.nearest(query=query.rowRanges, ignoreStrand=ignoreStrand)
+        res =  self.rowRanges.nearest(query=query.rowRanges, ignoreStrand=ignoreStrand)
+        return res.column("hits")
 
     def precede(
         self, query: "RangeSummarizedExperiment", ignoreStrand: bool = False,
-    ) -> Optional["RangeSummarizedExperiment"]:
+    ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions only downstream that overlap with the 
             each genomics interval in `query`. Adds a new column to query called `hits`.
 
         Args:
-            query (GenomicRanges): input GenomicRanges to find nearest positions.
+            query (RangeSummarizedExperiment): input to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
@@ -217,7 +218,7 @@ class RangeSummarizedExperiment(BaseSE):
 
         
         Returns:
-            "RangeSummarizedExperiment": List of possible hit indices for each interval in `query`
+            Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
         """
 
         if not isinstance(query, RangeSummarizedExperiment):
@@ -226,25 +227,26 @@ class RangeSummarizedExperiment(BaseSE):
         if self.rowRanges is None:
             raise ValueError("rowRanges is None")
 
-        return self.rowRanges.precede(
-            query=query.rowRanges, ignoreStrand=ignoreStrand, stepend=0
+        res = self.rowRanges.precede(
+            query=query.rowRanges, ignoreStrand=ignoreStrand
         )
+        return res.column("hits")
 
     def follow(
         self, query: "RangeSummarizedExperiment", ignoreStrand: bool = False,
-    ) -> Optional["RangeSummarizedExperiment"]:
+    ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions only upstream that overlap with the 
             each genomics interval in `query`. Adds a new column to query called `hits`.
 
         Args:
-            query (GenomicRanges): input GenomicRanges to find nearest positions.
+            query (RangeSummarizedExperiment): input to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
             ValueError: rowRanges is empty
 
         Returns:
-            "RangeSummarizedExperiment": List of possible hit indices for each interval in `query`
+            Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
         """
         if not isinstance(query, RangeSummarizedExperiment):
             raise TypeError("query is not a `RangeSummarizedExperiment`")
@@ -252,26 +254,27 @@ class RangeSummarizedExperiment(BaseSE):
         if self.rowRanges is None:
             raise ValueError("rowRanges is None")
 
-        return self.rowRanges.follow(
-            query=query.rowRanges, ignoreStrand=ignoreStrand, stepstart=0
+        res =  self.rowRanges.follow(
+            query=query.rowRanges, ignoreStrand=ignoreStrand
         )
+        return res.column("hits")
 
     def distanceToNearest(
         self, query: "RangeSummarizedExperiment", ignoreStrand: bool = False,
-    ) -> Optional["RangeSummarizedExperiment"]:
+    ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions only downstream that overlap with the 
             each genomics interval in `query`. Adds a new column to query called `hits`.
             Technically same as nearest since we also return `distances`.
 
         Args:
-            query (GenomicRanges): input GenomicRanges to find nearest positions.
+            query (RangeSummarizedExperiment): input to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
             ValueError: rowRanges is empty
 
         Returns:
-            "RangeSummarizedExperiment": List of possible hit indices for each interval in `query`
+            Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
         """
         if not isinstance(query, RangeSummarizedExperiment):
             raise TypeError("query is not a `RangeSummarizedExperiment`")
@@ -279,9 +282,10 @@ class RangeSummarizedExperiment(BaseSE):
         if self.rowRanges is None:
             raise ValueError("rowRanges is None")
 
-        return self.rowRanges.distanceToNearest(
+        res = self.rowRanges.distanceToNearest(
             query=query.rowRanges, ignoreStrand=ignoreStrand
         )
+        return res.column("distance")
 
     def flank(
         self,
@@ -549,7 +553,7 @@ class RangeSummarizedExperiment(BaseSE):
             raise ValueError("rowRanges is None")
 
         result = self.rowRanges.findOverlaps(
-            query=query,
+            query=query.rowRanges,
             queryType=queryType,
             maxGap=maxGap,
             minOverlap=minOverlap,

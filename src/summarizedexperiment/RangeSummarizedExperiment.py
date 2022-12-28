@@ -178,113 +178,154 @@ class RangeSummarizedExperiment(BaseSE):
         return self.rowRanges.coverage(shift=shift, width=width, weight=weight)
 
     def nearest(
-        self, query: "RangeSummarizedExperiment", ignoreStrand: bool = False,
+        self,
+        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions both upstream and downstream that overlap with the 
             each genomics interval in `query`. Adds a new column to query called `hits`.
 
         Args:
-            query (RangeSummarizedExperiment): input to find nearest positions.
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): input to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
-            ValueError: rowRanges is empty
-
+            TypeError: if query is not of type `RangeSummarizedExperiment` or `GenomicRanges`
+            ValueError: if rowRanges is empty
+            
         Returns:
             Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
         """
 
-        if self.rowRanges is None:
-            raise ValueError("rowRanges is None")
+        if not (
+            isinstance(query, RangeSummarizedExperiment)
+            or isinstance(query, GenomicRanges)
+        ):
+            raise TypeError(
+                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
+            )
 
-        if not isinstance(query, RangeSummarizedExperiment):
-            raise TypeError("query is not a `RangeSummarizedExperiment`")
+        qranges = query
+        if isinstance(query, RangeSummarizedExperiment):
+            if self.rowRanges is None:
+                raise ValueError("rowRanges is None")
 
-        res =  self.rowRanges.nearest(query=query.rowRanges, ignoreStrand=ignoreStrand)
+            qranges = query.rowRanges
+
+        res = self.rowRanges.nearest(query=qranges, ignoreStrand=ignoreStrand)
         return res.column("hits")
 
     def precede(
-        self, query: "RangeSummarizedExperiment", ignoreStrand: bool = False,
+        self,
+        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions only downstream that overlap with the 
             each genomics interval in `query`. Adds a new column to query called `hits`.
 
         Args:
-            query (RangeSummarizedExperiment): input to find nearest positions.
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): input to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
-            ValueError: rowRanges is empty
-
+            TypeError: if query is not of type `RangeSummarizedExperiment` or `GenomicRanges`
+            ValueError: if rowRanges is empty
         
         Returns:
             Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
         """
 
-        if not isinstance(query, RangeSummarizedExperiment):
-            raise TypeError("query is not a `RangeSummarizedExperiment`")
+        if not (
+            isinstance(query, RangeSummarizedExperiment)
+            or isinstance(query, GenomicRanges)
+        ):
+            raise TypeError(
+                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
+            )
 
-        if self.rowRanges is None:
-            raise ValueError("rowRanges is None")
+        qranges = query
+        if isinstance(query, RangeSummarizedExperiment):
+            if self.rowRanges is None:
+                raise ValueError("rowRanges is None")
 
-        res = self.rowRanges.precede(
-            query=query.rowRanges, ignoreStrand=ignoreStrand
-        )
+            qranges = query.rowRanges
+
+        res = self.rowRanges.precede(query=qranges, ignoreStrand=ignoreStrand)
         return res.column("hits")
 
     def follow(
-        self, query: "RangeSummarizedExperiment", ignoreStrand: bool = False,
+        self,
+        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions only upstream that overlap with the 
             each genomics interval in `query`. Adds a new column to query called `hits`.
 
         Args:
-            query (RangeSummarizedExperiment): input to find nearest positions.
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): input to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
-            ValueError: rowRanges is empty
+            TypeError: if query is not of type `RangeSummarizedExperiment` or `GenomicRanges`
+            ValueError: if rowRanges is empty
 
         Returns:
             Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
         """
-        if not isinstance(query, RangeSummarizedExperiment):
-            raise TypeError("query is not a `RangeSummarizedExperiment`")
+        if not (
+            isinstance(query, RangeSummarizedExperiment)
+            or isinstance(query, GenomicRanges)
+        ):
+            raise TypeError(
+                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
+            )
 
-        if self.rowRanges is None:
-            raise ValueError("rowRanges is None")
+        qranges = query
+        if isinstance(query, RangeSummarizedExperiment):
+            if self.rowRanges is None:
+                raise ValueError("rowRanges is None")
 
-        res =  self.rowRanges.follow(
-            query=query.rowRanges, ignoreStrand=ignoreStrand
-        )
+            qranges = query.rowRanges
+
+        res = self.rowRanges.follow(query=qranges, ignoreStrand=ignoreStrand)
         return res.column("hits")
 
     def distanceToNearest(
-        self, query: "RangeSummarizedExperiment", ignoreStrand: bool = False,
+        self,
+        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions only downstream that overlap with the 
             each genomics interval in `query`. Adds a new column to query called `hits`.
             Technically same as nearest since we also return `distances`.
 
         Args:
-            query (RangeSummarizedExperiment): input to find nearest positions.
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): input to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
-            ValueError: rowRanges is empty
+            TypeError: if query is not of type `RangeSummarizedExperiment` or `GenomicRanges`
+            ValueError: if rowRanges is empty
 
         Returns:
             Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
         """
-        if not isinstance(query, RangeSummarizedExperiment):
-            raise TypeError("query is not a `RangeSummarizedExperiment`")
+        if not (
+            isinstance(query, RangeSummarizedExperiment)
+            or isinstance(query, GenomicRanges)
+        ):
+            raise TypeError(
+                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
+            )
 
-        if self.rowRanges is None:
-            raise ValueError("rowRanges is None")
+        qranges = query
+        if isinstance(query, RangeSummarizedExperiment):
+            if self.rowRanges is None:
+                raise ValueError("rowRanges is None")
 
-        res = self.rowRanges.distanceToNearest(
-            query=query.rowRanges, ignoreStrand=ignoreStrand
-        )
+            qranges = query.rowRanges
+
+        res = self.rowRanges.distanceToNearest(query=qranges, ignoreStrand=ignoreStrand)
         return res.column("distance")
 
     def flank(
@@ -474,7 +515,7 @@ class RangeSummarizedExperiment(BaseSE):
 
     def findOverlaps(
         self,
-        query: "RangeSummarizedExperiment",
+        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
         queryType: str = "any",
         maxGap: int = -1,
         minOverlap: int = 1,
@@ -483,7 +524,7 @@ class RangeSummarizedExperiment(BaseSE):
         """Find overlaps between subject (self) and a query `RangeSummarizedExperiment`.
 
         Args:
-            query (RangeSummarizedExperiment): query RSE.
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query RSE.
             queryType (str, optional): overlap query type, must be one of 
                     "any": any overlap is good
                     "start": overlap at the beginning of the intervals
@@ -495,7 +536,7 @@ class RangeSummarizedExperiment(BaseSE):
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Raises:
-            TypeError: if query is not of type `RangeSummarizedExperiment`
+            TypeError: if query is not of type `RangeSummarizedExperiment` or `GenomicRanges`
             ValueError: if rowRanges is empty
 
         Returns:
@@ -503,14 +544,23 @@ class RangeSummarizedExperiment(BaseSE):
                 containing hits to overlapping indices.
         """
 
-        if not isinstance(query, RangeSummarizedExperiment):
-            raise TypeError("query is not a `RangeSummarizedExperiment`")
+        if not (
+            isinstance(query, RangeSummarizedExperiment)
+            or isinstance(query, GenomicRanges)
+        ):
+            raise TypeError(
+                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
+            )
 
-        if self.rowRanges is None:
-            raise ValueError("rowRanges is None")
+        qranges = query
+        if isinstance(query, RangeSummarizedExperiment):
+            if self.rowRanges is None:
+                raise ValueError("rowRanges is None")
+
+            qranges = query.rowRanges
 
         return self.rowRanges.findOverlaps(
-            query=query.rowRanges,
+            query=qranges,
             queryType=queryType,
             maxGap=maxGap,
             minOverlap=minOverlap,
@@ -519,7 +569,7 @@ class RangeSummarizedExperiment(BaseSE):
 
     def subsetByOverlaps(
         self,
-        query: "RangeSummarizedExperiment",
+        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
         queryType: str = "any",
         maxGap: int = -1,
         minOverlap: int = 1,
@@ -540,20 +590,30 @@ class RangeSummarizedExperiment(BaseSE):
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Raises:
-            ValueError: rowRanges is empty
+            TypeError: if query is not of type `RangeSummarizedExperiment` or `GenomicRanges`
+            ValueError: if rowRanges is empty
 
         Returns:
             Optional["RangeSummarizedExperiment"]: new `RangeSummarizedExperiment` object
         """
 
-        if not isinstance(query, RangeSummarizedExperiment):
-            raise TypeError("query is not a `RangeSummarizedExperiment`")
+        if not (
+            isinstance(query, RangeSummarizedExperiment)
+            or isinstance(query, GenomicRanges)
+        ):
+            raise TypeError(
+                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
+            )
 
-        if self.rowRanges is None:
-            raise ValueError("rowRanges is None")
+        qranges = query
+        if isinstance(query, RangeSummarizedExperiment):
+            if self.rowRanges is None:
+                raise ValueError("rowRanges is None")
+
+            qranges = query.rowRanges
 
         result = self.rowRanges.findOverlaps(
-            query=query.rowRanges,
+            query=qranges,
             queryType=queryType,
             maxGap=maxGap,
             minOverlap=minOverlap,

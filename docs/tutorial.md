@@ -1,8 +1,16 @@
 # Tutorial
 
-Currently supports both `SummarizedExperiment` & `RangeSummarizedExperiment` objects
+This package provides classes to represent genomic experiments. Currently supports both `SummarizedExperiment` & `RangeSummarizedExperiment` representations.
 
-## Mock sample data 
+# Create a `SummarizedExperiment`
+
+To create a `SummarizedExperiment`, we need
+
+- `Assays`: a dictionary of matrices with keys specifying the assay name. 
+- `rows`: feature information about the rows of the matrices.
+- `cols`: sample information about the columns of the matrices.
+
+Lets create these three objects
 
 we first create a mock dataset of 200 rows and 6 columns, also adding a few sample_data.
 
@@ -10,6 +18,7 @@ we first create a mock dataset of 200 rows and 6 columns, also adding a few samp
 nrows = 200
 ncols = 6
 counts = np.random.rand(nrows, ncols)
+
 df_gr = pd.DataFrame(
     {
         "seqnames": [
@@ -33,8 +42,6 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df_gr)
-
 colData = pd.DataFrame(
     {
         "treatment": ["ChIP", "Input"] * 3,
@@ -42,9 +49,11 @@ colData = pd.DataFrame(
 )
 ```
 
-### `SummarizedExperiment`
+Finally, create a summarized experiment class. 
 
-`SummarizedExperiment` represents features as a Pandas DataFrame
+## `SummarizedExperiment`
+
+A `SummarizedExperiment` is a relaxed variant to represent genomic experiments. This class expects features (`rowData`) to be either a pandas `DataFrame` or any variant of `BiocFrame`.
 
 ```python
 tse = SummarizedExperiment(
@@ -52,11 +61,13 @@ tse = SummarizedExperiment(
 )
 ```
 
-###  `RangeSummarizedExperiment`
+##  `RangeSummarizedExperiment`
 
-`RangeSummarizedExperiment` represents features as [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges)
+`RangeSummarizedExperiment` represents features as [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges).
 
 ```python
+gr = GenomicRanges.fromPandas(df_gr)
+
 trse = SummarizedExperiment(
     assays={"counts": counts}, rowRanges=gr, colData=colData
 )
@@ -64,19 +75,35 @@ trse = SummarizedExperiment(
 
 ### Accessors
 
-Multiple methods are available to access various slots of a `SummarizedExperiment` object
+Many properties can be accessed 
 
 ```python
-tse.assays()
-tse.rowData()
-tse.colData()
+tse.assays
+tse.rowData or # tse.rowRanges
+tse.colData
+
+# Access the counts assay
+tse.assay("counts")
 ```
 
 ## Subset an experiment
 
-Currently, the package provides methods to subset by indices
+Use `[ ]` notation to subset a `SummarizedExperiment` object. 
 
 ```python
 # subset the first 10 rows and the first 3 samples
 subset_tse = tse[0:10, 0:3]
 ```
+
+`RangeSummarizedExperiment` objects on the other hand can support interval based operations.
+
+
+```python
+query = {"seqnames": ["chr2",], "starts": [4], "ends": [6], "strand": ["+"]}
+
+query = GenomicRanges(query)
+
+tse.subsetOverlaps(query)
+```
+
+Checkout the API docs or GenomicRanges for list of interval based operations.

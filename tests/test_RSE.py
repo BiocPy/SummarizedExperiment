@@ -1,14 +1,11 @@
+import pytest
+
 from summarizedexperiment import SummarizedExperiment
 from genomicranges import GenomicRanges
 import numpy as np
 from random import random
 import pandas as pd
-from summarizedexperiment.RangeSummarizedExperiment import (
-    RangeSummarizedExperiment as rse,
-)
-from summarizedexperiment.SummarizedExperiment import (
-    SummarizedExperiment as se,
-)
+from summarizedexperiment.RangeSummarizedExperiment import RangeSummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -43,26 +40,26 @@ df_gr = pd.DataFrame(
 
 gr = GenomicRanges.fromPandas(df_gr)
 
-colData = pd.DataFrame(
-    {
-        "treatment": ["ChIP", "Input"] * 3,
-    }
-)
+colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
 
 
-def test_SE_creation():
-    tse = SummarizedExperiment(
-        assays={"counts": counts}, rowData=df_gr, colData=colData
+def test_RSE_creation():
+
+    trse = RangeSummarizedExperiment(
+        assays={"counts": counts}, rowRanges=gr, colData=colData
     )
 
+    assert trse is not None
+    assert isinstance(trse, RangeSummarizedExperiment)
+
+
+def test_RSE_none():
+    tse = RangeSummarizedExperiment(assays={"counts": counts})
+
     assert tse is not None
-    assert isinstance(tse, se)
+    assert isinstance(tse, RangeSummarizedExperiment)
 
-    subset_tse = tse[0:10:, 0:3]
-    assert subset_tse is not None
-    assert isinstance(subset_tse, se)
 
-    assert len(subset_tse.rowData()) == 10
-    assert len(subset_tse.colData()) == 3
-
-    assert subset_tse.assays()["counts"].shape == (10, 3)
+def test_RSE_should_fail():
+    with pytest.raises(Exception):
+        tse = RangeSummarizedExperiment(assays={"counts": counts}, rowRanges=df_gr)

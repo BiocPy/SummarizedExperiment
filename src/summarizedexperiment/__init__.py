@@ -21,4 +21,5 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-from .interface import SummarizedExperiment
+from .SummarizedExperiment import SummarizedExperiment
+from .RangeSummarizedExperiment import RangeSummarizedExperiment

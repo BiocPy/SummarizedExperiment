@@ -12,7 +12,7 @@ To create a `SummarizedExperiment`, we need
 
 Lets create these three objects
 
-we first create a mock dataset of 200 rows and 6 columns, also adding a few sample_data.
+we first create a mock dataset of 200 rows and 6 columns, also adding a few sample data.
 
 ```python
 nrows = 200
@@ -49,7 +49,7 @@ colData = pd.DataFrame(
 )
 ```
 
-Finally, create a summarized experiment class. 
+Finally, create an appropriate summarized experiment class. 
 
 ## `SummarizedExperiment`
 
@@ -73,9 +73,9 @@ trse = SummarizedExperiment(
 )
 ```
 
-### Accessors
+## Accessors
 
-Many properties can be accessed 
+Many properties can be accessed directly from the class instance
 
 ```python
 tse.assays
@@ -86,7 +86,7 @@ tse.colData
 tse.assay("counts")
 ```
 
-## Subset an experiment
+# Subset an experiment
 
 Use `[ ]` notation to subset a `SummarizedExperiment` object. 
 
@@ -95,7 +95,7 @@ Use `[ ]` notation to subset a `SummarizedExperiment` object.
 subset_tse = tse[0:10, 0:3]
 ```
 
-`RangeSummarizedExperiment` objects on the other hand can support interval based operations.
+`RangeSummarizedExperiment` objects on the other hand support interval based operations.
 
 
 ```python

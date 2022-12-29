@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>summarizedexperiment.SummarizedExperiment - SummarizedExperiment 0.1.4 documentation</title>
+        <title>summarizedexperiment.SummarizedExperiment - SummarizedExperiment 0.1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.1.4 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.1.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.1.4 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.1.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -157,6 +157,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#create-a-summarizedexperiment">Create a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html#subset-an-experiment">Subset an experiment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../changelog.html">Changelog</a></li>
@@ -221,8 +222,18 @@
         <span class="n">assays</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]],</span>
         <span class="n">rowData</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">colData</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="p">:</span> <span class="n">MutableMapping</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Initialize a new `SummarizedExperiment`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary of matrices,</span>
+<span class="sd">                with assay names as keys and matrices represented as dense (numpy) or sparse (scipy) matrices.</span>
+<span class="sd">                All matrices across assays must have the same dimensions (number of rows, number of columns).</span>
+<span class="sd">            rowData (Optional[GenomicRanges], optional): features, must be the same length as rows of the matrices in assays. Defaults to None.</span>
+<span class="sd">            colData (Optional[Union[pd.DataFrame, BiocFrame]], optional): sample data, must be the same length as rows of the matrices in assays. Defaults to None.</span>
+<span class="sd">            metadata (Optional[MutableMapping], optional): experiment metadata describing the methods. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="n">rowData</span><span class="p">,</span> <span class="n">colData</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
 
     <span class="nd">@property</span>

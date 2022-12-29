@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="License" href="license.html" /><link rel="prev" title="SummarizedExperiment" href="readme.html" />
 
     <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>Tutorial - SummarizedExperiment 0.1.4 documentation</title>
+        <title>Tutorial - SummarizedExperiment 0.1.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.1.4 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.1.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.1.4 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.1.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -158,6 +158,7 @@
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="#create-a-summarizedexperiment">Create a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="#subset-an-experiment">Subset an experiment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
@@ -212,7 +213,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">cols</span></code>: sample information about the columns of the matrices.</p></li>
 </ul>
 <p>Lets create these three objects</p>
-<p>we first create a mock dataset of 200 rows and 6 columns, also adding a few sample_data.</p>
+<p>we first create a mock dataset of 200 rows and 6 columns, also adding a few sample data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nrows</span> <span class="o">=</span> <span class="mi">200</span>
 <span class="n">ncols</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">)</span>
@@ -247,7 +248,7 @@
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>Finally, create a summarized experiment class.</p>
+<p>Finally, create an appropriate summarized experiment class.</p>
 <section id="summarizedexperiment">
 <h2><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code><a class="headerlink" href="#summarizedexperiment" title="Permalink to this heading">#</a></h2>
 <p>A <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> is a relaxed variant to represent genomic experiments. This class expects features (<code class="docutils literal notranslate"><span class="pre">rowData</span></code>) to be either a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> or any variant of <code class="docutils literal notranslate"><span class="pre">BiocFrame</span></code>.</p>
@@ -267,9 +268,10 @@
 <span class="p">)</span>
 </pre></div>
 </div>
+</section>
 <section id="accessors">
-<h3>Accessors<a class="headerlink" href="#accessors" title="Permalink to this heading">#</a></h3>
-<p>Many properties can be accessed</p>
+<h2>Accessors<a class="headerlink" href="#accessors" title="Permalink to this heading">#</a></h2>
+<p>Many properties can be accessed directly from the class instance</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tse</span><span class="o">.</span><span class="n">assays</span>
 <span class="n">tse</span><span class="o">.</span><span class="n">rowData</span> <span class="ow">or</span> <span class="c1"># tse.rowRanges</span>
 <span class="n">tse</span><span class="o">.</span><span class="n">colData</span>
@@ -281,13 +283,13 @@
 </section>
 </section>
 <section id="subset-an-experiment">
-<h2>Subset an experiment<a class="headerlink" href="#subset-an-experiment" title="Permalink to this heading">#</a></h2>
+<h1>Subset an experiment<a class="headerlink" href="#subset-an-experiment" title="Permalink to this heading">#</a></h1>
 <p>Use <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">]</span></code> notation to subset a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># subset the first 10 rows and the first 3 samples</span>
 <span class="n">subset_tse</span> <span class="o">=</span> <span class="n">tse</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code> objects on the other hand can support interval based operations.</p>
+<p><code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code> objects on the other hand support interval based operations.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">]}</span>
 
 <span class="n">query</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -296,7 +298,6 @@
 </pre></div>
 </div>
 <p>Checkout the API docs or GenomicRanges for list of interval based operations.</p>
-</section>
 </section>
 
         </article>

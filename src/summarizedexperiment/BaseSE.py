@@ -20,7 +20,7 @@ class BaseSE:
         assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
         rows: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         cols: Optional[Union[pd.DataFrame, BiocFrame]] = None,
-        metadata: MutableMapping = None,
+        metadata: Optional[MutableMapping] = None,
     ) -> None:
         """Initialize an instance of `BaseSE`
 
@@ -28,9 +28,9 @@ class BaseSE:
             assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary of matrices,
                 with assay names as keys and matrices represented as dense (numpy) or sparse (scipy) matrices.
                 All matrices across assays must have the same dimensions (number of rows, number of columns).
-            rows (pd.DataFrame): features, must be the same length as rows of the matrices in assays. Defaults to None.
-            cols (pd.DataFrame): sample data, must be the same length as the columns of the matrices in assays. Defaults to None.
-            metadata (Any, optional): experiment metadata describing the methods. Defaults to None.
+            rows (Union[pd.DataFrame, BiocFrame], optional): features, must be the same length as rows of the matrices in assays. Defaults to None.
+            cols (Union[pd.DataFrame, BiocFrame], optional): sample data, must be the same length as the columns of the matrices in assays. Defaults to None.
+            metadata (MutableMapping, optional): experiment metadata describing the methods. Defaults to None.
         """
 
         if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
@@ -107,8 +107,7 @@ class BaseSE:
                     f"Sample data and assays do not match. must be {base_dims[1]} but provided {self._cols.shape[0]}"
                 )
 
-        # may be i should get rid of this
-        self.__assay_shape = base_dims
+        self._shape = base_dims
 
     @property
     def assays(self) -> MutableMapping[str, Union[np.ndarray, sp.spmatrix]]:

@@ -68,6 +68,8 @@ def test_RSE_props():
     assert tse.strand is not None
     assert tse.width is not None
 
+    assert tse.rownames is not None
+    assert tse.colnames is not None
 
 def test_RSE_subset():
     tse = RangeSummarizedExperiment(

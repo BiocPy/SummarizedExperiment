@@ -2,11 +2,11 @@
 <html class="no-js" lang="en">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="prev" title="summarizedexperiment" href="modules.html" />
 
-    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>summarizedexperiment package - SummarizedExperiment 0.1.5 documentation</title>
+    <!-- Generated with Sphinx 6.0.0 and Furo 2022.12.07 -->
+        <title>summarizedexperiment package - SummarizedExperiment 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">SummarizedExperiment 0.1.5 documentation</div></a>
+      <a href="../index.html"><div class="brand">SummarizedExperiment 0.2.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.1.5 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -218,16 +218,16 @@ features, sample data and any other metadata</p>
 <span class="sig-name descname"><span class="pre">assay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.spmatrix.html#scipy.sparse.spmatrix" title="(in SciPy v1.9.3)"><span class="pre">spmatrix</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/summarizedexperiment/BaseSE.html#BaseSE.assay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.assay" title="Permalink to this definition">#</a></dt>
 <dd><p>Convenience function to access an assay by name</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – name of the assay</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if assay name does not exist</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>the experiment data</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The experiment data</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Union[np.ndarray, sp.spmatrix]</p>
 </dd>
 </dl>
@@ -236,12 +236,12 @@ features, sample data and any other metadata</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="summarizedexperiment.BaseSE.BaseSE.assayNames">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assayNames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.assayNames" title="Permalink to this definition">#</a></dt>
-<dd><p>Access assay names.</p>
+<dd><p>Get assay names.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of assay names</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
 </dd>
 </dl>
@@ -250,12 +250,12 @@ features, sample data and any other metadata</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="summarizedexperiment.BaseSE.BaseSE.assays">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">assays</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.spmatrix.html#scipy.sparse.spmatrix" title="(in SciPy v1.9.3)"><span class="pre">spmatrix</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.assays" title="Permalink to this definition">#</a></dt>
-<dd><p>Access assays.</p>
+<dd><p>Get assays.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>a dictionary of experiments.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>MutableMapping[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, Union[np.ndarray, sp.spmatrix]]</p>
 </dd>
 </dl>
@@ -264,13 +264,27 @@ features, sample data and any other metadata</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="summarizedexperiment.BaseSE.BaseSE.colData">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">colData</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.2)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">BiocFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.colData" title="Permalink to this definition">#</a></dt>
-<dd><p>Access sample data.</p>
+<dd><p>Get sample data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>returns sample data.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[Union[pd.DataFrame, BiocFrame]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="summarizedexperiment.BaseSE.BaseSE.colnames">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">colnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.colnames" title="Permalink to this definition">#</a></dt>
+<dd><p>Get column/sample names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of column names</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -280,10 +294,10 @@ features, sample data and any other metadata</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dims</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.dims" title="Permalink to this definition">#</a></dt>
 <dd><p>Dimensions of the object, number of features and number of samples.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A tuple of number of features and number of samples</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Tuple[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
 </dd>
 </dl>
@@ -292,13 +306,27 @@ features, sample data and any other metadata</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="summarizedexperiment.BaseSE.BaseSE.metadata">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">metadata</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.metadata" title="Permalink to this definition">#</a></dt>
-<dd><p>Access metadata.</p>
+<dd><p>Get metadata.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>metadata object, usually a dictionary.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[MutableMapping]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="summarizedexperiment.BaseSE.BaseSE.rownames">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rownames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.rownames" title="Permalink to this definition">#</a></dt>
+<dd><p>Get row/feature index</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list of row index names</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -308,10 +336,10 @@ features, sample data and any other metadata</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Tuple" title="(in Python v3.9)"><span class="pre">Tuple</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.shape" title="Permalink to this definition">#</a></dt>
 <dd><p>Get shape of the object, number of features and number of samples.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A tuple of number of features and number of samples</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Tuple[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>, <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
 </dd>
 </dl>
@@ -322,19 +350,19 @@ features, sample data and any other metadata</p>
 <span class="sig-name descname"><span class="pre">subsetAssays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rowIndices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#slice" title="(in Python v3.9)"><span class="pre">slice</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colIndices</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#slice" title="(in Python v3.9)"><span class="pre">slice</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.spmatrix.html#scipy.sparse.spmatrix" title="(in SciPy v1.9.3)"><span class="pre">spmatrix</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/summarizedexperiment/BaseSE.html#BaseSE.subsetAssays"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.subsetAssays" title="Permalink to this definition">#</a></dt>
 <dd><p>Subset all assays to a specified rows or cols or both</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>rowIndices</strong> (<em>Union</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#slice" title="(in Python v3.9)"><em>slice</em></a><em>]</em><em>, </em><em>optional</em>) – row indices to subset. Defaults to None.</p></li>
 <li><p><strong>colIndices</strong> (<em>Union</em><em>[</em><em>Sequence</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#slice" title="(in Python v3.9)"><em>slice</em></a><em>]</em><em>, </em><em>optional</em>) – col indices to subset. Defaults to None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if rowIndices and colIndices are both None.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>assays with subset matrices</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>MutableMapping[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, Union[np.ndarray, sp.spmatrix]]</p>
 </dd>
 </dl>
@@ -354,22 +382,22 @@ genomic features, sample data and any other metadata.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.coverage">
 <span class="sig-name descname"><span class="pre">coverage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.MutableMapping" title="(in Python v3.9)"><span class="pre">MutableMapping</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.24)"><span class="pre">ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.coverage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.coverage" title="Permalink to this definition">#</a></dt>
-<dd><p>Calculate coverage for each chromosome</p>
+<dd><p>Calculate coverage for each chromosome.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shift</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – shift all genomic positions. Defaults to 0.</p></li>
 <li><p><strong>width</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><em>optional</em>) – restrict the width of all chromosomes. Defaults to None.</p></li>
 <li><p><strong>weight</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – weight to use. Defaults to 1.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>coverage vector for each chromosome.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>MutableMapping[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>, np.ndarray]</p>
 </dd>
 </dl>
@@ -384,22 +412,22 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> (<em>Union</em><em>[</em><em>GenomicRanges</em><em>, </em><em>&quot;RangeSummarizedExperiment&quot;</em><em>]</em>) – input to find nearest positions.</p></li>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand? Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>RangeSummarizedExperiment</cite> or <cite>GenomicRanges</cite></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if rowRanges is empty</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of possible hit indices for each interval in <cite>query</cite></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[Sequence[Optional[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]]</p>
 </dd>
 </dl>
@@ -408,12 +436,12 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.end">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.end" title="Permalink to this definition">#</a></dt>
-<dd><p>Access end positions from row ranges</p>
+<dd><p>Get end positions from row ranges.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>end locations</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
 </dd>
 </dl>
@@ -424,7 +452,7 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <span class="sig-name descname"><span class="pre">findOverlaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><span class="pre">GenomicRanges</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queryType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'any'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxGap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minOverlap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreStrand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.findOverlaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.findOverlaps" title="Permalink to this definition">#</a></dt>
 <dd><p>Find overlaps between subject (self) and a query <cite>RangeSummarizedExperiment</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> (<em>Union</em><em>[</em><em>GenomicRanges</em><em>, </em><em>&quot;RangeSummarizedExperiment&quot;</em><em>]</em>) – query RSE.</p></li>
 <li><p><strong>queryType</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – <dl class="simple">
@@ -441,20 +469,20 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>RangeSummarizedExperiment</cite> or <cite>GenomicRanges</cite></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if rowRanges is empty</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p><dl class="simple">
-<dt>A RangeSummarizedExperiment object with the same length as query,</dt><dd><p>containing hits to overlapping indices.</p>
+<dt>A <cite>RangeSummarizedExperiment</cite> object with the same length as query,</dt><dd><p>containing hits to overlapping indices.</p>
 </dd>
 </dl>
 </p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[“RangeSummarizedExperiment”]</p>
 </dd>
 </dl>
@@ -463,9 +491,9 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.flank">
 <span class="sig-name descname"><span class="pre">flank</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">both</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreStrand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.flank"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.flank" title="Permalink to this definition">#</a></dt>
-<dd><p>Flank row ranges and return new RSE</p>
+<dd><p>Flank row ranges.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – width to flank by</p></li>
 <li><p><strong>start</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – only flank starts?. Defaults to True.</p></li>
@@ -473,13 +501,13 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a new RangeSummarizedExperiment object with the flanked intervals</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a new <cite>RangeSummarizedExperiment</cite> object with the flanked intervals</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment">RangeSummarizedExperiment</a></p>
 </dd>
 </dl>
@@ -493,22 +521,22 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> (<em>Union</em><em>[</em><em>GenomicRanges</em><em>, </em><em>&quot;RangeSummarizedExperiment&quot;</em><em>]</em>) – input to find nearest positions.</p></li>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand? Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>RangeSummarizedExperiment</cite> or <cite>GenomicRanges</cite></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if rowRanges is empty</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of possible hit indices for each interval in <cite>query</cite></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[Sequence[Optional[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]]</p>
 </dd>
 </dl>
@@ -517,22 +545,22 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.narrow">
 <span class="sig-name descname"><span class="pre">narrow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.narrow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.narrow" title="Permalink to this definition">#</a></dt>
-<dd><p>Narrow row ranges and return new RSE.</p>
+<dd><p>Narrow row ranges.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><em>optional</em>) – relative start position. Defaults to None.</p></li>
 <li><p><strong>width</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><em>optional</em>) – relative end position. Defaults to None.</p></li>
 <li><p><strong>end</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><em>optional</em>) – relative width of the interval. Defaults to None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – when parameters were set incorrectly or rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a new RangeSummarizedExperiment object with narrow positions</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a new <cite>RangeSummarizedExperiment</cite> object with narrow positions</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment">RangeSummarizedExperiment</a></p>
 </dd>
 </dl>
@@ -546,22 +574,22 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> (<em>Union</em><em>[</em><em>GenomicRanges</em><em>, </em><em>&quot;RangeSummarizedExperiment&quot;</em><em>]</em>) – input to find nearest positions.</p></li>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand? Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>RangeSummarizedExperiment</cite> or <cite>GenomicRanges</cite></p></li>
-<li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if rowRanges is empty</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if <cite>rowRanges</cite> is empty</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of possible hit indices for each interval in <cite>query</cite></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[Sequence[Optional[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]]</p>
 </dd>
 </dl>
@@ -572,16 +600,16 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <span class="sig-name descname"><span class="pre">order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decreasing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.order"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.order" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the order of indices for sorting.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>decreasing</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – descending order?. Defaults to False.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>order of indices.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
 </dd>
 </dl>
@@ -595,22 +623,22 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 </dd>
 </dl>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> (<em>Union</em><em>[</em><em>GenomicRanges</em><em>, </em><em>&quot;RangeSummarizedExperiment&quot;</em><em>]</em>) – input to find nearest positions.</p></li>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand? Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>RangeSummarizedExperiment</cite> or <cite>GenomicRanges</cite></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if rowRanges is empty</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>List of possible hit indices for each interval in <cite>query</cite></p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[Sequence[Optional[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]]]</p>
 </dd>
 </dl>
@@ -619,21 +647,21 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.promoters">
 <span class="sig-name descname"><span class="pre">promoters</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">upstream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">downstream</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">200</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.promoters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.promoters" title="Permalink to this definition">#</a></dt>
-<dd><p>Extend row ranges to promoter regions and return new RSE</p>
+<dd><p>Extend row ranges to promoter regions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>upstream</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of positions to extend in the 5’ direction . Defaults to 2000.</p></li>
 <li><p><strong>downstream</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – number of positions to extend in the 3’ direction. Defaults to 200.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a new RangeSummarizedExperiment object with the extended intervals for promoter regions</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a new <cite>RangeSummarizedExperiment</cite> object with the extended intervals for promoter regions</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment">RangeSummarizedExperiment</a></p>
 </dd>
 </dl>
@@ -642,22 +670,22 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.resize">
 <span class="sig-name descname"><span class="pre">resize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">fix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'start'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreStrand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.resize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.resize" title="Permalink to this definition">#</a></dt>
-<dd><p>Resize row ranges and return new RSE</p>
+<dd><p>Resize row ranges</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>width</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – width to resize</p></li>
 <li><p><strong>fix</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – fix positions by <cite>start</cite> or <cite>end</cite>. Defaults to “start”.</p></li>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – parameter fix is neither <cite>start</cite> nor <cite>end</cite> or rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a new RangeSummarizedExperiment object with the resized intervals</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a new <cite>RangeSummarizedExperiment</cite> object with the resized intervals</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment">RangeSummarizedExperiment</a></p>
 </dd>
 </dl>
@@ -666,22 +694,22 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.restrict">
 <span class="sig-name descname"><span class="pre">restrict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepAllRanges</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.restrict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.restrict" title="Permalink to this definition">#</a></dt>
-<dd><p>Restrict row ranges and return new RSE.</p>
+<dd><p>Restrict row ranges.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>start</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><em>optional</em>) – start position. Defaults to None.</p></li>
 <li><p><strong>end</strong> (<em>Optional</em><em>[</em><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>]</em><em>, </em><em>optional</em>) – end position. Defaults to None.</p></li>
 <li><p><strong>keepAllRanges</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – Keep intervals that do not overlap with start and end?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a new RangeSummarizedExperiment object with restricted intervals</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a new <cite>RangeSummarizedExperiment</cite> object with restricted intervals</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment">RangeSummarizedExperiment</a></p>
 </dd>
 </dl>
@@ -690,12 +718,12 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.rowRanges">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rowRanges</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">GenomicRanges</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.rowRanges" title="Permalink to this definition">#</a></dt>
-<dd><p>Access features.</p>
+<dd><p>Get features.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>returns features.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[GenomicRanges]</p>
 </dd>
 </dl>
@@ -706,10 +734,10 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">seqInfo</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><span class="pre">SeqInfo</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.seqInfo" title="Permalink to this definition">#</a></dt>
 <dd><p>Get the sequence information object (if available)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Sequence information</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>SeqInfo</p>
 </dd>
 </dl>
@@ -720,10 +748,10 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">seqnames</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.seqnames" title="Permalink to this definition">#</a></dt>
 <dd><p>Get sequence or chromosome names</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>list of all chromosome names</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
 </dd>
 </dl>
@@ -732,18 +760,18 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.shift">
 <span class="sig-name descname"><span class="pre">shift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shift</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.shift"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.shift" title="Permalink to this definition">#</a></dt>
-<dd><p>Shift row ranges and return new RSE</p>
+<dd><p>Shift row ranges</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>shift</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a><em>, </em><em>optional</em>) – shift interval. Defaults to 0.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a new RangeSummarizedExperiment object with the shifted intervals</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a new <cite>RangeSummarizedExperiment</cite> object with the shifted intervals</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment">RangeSummarizedExperiment</a></p>
 </dd>
 </dl>
@@ -752,21 +780,21 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.sort">
 <span class="sig-name descname"><span class="pre">sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">decreasing</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreStrand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.sort"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.sort" title="Permalink to this definition">#</a></dt>
-<dd><p>Sort the RangeSummarizedExperiment by row ranges.</p>
+<dd><p>Sort the <cite>RangeSummarizedExperiment</cite> by row ranges.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>decreasing</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – decreasing order?. Defaults to False.</p></li>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – rowRanges is empty</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>a new sorted RangeSummarizedExperiment object.</p>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a new sorted <cite>RangeSummarizedExperiment</cite> object.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>“RangeSummarizedExperiment”</p>
 </dd>
 </dl>
@@ -775,12 +803,12 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.start">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.start" title="Permalink to this definition">#</a></dt>
-<dd><p>Access start positions from row ranges</p>
+<dd><p>Get start positions from row ranges</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>start positions</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
 </dd>
 </dl>
@@ -791,10 +819,10 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">strand</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.strand" title="Permalink to this definition">#</a></dt>
 <dd><p>Get strand information (if available)</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>strand across all positions or None</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]]</p>
 </dd>
 </dl>
@@ -803,9 +831,9 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.subsetByOverlaps">
 <span class="sig-name descname"><span class="pre">subsetByOverlaps</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><span class="pre">GenomicRanges</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">queryType</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'any'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxGap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minOverlap</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreStrand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.subsetByOverlaps"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.subsetByOverlaps" title="Permalink to this definition">#</a></dt>
-<dd><p>Subset a <cite>RangeSummarizedExperiment</cite> by feature overlaps</p>
+<dd><p>Subset a <cite>RangeSummarizedExperiment</cite> by feature overlaps.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>query</strong> (<a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><em>RangeSummarizedExperiment</em></a>) – query <cite>RangeSummarizedExperiment</cite>.</p></li>
 <li><p><strong>queryType</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a><em>, </em><em>optional</em>) – <dl class="simple">
@@ -822,16 +850,16 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <li><p><strong>ignoreStrand</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a><em>, </em><em>optional</em>) – ignore strand?. Defaults to False.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><ul class="simple">
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if query is not of type <cite>RangeSummarizedExperiment</cite> or <cite>GenomicRanges</cite></p></li>
 <li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – if rowRanges is empty</p></li>
 </ul>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>new <cite>RangeSummarizedExperiment</cite> object</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[“RangeSummarizedExperiment”]</p>
 </dd>
 </dl>
@@ -842,10 +870,10 @@ Technically same as nearest since we also return <cite>distances</cite>.</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">width</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.width" title="Permalink to this definition">#</a></dt>
 <dd><p>Get widths of each interval</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>width of each interval</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)">int</a>]</p>
 </dd>
 </dl>
@@ -865,12 +893,12 @@ features, sample data and any other metadata</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="summarizedexperiment.SummarizedExperiment.SummarizedExperiment.rowData">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rowData</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Optional" title="(in Python v3.9)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Union" title="(in Python v3.9)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.5.2)"><span class="pre">DataFrame</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">BiocFrame</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#summarizedexperiment.SummarizedExperiment.SummarizedExperiment.rowData" title="Permalink to this definition">#</a></dt>
-<dd><p>Access features.</p>
+<dd><p>Get features.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>returns features.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Optional[Union[pd.DataFrame, BiocFrame]]</p>
 </dd>
 </dl>
@@ -939,8 +967,10 @@ features, sample data and any other metadata</p>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.assayNames"><code class="docutils literal notranslate"><span class="pre">BaseSE.assayNames</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.assays"><code class="docutils literal notranslate"><span class="pre">BaseSE.assays</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.colData"><code class="docutils literal notranslate"><span class="pre">BaseSE.colData</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.colnames"><code class="docutils literal notranslate"><span class="pre">BaseSE.colnames</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.dims"><code class="docutils literal notranslate"><span class="pre">BaseSE.dims</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.metadata"><code class="docutils literal notranslate"><span class="pre">BaseSE.metadata</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.rownames"><code class="docutils literal notranslate"><span class="pre">BaseSE.rownames</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.shape"><code class="docutils literal notranslate"><span class="pre">BaseSE.shape</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.subsetAssays"><code class="docutils literal notranslate"><span class="pre">BaseSE.subsetAssays()</span></code></a></li>
 </ul>
@@ -995,9 +1025,6 @@ features, sample data and any other metadata</p>
     </aside>
   </div>
 </div><script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-    <script src="../_static/jquery.js"></script>
-    <script src="../_static/underscore.js"></script>
-    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/sphinx_highlight.js"></script>
     <script src="../_static/scripts/furo.js"></script>

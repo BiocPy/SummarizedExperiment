@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 5.3.0 and Furo 2022.12.07 -->
-        <title>summarizedexperiment.RangeSummarizedExperiment - SummarizedExperiment 0.1.5 documentation</title>
+    <!-- Generated with Sphinx 6.0.0 and Furo 2022.12.07 -->
+        <title>summarizedexperiment.RangeSummarizedExperiment - SummarizedExperiment 0.2.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.1.5 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.2.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.1.5 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -256,7 +256,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rowRanges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Access features.</span>
+        <span class="sd">&quot;&quot;&quot;Get features.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[GenomicRanges]: returns features.</span>
@@ -275,7 +275,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Access end positions from row ranges</span>
+        <span class="sd">&quot;&quot;&quot;Get end positions from row ranges.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Sequence[int]: end locations</span>
@@ -284,7 +284,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Access start positions from row ranges</span>
+        <span class="sd">&quot;&quot;&quot;Get start positions from row ranges</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Sequence[int]: start positions</span>
@@ -362,14 +362,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cols</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rows</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.coverage"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.coverage">[docs]</a>    <span class="k">def</span> <span class="nf">coverage</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome</span>
+        <span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            shift (int, optional): shift all genomic positions. Defaults to 0.</span>
@@ -402,7 +402,7 @@
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError: if query is not of type `RangeSummarizedExperiment` or `GenomicRanges`</span>
-<span class="sd">            ValueError: if rowRanges is empty</span>
+<span class="sd">            ValueError: if `rowRanges` is empty</span>
 <span class="sd">            </span>
 <span class="sd">        Returns:</span>
 <span class="sd">            Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`</span>
@@ -546,7 +546,7 @@
         <span class="n">both</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Flank row ranges and return new RSE</span>
+        <span class="sd">&quot;&quot;&quot;Flank row ranges.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            width (int): width to flank by</span>
@@ -558,7 +558,7 @@
 <span class="sd">            ValueError: rowRanges is empty</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with the flanked intervals</span>
+<span class="sd">            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with the flanked intervals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowRanges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;rowRanges is None&quot;</span><span class="p">)</span>
@@ -577,7 +577,7 @@
 <div class="viewcode-block" id="RangeSummarizedExperiment.resize"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.resize">[docs]</a>    <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">fix</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Resize row ranges and return new RSE</span>
+        <span class="sd">&quot;&quot;&quot;Resize row ranges</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            width (int): width to resize</span>
@@ -588,7 +588,7 @@
 <span class="sd">            ValueError: parameter fix is neither `start` nor `end` or rowRanges is empty</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with the resized intervals</span>
+<span class="sd">            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with the resized intervals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowRanges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -606,7 +606,7 @@
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.shift"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.shift">[docs]</a>    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Shift row ranges and return new RSE</span>
+        <span class="sd">&quot;&quot;&quot;Shift row ranges</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            shift (int, optional): shift interval. Defaults to 0.</span>
@@ -615,7 +615,7 @@
 <span class="sd">            ValueError: rowRanges is empty</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with the shifted intervals</span>
+<span class="sd">            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with the shifted intervals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowRanges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -633,7 +633,7 @@
 <div class="viewcode-block" id="RangeSummarizedExperiment.promoters"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.promoters">[docs]</a>    <span class="k">def</span> <span class="nf">promoters</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Extend row ranges to promoter regions and return new RSE</span>
+        <span class="sd">&quot;&quot;&quot;Extend row ranges to promoter regions.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            upstream (int, optional): number of positions to extend in the 5&#39; direction . Defaults to 2000.</span>
@@ -643,7 +643,7 @@
 <span class="sd">            ValueError: rowRanges is empty</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with the extended intervals for promoter regions</span>
+<span class="sd">            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with the extended intervals for promoter regions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowRanges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -664,7 +664,7 @@
         <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keepAllRanges</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Restrict row ranges and return new RSE.</span>
+        <span class="sd">&quot;&quot;&quot;Restrict row ranges.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start (Optional[int], optional): start position. Defaults to None.</span>
@@ -675,7 +675,7 @@
 <span class="sd">            ValueError: rowRanges is empty</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with restricted intervals</span>
+<span class="sd">            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with restricted intervals</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowRanges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -698,7 +698,7 @@
         <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Narrow row ranges and return new RSE.</span>
+        <span class="sd">&quot;&quot;&quot;Narrow row ranges.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            start (Optional[int], optional): relative start position. Defaults to None.</span>
@@ -709,7 +709,7 @@
 <span class="sd">            ValueError: when parameters were set incorrectly or rowRanges is empty</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangeSummarizedExperiment:  a new RangeSummarizedExperiment object with narrow positions</span>
+<span class="sd">            RangeSummarizedExperiment:  a new `RangeSummarizedExperiment` object with narrow positions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowRanges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -751,7 +751,7 @@
 <span class="sd">            ValueError: if rowRanges is empty</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;RangeSummarizedExperiment&quot;]: A RangeSummarizedExperiment object with the same length as query, </span>
+<span class="sd">            Optional[&quot;RangeSummarizedExperiment&quot;]: A `RangeSummarizedExperiment` object with the same length as query, </span>
 <span class="sd">                containing hits to overlapping indices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -786,7 +786,7 @@
         <span class="n">minOverlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">]:</span>
-        <span class="sd">&quot;&quot;&quot;Subset a `RangeSummarizedExperiment` by feature overlaps</span>
+        <span class="sd">&quot;&quot;&quot;Subset a `RangeSummarizedExperiment` by feature overlaps.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (RangeSummarizedExperiment): query `RangeSummarizedExperiment`.</span>
@@ -861,7 +861,7 @@
 <div class="viewcode-block" id="RangeSummarizedExperiment.sort"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.sort">[docs]</a>    <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
-        <span class="sd">&quot;&quot;&quot;Sort the RangeSummarizedExperiment by row ranges.</span>
+        <span class="sd">&quot;&quot;&quot;Sort the `RangeSummarizedExperiment` by row ranges.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            decreasing (bool, optional): decreasing order?. Defaults to False.</span>
@@ -871,7 +871,7 @@
 <span class="sd">            ValueError: rowRanges is empty</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            &quot;RangeSummarizedExperiment&quot;: a new sorted RangeSummarizedExperiment object.</span>
+<span class="sd">            &quot;RangeSummarizedExperiment&quot;: a new sorted `RangeSummarizedExperiment` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowRanges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -917,9 +917,6 @@
     </aside>
   </div>
 </div><script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
-    <script src="../../_static/jquery.js"></script>
-    <script src="../../_static/underscore.js"></script>
-    <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="../../_static/doctools.js"></script>
     <script src="../../_static/sphinx_highlight.js"></script>
     <script src="../../_static/scripts/furo.js"></script>

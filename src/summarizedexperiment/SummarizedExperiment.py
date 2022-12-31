@@ -37,7 +37,7 @@ class SummarizedExperiment(BaseSE):
 
     @property
     def rowData(self) -> Optional[Union[pd.DataFrame, BiocFrame]]:
-        """Access features.
+        """Get features.
 
         Returns:
             Optional[Union[pd.DataFrame, BiocFrame]]: returns features.
@@ -89,6 +89,6 @@ class SummarizedExperiment(BaseSE):
             self.shape[0],
             self.shape[1],
             list(self._assays.keys()),
-            self.cols.columns if self.cols is not None else None,
-            self.rows.columns if self.rows is not None else None,
+            self._rows.columns if self._rows is not None else None,
+            self._cols.columns if self._cols is not None else None,
         )

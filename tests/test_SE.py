@@ -64,3 +64,16 @@ def test_SE_none():
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
     assert tse.shape == (200, 6)
+
+
+def test_SE_export():
+    tse = SummarizedExperiment(assays={"counts": counts}, rowData=gr, colData=colData)
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+    assert tse.shape == (200, 6)
+
+    adata = tse.toAnnData()
+
+    assert adata is not None
+    assert adata.shape == (6, 200)

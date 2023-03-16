@@ -101,6 +101,8 @@ class BaseSE:
                 raise ValueError(
                     f"Features and assays do not match. must be {base_dims[0]} but provided {self._rows.shape[0]}"
                 )
+        else:
+            self._rows = BiocFrame({}, numberOfRows=base_dims[0])
 
         # check sample length
         if self._cols is not None:
@@ -108,6 +110,8 @@ class BaseSE:
                 raise ValueError(
                     f"Sample data and assays do not match. must be {base_dims[1]} but provided {self._cols.shape[0]}"
                 )
+        else:
+            self._cols = BiocFrame({}, numberOfRows=base_dims[1])
 
         self._shape = base_dims
 

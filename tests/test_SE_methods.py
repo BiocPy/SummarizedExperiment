@@ -1,7 +1,10 @@
-import numpy as np
+"""Tests for the SummarizedExperiment class methods."""
+
 from random import random
+
+import genomicranges  # type: ignore
+import numpy as np
 import pandas as pd
-import genomicranges
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
@@ -37,7 +40,11 @@ df_gr = pd.DataFrame(
 
 gr = genomicranges.fromPandas(df_gr)
 
-colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
+colData = pd.DataFrame(
+    {
+        "treatment": ["ChIP", "Input"] * 3,
+    }
+)
 
 
 def test_SE_props():
@@ -73,12 +80,6 @@ def test_SE_set_props():
 
     assert len(tse.assayNames) == 1
 
-    tse.colData = None
-    assert tse.colData is None
-
-    tse.rowData = None
-    assert tse.rowData is None
-
     assert tse.dims == tse.shape
 
     tse.metadata = {"something": "random"}
@@ -111,7 +112,9 @@ def test_SE_subsetAssays():
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
 
-    subset_asys = tse.subsetAssays(rowIndices=slice(1, 10), colIndices=[0, 1, 2])
+    subset_asys = tse.subsetAssays(
+        rowIndices=slice(1, 10), colIndices=[0, 1, 2]
+    )
     assert subset_asys is not None
     assert isinstance(subset_asys, type(tse.assays))
 

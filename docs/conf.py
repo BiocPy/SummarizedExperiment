@@ -8,8 +8,8 @@
 # serve to show the default.
 
 import os
-import sys
 import shutil
+import sys
 
 # -- Path setup --------------------------------------------------------------
 
@@ -117,7 +117,7 @@ copyright = "2022, jkanche"
 #
 # version: The short X.Y version.
 # release: The full version, including alpha/beta/rc tags.
-# If you don’t need the separation provided between version and release,
+# If you don`t need the separation provided between version and release,
 # just set them both to the same value.
 try:
     from summarizedexperiment import __version__ as version

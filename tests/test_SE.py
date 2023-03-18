@@ -1,8 +1,11 @@
-import genomicranges
-import numpy as np
+"""Test SummarizedExperiment class."""
+
 from random import random
+
+import genomicranges  # type: ignore
+import numpy as np
 import pandas as pd
-from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
+from summarizedexperiment import SummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -37,11 +40,17 @@ df_gr = pd.DataFrame(
 
 gr = genomicranges.fromPandas(df_gr)
 
-colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
+colData = pd.DataFrame(
+    {
+        "treatment": ["ChIP", "Input"] * 3,
+    }
+)
 
 
 def test_SE_creation():
-    tse = SummarizedExperiment(assays={"counts": counts}, rowData=gr, colData=colData)
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, rowData=gr, colData=colData
+    )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
@@ -67,7 +76,9 @@ def test_SE_none():
 
 
 def test_SE_export():
-    tse = SummarizedExperiment(assays={"counts": counts}, rowData=gr, colData=colData)
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, rowData=gr, colData=colData
+    )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)

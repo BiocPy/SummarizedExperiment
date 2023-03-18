@@ -1,0 +1,14 @@
+name: biocpy-dev
+
+channels:
+  - conda-forge
+
+dependencies:
+  - black
+  - pip
+  - pytest
+  - pytest-cov
+  - python=3.7
+  - pip:
+    - -e .
+    - ruff

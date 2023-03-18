@@ -1,10 +1,14 @@
-import genomicranges
-import numpy as np
+"""Test RangedSummarizedExperiment methods."""
+
 from random import random
+
+import genomicranges  # type: ignore
+import numpy as np
 import pandas as pd
 import pytest
-
-from summarizedexperiment.RangeSummarizedExperiment import RangeSummarizedExperiment
+from summarizedexperiment.RangeSummarizedExperiment import (
+    RangeSummarizedExperiment,
+)
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -39,7 +43,11 @@ df_gr = pd.DataFrame(
 
 gr = genomicranges.fromPandas(df_gr)
 
-colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
+colData = pd.DataFrame(
+    {
+        "treatment": ["ChIP", "Input"] * 3,
+    }
+)
 
 
 def test_RSE_props():
@@ -71,6 +79,7 @@ def test_RSE_props():
     assert tse.rownames is not None
     assert tse.colnames is not None
 
+
 def test_RSE_subset():
     tse = RangeSummarizedExperiment(
         assays={"counts": counts}, rowRanges=gr, colData=colData
@@ -97,7 +106,9 @@ def test_RSE_subsetAssays():
     assert tse is not None
     assert isinstance(tse, RangeSummarizedExperiment)
 
-    subset_asys = tse.subsetAssays(rowIndices=slice(1, 10), colIndices=[0, 1, 2])
+    subset_asys = tse.subsetAssays(
+        rowIndices=slice(1, 10), colIndices=[0, 1, 2]
+    )
     assert subset_asys is not None
     assert isinstance(subset_asys, type(tse.assays))
 

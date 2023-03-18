@@ -1,10 +1,14 @@
-import pytest
+"""Tests for the RangeSummarizedExperiment class."""
 
-import genomicranges
-import numpy as np
 from random import random
+
+import genomicranges  # type: ignore
+import numpy as np
 import pandas as pd
-from summarizedexperiment.RangeSummarizedExperiment import RangeSummarizedExperiment
+import pytest
+from summarizedexperiment.RangeSummarizedExperiment import (
+    RangeSummarizedExperiment,
+)
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -39,7 +43,11 @@ df_gr = pd.DataFrame(
 
 gr = genomicranges.fromPandas(df_gr)
 
-colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
+colData = pd.DataFrame(
+    {
+        "treatment": ["ChIP", "Input"] * 3,
+    }
+)
 
 
 def test_RSE_creation():
@@ -61,4 +69,6 @@ def test_RSE_none():
 
 def test_RSE_should_fail():
     with pytest.raises(Exception):
-        tse = RangeSummarizedExperiment(assays={"counts": counts}, rowRanges=df_gr)
+        RangeSummarizedExperiment(
+            assays={"counts": counts}, rowRanges=df_gr  # type: ignore
+        )

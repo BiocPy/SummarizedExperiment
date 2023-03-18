@@ -26,29 +26,6 @@ __license__ = "MIT"
 class BaseSE(metaclass=ABCMeta):
     """BaseSE metaclass."""
 
-    # @abstractmethod
-    # def __init__(
-    #     self,
-    #     assays: MutableMapping[str, Union[NDArray[Any], spmatrix]],
-    #     rows: Any = None,
-    #     cols: Optional[Union[DataFrame, BiocFrame]] = None,
-    #     metadata: Optional[MutableMapping[str, Any]] = None,
-    # ) -> None:
-    #     """Initialize an instance of `BaseSE`.
-
-    #     Args:
-    #         assays (MutableMapping[str, NDArray[Any] | spmatrix]): `dict` of
-    #             matrices, with assay names as keys and matrices represented as dense
-    #             (numpy) or sparse (scipy) matrices. All matrices across assays must have
-    #             the same dimensions (number of rows, number of columns).
-    #         rows (Any): features, must be the same length as rows of the matrices in
-    #             assays. Defaults to `None`.
-    #         cols (DataFrame, BiocFrame, optional): sample data, must be the same
-    #             length as the columns of the matrices in assays. Defaults to `None`.
-    #         metadata (MutableMapping, optional): experiment metadata describing the
-    #             methods. Defaults to `None`.
-    #     """
-
     @abstractmethod
     def _validate_rows(self, rowData: Any) -> None:
         """Validate rows.
@@ -60,7 +37,7 @@ class BaseSE(metaclass=ABCMeta):
             ValueError: When rowData is not the same length as the assay rows.
         """
 
-    # need a self._rows property depending on type of data it contains in
+    # need a self.rowXXXX property depending on type of data it contains in
     # subclasses
 
     @property

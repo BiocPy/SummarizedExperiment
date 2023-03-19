@@ -59,7 +59,12 @@ class RangeSummarizedExperiment(BaseSE):
 
         rowRanges = (
             GenomicRanges(
-                numberOfRows=self._shape[0],
+                data={
+                    "seqnames": [None] * self._shape[0],
+                    "starts": [None] * self._shape[0],
+                    "ends": [None] * self._shape[0],
+                    "strand": ["*"] * self._shape[0],
+                },
             )
             if rowRanges is None
             else rowRanges
@@ -86,6 +91,10 @@ class RangeSummarizedExperiment(BaseSE):
         Raises:
             ValueError: If row ranges are not valid
         """
+        # rowNames can actually be None, the type hinting is wrong in BiocFrame
+        if rowData.rowNames is None:  # type: ignore
+            return None
+
         if len(rowData.rowNames) != self._shape[0]:
             raise ValueError(
                 "Row ranges must be the same length as rows of the matrices in assays: "
@@ -335,7 +344,7 @@ class RangeSummarizedExperiment(BaseSE):
             ignoreStrand: Ignore `"strand"` column? Defaults to `False`.
 
         Returns:
-            A list of possible hit indices for each interval in `query`.
+            A `list` or `dict` of possible hit indices for each interval in `query`.
         """
         return self.rowRanges.precede(
             query=query.rowRanges
@@ -361,7 +370,7 @@ class RangeSummarizedExperiment(BaseSE):
             ignoreStrand: ignore `"strand"` column? Defaults to `False`.
 
         Returns:
-            A list of possible hit indices for each interval in `query`.
+            A `list` or `dict` of possible hit indices for each interval in `query`.
         """
         return self.rowRanges.follow(
             query=query.rowRanges
@@ -390,7 +399,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: if `both` and `start` are both True.
 
         Returns:
-            A ;ist of possible hit  indices for each interval in `query`.
+            A `list` or `dict` of possible hit  indices for each interval in `query`.
         """
         return self.rowRanges.distanceToNearest(
             query=query.rowRanges

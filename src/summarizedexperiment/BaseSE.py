@@ -126,8 +126,6 @@ class BaseSE(metaclass=ABCMeta):
                     f"Only 2D matrices are accepted, provided {len(assay.shape)} "
                     f"dimensions for assay {name}"
                 )
-        else:
-            self._cols = BiocFrame({}, numberOfRows=base_dims[1])
 
             dims[0].append(assay.shape[0])
             dims[1].append(assay.shape[1])

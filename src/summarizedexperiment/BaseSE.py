@@ -31,10 +31,11 @@ class BaseSE(metaclass=ABCMeta):
         """Validate rows.
 
         Args:
-            rowData (Any): rows to validate
+            rowData: Row data to validate.
 
         Raises:
-            ValueError: When rowData is not the same length as the assay rows.
+            ValueError: when rows are not the same length as the number of rows in
+                assays.
         """
 
     # need a self.rowXXXX property depending on type of data it contains in
@@ -46,7 +47,7 @@ class BaseSE(metaclass=ABCMeta):
         """Get row/feature names.
 
         Returns:
-            Sequence[str]: list of row index names
+            A list of row index names.
         """
 
     @abstractmethod
@@ -57,19 +58,18 @@ class BaseSE(metaclass=ABCMeta):
         Any,
         Union[DataFrame, BiocFrame],
     ]:
-        """Internal method to slice `SE` by index.
+        """Internal method to slice by index.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], ...]): Indices to slice, `tuple`
-                can contain slices along dimensions, max 2 dimensions accepted.
+            args:
+                Indices to slice, `tuple` can contain slices along dimensions, max 2
+                dimensions accepted.
 
         Raises:
             ValueError: Too many slices
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, spmatrix]]: Sliced assays.
-            Any: Sliced rows.
-            Union[DataFrame, BiocFrame]: Sliced cols.
+            Sliced assays. Sliced rows. Sliced cols.
         """
 
     @abstractmethod
@@ -80,25 +80,26 @@ class BaseSE(metaclass=ABCMeta):
     def __getitem__(
         self, args: Tuple[Union[Sequence[int], slice], ...]
     ) -> "BaseSE":
-        """Subset a `BaseSe`.
+        """Subset.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], ...]): Indices to slice, `tuple`
-                can contain slices along dimensions, max 2 dimensions accepted.
+            args:
+                Indices to slice, `tuple` can contain slices along dimensions, max 2
+                dimensions accepted.
 
         Raises:
-            ValueError: Too many slices.
+            ValueError: Too many slices
 
         Returns:
-            BaseSe: new sliced `BaseSE` object.
+            A new sliced `RangeSummarizedExperiment` object.
         """
 
     @abstractmethod
     def toAnnData(self) -> Any:
-        """Convert to AnnData.
+        """Transform object to `AnnData`.
 
         Returns:
-            Any: AnnData object.
+            An `AnnData` representation of the RSE.
         """
 
     def _validate_assays(
@@ -107,10 +108,10 @@ class BaseSE(metaclass=ABCMeta):
         """Validate assays.
 
         Args:
-            assays (MutableMapping[str, Any]): assays to validate
+            assays: Assays to validate
 
         Raises:
-            ValueError: when assays are not the same shape
+            ValueError: When assays are not the same shape.
         """
         if len(assays.keys()) == 0:
             raise ValueError(
@@ -147,10 +148,10 @@ class BaseSE(metaclass=ABCMeta):
         """Validate columns.
 
         Args:
-            colData (Union[DataFrame, BiocFrame]): columns to validate
+            colData: Columns to validate
 
         Raises:
-            ValueError: when columns are not the same length
+            ValueError: When columns are not the same length.
         """
         if not isinstance(colData, (DataFrame, BiocFrame)):  # type: ignore
             raise ValueError(
@@ -169,14 +170,14 @@ class BaseSE(metaclass=ABCMeta):
         """Get/set the assays.
 
         Args:
-            assays (MutableMapping[str, Union[NDArray[Any], spmatrix]]): A `dict` of
-                matrices, with assay names as keys and matrices represented as dense
-                (numpy) or sparse (scipy) matrices. All matrices across assays must have
-                the same dimensions (number of rows, number of columns).
+            assays:
+                A `dict` of matrices, with assay names as keys and matrices represented
+                as dense (numpy) or sparse (scipy) matrices. All matrices across assays
+                must have the same dimensions (number of rows, number of columns).
 
         Returns:
-            MutableMapping[str, Union[NDArray[Any], spmatrix]]: A `dict` where `key`
-                is the name of the assay and `value` is the assay matrix.
+            A `dict` where `key` is the name of the assay and `value` is the assay
+                matrix.
         """
         return self._assays
 
@@ -191,13 +192,13 @@ class BaseSE(metaclass=ABCMeta):
         """Convenience function to access an assay by name.
 
         Args:
-            name (str): Name of the assay
+            name: Name of the assay
 
         Raises:
             ValueError: If assay name does not exist
 
         Returns:
-            Union[NDArray[Any], spmatrix]: The assay matrix.
+            The assay matrix.
         """
         if name not in self._assays:
             raise ValueError(f"Assay {name} does not exist.")
@@ -209,10 +210,10 @@ class BaseSE(metaclass=ABCMeta):
         """Get the column/sample data.
 
         Args:
-            colData (Optional[Union[DataFrame, BiocFrame]]): new sample data.
+            colData: New sample data.
 
         Returns:
-            Optional[Union[DataFrame, BiocFrame]]: returns sample data.
+            Current sample data.
         """
         return self._cols
 
@@ -226,11 +227,10 @@ class BaseSE(metaclass=ABCMeta):
         """Get/set the metadata.
 
         Args:
-            metadata (Optional[MutableMapping[str, Any]]): The new metadata, usually a
-                `dict`.
+            metadata: New metadata.
 
         Returns:
-            Optional[MutableMapping[str, Any]]: The metadata, usually a `dict`.
+            The current metadata.
         """
         return self._metadata
 
@@ -243,7 +243,7 @@ class BaseSE(metaclass=ABCMeta):
         """The shape of the experiment data.
 
         Returns:
-            Tuple[int, int]: A tuple of the number of features and samples.
+            A tuple of the number of features and samples.
         """
         return self._shape
 
@@ -254,7 +254,7 @@ class BaseSE(metaclass=ABCMeta):
         Same as `shape`.
 
         Returns:
-            Tuple[int, int]: A tuple of the number of features and samples.
+            A tuple of the number of features and samples.
         """
         return self._shape
 
@@ -263,13 +263,14 @@ class BaseSE(metaclass=ABCMeta):
         """Get/set the assay names.
 
         Args:
-            names (Sequence[str]): New assay names.
+            names: New assay names.
 
         Returns:
-            List[str]: A `list` of the assay names.
+            A `list` of the assay names.
 
         Raises:
-            ValueError: if enough names are not provided
+            ValueError: if the number of names provided does not match the number of
+                assays.
         """
         return list(self._assays.keys())
 
@@ -292,17 +293,14 @@ class BaseSE(metaclass=ABCMeta):
         """Subset all assays to a specified rows or cols or both.
 
         Args:
-            rowIndices (Union[Sequence[int], slice], optional): row indices to subset.
-                Defaults to None.
-            colIndices (Union[Sequence[int], slice], optional): col indices to subset.
-                Defaults to None.
+            rowIndices: The row indices to subset by. Defaults to `None`.
+            colIndices: The col indices to subset by. Defaults to `None`.
 
         Raises:
-            ValueError: if rowIndices and colIndices are both None.
+            ValueError: If `rowIndices` and `colIndices` are both `None`.
 
         Returns:
-            MutableMapping[str, Union[NDArray[Any], spmatrix]]: assays with subset
-                matrices.
+            A `dict` where `key` is assay name and `value` is the subset matrices.
         """
         if rowIndices is None and colIndices is None:
             raise ValueError(
@@ -326,7 +324,7 @@ class BaseSE(metaclass=ABCMeta):
         """Get column/sample names.
 
         Returns:
-            Sequence[str]: list of column names
+            A `list` of column names.
         """
         if isinstance(self._cols, DataFrame):
             return self._cols.index.tolist()  # type: ignore

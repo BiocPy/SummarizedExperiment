@@ -31,16 +31,26 @@ class SummarizedExperiment(BaseSE):
         """Initialize an instance of `BaseSE`.
 
         Args:
-            assays (MutableMapping[str, NDArray[Any] | spmatrix]): `dict` of
-                matrices, with assay names as keys and matrices represented as dense
-                (numpy) or sparse (scipy) matrices. All matrices across assays must have
-                the same dimensions (number of rows, number of columns).
-            rowData (DataFrame, BiocFrame, optional): features, must be the same
-                length as rows of the matrices in assays. Defaults to `None`.
-            colData (DataFrame, BiocFrame, optional): sample data, must be the same
-                length as the columns of the matrices in assays. Defaults to `None`.
-            metadata (MutableMapping, optional): experiment metadata describing the
-                methods. Defaults to `None`.
+            assays:
+                A `dict` of matrices, with assay names as keys and matrices represented
+                as dense (numpy) or sparse (scipy) matrices. All matrices across assays
+                must have the same dimensions (number of rows, number of columns).
+            rowData:
+                Features, must be the same length as rows of the matrices in assays.
+                Defaults to `None`.
+            colData:
+                Sample data, must be the same length as the columns of the matrices in
+                assays. Defaults to `None`.
+            metadata:
+                Experiment metadata describing the methods. Defaults to `None`.
+
+        Raises:
+            ValueError: when assays is empty.
+            ValueError: when assays are not the same shape.
+            ValueError: when rows are not the same length as the number of rows in
+                assays.
+            ValueError: when cols are not the same length as the number of cols in
+                assays.
         """
         self._shape: Tuple[int, int] = (0, 0)
         self._validate_assays(assays)
@@ -68,10 +78,11 @@ class SummarizedExperiment(BaseSE):
         """Validate rows.
 
         Args:
-            rowData (Union[DataFrame, BiocFrame]): rows to validate
+            rowData: Row data to validate.
 
         Raises:
-            ValueError: when rows are not the same length
+            ValueError: when rows are not the same length as the number of rows in
+                assays.
         """
         if not isinstance(rowData, (DataFrame, BiocFrame)):  # type: ignore
             raise ValueError(
@@ -90,20 +101,15 @@ class SummarizedExperiment(BaseSE):
         """Get row/feature data.
 
         Args:
-            rowData (DataFrame | BiocFrame, optional): New feature data.
+            rows: New feature data.
 
         Returns:
-        [Union[DataFrame, BiocFrame]: returns sample data.
+            Current feature data.
         """
         return self._rows
 
     @rowData.setter
     def rowData(self, rows: Union[DataFrame, BiocFrame]) -> None:
-        """Set features.
-
-        Args:
-            rows (Optional[Union[pd.DataFrame, BiocFrame]]): features to update
-        """
         self._validate_rows(rows)
         self._rows = rows
 
@@ -112,7 +118,7 @@ class SummarizedExperiment(BaseSE):
         """Get row/feature names.
 
         Returns:
-            Sequence[str]: list of row index names
+            A list of row index names.
         """
         if isinstance(self._rows, DataFrame):
             return self._rows.index.tolist()  # type: ignore
@@ -126,19 +132,18 @@ class SummarizedExperiment(BaseSE):
         Union[DataFrame, BiocFrame],
         Union[DataFrame, BiocFrame],
     ]:
-        """Internal method to slice `SE` by index.
+        """Internal method to slice `RSE` by index.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], ...]): Indices to slice, `tuple`
-                can contain slices along dimensions, max 2 dimensions accepted.
+            args:
+                Indices to slice, `tuple` can contain slices along dimensions, max 2
+                dimensions accepted.
 
         Raises:
             ValueError: Too many slices
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, spmatrix]]: Sliced assays.
-            Union[DataFrame, BiocFrame]: Sliced rows.
-            Union[DataFrame, BiocFrame]: Sliced cols.
+            Sliced assays. Sliced rows. Sliced cols.
         """
         if len(args) == 0:
             raise ValueError("Arguments must contain at least one slice.")
@@ -187,28 +192,28 @@ class SummarizedExperiment(BaseSE):
         )
 
     def __getitem__(
-        self,
-        args: Tuple[Union[Sequence[int], slice], ...],
+        self, args: Tuple[Union[Sequence[int], slice], ...]
     ) -> "SummarizedExperiment":
         """Subset a `SummarizedExperiment`.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], ...]): Indices to slice, `tuple`
-                can contain slices along dimensions, max 2 dimensions accepted.
+            args:
+                Indices to slice, `tuple` can contain slices along dimensions, max 2
+                dimensions accepted.
 
         Raises:
-            ValueError: Too many slices.
+            ValueError: Too many slices
 
         Returns:
-            SummarizedExperiment: new sliced `SummarizedExperiment` object.
+            A new sliced `RangeSummarizedExperiment` object.
         """
         return SummarizedExperiment(*self._slice(args), self.metadata)
 
     def toAnnData(self) -> AnnData:
-        """Transform `SingleCellExperiment` object to `AnnData`.
+        """Transform `SummarizedExperiment` object to `AnnData`.
 
         Returns:
-            AnnData: return an `AnnData` representation of SE.
+            An `AnnData` representation of the RSE.
         """
         layers: Dict[str, Any] = {}
         for asy, mat in self.assays.items():

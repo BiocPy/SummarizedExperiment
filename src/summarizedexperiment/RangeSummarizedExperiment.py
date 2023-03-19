@@ -63,7 +63,6 @@ class RangeSummarizedExperiment(BaseSE):
                     "seqnames": [None] * self._shape[0],
                     "starts": [None] * self._shape[0],
                     "ends": [None] * self._shape[0],
-                    "strand": ["*"] * self._shape[0],
                 },
             )
             if rowRanges is None

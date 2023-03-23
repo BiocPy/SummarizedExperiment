@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
-        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.2.3 documentation</title>
+        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.2.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.2.3 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.2.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.3 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -214,9 +214,13 @@
 
 
 <div class="viewcode-block" id="BaseSE"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE">[docs]</a><span class="k">class</span> <span class="nc">BaseSE</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;BaseSE class to represent genomic experiment data,</span>
-<span class="sd">    features, sample data and any other metadata</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for Summarized Experiment.</span>
+<span class="sd">    </span>
+<span class="sd">    Represents genomic experiment data (`assays`), features (`rowdata`), </span>
+<span class="sd">    sample data (`coldata`) and any other metadata.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_shape</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -228,100 +232,130 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize an instance of `BaseSE`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary of matrices,</span>
-<span class="sd">                with assay names as keys and matrices represented as dense (numpy) or sparse (scipy) matrices.</span>
-<span class="sd">                All matrices across assays must have the same dimensions (number of rows, number of columns).</span>
-<span class="sd">            rows (Union[pd.DataFrame, BiocFrame], optional): features, must be the same length as rows of the matrices in assays. Defaults to None.</span>
-<span class="sd">            cols (Union[pd.DataFrame, BiocFrame], optional): sample data, must be the same length as the columns of the matrices in assays. Defaults to None.</span>
-<span class="sd">            metadata (MutableMapping, optional): experiment metadata describing the methods. Defaults to None.</span>
+<span class="sd">            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary </span>
+<span class="sd">                of matrices, with assay names as keys and matrices represented as dense </span>
+<span class="sd">                (numpy) or sparse (scipy) matrices. All matrices across assays must </span>
+<span class="sd">                have the same dimensions (number of rows, number of columns).</span>
+<span class="sd">            rowData (GenomicRanges, optional): features, must be the same length as </span>
+<span class="sd">                rows of the matrices in assays. Defaults to None.</span>
+<span class="sd">            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be </span>
+<span class="sd">                the same length as rows of the matrices in assays. Defaults to None.</span>
+<span class="sd">            metadata (MutableMapping, optional): experiment metadata describing the </span>
+<span class="sd">                methods. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">assays</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">assays</span><span class="si">}</span><span class="s2"> must be a dictionary and contain atleast one matrix (either sparse or dense)&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">assays</span><span class="si">}</span><span class="s2"> must be a dictionary and contain &quot;</span>
+                <span class="s2">&quot;atleast one matrix (either sparse or dense)&quot;</span>
             <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="n">rows</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_assays</span><span class="p">(</span><span class="n">assays</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span> <span class="o">=</span> <span class="n">assays</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="o">=</span> <span class="n">cols</span>
+
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">rows</span> <span class="k">if</span> <span class="n">rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">BiocFrame</span><span class="p">({},</span> <span class="n">numberOfRows</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="n">rows</span>
+
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="k">if</span> <span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">BiocFrame</span><span class="p">({},</span> <span class="n">numberOfRows</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_cols</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">cols</span> <span class="k">if</span> <span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">BiocFrame</span><span class="p">({},</span> <span class="n">numberOfRows</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">_validate_types</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;internal method to validate types</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">)</span>
-            <span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="s2">&quot;rowData must be either a pandas `DataFrame` or a `BiocFrame` object&quot;</span>
-                <span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-                <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span>
-                <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">)</span>
-            <span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                    <span class="s2">&quot;colData must be either a pandas `DataFrame` or a `BiocFrame` object&quot;</span>
-                <span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">_validate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to validate the object</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal wrapper method to validate the object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># validate assays to make sure they are have same dimensions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_assays</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_rows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_cols</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_assays</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">assays</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]]</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to validate experiment data (assays).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): experiment</span>
+<span class="sd">                data.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: when provided object does not contain columns of same length</span>
+<span class="sd">            ValueError: when assays contain more than 2 dimensions.</span>
+<span class="sd">            ValueError: if all assays do not have the same dimensions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_types</span><span class="p">()</span>
-
-        <span class="c1"># validate assays to make sure they are all same dimensions</span>
-        <span class="n">base_dims</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">for</span> <span class="n">asy</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">asy</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">assays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;only 2-dimensional matrices are accepted, provided </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2"> dimensions for assay </span><span class="si">{</span><span class="n">asy</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="s2">&quot;only 2-dimensional matrices are accepted, &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;provided </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span><span class="si">}</span><span class="s2"> dimensions for assay </span><span class="si">{</span><span class="n">asy</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">base_dims</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">base_dims</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">shape</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">shape</span>
                 <span class="k">continue</span>
 
-            <span class="k">if</span> <span class="n">mat</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">base_dims</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">mat</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Assay: </span><span class="si">{</span><span class="n">asy</span><span class="si">}</span><span class="s2"> must be of shape </span><span class="si">{</span><span class="n">base_dims</span><span class="si">}</span><span class="s2"> but provided </span><span class="si">{</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Assay: </span><span class="si">{</span><span class="n">asy</span><span class="si">}</span><span class="s2"> must be of shape </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="si">}</span><span class="s2">&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot; but provided </span><span class="si">{</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
 
-        <span class="c1"># check feature length</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">base_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Features and assays do not match. must be </span><span class="si">{</span><span class="n">base_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> but provided </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="p">({},</span> <span class="n">numberOfRows</span><span class="o">=</span><span class="n">base_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">def</span> <span class="nf">_validate_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to validate feature information (rowdata).</span>
 
-        <span class="c1"># check sample length</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">base_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Sample data and assays do not match. must be </span><span class="si">{</span><span class="n">base_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> but provided </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
-                <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="p">({},</span> <span class="n">numberOfRows</span><span class="o">=</span><span class="n">base_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="sd">        Args:</span>
+<span class="sd">            rows (Optional[Union[pd.DataFrame, BiocFrame]]): feature information </span>
+<span class="sd">                (rowdata).</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">base_dims</span>
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: when number of rows does not match between rows &amp; assays.</span>
+<span class="sd">            TypeError: when rows is neither a pandas dataframe not Biocframe object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;rowData must be either a pandas `DataFrame` or a `BiocFrame`&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; object, provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">rows</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">rows</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Features and assays do not match. must be </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; but provided </span><span class="si">{</span><span class="n">rows</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_validate_cols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to validate sample information (coldata).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cols (Optional[Union[pd.DataFrame, BiocFrame]]): sample information </span>
+<span class="sd">                (coldata).</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: when number of samples do not match between cols &amp; assays.</span>
+<span class="sd">            TypeError: when cols is neither a pandas dataframe not Biocframe object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;colData must be either a pandas `DataFrame` or a `BiocFrame`&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; object, provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">cols</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Sample data and assays do not match. must be </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot; but provided </span><span class="si">{</span><span class="n">cols</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">assays</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get assays.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary of experiments.</span>
+<span class="sd">            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary with  </span>
+<span class="sd">            experiments names as keys and matrix data as values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span>
 
@@ -329,39 +363,41 @@
     <span class="k">def</span> <span class="nf">assays</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">assays</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]]</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set assays.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new experiment data (assays).</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): sets the assays</span>
+<span class="sd">            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): new assays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_assays</span><span class="p">(</span><span class="n">assays</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span> <span class="o">=</span> <span class="n">assays</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">colData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">colData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sample data.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[Union[pd.DataFrame, BiocFrame]]: returns sample data.</span>
+<span class="sd">            Union[pd.DataFrame, BiocFrame]: Sample information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span>
 
     <span class="nd">@colData</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">colData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">colData</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set sample data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            cols (Optional[Union[pd.DataFrame, BiocFrame]]): sample data to update.</span>
+<span class="sd">            cols (Union[pd.DataFrame, BiocFrame]): sample data to update.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="n">cols</span> <span class="k">if</span> <span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">BiocFrame</span><span class="p">({},</span> <span class="n">numberOfRows</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_cols</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="o">=</span> <span class="n">cols</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get metadata.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[MutableMapping]: metadata object, usually a dictionary.</span>
+<span class="sd">            Optional[MutableMapping]: Metadata object, usually a dictionary.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span>
 
@@ -370,26 +406,27 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set metadata.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            metadata (Optional[MutableMapping]): new metadata object</span>
+<span class="sd">            metadata (Optional[MutableMapping]): new metadata object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get shape of the object, number of features and number of samples.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get shape of the experiment, (number of features and number of samples).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[int, int]: A tuple of number of features and number of samples</span>
+<span class="sd">            Tuple[int, int]: A tuple with number of features and number of samples.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">a_mat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]]</span>
-        <span class="k">return</span> <span class="n">a_mat</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dims</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dimensions of the object, number of features and number of samples.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Dimensions of the experiment, (number of features and number of samples).</span>
+
+<span class="sd">        Note: same as shape.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[int, int]: A tuple of number of features and number of samples</span>
+<span class="sd">            Tuple[int, int]: A tuple with number of features and number of samples.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span>
 
@@ -398,19 +435,19 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get assay names.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[str]: list of assay names</span>
+<span class="sd">            Sequence[str]: list of assay names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
     <span class="nd">@assayNames</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">assayNames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set assay names.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Replace all assay names.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            names (Sequence[str]): new names</span>
+<span class="sd">            names (Sequence[str]): new names.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if enough names are not provided</span>
+<span class="sd">            ValueError: if enough names are not provided.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">current_names</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">current_names</span><span class="p">):</span>
@@ -425,31 +462,25 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span> <span class="o">=</span> <span class="n">new_assays</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
-<span class="s2">        Class BaseSE with </span><span class="si">{}</span><span class="s2"> features and </span><span class="si">{}</span><span class="s2"> samples</span>
-<span class="s2">          assays: </span><span class="si">{}</span>
-<span class="s2">          features: </span><span class="si">{}</span>
-<span class="s2">          sample data: </span><span class="si">{}</span>
-<span class="s2">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">pattern</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
-            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Class BaseSE with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> features and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> samples </span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  assays: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  features: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  sample data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
+        <span class="k">return</span> <span class="n">pattern</span>
 
 <div class="viewcode-block" id="BaseSE.assay"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.assay">[docs]</a>    <span class="k">def</span> <span class="nf">assay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience function to access an assay by name</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience function to access an assay by name.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            name (str): name of the assay</span>
+<span class="sd">            name (str): name of the assay.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if assay name does not exist</span>
+<span class="sd">            ValueError: if assay name does not exist.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Union[np.ndarray, sp.spmatrix]: The experiment data</span>
+<span class="sd">            Union[np.ndarray, sp.spmatrix]: experiment data.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Assay </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> does not exist&quot;</span><span class="p">)</span>
@@ -458,20 +489,23 @@
 
 <div class="viewcode-block" id="BaseSE.subsetAssays"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.subsetAssays">[docs]</a>    <span class="k">def</span> <span class="nf">subsetAssays</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">rowIndices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">colIndices</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rowIndices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">colIndices</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset all assays to a specified rows or cols or both</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset all assays to a specified set of {rows, cols or both} slices.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            rowIndices (Union[Sequence[int], slice], optional): row indices to subset. Defaults to None.</span>
-<span class="sd">            colIndices (Union[Sequence[int], slice], optional): col indices to subset. Defaults to None.</span>
+<span class="sd">            rowIndices (Union[Sequence[int], slice], optional): row indices to subset. </span>
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            colIndices (Union[Sequence[int], slice], optional): col indices to subset. </span>
+<span class="sd">                Defaults to None.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if rowIndices and colIndices are both None.</span>
+<span class="sd">            ValueError: if `rowIndices` and `colIndices` are both None.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: assays with subset matrices</span>
+<span class="sd">            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: experiment data</span>
+<span class="sd">            for only the specified slices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">rowIndices</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">colIndices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -497,17 +531,18 @@
         <span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">],</span>
         <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">]],</span>
     <span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to slice `SE` by index</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to slice `SE` by index.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]): indices to slice. tuple can</span>
-<span class="sd">                contains slices along dimensions</span>
+<span class="sd">            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]): </span>
+<span class="sd">                indices to slice. tuple contains slices along dimensions (rows, cols).</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: Too many slices</span>
+<span class="sd">            ValueError: Too many or too few slices provided.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">             Tuple[Union[pd.DataFrame, BiocFrame], Union[pd.DataFrame, BiocFrame], MutableMapping[str, Union[np.ndarray, sp.spmatrix]]]: sliced row, cols and assays.</span>
+<span class="sd">            Tuple[Union[pd.DataFrame, BiocFrame], Union[pd.DataFrame, BiocFrame], MutableMapping[str, Union[np.ndarray, sp.spmatrix]]]: </span>
+<span class="sd">            sliced row, cols and assays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -543,45 +578,82 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">rownames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get row/feature index</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get row/feature index.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[str]: list of row index names</span>
+<span class="sd">            Sequence[str]: list of row index names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">rowNames</span>
 
+    <span class="nd">@rownames</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">rownames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set row/feature names for the experiment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            names (Sequence[str]): new feature names.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: provided incorrect number of names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;names must be of length </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, provided </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">rowNames</span> <span class="o">=</span> <span class="n">names</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get column/sample names</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get column/sample names.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Sequence[str]: list of column names</span>
+<span class="sd">            Sequence[str]: list of sample names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">rowNames</span>
 
+    <span class="nd">@colnames</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">colnames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set column/sample names for the experiment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            names (Sequence[str]): new samples names.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;names must be of length </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">, provided </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">names</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">rowNames</span> <span class="o">=</span> <span class="n">names</span>
+
 <div class="viewcode-block" id="BaseSE.toAnnData"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.toAnnData">[docs]</a>    <span class="k">def</span> <span class="nf">toAnnData</span><span class="p">(</span><span class="bp">self</span><span class="p">,)</span> <span class="o">-&gt;</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform `SingleCellExperiment` objects to `AnnData`, </span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform `SummarizedExperiment` to `AnnData` representation. </span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            anndata.AnnData: returns an AnnData representation of SE.</span>
+<span class="sd">            anndata.AnnData: returns an `AnnData` representation of SE.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">layers</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">asy</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">layers</span><span class="p">[</span><span class="n">asy</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 
-        <span class="n">trows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowData</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">rowData</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
-            <span class="n">trows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rowData</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
+        <span class="n">trows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">):</span>
+            <span class="n">trows</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">toPandas</span><span class="p">()</span>
 
         <span class="n">obj</span> <span class="o">=</span> <span class="n">anndata</span><span class="o">.</span><span class="n">AnnData</span><span class="p">(</span>
-            <span class="n">obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">colData</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">trows</span><span class="p">,</span> <span class="n">uns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
+            <span class="n">obs</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span> <span class="n">var</span><span class="o">=</span><span class="n">trows</span><span class="p">,</span> <span class="n">uns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span> <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">return</span> <span class="n">obj</span></div></div>

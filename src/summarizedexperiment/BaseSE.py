@@ -13,9 +13,13 @@ __license__ = "MIT"
 
 
 class BaseSE:
-    """BaseSE class to represent genomic experiment data,
-    features, sample data and any other metadata
+    """Base class for Summarized Experiment.
+    
+    Represents genomic experiment data (`assays`), features (`rowdata`), 
+    sample data (`coldata`) and any other metadata.
     """
+
+    _shape = None
 
     def __init__(
         self,
@@ -27,100 +31,130 @@ class BaseSE:
         """Initialize an instance of `BaseSE`.
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary of matrices,
-                with assay names as keys and matrices represented as dense (numpy) or sparse (scipy) matrices.
-                All matrices across assays must have the same dimensions (number of rows, number of columns).
-            rows (Union[pd.DataFrame, BiocFrame], optional): features, must be the same length as rows of the matrices in assays. Defaults to None.
-            cols (Union[pd.DataFrame, BiocFrame], optional): sample data, must be the same length as the columns of the matrices in assays. Defaults to None.
-            metadata (MutableMapping, optional): experiment metadata describing the methods. Defaults to None.
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary 
+                of matrices, with assay names as keys and matrices represented as dense 
+                (numpy) or sparse (scipy) matrices. All matrices across assays must 
+                have the same dimensions (number of rows, number of columns).
+            rowData (GenomicRanges, optional): features, must be the same length as 
+                rows of the matrices in assays. Defaults to None.
+            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be 
+                the same length as rows of the matrices in assays. Defaults to None.
+            metadata (MutableMapping, optional): experiment metadata describing the 
+                methods. Defaults to None.
         """
 
         if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
             raise Exception(
-                f"{assays} must be a dictionary and contain atleast one matrix (either sparse or dense)"
+                f"{assays} must be a dictionary and contain "
+                "atleast one matrix (either sparse or dense)"
             )
 
-        self._rows = rows
+        self._validate_assays(assays)
         self._assays = assays
-        self._cols = cols
+
+        rows = rows if rows is not None else BiocFrame({}, numberOfRows=self._shape[0])
+        self._validate_rows(rows)
+        self._rows = rows
+
+        cols = cols if cols is not None else BiocFrame({}, numberOfRows=self._shape[1])
+        self._validate_cols(cols)
+        self._cols = (
+            cols if cols is not None else BiocFrame({}, numberOfRows=self._shape[1])
+        )
+
         self._metadata = metadata
 
-        self._validate()
-
-    def _validate_types(self):
-        """internal method to validate types
-        """
-
-        if self._rows is not None:
-            if not (
-                isinstance(self._rows, pd.DataFrame)
-                or isinstance(self._rows, BiocFrame)
-            ):
-                raise TypeError(
-                    "rowData must be either a pandas `DataFrame` or a `BiocFrame` object"
-                )
-
-        if self._cols is not None:
-            if not (
-                isinstance(self._cols, pd.DataFrame)
-                or isinstance(self._cols, BiocFrame)
-            ):
-                raise TypeError(
-                    "colData must be either a pandas `DataFrame` or a `BiocFrame` object"
-                )
-
     def _validate(self):
-        """Internal method to validate the object
+        """Internal wrapper method to validate the object.
+        """
+        # validate assays to make sure they are have same dimensions
+        self._validate_assays(self._assays)
+        self._validate_rows(self._rows)
+        self._validate_cols(self._cols)
+
+    def _validate_assays(
+        self, assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]]
+    ):
+        """Internal method to validate experiment data (assays).
+
+        Args:
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): experiment
+                data.
 
         Raises:
-            ValueError: when provided object does not contain columns of same length
+            ValueError: when assays contain more than 2 dimensions.
+            ValueError: if all assays do not have the same dimensions.
         """
-
-        self._validate_types()
-
-        # validate assays to make sure they are all same dimensions
-        base_dims = None
-        for asy, mat in self._assays.items():
+        for asy, mat in assays.items():
             if len(mat.shape) > 2:
                 raise ValueError(
-                    f"only 2-dimensional matrices are accepted, provided {len(mat.shape)} dimensions for assay {asy}"
+                    "only 2-dimensional matrices are accepted, "
+                    f"provided {len(mat.shape)} dimensions for assay {asy}"
                 )
 
-            if base_dims is None:
-                base_dims = mat.shape
+            if self._shape is None:
+                self._shape = mat.shape
                 continue
 
-            if mat.shape != base_dims:
+            if mat.shape != self._shape:
                 raise ValueError(
-                    f"Assay: {asy} must be of shape {base_dims} but provided {mat.shape}"
+                    f"Assay: {asy} must be of shape {self._shape}"
+                    f" but provided {mat.shape}"
                 )
 
-        # check feature length
-        if self._rows is not None:
-            if self._rows.shape[0] != base_dims[0]:
-                raise ValueError(
-                    f"Features and assays do not match. must be {base_dims[0]} but provided {self._rows.shape[0]}"
-                )
-        else:
-            self._rows = BiocFrame({}, numberOfRows=base_dims[0])
+    def _validate_rows(self, rows: Optional[Union[pd.DataFrame, BiocFrame]]):
+        """Internal method to validate feature information (rowdata).
 
-        # check sample length
-        if self._cols is not None:
-            if self._cols.shape[0] != base_dims[1]:
-                raise ValueError(
-                    f"Sample data and assays do not match. must be {base_dims[1]} but provided {self._cols.shape[0]}"
-                )
-        else:
-            self._cols = BiocFrame({}, numberOfRows=base_dims[1])
+        Args:
+            rows (Optional[Union[pd.DataFrame, BiocFrame]]): feature information 
+                (rowdata).
 
-        self._shape = base_dims
+        Raises:
+            ValueError: when number of rows does not match between rows & assays.
+            TypeError: when rows is neither a pandas dataframe not Biocframe object.
+        """
+        if not (isinstance(rows, pd.DataFrame) or isinstance(rows, BiocFrame)):
+            raise TypeError(
+                "rowData must be either a pandas `DataFrame` or a `BiocFrame`"
+                f" object, provided {type(rows)}"
+            )
+
+        if rows.shape[0] != self._shape[0]:
+            raise ValueError(
+                f"Features and assays do not match. must be {self._shape[0]}"
+                f" but provided {rows.shape[0]}"
+            )
+
+    def _validate_cols(self, cols: Optional[Union[pd.DataFrame, BiocFrame]]):
+        """Internal method to validate sample information (coldata).
+
+        Args:
+            cols (Optional[Union[pd.DataFrame, BiocFrame]]): sample information 
+                (coldata).
+
+        Raises:
+            ValueError: when number of samples do not match between cols & assays.
+            TypeError: when cols is neither a pandas dataframe not Biocframe object.
+        """
+        if not (isinstance(cols, pd.DataFrame) or isinstance(cols, BiocFrame)):
+            raise TypeError(
+                "colData must be either a pandas `DataFrame` or a `BiocFrame`"
+                f" object, provided {type(cols)}"
+            )
+
+        if cols.shape[0] != self._shape[1]:
+            raise ValueError(
+                f"Sample data and assays do not match. must be {self._shape[1]}"
+                f" but provided {cols.shape[0]}"
+            )
 
     @property
     def assays(self) -> MutableMapping[str, Union[np.ndarray, sp.spmatrix]]:
         """Get assays.
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary of experiments.
+            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary with  
+            experiments names as keys and matrix data as values.
         """
         return self._assays
 
@@ -128,39 +162,41 @@ class BaseSE:
     def assays(
         self, assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]]
     ) -> None:
-        """Set assays.
+        """Set new experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): sets the assays
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): new assays.
         """
+        self._validate_assays(assays)
         self._assays = assays
-        self._validate()
 
     @property
-    def colData(self) -> Optional[Union[pd.DataFrame, BiocFrame]]:
+    def colData(self) -> Union[pd.DataFrame, BiocFrame]:
         """Get sample data.
 
         Returns:
-            Optional[Union[pd.DataFrame, BiocFrame]]: returns sample data.
+            Union[pd.DataFrame, BiocFrame]: Sample information.
         """
         return self._cols
 
     @colData.setter
-    def colData(self, cols: Optional[Union[pd.DataFrame, BiocFrame]]) -> None:
+    def colData(self, cols: Union[pd.DataFrame, BiocFrame]) -> None:
         """Set sample data.
 
         Args:
-            cols (Optional[Union[pd.DataFrame, BiocFrame]]): sample data to update.
+            cols (Union[pd.DataFrame, BiocFrame]): sample data to update.
         """
+        cols = cols if cols is not None else BiocFrame({}, numberOfRows=self._shape[1])
+
+        self._validate_cols(cols)
         self._cols = cols
-        self._validate()
 
     @property
     def metadata(self) -> Optional[MutableMapping]:
         """Get metadata.
 
         Returns:
-            Optional[MutableMapping]: metadata object, usually a dictionary.
+            Optional[MutableMapping]: Metadata object, usually a dictionary.
         """
         return self._metadata
 
@@ -169,26 +205,27 @@ class BaseSE:
         """Set metadata.
 
         Args:
-            metadata (Optional[MutableMapping]): new metadata object
+            metadata (Optional[MutableMapping]): new metadata object.
         """
         self._metadata = metadata
 
     @property
     def shape(self) -> Tuple[int, int]:
-        """Get shape of the object, number of features and number of samples.
+        """Get shape of the experiment, (number of features and number of samples).
 
         Returns:
-            Tuple[int, int]: A tuple of number of features and number of samples
+            Tuple[int, int]: A tuple with number of features and number of samples.
         """
-        a_mat = self._assays[list(self._assays.keys())[0]]
-        return a_mat.shape
+        return self._shape
 
     @property
     def dims(self) -> Tuple[int, int]:
-        """Dimensions of the object, number of features and number of samples.
+        """Dimensions of the experiment, (number of features and number of samples).
+
+        Note: same as shape.
 
         Returns:
-            Tuple[int, int]: A tuple of number of features and number of samples
+            Tuple[int, int]: A tuple with number of features and number of samples.
         """
         return self.shape
 
@@ -197,19 +234,19 @@ class BaseSE:
         """Get assay names.
 
         Returns:
-            Sequence[str]: list of assay names
+            Sequence[str]: list of assay names.
         """
         return list(self._assays.keys())
 
     @assayNames.setter
     def assayNames(self, names: Sequence[str]):
-        """Set assay names.
+        """Replace all assay names.
 
         Args:
-            names (Sequence[str]): new names
+            names (Sequence[str]): new names.
 
         Raises:
-            ValueError: if enough names are not provided
+            ValueError: if enough names are not provided.
         """
         current_names = list(self._assays.keys())
         if len(names) != len(current_names):
@@ -224,31 +261,25 @@ class BaseSE:
         self._assays = new_assays
 
     def __str__(self) -> str:
-        pattern = """
-        Class BaseSE with {} features and {} samples
-          assays: {}
-          features: {}
-          sample data: {}
-        """
-        return pattern.format(
-            self.shape[0],
-            self.shape[1],
-            list(self._assays.keys()),
-            self._rows.columns if self._rows is not None else None,
-            self._cols.columns if self._cols is not None else None,
+        pattern = (
+            f"Class BaseSE with {self.shape[0]} features and {self.shape[1]} samples \n"
+            f"  assays: {list(self._assays.keys())} \n"
+            f"  features: {self._rows.columns if self._rows is not None else None} \n"
+            f"  sample data: {self._cols.columns if self._cols is not None else None}"
         )
+        return pattern
 
     def assay(self, name: str) -> Union[np.ndarray, sp.spmatrix]:
-        """Convenience function to access an assay by name
+        """Convenience function to access an assay by name.
 
         Args:
-            name (str): name of the assay
+            name (str): name of the assay.
 
         Raises:
-            ValueError: if assay name does not exist
+            ValueError: if assay name does not exist.
 
         Returns:
-            Union[np.ndarray, sp.spmatrix]: The experiment data
+            Union[np.ndarray, sp.spmatrix]: experiment data.
         """
         if name not in self._assays:
             raise ValueError(f"Assay {name} does not exist")
@@ -257,20 +288,23 @@ class BaseSE:
 
     def subsetAssays(
         self,
-        rowIndices: Union[Sequence[int], slice] = None,
-        colIndices: Union[Sequence[int], slice] = None,
+        rowIndices: Optional[Union[Sequence[int], slice]] = None,
+        colIndices: Optional[Union[Sequence[int], slice]] = None,
     ) -> MutableMapping[str, Union[np.ndarray, sp.spmatrix]]:
-        """Subset all assays to a specified rows or cols or both
+        """Subset all assays to a specified set of {rows, cols or both} slices.
 
         Args:
-            rowIndices (Union[Sequence[int], slice], optional): row indices to subset. Defaults to None.
-            colIndices (Union[Sequence[int], slice], optional): col indices to subset. Defaults to None.
+            rowIndices (Union[Sequence[int], slice], optional): row indices to subset. 
+                Defaults to None.
+            colIndices (Union[Sequence[int], slice], optional): col indices to subset. 
+                Defaults to None.
 
         Raises:
-            ValueError: if rowIndices and colIndices are both None.
+            ValueError: if `rowIndices` and `colIndices` are both None.
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: assays with subset matrices
+            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: experiment data
+            for only the specified slices.
         """
 
         if rowIndices is None and colIndices is None:
@@ -296,17 +330,18 @@ class BaseSE:
         Union[pd.DataFrame, BiocFrame],
         MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
     ]:
-        """Internal method to slice `SE` by index
+        """Internal method to slice `SE` by index.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]): indices to slice. tuple can
-                contains slices along dimensions
+            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]): 
+                indices to slice. tuple contains slices along dimensions (rows, cols).
 
         Raises:
-            ValueError: Too many slices
+            ValueError: Too many or too few slices provided.
 
         Returns:
-             Tuple[Union[pd.DataFrame, BiocFrame], Union[pd.DataFrame, BiocFrame], MutableMapping[str, Union[np.ndarray, sp.spmatrix]]]: sliced row, cols and assays.
+            Tuple[Union[pd.DataFrame, BiocFrame], Union[pd.DataFrame, BiocFrame], MutableMapping[str, Union[np.ndarray, sp.spmatrix]]]: 
+            sliced row, cols and assays.
         """
 
         if len(args) == 0:
@@ -342,45 +377,82 @@ class BaseSE:
 
     @property
     def rownames(self) -> Sequence[str]:
-        """Get row/feature index
+        """Get row/feature index.
 
         Returns:
-            Sequence[str]: list of row index names
+            Sequence[str]: list of row index names.
         """
         if isinstance(self._rows, pd.DataFrame):
             return self._rows.index.tolist()
         else:
             return self._rows.rowNames
 
+    @rownames.setter
+    def rownames(self, names: Sequence[str]):
+        """Set row/feature names for the experiment.
+
+        Args:
+            names (Sequence[str]): new feature names.
+
+        Raises:
+            ValueError: provided incorrect number of names.
+        """
+        if len(names) != self.shape[0]:
+            raise ValueError(
+                f"names must be of length {self.shape[0]}, provided {len(names)}"
+            )
+
+        if isinstance(self._rows, pd.DataFrame):
+            self._rows.index = names
+        else:
+            self._rows.rowNames = names
+
     @property
     def colnames(self) -> Sequence[str]:
-        """Get column/sample names
+        """Get column/sample names.
 
         Returns:
-            Sequence[str]: list of column names
+            Sequence[str]: list of sample names.
         """
         if isinstance(self._cols, pd.DataFrame):
             return self._cols.index.tolist()
         else:
             return self._cols.rowNames
 
+    @colnames.setter
+    def colnames(self, names: Sequence[str]):
+        """Set column/sample names for the experiment.
+
+        Args:
+            names (Sequence[str]): new samples names.
+        """
+        if len(names) != self.shape[1]:
+            raise ValueError(
+                f"names must be of length {self.shape[1]}, provided {len(names)}"
+            )
+
+        if isinstance(self._cols, pd.DataFrame):
+            self._cols.index = names
+        else:
+            self._cols.rowNames = names
+
     def toAnnData(self,) -> anndata.AnnData:
-        """Transform `SingleCellExperiment` objects to `AnnData`, 
+        """Transform `SummarizedExperiment` to `AnnData` representation. 
 
         Returns:
-            anndata.AnnData: returns an AnnData representation of SE.
+            anndata.AnnData: returns an `AnnData` representation of SE.
         """
 
         layers = OrderedDict()
         for asy, mat in self.assays.items():
             layers[asy] = mat.transpose()
 
-        trows = self.rowData
-        if isinstance(self.rowData, GenomicRanges):
-            trows = self.rowData.toPandas()
+        trows = self._rows
+        if isinstance(self._rows, GenomicRanges):
+            trows = self._rows.toPandas()
 
         obj = anndata.AnnData(
-            obs=self.colData, var=trows, uns=self.metadata, layers=layers,
+            obs=self._cols, var=trows, uns=self.metadata, layers=layers,
         )
 
         return obj

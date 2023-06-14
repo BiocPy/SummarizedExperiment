@@ -1,7 +1,8 @@
-from typing import Union, Tuple, Optional, Sequence, MutableMapping
-from biocframe import BiocFrame
-import pandas as pd
+from typing import MutableMapping, Optional, Sequence, Tuple, Union
+
 import numpy as np
+import pandas as pd
+from biocframe import BiocFrame
 from scipy import sparse as sp
 
 from .BaseSE import BaseSE
@@ -25,19 +26,19 @@ class SummarizedExperiment(BaseSE):
     ) -> None:
         """Initialize a Summarized Experiment (SE).
 
-        SE follows the R/Bioconductor specification; rows are features, columns are 
+        SE follows the R/Bioconductor specification; rows are features, columns are
         samples.
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary 
-                of matrices, with assay names as keys and matrices represented as dense 
-                (numpy) or sparse (scipy) matrices. All matrices across assays must 
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary
+                of matrices, with assay names as keys and matrices represented as dense
+                (numpy) or sparse (scipy) matrices. All matrices across assays must
                 have the same dimensions (number of rows, number of columns).
-            rowData (GenomicRanges, optional): features, must be the same length as 
+            rowData (GenomicRanges, optional): features, must be the same length as
                 rows of the matrices in assays. Defaults to None.
-            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be 
+            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
                 the same length as rows of the matrices in assays. Defaults to None.
-            metadata (MutableMapping, optional): experiment metadata describing the 
+            metadata (MutableMapping, optional): experiment metadata describing the
                 methods. Defaults to None.
         """
         super().__init__(assays, rowData, colData, metadata)

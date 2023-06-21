@@ -1,11 +1,12 @@
-from typing import Union, MutableMapping, Sequence, Tuple, Optional
+from collections import OrderedDict
+from typing import MutableMapping, Optional, Sequence, Tuple, Union
+
+import anndata
+import numpy as np
+import pandas as pd
 from biocframe import BiocFrame
 from genomicranges import GenomicRanges
 from scipy import sparse as sp
-import numpy as np
-import pandas as pd
-from collections import OrderedDict
-import anndata
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -14,11 +15,24 @@ __license__ = "MIT"
 
 class BaseSE:
     """Base class for Summarized Experiment.
-    
-    Represents genomic experiment data (`assays`), features (`rowdata`), 
+
+    Represents genomic experiment data (`assays`), features (`rowdata`),
     sample data (`coldata`) and any other metadata.
+
+    Args:
+        assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary
+            of matrices, with assay names as keys and matrices represented as dense
+            (numpy) or sparse (scipy) matrices. All matrices across assays must
+            have the same dimensions (number of rows, number of columns).
+        rowData (GenomicRanges, optional): features, must be the same length as
+            rows of the matrices in assays. Defaults to None.
+        colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
+            the same length as rows of the matrices in assays. Defaults to None.
+        metadata (MutableMapping, optional): experiment metadata describing the
+            methods. Defaults to None.
     """
 
+    # TODO: should be an instance attribute 
     _shape = None
 
     def __init__(
@@ -28,20 +42,7 @@ class BaseSE:
         cols: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
-        """Initialize an instance of `BaseSE`.
-
-        Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary 
-                of matrices, with assay names as keys and matrices represented as dense 
-                (numpy) or sparse (scipy) matrices. All matrices across assays must 
-                have the same dimensions (number of rows, number of columns).
-            rowData (GenomicRanges, optional): features, must be the same length as 
-                rows of the matrices in assays. Defaults to None.
-            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be 
-                the same length as rows of the matrices in assays. Defaults to None.
-            metadata (MutableMapping, optional): experiment metadata describing the 
-                methods. Defaults to None.
-        """
+        """Initialize an instance of `BaseSE`."""
 
         if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
             raise Exception(
@@ -51,6 +52,13 @@ class BaseSE:
 
         self._validate_assays(assays)
         self._assays = assays
+
+        # should have _shape by now
+        if self._shape is None:
+            raise TypeError(
+                "This should not happen; ssays is not consistent. "
+                "Report this issue with a reproducible example!"
+            )
 
         rows = rows if rows is not None else BiocFrame({}, numberOfRows=self._shape[0])
         self._validate_rows(rows)
@@ -65,8 +73,7 @@ class BaseSE:
         self._metadata = metadata
 
     def _validate(self):
-        """Internal wrapper method to validate the object.
-        """
+        """Internal wrapper method to validate the object."""
         # validate assays to make sure they are have same dimensions
         self._validate_assays(self._assays)
         self._validate_rows(self._rows)
@@ -86,6 +93,11 @@ class BaseSE:
             ValueError: if all assays do not have the same dimensions.
         """
         for asy, mat in assays.items():
+            print("asy_name", asy)
+            print(mat)
+            print(mat.shape)
+            print(self._shape)
+
             if len(mat.shape) > 2:
                 raise ValueError(
                     "only 2-dimensional matrices are accepted, "
@@ -106,7 +118,7 @@ class BaseSE:
         """Internal method to validate feature information (rowdata).
 
         Args:
-            rows (Optional[Union[pd.DataFrame, BiocFrame]]): feature information 
+            rows (Optional[Union[pd.DataFrame, BiocFrame]]): feature information
                 (rowdata).
 
         Raises:
@@ -129,7 +141,7 @@ class BaseSE:
         """Internal method to validate sample information (coldata).
 
         Args:
-            cols (Optional[Union[pd.DataFrame, BiocFrame]]): sample information 
+            cols (Optional[Union[pd.DataFrame, BiocFrame]]): sample information
                 (coldata).
 
         Raises:
@@ -153,7 +165,7 @@ class BaseSE:
         """Get assays.
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary with  
+            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary with
             experiments names as keys and matrix data as values.
         """
         return self._assays
@@ -294,9 +306,9 @@ class BaseSE:
         """Subset all assays to a specified set of {rows, cols or both} slices.
 
         Args:
-            rowIndices (Union[Sequence[int], slice], optional): row indices to subset. 
+            rowIndices (Union[Sequence[int], slice], optional): row indices to subset.
                 Defaults to None.
-            colIndices (Union[Sequence[int], slice], optional): col indices to subset. 
+            colIndices (Union[Sequence[int], slice], optional): col indices to subset.
                 Defaults to None.
 
         Raises:
@@ -333,14 +345,14 @@ class BaseSE:
         """Internal method to slice `SE` by index.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]): 
+            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]):
                 indices to slice. tuple contains slices along dimensions (rows, cols).
 
         Raises:
             ValueError: Too many or too few slices provided.
 
         Returns:
-            Tuple[Union[pd.DataFrame, BiocFrame], Union[pd.DataFrame, BiocFrame], MutableMapping[str, Union[np.ndarray, sp.spmatrix]]]: 
+            Tuple[Union[pd.DataFrame, BiocFrame], Union[pd.DataFrame, BiocFrame], MutableMapping[str, Union[np.ndarray, sp.spmatrix]]]:
             sliced row, cols and assays.
         """
 
@@ -436,8 +448,10 @@ class BaseSE:
         else:
             self._cols.rowNames = names
 
-    def toAnnData(self,) -> anndata.AnnData:
-        """Transform `SummarizedExperiment` to `AnnData` representation. 
+    def toAnnData(
+        self,
+    ) -> anndata.AnnData:
+        """Transform `SummarizedExperiment` to `AnnData` representation.
 
         Returns:
             anndata.AnnData: returns an `AnnData` representation of SE.
@@ -452,7 +466,10 @@ class BaseSE:
             trows = self._rows.toPandas()
 
         obj = anndata.AnnData(
-            obs=self._cols, var=trows, uns=self.metadata, layers=layers,
+            obs=self._cols,
+            var=trows,
+            uns=self.metadata,
+            layers=layers,
         )
 
         return obj

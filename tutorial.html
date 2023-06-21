@@ -5,10 +5,10 @@
     <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="License" href="license.html" /><link rel="prev" title="SummarizedExperiment" href="readme.html" />
 
-    <!-- Generated with Sphinx 6.1.3 and Furo 2022.12.07 -->
-        <title>Tutorial - SummarizedExperiment 0.2.4 documentation</title>
+    <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
+        <title>Tutorial - SummarizedExperiment 0.2.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=91d0f0d1c444bdcb17a68e833c7a53903343c195" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
     
     
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.2.4 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.2.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.4 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -162,7 +162,7 @@
 <li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle child pages in navigation</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/summarizedexperiment.html">summarizedexperiment package</a></li>
 </ul>
 </li>
@@ -257,6 +257,44 @@
 <span class="p">)</span>
 </pre></div>
 </div>
+<section id="file-backed-mode-for-large-datasets">
+<h3>File backed mode for large datasets<a class="headerlink" href="#file-backed-mode-for-large-datasets" title="Permalink to this heading">#</a></h3>
+<p>In addition to fully realized matrices in memory, SE/RSE also support file backed arrays and matrices. <a class="reference external" href="https://github.com/BiocPy/FileBackedArray">FileBackedArray</a> package provides a file backed class for H5 backed matrices.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df_gr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
+        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">colData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;treatment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ChIP&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3005</span><span class="p">,})</span>
+
+<span class="n">assay</span> <span class="o">=</span> <span class="n">H5BackedData</span><span class="p">(</span><span class="s2">&quot;tests/data/tenx.sub.h5&quot;</span><span class="p">,</span> <span class="s2">&quot;matrix&quot;</span><span class="p">)</span>
+
+<span class="n">tse</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts_backed&quot;</span><span class="p">:</span> <span class="n">assay</span><span class="p">},</span>
+    <span class="n">rowData</span><span class="o">=</span><span class="n">df_gr</span><span class="p">,</span>
+    <span class="n">colData</span><span class="o">=</span><span class="n">colData</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="rangesummarizedexperiment">
 <h2><code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code><a class="headerlink" href="#rangesummarizedexperiment" title="Permalink to this heading">#</a></h2>

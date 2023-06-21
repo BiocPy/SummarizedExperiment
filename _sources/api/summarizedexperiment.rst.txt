@@ -20,6 +20,14 @@ summarizedexperiment.RangeSummarizedExperiment module
    :undoc-members:
    :show-inheritance:
 
+summarizedexperiment.RangedSummarizedExperiment module
+------------------------------------------------------
+
+.. automodule:: summarizedexperiment.RangedSummarizedExperiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 summarizedexperiment.SummarizedExperiment module
 ------------------------------------------------
 

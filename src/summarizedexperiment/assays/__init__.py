@@ -1,1 +1,0 @@
-from .H5Assay import H5BackedAssay

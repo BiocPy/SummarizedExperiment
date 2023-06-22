@@ -1,3 +1,4 @@
+import warnings
 from collections import OrderedDict
 from typing import MutableMapping, Optional, Sequence, Tuple, Union
 
@@ -5,8 +6,12 @@ import anndata
 import numpy as np
 import pandas as pd
 from biocframe import BiocFrame
+from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 from scipy import sparse as sp
+
+from .dispatchers.colnames import get_colnames, set_colnames
+from .dispatchers.rownames import get_rownames, set_rownames
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -20,11 +25,11 @@ class BaseSE:
     sample data (`coldata`) and any other metadata.
 
     Args:
-        assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary
+        assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): dictionary
             of matrices, with assay names as keys and matrices represented as dense
             (numpy) or sparse (scipy) matrices. All matrices across assays must
             have the same dimensions (number of rows, number of columns).
-        rowData (GenomicRanges, optional): features, must be the same length as
+        rowData (Union[pd.DataFrame, BiocFrame], optional): features, must be the same length as
             rows of the matrices in assays. Defaults to None.
         colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
             the same length as rows of the matrices in assays. Defaults to None.
@@ -32,12 +37,14 @@ class BaseSE:
             methods. Defaults to None.
     """
 
-    # TODO: should be an instance attribute 
+    # TODO: should be an instance attribute
     _shape = None
 
     def __init__(
         self,
-        assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
+        assays: MutableMapping[
+            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+        ],
         rows: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         cols: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         metadata: Optional[MutableMapping] = None,
@@ -56,7 +63,7 @@ class BaseSE:
         # should have _shape by now
         if self._shape is None:
             raise TypeError(
-                "This should not happen; ssays is not consistent. "
+                "This should not happen; assays is not consistent. "
                 "Report this issue with a reproducible example!"
             )
 
@@ -80,12 +87,15 @@ class BaseSE:
         self._validate_cols(self._cols)
 
     def _validate_assays(
-        self, assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]]
+        self,
+        assays: MutableMapping[
+            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+        ],
     ):
         """Internal method to validate experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): experiment
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): experiment
                 data.
 
         Raises:
@@ -93,11 +103,6 @@ class BaseSE:
             ValueError: if all assays do not have the same dimensions.
         """
         for asy, mat in assays.items():
-            print("asy_name", asy)
-            print(mat)
-            print(mat.shape)
-            print(self._shape)
-
             if len(mat.shape) > 2:
                 raise ValueError(
                     "only 2-dimensional matrices are accepted, "
@@ -161,44 +166,71 @@ class BaseSE:
             )
 
     @property
-    def assays(self) -> MutableMapping[str, Union[np.ndarray, sp.spmatrix]]:
+    def assays(
+        self,
+    ) -> MutableMapping[
+        str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+    ]:
         """Get assays.
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary with
+            MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]: a dictionary with
             experiments names as keys and matrix data as values.
         """
         return self._assays
 
     @assays.setter
     def assays(
-        self, assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]]
+        self,
+        assays: MutableMapping[
+            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+        ],
     ) -> None:
         """Set new experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): new assays.
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): new assays.
         """
         self._validate_assays(assays)
         self._assays = assays
 
     @property
-    def colData(self) -> Union[pd.DataFrame, BiocFrame]:
+    def rowData(self) -> Union[pd.DataFrame, BiocFrame]:
+        """Get features.
+
+        Returns:
+            Optional[Union[pd.DataFrame, BiocFrame]]: features information.
+        """
+        return self._rows
+
+    @rowData.setter
+    def rowData(self, rows: Union[pd.DataFrame, BiocFrame]) -> None:
+        """Set features.
+
+        Args:
+            rows (Optional[Union[pd.DataFrame, BiocFrame]]): new feature information.
+        """
+        rows = rows if rows is not None else BiocFrame({}, numberOfRows=self.shape[0])
+        self._validate_rows(rows)
+        self._rows = rows
+
+    @property
+    def colData(self) -> Optional[Union[pd.DataFrame, BiocFrame]]:
         """Get sample data.
 
         Returns:
-            Union[pd.DataFrame, BiocFrame]: Sample information.
+            (Union[pd.DataFrame, BiocFrame], optional): Sample information.
         """
         return self._cols
 
     @colData.setter
-    def colData(self, cols: Union[pd.DataFrame, BiocFrame]) -> None:
+    def colData(self, cols: Optional[Union[pd.DataFrame, BiocFrame]]) -> None:
         """Set sample data.
 
         Args:
-            cols (Union[pd.DataFrame, BiocFrame]): sample data to update.
+            cols (Union[pd.DataFrame, BiocFrame], optional): sample data to update.
         """
-        cols = cols if cols is not None else BiocFrame({}, numberOfRows=self._shape[1])
+        cols = cols if cols is not None else BiocFrame({}, numberOfRows=self.shape[1])
 
         self._validate_cols(cols)
         self._cols = cols
@@ -223,16 +255,16 @@ class BaseSE:
 
     @property
     def shape(self) -> Tuple[int, int]:
-        """Get shape of the experiment, (number of features and number of samples).
+        """Get shape of the experiment.
 
         Returns:
-            Tuple[int, int]: A tuple with number of features and number of samples.
+            Tuple[int, int]: A tuple with (number of features, number of samples).
         """
         return self._shape
 
     @property
     def dims(self) -> Tuple[int, int]:
-        """Dimensions of the experiment, (number of features and number of samples).
+        """Dimensions of the experiment, similar to shape.
 
         Note: same as shape.
 
@@ -260,7 +292,7 @@ class BaseSE:
         Raises:
             ValueError: if enough names are not provided.
         """
-        current_names = list(self._assays.keys())
+        current_names = self.assayNames
         if len(names) != len(current_names):
             raise ValueError(
                 f"names must be of length {len(current_names)}, provided {len(names)}"
@@ -281,7 +313,9 @@ class BaseSE:
         )
         return pattern
 
-    def assay(self, name: str) -> Union[np.ndarray, sp.spmatrix]:
+    def assay(
+        self, name: str
+    ) -> Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]:
         """Convenience function to access an assay by name.
 
         Args:
@@ -291,7 +325,7 @@ class BaseSE:
             ValueError: if assay name does not exist.
 
         Returns:
-            Union[np.ndarray, sp.spmatrix]: experiment data.
+            Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]: experiment data.
         """
         if name not in self._assays:
             raise ValueError(f"Assay {name} does not exist")
@@ -303,7 +337,7 @@ class BaseSE:
         rowIndices: Optional[Union[Sequence[int], slice]] = None,
         colIndices: Optional[Union[Sequence[int], slice]] = None,
     ) -> MutableMapping[str, Union[np.ndarray, sp.spmatrix]]:
-        """Subset all assays to a specified set of {rows, cols or both} slices.
+        """Subset all assays to a slice (rows, cols).
 
         Args:
             rowIndices (Union[Sequence[int], slice], optional): row indices to subset.
@@ -320,10 +354,11 @@ class BaseSE:
         """
 
         if rowIndices is None and colIndices is None:
-            raise ValueError("either `rowIndices` and `colIndices` must be provided")
+            warnings.warn("No slice is provided, this returns a copy of all assays!")
+            return self.assays.copy()
 
         new_assays = OrderedDict()
-        for asy, mat in self._assays.items():
+        for asy, mat in self.assays.items():
             if rowIndices is not None:
                 mat = mat[rowIndices, :]
 
@@ -394,10 +429,7 @@ class BaseSE:
         Returns:
             Sequence[str]: list of row index names.
         """
-        if isinstance(self._rows, pd.DataFrame):
-            return self._rows.index.tolist()
-        else:
-            return self._rows.rowNames
+        return get_rownames(self.rowData)
 
     @rownames.setter
     def rownames(self, names: Sequence[str]):
@@ -414,10 +446,7 @@ class BaseSE:
                 f"names must be of length {self.shape[0]}, provided {len(names)}"
             )
 
-        if isinstance(self._rows, pd.DataFrame):
-            self._rows.index = names
-        else:
-            self._rows.rowNames = names
+        self._rows = set_rownames(self.rowData, names)
 
     @property
     def colnames(self) -> Sequence[str]:
@@ -426,10 +455,7 @@ class BaseSE:
         Returns:
             Sequence[str]: list of sample names.
         """
-        if isinstance(self._cols, pd.DataFrame):
-            return self._cols.index.tolist()
-        else:
-            return self._cols.rowNames
+        return get_colnames(self.colData)
 
     @colnames.setter
     def colnames(self, names: Sequence[str]):
@@ -443,10 +469,7 @@ class BaseSE:
                 f"names must be of length {self.shape[1]}, provided {len(names)}"
             )
 
-        if isinstance(self._cols, pd.DataFrame):
-            self._cols.index = names
-        else:
-            self._cols.rowNames = names
+        self._cols = set_colnames(self.colData, names)
 
     def toAnnData(
         self,
@@ -459,6 +482,16 @@ class BaseSE:
 
         layers = OrderedDict()
         for asy, mat in self.assays.items():
+            if isinstance(mat, H5BackedDenseData) or isinstance(
+                mat, H5BackedSparseData
+            ):
+                raise ValueError(
+                    f"assay {asy} is not supported. Uses a file backed representation."
+                    "while this is fine, this is currently not supported because `AnnData` uses"
+                    "a transposed representation (cells by features) rather than the "
+                    "bioconductor version (features by cells)"
+                )
+
             layers[asy] = mat.transpose()
 
         trows = self._rows

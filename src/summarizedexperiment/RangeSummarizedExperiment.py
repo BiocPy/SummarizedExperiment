@@ -22,6 +22,7 @@ class RangeSummarizedExperiment(BaseSE):
         self,
         assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
         rowRanges: Optional[GenomicRanges],
+        rowData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         colData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
@@ -40,56 +41,59 @@ class RangeSummarizedExperiment(BaseSE):
                 of matrices, with assay names as keys and matrices represented as dense
                 (numpy) or sparse (scipy) matrices. All matrices across assays must
                 have the same dimensions (number of rows, number of columns).
-            rowRanges (GenomicRanges): features, must be the same length as
+            rowRanges (GenomicRanges): genomic ranges, must be the same length as
                 rows of the matrices in assays.
+            rowData (Union[pd.DataFrame, BiocFrame], optional): features, must be the
+                same length as rows of the matrices in assays. Defaults to None.
             colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
                 the same length as rows of the matrices in assays. Defaults to None.
             metadata (MutableMapping, optional): experiment metadata describing the
                 methods. Defaults to None.
         """
-        super().__init__(assays, rowRanges, colData, metadata)
+        super().__init__(assays, rowData, colData, metadata)
+        self._validate_rowRanges(rowRanges)
+        self._rowRanges = rowRanges
 
-    def _validate_rows(self, rows: Optional[GenomicRanges]):
+    def _validate_rowRanges(self, rowsRanges: GenomicRanges):
         """Internal method to validate feature information (`rowRanges`).
 
         Args:
-            rows (Optional[GenomicRanges]): genomic features.
-                (rowRanges).
+            rows (GenomicRanges): genomic features (rowRanges).
 
         Raises:
             ValueError: when number of rows does not match between `rowRanges` & `assays`.
             TypeError: when `rowRanges` is not a `GenomicRanges` object.
         """
-        if not (isinstance(rows, GenomicRanges)):
+        if not (isinstance(rowsRanges, GenomicRanges)):
             raise TypeError(
-                "rowData must be a `GenomicRanges`" f" object, provided {type(rows)}"
+                "rowsRanges must be a `GenomicRanges`"
+                f" object, provided {type(rowsRanges)}"
             )
 
-        if rows.shape[0] != self._shape[0]:
+        if rowsRanges.shape[0] != self._shape[0]:
             raise ValueError(
                 f"Features and assays do not match. must be {self._shape[0]}"
-                f" but provided {rows.shape[0]}"
+                f" but provided {rowsRanges.shape[0]}"
             )
 
     @property
-    def rowRanges(self) -> Optional[GenomicRanges]:
+    def rowRanges(self) -> GenomicRanges:
         """Get features.
 
         Returns:
-            Optional[GenomicRanges]: returns features.
+            GenomicRanges: returns features.
         """
-        return self._rows
+        return self._rowRanges
 
     @rowRanges.setter
-    def rowRanges(self, rows: Optional[GenomicRanges]) -> None:
+    def rowRanges(self, ranges: GenomicRanges) -> None:
         """Set features.
 
         Args:
-            rows (Optional[GenomicRanges]): features to update.
+            ranges (GenomicRanges): features to update.
         """
-        rows = rows if rows is not None else BiocFrame({}, numberOfRows=self._shape[0])
-        self._validate_rows(rows)
-        self._rows = rows
+        self._validate_rowRanges(ranges)
+        self._rowRanges = ranges
 
     @property
     def end(self) -> Sequence[int]:
@@ -164,9 +168,16 @@ class RangeSummarizedExperiment(BaseSE):
             RangeSummarizedExperiment: Sliced `RangeSummarizedExperiment` object.
         """
         new_rows, new_cols, new_assays = self._slice(args)
+        rowIndices = args[0]
+
+        new_rowRanges = None
+        if rowIndices is not None and self.rowRanges is not None:
+            new_rowRanges = self.rowRanges[rowIndices, :]
+
         return RangeSummarizedExperiment(
             assays=new_assays,
-            rowRanges=new_rows,
+            rowRanges=new_rowRanges,
+            rowData=new_rows,
             colData=new_cols,
             metadata=self.metadata,
         )
@@ -175,8 +186,8 @@ class RangeSummarizedExperiment(BaseSE):
         pattern = (
             f"Class RangeSummarizedExperiment with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {list(self._assays.keys())} \n"
-            f"  features: {self._rows.columns if self._rows is not None else None} \n"
-            f"  sample data: {self._cols.columns if self._cols is not None else None}"
+            f"  features: {self.rowData.columns if self.rowData is not None else None} \n"
+            f"  sample data: {self.colData.columns if self.colData is not None else None}"
         )
         return pattern
 

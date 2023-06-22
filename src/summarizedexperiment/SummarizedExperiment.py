@@ -34,7 +34,7 @@ class SummarizedExperiment(BaseSE):
                 of matrices, with assay names as keys and matrices represented as dense
                 (numpy) or sparse (scipy) matrices. All matrices across assays must
                 have the same dimensions (number of rows, number of columns).
-            rowData (GenomicRanges, optional): features, must be the same length as
+            rowData (Union[pd.DataFrame, BiocFrame], optional): features, must be the same length as
                 rows of the matrices in assays. Defaults to None.
             colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
                 the same length as rows of the matrices in assays. Defaults to None.
@@ -42,26 +42,6 @@ class SummarizedExperiment(BaseSE):
                 methods. Defaults to None.
         """
         super().__init__(assays, rowData, colData, metadata)
-
-    @property
-    def rowData(self) -> Union[pd.DataFrame, BiocFrame]:
-        """Get features.
-
-        Returns:
-            Optional[Union[pd.DataFrame, BiocFrame]]: features information.
-        """
-        return self._rows
-
-    @rowData.setter
-    def rowData(self, rows: Union[pd.DataFrame, BiocFrame]) -> None:
-        """Set features.
-
-        Args:
-            rows (Optional[Union[pd.DataFrame, BiocFrame]]): new feature information.
-        """
-        rows = rows if rows is not None else BiocFrame({}, numberOfRows=self._shape[0])
-        self._validate_rows(rows)
-        self._rows = rows
 
     def __getitem__(
         self,

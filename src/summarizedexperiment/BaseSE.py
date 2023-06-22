@@ -42,7 +42,9 @@ class BaseSE:
 
     def __init__(
         self,
-        assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
+        assays: MutableMapping[
+            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+        ],
         rows: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         cols: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         metadata: Optional[MutableMapping] = None,
@@ -85,12 +87,15 @@ class BaseSE:
         self._validate_cols(self._cols)
 
     def _validate_assays(
-        self, assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]]
+        self,
+        assays: MutableMapping[
+            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+        ],
     ):
         """Internal method to validate experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): experiment
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): experiment
                 data.
 
         Raises:
@@ -301,7 +306,9 @@ class BaseSE:
         )
         return pattern
 
-    def assay(self, name: str) -> Union[np.ndarray, sp.spmatrix]:
+    def assay(
+        self, name: str
+    ) -> Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]:
         """Convenience function to access an assay by name.
 
         Args:
@@ -311,7 +318,7 @@ class BaseSE:
             ValueError: if assay name does not exist.
 
         Returns:
-            Union[np.ndarray, sp.spmatrix]: experiment data.
+            Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]: experiment data.
         """
         if name not in self._assays:
             raise ValueError(f"Assay {name} does not exist")

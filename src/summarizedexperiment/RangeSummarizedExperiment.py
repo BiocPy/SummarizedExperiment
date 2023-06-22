@@ -5,6 +5,7 @@ import pandas as pd
 from biocframe import BiocFrame
 from genomicranges import GenomicRanges, SeqInfo
 from scipy import sparse as sp
+from filebackedarray import H5BackedSparseData, H5BackedDenseData
 
 from .BaseSE import BaseSE
 
@@ -20,7 +21,9 @@ class RangeSummarizedExperiment(BaseSE):
 
     def __init__(
         self,
-        assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
+        assays: MutableMapping[
+            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+        ],
         rowRanges: Optional[GenomicRanges],
         rowData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         colData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
@@ -37,7 +40,7 @@ class RangeSummarizedExperiment(BaseSE):
         use a `SummarizedExperiment` instead!
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): dictionary
                 of matrices, with assay names as keys and matrices represented as dense
                 (numpy) or sparse (scipy) matrices. All matrices across assays must
                 have the same dimensions (number of rows, number of columns).

@@ -1,6 +1,14 @@
 summarizedexperiment package
 ============================
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   summarizedexperiment.dispatchers
+
 Submodules
 ----------
 

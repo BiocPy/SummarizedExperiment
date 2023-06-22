@@ -10,8 +10,8 @@ from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 from scipy import sparse as sp
 
-from .accessors.colnames import get_colnames, set_colnames
-from .accessors.rownames import get_rownames, set_rownames
+from .dispatchers.colnames import get_colnames, set_colnames
+from .dispatchers.rownames import get_rownames, set_rownames
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -166,23 +166,30 @@ class BaseSE:
             )
 
     @property
-    def assays(self) -> MutableMapping[str, Union[np.ndarray, sp.spmatrix]]:
+    def assays(
+        self,
+    ) -> MutableMapping[
+        str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+    ]:
         """Get assays.
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary with
+            MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]: a dictionary with
             experiments names as keys and matrix data as values.
         """
         return self._assays
 
     @assays.setter
     def assays(
-        self, assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]]
+        self,
+        assays: MutableMapping[
+            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+        ],
     ) -> None:
         """Set new experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): new assays.
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): new assays.
         """
         self._validate_assays(assays)
         self._assays = assays
@@ -248,7 +255,7 @@ class BaseSE:
 
     @property
     def shape(self) -> Tuple[int, int]:
-        """Get shape of the experiment, (number of features by number of samples).
+        """Get shape of the experiment.
 
         Returns:
             Tuple[int, int]: A tuple with (number of features, number of samples).
@@ -257,7 +264,7 @@ class BaseSE:
 
     @property
     def dims(self) -> Tuple[int, int]:
-        """Dimensions of the experiment, (number of features and number of samples).
+        """Dimensions of the experiment, similar to shape.
 
         Note: same as shape.
 
@@ -351,7 +358,7 @@ class BaseSE:
             return self.assays.copy()
 
         new_assays = OrderedDict()
-        for asy, mat in self._assays.items():
+        for asy, mat in self.assays.items():
             if rowIndices is not None:
                 mat = mat[rowIndices, :]
 

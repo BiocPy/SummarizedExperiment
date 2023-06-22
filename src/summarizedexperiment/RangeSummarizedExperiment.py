@@ -3,15 +3,50 @@ from typing import MutableMapping, Optional, Sequence, Tuple, Union
 import numpy as np
 import pandas as pd
 from biocframe import BiocFrame
+from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges, SeqInfo
 from scipy import sparse as sp
-from filebackedarray import H5BackedSparseData, H5BackedDenseData
 
 from .BaseSE import BaseSE
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
+
+
+def _check_gr_or_rse(obj: Union[GenomicRanges, "RangeSummarizedExperiment"]):
+    """Check if the object is either a `RangeSummarizedExperiment` or `GenomicRanges`.
+
+    Args:
+        obj (Union[GenomicRanges, RangeSummarizedExperiment]): object to check.
+
+    Raises:
+        TypeError: Object is not a `RangeSummarizedExperiment` or `GenomicRanges`.
+    """
+    if not (
+        isinstance(obj, RangeSummarizedExperiment) or isinstance(obj, GenomicRanges)
+    ):
+        raise TypeError(
+            "object is not a `RangeSummarizedExperiment` or `GenomicRanges`"
+        )
+
+
+def _access_granges(
+    obj: Union[GenomicRanges, "RangeSummarizedExperiment"]
+) -> GenomicRanges:
+    """Access ranges from the object.
+
+    Args:
+        obj (Union[GenomicRanges, RangeSummarizedExperiment]): input object.
+
+    Returns:
+        GenomicRanges: genomic ranges object.
+    """
+    qranges = obj
+    if isinstance(obj, RangeSummarizedExperiment):
+        qranges = obj.rowRanges
+
+    return qranges
 
 
 class RangeSummarizedExperiment(BaseSE):
@@ -235,17 +270,9 @@ class RangeSummarizedExperiment(BaseSE):
             for each interval in `query`. If there are no hits, returns None.
         """
 
-        if not (
-            isinstance(query, RangeSummarizedExperiment)
-            or isinstance(query, GenomicRanges)
-        ):
-            raise TypeError(
-                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
-            )
+        _check_gr_or_rse(query)
 
-        qranges = query
-        if isinstance(query, RangeSummarizedExperiment):
-            qranges = query.rowRanges
+        qranges = _access_granges(query)
 
         res = self.rowRanges.nearest(query=qranges, ignoreStrand=ignoreStrand)
         return res.column("hits")
@@ -272,17 +299,9 @@ class RangeSummarizedExperiment(BaseSE):
             for each interval in `query`. If there are no hits, returns None.
         """
 
-        if not (
-            isinstance(query, RangeSummarizedExperiment)
-            or isinstance(query, GenomicRanges)
-        ):
-            raise TypeError(
-                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
-            )
+        _check_gr_or_rse(query)
 
-        qranges = query
-        if isinstance(query, RangeSummarizedExperiment):
-            qranges = query.rowRanges
+        qranges = _access_granges(query)
 
         res = self.rowRanges.precede(query=qranges, ignoreStrand=ignoreStrand)
         return res.column("hits")
@@ -308,17 +327,9 @@ class RangeSummarizedExperiment(BaseSE):
             Optional[Sequence[Optional[int]]]: List of possible hit indices
             for each interval in `query`. If there are no hits, returns None.
         """
-        if not (
-            isinstance(query, RangeSummarizedExperiment)
-            or isinstance(query, GenomicRanges)
-        ):
-            raise TypeError(
-                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
-            )
+        _check_gr_or_rse(query)
 
-        qranges = query
-        if isinstance(query, RangeSummarizedExperiment):
-            qranges = query.rowRanges
+        qranges = _access_granges(query)
 
         res = self.rowRanges.follow(query=qranges, ignoreStrand=ignoreStrand)
         return res.column("hits")
@@ -345,17 +356,9 @@ class RangeSummarizedExperiment(BaseSE):
             Optional[Sequence[Optional[int]]]: List of possible hit indices
             for each interval in `query`. If there are no hits, returns None.
         """
-        if not (
-            isinstance(query, RangeSummarizedExperiment)
-            or isinstance(query, GenomicRanges)
-        ):
-            raise TypeError(
-                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
-            )
+        _check_gr_or_rse(query)
 
-        qranges = query
-        if isinstance(query, RangeSummarizedExperiment):
-            qranges = query.rowRanges
+        qranges = _access_granges(query)
 
         res = self.rowRanges.distanceToNearest(query=qranges, ignoreStrand=ignoreStrand)
         return res.column("distance")
@@ -438,10 +441,6 @@ class RangeSummarizedExperiment(BaseSE):
             RangeSummarizedExperiment: a new `RangeSummarizedExperiment`
             object with the shifted ranges.
         """
-
-        if self.rowRanges is None:
-            raise ValueError("rowRanges is None")
-
         new_ranges = self.rowRanges.shift(shift=shift)
 
         return RangeSummarizedExperiment(
@@ -565,18 +564,9 @@ class RangeSummarizedExperiment(BaseSE):
             Optional["RangeSummarizedExperiment"]: A `RangeSummarizedExperiment` object
             with the same length as query, containing hits to overlapping indices.
         """
+        _check_gr_or_rse(query)
 
-        if not (
-            isinstance(query, RangeSummarizedExperiment)
-            or isinstance(query, GenomicRanges)
-        ):
-            raise TypeError(
-                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
-            )
-
-        qranges = query
-        if isinstance(query, RangeSummarizedExperiment):
-            qranges = query.rowRanges
+        qranges = _access_granges(query)
 
         return self.rowRanges.findOverlaps(
             query=qranges,
@@ -616,18 +606,9 @@ class RangeSummarizedExperiment(BaseSE):
             Optional["RangeSummarizedExperiment"]: new `RangeSummarizedExperiment`
             object. None if there are no indices to slice.
         """
+        _check_gr_or_rse(query)
 
-        if not (
-            isinstance(query, RangeSummarizedExperiment)
-            or isinstance(query, GenomicRanges)
-        ):
-            raise TypeError(
-                "query is not a `RangeSummarizedExperiment` or `GenomicRanges`"
-            )
-
-        qranges = query
-        if isinstance(query, RangeSummarizedExperiment):
-            qranges = query.rowRanges
+        qranges = _access_granges(query)
 
         result = self.rowRanges.findOverlaps(
             query=qranges,

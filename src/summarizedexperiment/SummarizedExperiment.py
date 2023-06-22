@@ -3,6 +3,7 @@ from typing import MutableMapping, Optional, Sequence, Tuple, Union
 import numpy as np
 import pandas as pd
 from biocframe import BiocFrame
+from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from scipy import sparse as sp
 
 from .BaseSE import BaseSE
@@ -19,7 +20,9 @@ class SummarizedExperiment(BaseSE):
 
     def __init__(
         self,
-        assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
+        assays: MutableMapping[
+            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+        ],
         rowData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         colData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         metadata: Optional[MutableMapping] = None,
@@ -30,7 +33,7 @@ class SummarizedExperiment(BaseSE):
         samples.
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): dictionary
                 of matrices, with assay names as keys and matrices represented as dense
                 (numpy) or sparse (scipy) matrices. All matrices across assays must
                 have the same dimensions (number of rows, number of columns).

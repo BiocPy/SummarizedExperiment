@@ -6,9 +6,9 @@ import anndata
 import numpy as np
 import pandas as pd
 from biocframe import BiocFrame
+from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 from scipy import sparse as sp
-from filebackedarray import H5BackedSparseData, H5BackedDenseData
 
 from .accessors.colnames import get_colnames, set_colnames
 from .accessors.rownames import get_rownames, set_rownames
@@ -475,6 +475,16 @@ class BaseSE:
 
         layers = OrderedDict()
         for asy, mat in self.assays.items():
+            if isinstance(mat, H5BackedDenseData) or isinstance(
+                mat, H5BackedSparseData
+            ):
+                raise ValueError(
+                    f"assay {asy} is not supported. Uses a file backed representation."
+                    "while this is fine, this is currently not supported because `AnnData` uses"
+                    "a transposed representation (cells by features) rather than the "
+                    "bioconductor version (features by cells)"
+                )
+
             layers[asy] = mat.transpose()
 
         trows = self._rows

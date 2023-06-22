@@ -3,7 +3,7 @@ from random import random
 import numpy as np
 import pandas as pd
 import pytest
-from filebackedarray import H5BackedData
+from filebackedarray import H5BackedSparseData
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
@@ -39,7 +39,7 @@ def test_SE_backed():
 
     colData = pd.DataFrame({"treatment": ["ChIP"] * 3005,})
 
-    assay = H5BackedData("tests/data/tenx.sub.h5", "matrix")
+    assay = H5BackedSparseData("tests/data/tenx.sub.h5", "matrix")
 
     tse = SummarizedExperiment(
         assays={"counts_backed": assay},
@@ -83,7 +83,7 @@ def test_SE_backed_should_fail():
 
         colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
 
-        assay = H5BackedData("tests/data/tenx.sub.h5", "matrix")
+        assay = H5BackedSparseData("tests/data/tenx.sub.h5", "matrix")
 
         tse = SummarizedExperiment(
             assays={"counts_backed": assay, "counts": counts},

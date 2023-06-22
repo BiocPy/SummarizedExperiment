@@ -14,37 +14,35 @@ __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def _check_gr_or_rse(obj: Union[GenomicRanges, "RangeSummarizedExperiment"]):
+def _check_gr_or_rse(x: Union[GenomicRanges, "RangeSummarizedExperiment"]):
     """Check if the object is either a `RangeSummarizedExperiment` or `GenomicRanges`.
 
     Args:
-        obj (Union[GenomicRanges, RangeSummarizedExperiment]): object to check.
+        x (Union[GenomicRanges, RangeSummarizedExperiment]): object to check.
 
     Raises:
-        TypeError: Object is not a `RangeSummarizedExperiment` or `GenomicRanges`.
+        TypeError: object is not a `RangeSummarizedExperiment` or `GenomicRanges`.
     """
-    if not (
-        isinstance(obj, RangeSummarizedExperiment) or isinstance(obj, GenomicRanges)
-    ):
+    if not (isinstance(x, RangeSummarizedExperiment) or isinstance(x, GenomicRanges)):
         raise TypeError(
             "object is not a `RangeSummarizedExperiment` or `GenomicRanges`"
         )
 
 
 def _access_granges(
-    obj: Union[GenomicRanges, "RangeSummarizedExperiment"]
+    x: Union[GenomicRanges, "RangeSummarizedExperiment"]
 ) -> GenomicRanges:
     """Access ranges from the object.
 
     Args:
-        obj (Union[GenomicRanges, RangeSummarizedExperiment]): input object.
+        x (Union[GenomicRanges, RangeSummarizedExperiment]): input object.
 
     Returns:
         GenomicRanges: genomic ranges object.
     """
-    qranges = obj
-    if isinstance(obj, RangeSummarizedExperiment):
-        qranges = obj.rowRanges
+    qranges = x
+    if isinstance(x, RangeSummarizedExperiment):
+        qranges = x.rowRanges
 
     return qranges
 

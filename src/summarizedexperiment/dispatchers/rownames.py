@@ -10,11 +10,11 @@ __license__ = "MIT"
 
 
 @singledispatch
-def get_rownames(obj) -> Sequence[str]:
+def get_rownames(x) -> Sequence[str]:
     """Access row names from various objects.
 
     Args:
-        obj (any): supported object.
+        x (any): supported object.
 
     Raises:
         NotImplementedError: if type is not supported.
@@ -22,28 +22,28 @@ def get_rownames(obj) -> Sequence[str]:
     Returns:
         Sequence[str]: column names.
     """
-    if hasattr(obj, "rownames"):
-        return obj.rownames
+    if hasattr(x, "rownames"):
+        return x.rownames
 
-    raise NotImplementedError(f"rownames do not exist for class: {type(obj)}")
-
-
-@get_rownames.register
-def _(obj: pd.DataFrame) -> Sequence[str]:
-    return obj.index.tolist()
+    raise NotImplementedError(f"rownames do not exist for class: {type(x)}")
 
 
 @get_rownames.register
-def _(obj: BiocFrame) -> Sequence[str]:
-    return obj.rowNames
+def _(x: pd.DataFrame) -> Sequence[str]:
+    return x.index.tolist()
+
+
+@get_rownames.register
+def _(x: BiocFrame) -> Sequence[str]:
+    return x.rowNames
 
 
 @singledispatch
-def set_rownames(obj, names: Sequence[str]):
+def set_rownames(x, names: Sequence[str]):
     """Set row names for various objects.
 
     Args:
-        obj (any): supported object.
+        x (any): supported object.
         names (Sequence[str]): new names.
 
     Raises:
@@ -52,16 +52,16 @@ def set_rownames(obj, names: Sequence[str]):
     Returns:
         Sequence[str]: column names.
     """
-    raise NotImplementedError(f"Cannot set rownames for class: {type(obj)}")
+    raise NotImplementedError(f"Cannot set rownames for class: {type(x)}")
 
 
 @set_rownames.register
-def _(obj: pd.DataFrame, names: Sequence[str]) -> Sequence[str]:
-    obj.index = names
-    return obj
+def _(x: pd.DataFrame, names: Sequence[str]) -> Sequence[str]:
+    x.index = names
+    return x
 
 
 @set_rownames.register
-def _(obj: BiocFrame, names: Sequence[str]) -> Sequence[str]:
-    obj.rowNames = names
-    return obj
+def _(x: BiocFrame, names: Sequence[str]) -> Sequence[str]:
+    x.rowNames = names
+    return x

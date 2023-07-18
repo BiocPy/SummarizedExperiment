@@ -1,3 +1,4 @@
+import pytest
 import numpy as np
 from random import random
 import pandas as pd
@@ -37,7 +38,11 @@ df_gr = pd.DataFrame(
 
 gr = genomicranges.fromPandas(df_gr)
 
-colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
+colData = pd.DataFrame(
+    {
+        "treatment": ["ChIP", "Input"] * 3,
+    }
+)
 
 
 def test_SE_props():
@@ -85,7 +90,7 @@ def test_SE_set_props():
     assert tse.metadata is not None
 
 
-def test_SE_subset(summarized_experiment):
+def test_SE_subset(summarized_experiments):
     tse = SummarizedExperiment(
         assays={"counts": counts}, rowData=df_gr, colData=colData
     )
@@ -102,16 +107,21 @@ def test_SE_subset(summarized_experiment):
 
     assert subset_tse.assay("counts").shape == (10, 3)
 
-
+    # subset by name
     se = summarized_experiments.se1
     subset_se = se[["HER2", "BRCA1"], ["cell_1", "cell_3"]]
-
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
     assert len(subset_se.rowData) == 2
     assert len(subset_se.colData) == 2
 
+    assert subset_se.assay("counts").shape == (2, 2)
+
+    # subset by name with some that do not exist
+    se = summarized_experiments.se1
+    with pytest.raises(ValueError):
+        subset_se = se[["HER2", "BRCA1", "RAND"], ["cell_1", "cell_3"]]
 
 
 def test_SE_subsetAssays():

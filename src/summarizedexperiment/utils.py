@@ -28,6 +28,6 @@ def get_indexes_from_names(source: pd.Index, target: pd.Index) -> np.ndarray:
     """
     missing_names = target.difference(source)
     if not missing_names.empty:
-        raise ValueError(', '.join(missing_names) + "are invalid index names")
+        raise ValueError("invalid index name(s): " + ', '.join(missing_names))
 
     return source.get_indexer(target)

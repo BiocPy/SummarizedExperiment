@@ -412,7 +412,9 @@ class BaseSE:
 
         if rowIndices is not None and self._rows is not None:
             if is_list_of_strings(rowIndices):
-                rowIndices = get_indexes_from_names(self._rows.index, rowIndices)
+                rowIndices = get_indexes_from_names(
+                    self._rows.index, pd.Index(rowIndices)
+                )
             if isinstance(self._rows, pd.DataFrame):
                 new_rows = self._rows.iloc[rowIndices]
             else:
@@ -420,7 +422,9 @@ class BaseSE:
 
         if colIndices is not None and self._cols is not None:
             if is_list_of_strings(colIndices):
-                colIndices = get_indexes_from_names(self._cols.index, colIndices)
+                colIndices = get_indexes_from_names(
+                    self._cols.index, pd.Index(colIndices)
+                )
             if isinstance(self._cols, pd.DataFrame):
                 new_cols = self._cols.iloc[colIndices]
             else:

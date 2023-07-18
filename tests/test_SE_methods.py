@@ -85,7 +85,7 @@ def test_SE_set_props():
     assert tse.metadata is not None
 
 
-def test_SE_subset():
+def test_SE_subset(summarized_experiment):
     tse = SummarizedExperiment(
         assays={"counts": counts}, rowData=df_gr, colData=colData
     )
@@ -101,6 +101,17 @@ def test_SE_subset():
     assert len(subset_tse.colData) == 3
 
     assert subset_tse.assay("counts").shape == (10, 3)
+
+
+    se = summarized_experiments.se1
+    subset_se = se[["HER2", "BRCA1"], ["cell_1", "cell_3"]]
+
+    assert subset_se is not None
+    assert isinstance(subset_se, SummarizedExperiment)
+
+    assert len(subset_se.rowData) == 2
+    assert len(subset_se.colData) == 2
+
 
 
 def test_SE_subsetAssays():

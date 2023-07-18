@@ -12,6 +12,7 @@ from scipy import sparse as sp
 
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
+from .utils import is_list_of_strings, get_indexes_from_names
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -371,7 +372,10 @@ class BaseSE:
 
     def _slice(
         self,
-        args: Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]],
+        args: Tuple[
+            Union[Sequence[int], Sequence[str], slice],
+            Optional[Union[Sequence[int], Sequence[str], slice]],
+        ],
     ) -> Tuple[
         Union[pd.DataFrame, BiocFrame],
         Union[pd.DataFrame, BiocFrame],
@@ -380,8 +384,8 @@ class BaseSE:
         """Internal method to slice `SE` by index.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]):
-                indices to slice. tuple contains slices along dimensions (rows, cols).
+            args (Tuple[Union[Sequence[int], Sequence[str], slice], Optional[Union[Sequence[int], Sequence[str], slice]]]):
+                indices or names to slice. tuple contains slices along dimensions (rows, cols).
 
         Raises:
             ValueError: Too many or too few slices provided.
@@ -407,12 +411,16 @@ class BaseSE:
         new_assays = None
 
         if rowIndices is not None and self._rows is not None:
+            if is_list_of_strings(rowIndices):
+                rowIndices = get_indexes_from_names(self._rows.index, rowIndices)
             if isinstance(self._rows, pd.DataFrame):
                 new_rows = self._rows.iloc[rowIndices]
             else:
                 new_rows = self._rows[rowIndices, :]
 
         if colIndices is not None and self._cols is not None:
+            if is_list_of_strings(colIndices):
+                colIndices = get_indexes_from_names(self._cols.index, colIndices)
             if isinstance(self._cols, pd.DataFrame):
                 new_cols = self._cols.iloc[colIndices]
             else:

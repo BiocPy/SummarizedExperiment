@@ -130,12 +130,63 @@ tse.assay("counts")
 
 # Subset an experiment
 
-Use `[ ]` notation to subset a `SummarizedExperiment` object. 
+## `SummarizedExperiment`
+
+Use `[ ]` notation to subset a `SummarizedExperiment` object.
 
 ```python
 # subset the first 10 rows and the first 3 samples
 subset_tse = tse[0:10, 0:3]
 ```
+
+Alternatively, we can use a sequence of names or a boolean array. To show this, we create a `SummarizedExperiment` object with index names.
+
+```python
+rowData_with_index_names = pd.DataFrame(
+    {
+        "seqnames": ["chr_5", "chr_3", "chr_2"],
+        "start": [100, 200, 300],
+        "end": [110, 210, 310]
+    },
+    index=["HER2", "BRCA1", "TPFK"],
+)
+colData_with_index_names = pd.DataFrame(
+    {
+        "sample": ["SAM_1", "SAM_3", "SAM_3"],
+        "disease": ["True", "True", "True"],
+    },
+    index=["cell_1", "cell_2", "cell_3"],
+)
+se_with_index_names = SummarizedExperiment(
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
+    rowData=rowData_with_index_names,
+    colData=colData_with_index_names
+)
+
+# subset by name
+subset_se_with_index_names = se_with_index_names[
+    ["HER2", "BRCA1"], ["cell_1", "cell_3"]
+]
+
+# subset with boolean array
+subset_se_with_bools = se_with_index_names[
+    [True, True, False], [True, False, True]
+]
+```
+
+In the case a name does not exist, an error will be thrown:
+
+```python
+# throws error because "RAND" does not exist
+subset_se_with_index_names = se_with_index_names[
+    ["HER2", "BRCA1", "RAND"], ["cell_1", "cell_3"]
+]
+```
+
+## `RangedSummarizedExperiment`
 
 `RangeSummarizedExperiment` objects on the other hand support interval based operations.
 

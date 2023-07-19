@@ -412,6 +412,11 @@ class BaseSE:
                     self._rows.index, pd.Index(rowIndices)
                 )
             elif is_list_of_type(rowIndices, bool):
+                if len(rowIndices) != self.shape[0]:
+                    raise ValueError(
+                        "since rowIndices is a boolean vector, its length should match the shape"
+                        f"provided {len(rowIndices)}, must be {self.shape[0]}!"
+                    )
                 rowIndices = get_indexes_from_bools(rowIndices)
             elif is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
                 if isinstance(self._rows, pd.DataFrame):
@@ -427,6 +432,11 @@ class BaseSE:
                     self._cols.index, pd.Index(colIndices)
                 )
             elif is_list_of_type(colIndices, bool):
+                if len(colIndices) != self.shape[1]:
+                    raise ValueError(
+                        "since colIndices is a boolean vector, its length should match the shape"
+                        f"provided {len(colIndices)}, must be {self.shape[1]}!"
+                    )
                 colIndices = get_indexes_from_bools(colIndices)
             elif is_list_of_type(colIndices, int) or isinstance(colIndices, slice):
                 if isinstance(self._cols, pd.DataFrame):

@@ -150,6 +150,17 @@ def test_SE_subset_fails_with_indexes(summarized_experiments):
     with pytest.raises(Exception):
         subset_se = se["hello world", {"a": [1, 2, 3]}]
 
+    # subset by name when index is not available
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, rowData=df_gr, colData=colData
+    )
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+
+    with pytest.raises(ValueError):
+        subset_tse = tse[["0", "1", "2"], ["2", "3"]]
+
 
 def test_SE_subset_single_indexer_list(summarized_experiments):
     se = summarized_experiments.se1
@@ -161,6 +172,7 @@ def test_SE_subset_single_indexer_list(summarized_experiments):
     assert len(subset_se.colData) == 3
 
     assert subset_se.assay("counts").shape == (2, 3)
+
 
 def test_SE_subset_single_indexer_slicer(summarized_experiments):
     se = summarized_experiments.se1

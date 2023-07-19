@@ -10,9 +10,7 @@ To create a `SummarizedExperiment`, we need
 - `rows`: feature information about the rows of the matrices.
 - `cols`: sample information about the columns of the matrices.
 
-Lets create these three objects
-
-we first create a mock dataset of 200 rows and 6 columns, also adding a few sample data.
+Lets create these three objects. we first create a mock dataset of 200 rows and 6 columns, also adding a few sample data.
 
 ```python
 nrows = 200
@@ -75,7 +73,7 @@ trse = SummarizedExperiment(
 
 ## File backed mode for large datasets
 
-In addition to fully realized matrices in memory, SE/RSE also support file backed arrays and matrices. [FileBackedArray](https://github.com/BiocPy/FileBackedArray) package provides a file backed class for H5 backed matrices.
+In addition to fully realized matrices in memory, SE/RSE also supports file backed arrays and matrices. [FileBackedArray](https://github.com/BiocPy/FileBackedArray) package provides lazy representation for matrices stored in hdf5 files.
 
 ```python
 from filebackedarray import H5BackedSparseData
@@ -117,7 +115,7 @@ tse = SummarizedExperiment(
 
 ## Accessors
 
-Many properties can be accessed directly from the class instance
+Many properties can be accessed directly from the class instance. Checkout the API for all available methods.
 
 ```python
 tse.assays
@@ -200,4 +198,3 @@ tse.subsetOverlaps(query)
 ```
 
 Checkout the API docs or GenomicRanges for list of interval based operations.
-

@@ -1,13 +1,9 @@
-from typing import MutableMapping, Optional, Sequence, Tuple, Union
+from typing import MutableMapping, Optional, Sequence, Union
 
 import numpy as np
-import pandas as pd
-from biocframe import BiocFrame
-from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges, SeqInfo
-from scipy import sparse as sp
 
-from ._types import BiocOrPandasFrame, MatrixTypes, SlicerTypes
+from ._types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 from .BaseSE import BaseSE
 
 __author__ = "jkanche"
@@ -189,12 +185,12 @@ class RangeSummarizedExperiment(BaseSE):
 
     def __getitem__(
         self,
-        args: Tuple[SlicerTypes, Optional[SlicerTypes]],
+        args: SlicerArgTypes,
     ) -> "RangeSummarizedExperiment":
         """Subset a `RangeSummarizedExperiment`.
 
         Args:
-            args (Tuple[SlicerTypes, Optional[SlicerTypes]]): indices to slice.
+            args (SlicerArgTypes): indices to slice.
                 tuple can contains slices along row and column dimensions.
 
         Raises:

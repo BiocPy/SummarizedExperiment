@@ -1,4 +1,4 @@
-from typing import Sequence, Union
+from typing import Sequence, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -14,3 +14,4 @@ MatrixTypes = Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseDa
 BiocOrPandasFrame = Union[pd.DataFrame, BiocFrame]
 MatrixSlicerTypes = Union[Sequence[int], Sequence[bool], slice]
 SlicerTypes = Union[Sequence[int], Sequence[bool], Sequence[str], slice]
+SlicerArgTypes = Union[Tuple[SlicerTypes], Sequence[SlicerTypes], slice]

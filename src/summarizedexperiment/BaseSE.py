@@ -14,7 +14,7 @@ from ._types import (
     BiocOrPandasFrame,
     MatrixSlicerTypes,
     MatrixTypes,
-    SlicerTypes,
+    SlicerArgTypes,
 )
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
@@ -371,16 +371,12 @@ class BaseSE:
 
     def _slice(
         self,
-        args: Tuple[
-            SlicerTypes,
-            Optional[SlicerTypes],
-        ],
+        args: SlicerArgTypes,
     ) -> Tuple[BiocOrPandasFrame, BiocOrPandasFrame, MutableMapping[str, MatrixTypes],]:
         """Internal method to slice `SE` by index.
 
         Args:
-            args (Tuple[SlicerTypes, Optional[SlicerTypes]]):
-                indices or names to slice. tuple contains slices along
+            args (SlicerArgTypes): indices or names to slice. tuple contains slices along
                 dimensions (rows, cols).
 
         Raises:
@@ -391,16 +387,22 @@ class BaseSE:
             sliced row, cols and assays.
         """
 
-        if len(args) == 0:
-            raise ValueError("Arguments must contain one slice")
+        if isinstance(args, tuple):
+            if len(args) == 0:
+                raise ValueError("Arguments must contain one slice")
 
-        rowIndices = args[0]
-        colIndices = None
+            rowIndices = args[0]
+            colIndices = None
 
-        if len(args) > 1:
-            colIndices = args[1]
-        elif len(args) > 2:
-            raise ValueError("contains too many slices")
+            if len(args) > 1:
+                colIndices = args[1]
+            elif len(args) > 2:
+                raise ValueError("contains too many slices")
+        elif isinstance(args, list) or isinstance(args, slice):
+            rowIndices = args
+            colIndices = None
+        else:
+            raise ValueError(f"slicer {type(args)} is not supported")
 
         new_rows = None
         new_cols = None
@@ -414,8 +416,8 @@ class BaseSE:
             elif is_list_of_type(rowIndices, bool):
                 if len(rowIndices) != self.shape[0]:
                     raise ValueError(
-                        "since rowIndices is a boolean vector, its length should match the shape"
-                        f"provided {len(rowIndices)}, must be {self.shape[0]}!"
+                        "since rowIndices is a boolean vector, its length should match "
+                        f"the shape provided {len(rowIndices)}, must be {self.shape[0]}"
                     )
                 rowIndices = get_indexes_from_bools(rowIndices)
             elif is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
@@ -434,8 +436,8 @@ class BaseSE:
             elif is_list_of_type(colIndices, bool):
                 if len(colIndices) != self.shape[1]:
                     raise ValueError(
-                        "since colIndices is a boolean vector, its length should match the shape"
-                        f"provided {len(colIndices)}, must be {self.shape[1]}!"
+                        "since colIndices is a boolean vector, its length should match "
+                        f"the shape provided {len(colIndices)}, must be {self.shape[1]}"
                     )
                 colIndices = get_indexes_from_bools(colIndices)
             elif is_list_of_type(colIndices, int) or isinstance(colIndices, slice):

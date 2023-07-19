@@ -1,18 +1,23 @@
 import warnings
 from collections import OrderedDict
-from typing import MutableMapping, Optional, Sequence, Tuple, Union
+from typing import MutableMapping, Optional, Sequence, Tuple
 
 import anndata
-import numpy as np
 import pandas as pd
 from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
-from scipy import sparse as sp
 
+from ._slicer_utils import get_indexes_from_bools, get_indexes_from_names
+from ._type_checks import is_bioc_or_pandas_frame, is_list_of_type, is_matrix_like
+from ._types import (
+    BiocOrPandasFrame,
+    MatrixSlicerTypes,
+    MatrixTypes,
+    SlicerTypes,
+)
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
-from .utils import is_list_of_strings, get_indexes_from_names
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -26,28 +31,26 @@ class BaseSE:
     sample data (`coldata`) and any other metadata.
 
     Args:
-        assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): dictionary
+        assays (MutableMapping[str, MatrixTypes]): dictionary
             of matrices, with assay names as keys and matrices represented as dense
             (numpy) or sparse (scipy) matrices. All matrices across assays must
             have the same dimensions (number of rows, number of columns).
-        rowData (Union[pd.DataFrame, BiocFrame], optional): features, must be the same length as
+        rowData (BiocOrPandasFrame, optional): features, must be the same length as
             rows of the matrices in assays. Defaults to None.
-        colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
+        colData (BiocOrPandasFrame, optional): sample data, must be
             the same length as rows of the matrices in assays. Defaults to None.
         metadata (MutableMapping, optional): experiment metadata describing the
             methods. Defaults to None.
     """
 
     # TODO: should be an instance attribute
-    _shape = None
+    _shape: Optional[Tuple] = None
 
     def __init__(
         self,
-        assays: MutableMapping[
-            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
-        ],
-        rows: Optional[Union[pd.DataFrame, BiocFrame]] = None,
-        cols: Optional[Union[pd.DataFrame, BiocFrame]] = None,
+        assays: MutableMapping[str, MatrixTypes],
+        rows: Optional[BiocOrPandasFrame] = None,
+        cols: Optional[BiocOrPandasFrame] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
         """Initialize an instance of `BaseSE`."""
@@ -89,21 +92,26 @@ class BaseSE:
 
     def _validate_assays(
         self,
-        assays: MutableMapping[
-            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
-        ],
+        assays: MutableMapping[str, MatrixTypes],
     ):
         """Internal method to validate experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): experiment
+            assays (MutableMapping[str, MatrixTypes]): experiment
                 data.
 
         Raises:
             ValueError: when assays contain more than 2 dimensions.
             ValueError: if all assays do not have the same dimensions.
+            TypeError: if assays includes a unsupported matrix representation.
         """
+
         for asy, mat in assays.items():
+            if not is_matrix_like(mat):
+                raise TypeError(
+                    f"assay: {asy} is not a supported Matrix representation."
+                )
+
             if len(mat.shape) > 2:
                 raise ValueError(
                     "only 2-dimensional matrices are accepted, "
@@ -120,18 +128,17 @@ class BaseSE:
                     f" but provided {mat.shape}"
                 )
 
-    def _validate_rows(self, rows: Optional[Union[pd.DataFrame, BiocFrame]]):
+    def _validate_rows(self, rows: BiocOrPandasFrame):
         """Internal method to validate feature information (rowdata).
 
         Args:
-            rows (Optional[Union[pd.DataFrame, BiocFrame]]): feature information
-                (rowdata).
+            rows (BiocOrPandasFrame): feature information (rowdata).
 
         Raises:
             ValueError: when number of rows does not match between rows & assays.
             TypeError: when rows is neither a pandas dataframe not Biocframe object.
         """
-        if not (isinstance(rows, pd.DataFrame) or isinstance(rows, BiocFrame)):
+        if not is_bioc_or_pandas_frame(rows):
             raise TypeError(
                 "rowData must be either a pandas `DataFrame` or a `BiocFrame`"
                 f" object, provided {type(rows)}"
@@ -143,18 +150,17 @@ class BaseSE:
                 f" but provided {rows.shape[0]}"
             )
 
-    def _validate_cols(self, cols: Optional[Union[pd.DataFrame, BiocFrame]]):
+    def _validate_cols(self, cols: BiocOrPandasFrame):
         """Internal method to validate sample information (coldata).
 
         Args:
-            cols (Optional[Union[pd.DataFrame, BiocFrame]]): sample information
-                (coldata).
+            cols (BiocOrPandasFrame): sample information (coldata).
 
         Raises:
             ValueError: when number of samples do not match between cols & assays.
             TypeError: when cols is neither a pandas dataframe not Biocframe object.
         """
-        if not (isinstance(cols, pd.DataFrame) or isinstance(cols, BiocFrame)):
+        if not is_bioc_or_pandas_frame(cols):
             raise TypeError(
                 "colData must be either a pandas `DataFrame` or a `BiocFrame`"
                 f" object, provided {type(cols)}"
@@ -169,13 +175,11 @@ class BaseSE:
     @property
     def assays(
         self,
-    ) -> MutableMapping[
-        str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
-    ]:
+    ) -> MutableMapping[str, MatrixTypes]:
         """Get assays.
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]: a dictionary with
+            MutableMapping[str, MatrixTypes]: a dictionary with
             experiments names as keys and matrix data as values.
         """
         return self._assays
@@ -183,53 +187,51 @@ class BaseSE:
     @assays.setter
     def assays(
         self,
-        assays: MutableMapping[
-            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
-        ],
+        assays: MutableMapping[str, MatrixTypes],
     ) -> None:
         """Set new experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): new assays.
+            assays (MutableMapping[str, MatrixTypes]): new assays.
         """
         self._validate_assays(assays)
         self._assays = assays
 
     @property
-    def rowData(self) -> Union[pd.DataFrame, BiocFrame]:
+    def rowData(self) -> BiocOrPandasFrame:
         """Get features.
 
         Returns:
-            Optional[Union[pd.DataFrame, BiocFrame]]: features information.
+            Optional[BiocOrPandasFrame]: features information.
         """
         return self._rows
 
     @rowData.setter
-    def rowData(self, rows: Union[pd.DataFrame, BiocFrame]) -> None:
+    def rowData(self, rows: BiocOrPandasFrame) -> None:
         """Set features.
 
         Args:
-            rows (Optional[Union[pd.DataFrame, BiocFrame]]): new feature information.
+            rows (Optional[BiocOrPandasFrame]): new feature information.
         """
         rows = rows if rows is not None else BiocFrame({}, numberOfRows=self.shape[0])
         self._validate_rows(rows)
         self._rows = rows
 
     @property
-    def colData(self) -> Optional[Union[pd.DataFrame, BiocFrame]]:
+    def colData(self) -> Optional[BiocOrPandasFrame]:
         """Get sample data.
 
         Returns:
-            (Union[pd.DataFrame, BiocFrame], optional): Sample information.
+            (BiocOrPandasFrame, optional): Sample information.
         """
         return self._cols
 
     @colData.setter
-    def colData(self, cols: Optional[Union[pd.DataFrame, BiocFrame]]) -> None:
+    def colData(self, cols: Optional[BiocOrPandasFrame]) -> None:
         """Set sample data.
 
         Args:
-            cols (Union[pd.DataFrame, BiocFrame], optional): sample data to update.
+            cols (BiocOrPandasFrame, optional): sample data to update.
         """
         cols = cols if cols is not None else BiocFrame({}, numberOfRows=self.shape[1])
 
@@ -308,15 +310,13 @@ class BaseSE:
     def __str__(self) -> str:
         pattern = (
             f"Class BaseSE with {self.shape[0]} features and {self.shape[1]} samples \n"
-            f"  assays: {list(self._assays.keys())} \n"
-            f"  features: {self._rows.columns if self._rows is not None else None} \n"
-            f"  sample data: {self._cols.columns if self._cols is not None else None}"
+            f"  assays: {list(self.assays.keys())} \n"
+            f"  features: {self.rowData.columns if self._rows is not None else None} \n"
+            f"  sample data: {self.colData.columns if self._cols is not None else None}"
         )
         return pattern
 
-    def assay(
-        self, name: str
-    ) -> Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]:
+    def assay(self, name: str) -> MatrixTypes:
         """Convenience function to access an assay by name.
 
         Args:
@@ -326,7 +326,7 @@ class BaseSE:
             ValueError: if assay name does not exist.
 
         Returns:
-            Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]: experiment data.
+            MatrixTypes: experiment data.
         """
         if name not in self._assays:
             raise ValueError(f"Assay {name} does not exist")
@@ -335,23 +335,22 @@ class BaseSE:
 
     def subsetAssays(
         self,
-        rowIndices: Optional[Union[Sequence[int], slice]] = None,
-        colIndices: Optional[Union[Sequence[int], slice]] = None,
-    ) -> MutableMapping[str, Union[np.ndarray, sp.spmatrix]]:
+        rowIndices: Optional[MatrixSlicerTypes] = None,
+        colIndices: Optional[MatrixSlicerTypes] = None,
+    ) -> MutableMapping[str, MatrixTypes]:
         """Subset all assays to a slice (rows, cols).
 
         Args:
-            rowIndices (Union[Sequence[int], slice], optional): row indices to subset.
+            rowIndices (MatrixSlicerTypes, optional): row indices to subset.
                 Defaults to None.
-            colIndices (Union[Sequence[int], slice], optional): col indices to subset.
+            colIndices (MatrixSlicerTypes, optional): col indices to subset.
                 Defaults to None.
 
         Raises:
             ValueError: if `rowIndices` and `colIndices` are both None.
 
         Returns:
-            MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: experiment data
-            for only the specified slices.
+            MutableMapping[str, MatrixTypes]: sliced experiment data.
         """
 
         if rowIndices is None and colIndices is None:
@@ -373,25 +372,22 @@ class BaseSE:
     def _slice(
         self,
         args: Tuple[
-            Union[Sequence[int], Sequence[str], slice],
-            Optional[Union[Sequence[int], Sequence[str], slice]],
+            SlicerTypes,
+            Optional[SlicerTypes],
         ],
-    ) -> Tuple[
-        Union[pd.DataFrame, BiocFrame],
-        Union[pd.DataFrame, BiocFrame],
-        MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
-    ]:
+    ) -> Tuple[BiocOrPandasFrame, BiocOrPandasFrame, MutableMapping[str, MatrixTypes],]:
         """Internal method to slice `SE` by index.
 
         Args:
-            args (Tuple[Union[Sequence[int], Sequence[str], slice], Optional[Union[Sequence[int], Sequence[str], slice]]]):
-                indices or names to slice. tuple contains slices along dimensions (rows, cols).
+            args (Tuple[SlicerTypes, Optional[SlicerTypes]]):
+                indices or names to slice. tuple contains slices along
+                dimensions (rows, cols).
 
         Raises:
             ValueError: Too many or too few slices provided.
 
         Returns:
-            Tuple[Union[pd.DataFrame, BiocFrame], Union[pd.DataFrame, BiocFrame], MutableMapping[str, Union[np.ndarray, sp.spmatrix]]]:
+            Tuple[BiocOrPandasFrame, BiocOrPandasFrame, MutableMapping[str, MatrixTypes]]:
             sliced row, cols and assays.
         """
 
@@ -411,26 +407,34 @@ class BaseSE:
         new_assays = None
 
         if rowIndices is not None and self._rows is not None:
-            if is_list_of_strings(rowIndices):
+            if is_list_of_type(rowIndices, str):
                 rowIndices = get_indexes_from_names(
                     self._rows.index, pd.Index(rowIndices)
                 )
-
-            if isinstance(self._rows, pd.DataFrame):
-                new_rows = self._rows.iloc[rowIndices]
+            elif is_list_of_type(rowIndices, bool):
+                rowIndices = get_indexes_from_bools(rowIndices)
+            elif is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
+                if isinstance(self._rows, pd.DataFrame):
+                    new_rows = self._rows.iloc[rowIndices]
+                else:
+                    new_rows = self._rows[rowIndices, :]
             else:
-                new_rows = self._rows[rowIndices, :]
+                raise TypeError("rowIndices not supported!")
 
         if colIndices is not None and self._cols is not None:
-            if is_list_of_strings(colIndices):
+            if is_list_of_type(colIndices, str):
                 colIndices = get_indexes_from_names(
                     self._cols.index, pd.Index(colIndices)
                 )
-
-            if isinstance(self._cols, pd.DataFrame):
-                new_cols = self._cols.iloc[colIndices]
+            elif is_list_of_type(colIndices, bool):
+                colIndices = get_indexes_from_bools(colIndices)
+            elif is_list_of_type(colIndices, int) or isinstance(colIndices, slice):
+                if isinstance(self._cols, pd.DataFrame):
+                    new_cols = self._cols.iloc[colIndices]
+                else:
+                    new_cols = self._cols[colIndices, :]
             else:
-                new_cols = self._cols[colIndices, :]
+                raise TypeError("colIndices not supported!")
 
         new_assays = self.subsetAssays(rowIndices=rowIndices, colIndices=colIndices)
 
@@ -502,8 +506,8 @@ class BaseSE:
                 raise ValueError(
                     f"assay {asy} is not supported. Uses a file backed representation."
                     "while this is fine, this is currently not supported because `AnnData` uses"
-                    "a transposed representation (cells by features) rather than the "
-                    "bioconductor version (features by cells)"
+                    "a transposed representation (cells X features) rather than the "
+                    "bioconductor version (features X cells)"
                 )
 
             layers[asy] = mat.transpose()

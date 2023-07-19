@@ -1,9 +1,9 @@
-import pytest
+from random import random
 
 import genomicranges
 import numpy as np
-from random import random
 import pandas as pd
+import pytest
 from summarizedexperiment.RangeSummarizedExperiment import RangeSummarizedExperiment
 
 __author__ = "jkanche"
@@ -39,11 +39,14 @@ df_gr = pd.DataFrame(
 
 gr = genomicranges.fromPandas(df_gr)
 
-colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
+colData = pd.DataFrame(
+    {
+        "treatment": ["ChIP", "Input"] * 3,
+    }
+)
 
 
 def test_RSE_creation():
-
     trse = RangeSummarizedExperiment(
         assays={"counts": counts}, rowRanges=gr, colData=colData
     )

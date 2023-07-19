@@ -1,4 +1,4 @@
-from typing import MutableMapping, Optional, Tuple
+from typing import MutableMapping, Optional
 
 from ._types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 from .BaseSE import BaseSE

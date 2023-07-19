@@ -1,5 +1,5 @@
 from functools import singledispatch
-from typing import Sequence
+from typing import Any, Sequence
 
 import pandas as pd
 from biocframe import BiocFrame
@@ -10,7 +10,7 @@ __license__ = "MIT"
 
 
 @singledispatch
-def get_rownames(x) -> Sequence[str]:
+def get_rownames(x: Any) -> Sequence[str]:
     """Access row names from various objects.
 
     Args:
@@ -39,11 +39,11 @@ def _(x: BiocFrame) -> Sequence[str]:
 
 
 @singledispatch
-def set_rownames(x, names: Sequence[str]):
+def set_rownames(x: Any, names: Sequence[str]):
     """Set row names for various objects.
 
     Args:
-        x (any): supported object.
+        x (Any): supported object.
         names (Sequence[str]): new names.
 
     Raises:

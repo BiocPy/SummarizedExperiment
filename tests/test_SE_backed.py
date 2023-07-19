@@ -37,7 +37,11 @@ def test_SE_backed():
         }
     )
 
-    colData = pd.DataFrame({"treatment": ["ChIP"] * 3005,})
+    colData = pd.DataFrame(
+        {
+            "treatment": ["ChIP"] * 3005,
+        }
+    )
 
     assay = H5BackedSparseData("tests/data/tenx.sub.h5", "matrix")
 
@@ -50,6 +54,7 @@ def test_SE_backed():
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
     assert tse.shape == (1000, 3005)
+
 
 def test_SE_backed_should_fail():
     # test_h5 = h5py.File("tests/data/tenx.sub.h5")
@@ -81,7 +86,11 @@ def test_SE_backed_should_fail():
             }
         )
 
-        colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
+        colData = pd.DataFrame(
+            {
+                "treatment": ["ChIP", "Input"] * 3,
+            }
+        )
 
         assay = H5BackedSparseData("tests/data/tenx.sub.h5", "matrix")
 

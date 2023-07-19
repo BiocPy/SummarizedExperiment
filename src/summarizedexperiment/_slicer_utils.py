@@ -1,15 +1,11 @@
-from typing import Sequence, Any
+from typing import Any, Sequence
+
 import numpy as np
 import pandas as pd
 
-
-def is_list_of_strings(obj) -> bool:
-    """Returns `True` if obj is a list of strings.
-
-    Args:
-        obj: an object.
-    """
-    return isinstance(obj, list) and all(isinstance(item, str) for item in obj)
+__author__ = "keviny2, jkanche"
+__copyright__ = "Genentech"
+__license__ = "MIT"
 
 
 def get_indexes_from_names(
@@ -41,3 +37,18 @@ def get_indexes_from_names(
         raise ValueError("invalid index name(s): " + ", ".join(missing_names))
 
     return source.get_indexer(target).tolist()
+
+
+def get_indexes_from_bools(x: Sequence[bool], match: bool = True) -> Sequence[int]:
+    """Get indices where values in `x` are equal to `match`.
+
+    if match is `True`, returns indices in `x` whose value is `True`.
+
+    Args:
+        x (Sequence[bool]): boolean vector.
+        match (bool, optional): value to find indices for. Defaults to True.
+
+    Returns:
+        Sequence[int]: list of indices with matches
+    """
+    return [i for i in range(len(x)) if x[i] == match]

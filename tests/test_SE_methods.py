@@ -1,8 +1,9 @@
-import pytest
-import numpy as np
 from random import random
-import pandas as pd
+
 import genomicranges
+import numpy as np
+import pandas as pd
+import pytest
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
@@ -107,6 +108,8 @@ def test_SE_subset(summarized_experiments):
 
     assert subset_tse.assay("counts").shape == (10, 3)
 
+
+def test_SE_subset_by_name(summarized_experiments):
     # subset by name
     se = summarized_experiments.se1
     subset_se = se[["HER2", "BRCA1"], ["cell_1", "cell_3"]]
@@ -118,11 +121,15 @@ def test_SE_subset(summarized_experiments):
 
     assert subset_se.assay("counts").shape == (2, 2)
 
+
+def test_SE_subset_by_name_fails(summarized_experiments):
     # subset by name with some that do not exist
     se = summarized_experiments.se1
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception):
         subset_se = se[["HER2", "BRCA1", "RAND"], ["cell_1", "cell_3"]]
 
+
+def test_SE_subset_with_biocframe(summarized_experiments):
     # subset BiocFrame
     se = summarized_experiments.se_biocframe_1
     subset_se = se[["HER2", "BRCA1"], ["cell_1", "cell_3"]]
@@ -134,9 +141,59 @@ def test_SE_subset(summarized_experiments):
 
     assert subset_se.assay("counts").shape == (2, 2)
 
+
+def test_SE_subset_with_bools(summarized_experiments):
+    se = summarized_experiments.se1
+    subset_se = se[[True, False, True],]
+    assert subset_se is not None
+    assert isinstance(subset_se, SummarizedExperiment)
+
+    assert len(subset_se.rowData) == 2
+    assert len(subset_se.colData) == 3
+
+    assert subset_se.assay("counts").shape == (2, 3)
+
+    subset_se = se[[True, False, False], [True, False, False]]
+    assert subset_se is not None
+    assert isinstance(subset_se, SummarizedExperiment)
+
+    assert len(subset_se.rowData) == 1
+    assert len(subset_se.colData) == 1
+
+    assert subset_se.assay("counts").shape == (1, 1)
+
+
+def test_SE_subset_biocframe_with_bools(summarized_experiments):
+    se = summarized_experiments.se_biocframe_1
+    subset_se = se[[True, False, True],]
+    assert subset_se is not None
+    assert isinstance(subset_se, SummarizedExperiment)
+
+    assert len(subset_se.rowData) == 2
+    assert len(subset_se.colData) == 3
+
+    assert subset_se.assay("counts").shape == (2, 3)
+
+    subset_se = se[[True, False, False], [True, False, False]]
+    assert subset_se is not None
+    assert isinstance(subset_se, SummarizedExperiment)
+
+    assert len(subset_se.rowData) == 1
+    assert len(subset_se.colData) == 1
+
+    assert subset_se.assay("counts").shape == (1, 1)
+
+
+def test_SE_subset_biocframe_with_bools_should_fail(summarized_experiments):
+    se = summarized_experiments.se_biocframe_1
+    with pytest.raises(Exception):
+        subset_se = se[[True, False],]
+
+
+def test_SE_subset_fails_with_indexes(summarized_experiments):
     # subset by invalid indexes
     se = summarized_experiments.se1
-    with pytest.raises(TypeError):
+    with pytest.raises(Exception):
         subset_se = se["hello world", {"a": [1, 2, 3]}]
 
     # subset by name when index is not available

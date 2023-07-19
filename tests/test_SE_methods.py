@@ -197,6 +197,13 @@ def test_SE_subset_fails_with_indexes(summarized_experiments):
         subset_se = se["hello world", {"a": [1, 2, 3]}]
 
     # subset by name when index is not available
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, rowData=df_gr, colData=colData
+    )
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+
     with pytest.raises(ValueError):
         subset_tse = tse[["0", "1", "2"], ["2", "3"]]
 

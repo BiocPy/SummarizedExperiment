@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="License" href="license.html" /><link rel="prev" title="SummarizedExperiment" href="readme.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
-        <title>Tutorial - SummarizedExperiment 0.2.7 documentation</title>
+        <title>Tutorial - SummarizedExperiment 0.2.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.2.7 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.2.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.7 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -215,8 +215,7 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">rows</span></code>: feature information about the rows of the matrices.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">cols</span></code>: sample information about the columns of the matrices.</p></li>
 </ul>
-<p>Lets create these three objects</p>
-<p>we first create a mock dataset of 200 rows and 6 columns, also adding a few sample data.</p>
+<p>Lets create these three objects. we first create a mock dataset of 200 rows and 6 columns, also adding a few sample data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nrows</span> <span class="o">=</span> <span class="mi">200</span>
 <span class="n">ncols</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">)</span>
@@ -274,7 +273,7 @@
 </section>
 <section id="file-backed-mode-for-large-datasets">
 <h2>File backed mode for large datasets<a class="headerlink" href="#file-backed-mode-for-large-datasets" title="Permalink to this heading">#</a></h2>
-<p>In addition to fully realized matrices in memory, SE/RSE also support file backed arrays and matrices. <a class="reference external" href="https://github.com/BiocPy/FileBackedArray">FileBackedArray</a> package provides a file backed class for H5 backed matrices.</p>
+<p>In addition to fully realized matrices in memory, SE/RSE also supports file backed arrays and matrices. <a class="reference external" href="https://github.com/BiocPy/FileBackedArray">FileBackedArray</a> package provides lazy representation for matrices stored in hdf5 files.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filebackedarray</span> <span class="kn">import</span> <span class="n">H5BackedSparseData</span>
 
 <span class="n">df_gr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
@@ -314,7 +313,7 @@
 </section>
 <section id="accessors">
 <h2>Accessors<a class="headerlink" href="#accessors" title="Permalink to this heading">#</a></h2>
-<p>Many properties can be accessed directly from the class instance</p>
+<p>Many properties can be accessed directly from the class instance. Checkout the API for all available methods.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tse</span><span class="o">.</span><span class="n">assays</span>
 <span class="n">tse</span><span class="o">.</span><span class="n">rowData</span> <span class="ow">or</span> <span class="c1"># tse.rowRanges</span>
 <span class="n">tse</span><span class="o">.</span><span class="n">colData</span>
@@ -327,11 +326,59 @@
 </section>
 <section id="subset-an-experiment">
 <h1>Subset an experiment<a class="headerlink" href="#subset-an-experiment" title="Permalink to this heading">#</a></h1>
+<section id="id1">
+<h2><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code><a class="headerlink" href="#id1" title="Permalink to this heading">#</a></h2>
 <p>Use <code class="docutils literal notranslate"><span class="pre">[</span> <span class="pre">]</span></code> notation to subset a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># subset the first 10 rows and the first 3 samples</span>
 <span class="n">subset_tse</span> <span class="o">=</span> <span class="n">tse</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
+<p>Alternatively, we can use a sequence of names or a boolean array. To show this, we create a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> object with index names.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rowData_with_index_names</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr_5&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_2&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
+        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">310</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA1&quot;</span><span class="p">,</span> <span class="s2">&quot;TPFK&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">colData_with_index_names</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SAM_1&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_3&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_3&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;disease&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cell_1&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_2&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_3&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">se_with_index_names</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+        <span class="s2">&quot;lognorm&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="p">},</span>
+    <span class="n">rowData</span><span class="o">=</span><span class="n">rowData_with_index_names</span><span class="p">,</span>
+    <span class="n">colData</span><span class="o">=</span><span class="n">colData_with_index_names</span>
+<span class="p">)</span>
+
+<span class="c1"># subset by name</span>
+<span class="n">subset_se_with_index_names</span> <span class="o">=</span> <span class="n">se_with_index_names</span><span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA1&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;cell_1&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_3&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+
+<span class="c1"># subset with boolean array</span>
+<span class="n">subset_se_with_bools</span> <span class="o">=</span> <span class="n">se_with_index_names</span><span class="p">[</span>
+    <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">],</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>In the case a name does not exist, an error will be thrown:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># throws error because &quot;RAND&quot; does not exist</span>
+<span class="n">subset_se_with_index_names</span> <span class="o">=</span> <span class="n">se_with_index_names</span><span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA1&quot;</span><span class="p">,</span> <span class="s2">&quot;RAND&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;cell_1&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_3&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="rangedsummarizedexperiment">
+<h2><code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code><a class="headerlink" href="#rangedsummarizedexperiment" title="Permalink to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code> objects on the other hand support interval based operations.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">]}</span>
 
@@ -341,6 +388,7 @@
 </pre></div>
 </div>
 <p>Checkout the API docs or GenomicRanges for list of interval based operations.</p>
+</section>
 </section>
 
         </article>

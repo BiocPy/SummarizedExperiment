@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
-        <title>summarizedexperiment.RangeSummarizedExperiment - SummarizedExperiment 0.2.7 documentation</title>
+        <title>summarizedexperiment.RangeSummarizedExperiment - SummarizedExperiment 0.2.8 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.2.7 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.2.8 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.7 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.8 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,23 +202,23 @@
         </div>
         <article role="main">
           <h1>Source code for summarizedexperiment.RangeSummarizedExperiment</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
-<span class="kn">from</span> <span class="nn">filebackedarray</span> <span class="kn">import</span> <span class="n">H5BackedDenseData</span><span class="p">,</span> <span class="n">H5BackedSparseData</span>
 <span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">SeqInfo</span>
-<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span> <span class="k">as</span> <span class="n">sp</span>
 
+<span class="kn">from</span> <span class="nn">._types</span> <span class="kn">import</span> <span class="n">BiocOrPandasFrame</span><span class="p">,</span> <span class="n">MatrixTypes</span><span class="p">,</span> <span class="n">SlicerArgTypes</span>
 <span class="kn">from</span> <span class="nn">.BaseSE</span> <span class="kn">import</span> <span class="n">BaseSE</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
+<span class="n">GRangesOrRangeSE</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">]</span>
 
-<span class="k">def</span> <span class="nf">_check_gr_or_rse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">]):</span>
+
+<span class="c1"># TODO: technically should be in _type_checks but fails due to circular imports.</span>
+<span class="k">def</span> <span class="nf">_check_gr_or_rse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if the object is either a `RangeSummarizedExperiment` or `GenomicRanges`.</span>
 
 <span class="sd">    Args:</span>
@@ -233,9 +233,7 @@
         <span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_access_granges</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">_access_granges</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GenomicRanges</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Access ranges from the object.</span>
 
 <span class="sd">    Args:</span>
@@ -258,12 +256,10 @@
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">assays</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span>
-            <span class="nb">str</span><span class="p">,</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">sp</span><span class="o">.</span><span class="n">spmatrix</span><span class="p">,</span> <span class="n">H5BackedSparseData</span><span class="p">,</span> <span class="n">H5BackedDenseData</span><span class="p">]</span>
-        <span class="p">],</span>
+        <span class="n">assays</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatrixTypes</span><span class="p">],</span>
         <span class="n">rowRanges</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">],</span>
-        <span class="n">rowData</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">colData</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">rowData</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">colData</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a Range Summarized Experiment (RSE) object.</span>
@@ -277,16 +273,16 @@
 <span class="sd">        use a `SummarizedExperiment` instead!</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): dictionary</span>
+<span class="sd">            assays (MutableMapping[str, MatrixTypes]): dictionary</span>
 <span class="sd">                of matrices, with assay names as keys and matrices represented as dense</span>
 <span class="sd">                (numpy) or sparse (scipy) matrices. All matrices across assays must</span>
 <span class="sd">                have the same dimensions (number of rows, number of columns).</span>
 <span class="sd">            rowRanges (GenomicRanges): genomic ranges, must be the same length as</span>
 <span class="sd">                rows of the matrices in assays.</span>
-<span class="sd">            rowData (Union[pd.DataFrame, BiocFrame], optional): features, must be the</span>
+<span class="sd">            rowData (BiocOrPandasFrame, optional): features, must be the</span>
 <span class="sd">                same length as rows of the matrices in assays. Defaults to None.</span>
-<span class="sd">            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be</span>
-<span class="sd">                the same length as rows of the matrices in assays. Defaults to None.</span>
+<span class="sd">            colData (BiocOrPandasFrame, optional): sample data, must be</span>
+<span class="sd">                the same length as columns of the matrices in assays. Defaults to None.</span>
 <span class="sd">            metadata (MutableMapping, optional): experiment metadata describing the</span>
 <span class="sd">                methods. Defaults to None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -393,13 +389,13 @@
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">args</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">],</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="nb">slice</span><span class="p">]]],</span>
+        <span class="n">args</span><span class="p">:</span> <span class="n">SlicerArgTypes</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset a `RangeSummarizedExperiment`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]): indices to slice. tuple can</span>
-<span class="sd">                contains slices along row and column dimensions.</span>
+<span class="sd">            args (SlicerArgTypes): indices to slice.</span>
+<span class="sd">                tuple can contains slices along row and column dimensions.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: Too many or few slices.</span>
@@ -425,7 +421,7 @@
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Class RangeSummarizedExperiment with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> features and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> samples </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  assays: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;  assays: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;  features: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">rowData</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">rowData</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;  sample data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">colData</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">colData</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
@@ -451,14 +447,14 @@
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.nearest"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.nearest">[docs]</a>    <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">],</span>
+        <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, both upstream and downstream that overlap with</span>
 <span class="sd">        each range in `query`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (Union[GenomicRanges, &quot;RangeSummarizedExperiment&quot;]): query intervals</span>
+<span class="sd">            query (GRangesOrRangeSE): query intervals</span>
 <span class="sd">                to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand during looksups?</span>
 <span class="sd">                Defaults to False.</span>
@@ -481,14 +477,14 @@
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.precede"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.precede">[docs]</a>    <span class="k">def</span> <span class="nf">precede</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">],</span>
+        <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, only downstream that overlap with</span>
 <span class="sd">        each range in `query`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (Union[GenomicRanges, &quot;RangeSummarizedExperiment&quot;]): query intervals</span>
+<span class="sd">            query (GRangesOrRangeSE): query intervals</span>
 <span class="sd">                to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
@@ -510,14 +506,14 @@
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.follow"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.follow">[docs]</a>    <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">],</span>
+        <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, only upstream that overlap with the</span>
 <span class="sd">        each range in `query`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (Union[GenomicRanges, &quot;RangeSummarizedExperiment&quot;]): query intervals</span>
+<span class="sd">            query (GRangesOrRangeSE): query intervals</span>
 <span class="sd">                to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
@@ -538,7 +534,7 @@
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.distanceToNearest"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.distanceToNearest">[docs]</a>    <span class="k">def</span> <span class="nf">distanceToNearest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">],</span>
+        <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">ignoreStrand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with the</span>
@@ -547,7 +543,7 @@
 <span class="sd">        Technically same as `nearest` since we also return `distance` to the nearest match.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (Union[GenomicRanges, &quot;RangeSummarizedExperiment&quot;]): query intervals</span>
+<span class="sd">            query (GRangesOrRangeSE): query intervals</span>
 <span class="sd">                to find nearest positions.</span>
 <span class="sd">            ignoreStrand (bool, optional): ignore strand? Defaults to False.</span>
 
@@ -738,7 +734,7 @@
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.findOverlaps"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.findOverlaps">[docs]</a>    <span class="k">def</span> <span class="nf">findOverlaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">],</span>
+        <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">queryType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
         <span class="n">maxGap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">minOverlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -747,7 +743,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find overlaps between subject (self) and query ranges.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (Union[GenomicRanges, &quot;RangeSummarizedExperiment&quot;]): query ranges.</span>
+<span class="sd">            query (GRangesOrRangeSE): query ranges.</span>
 <span class="sd">            queryType (str, optional): overlap query type, must be one of</span>
 <span class="sd">                - &quot;any&quot;: any overlap is good.</span>
 <span class="sd">                - &quot;start&quot;: overlap at the beginning of the intervals.</span>
@@ -780,7 +776,7 @@
 
 <div class="viewcode-block" id="RangeSummarizedExperiment.subsetByOverlaps"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.subsetByOverlaps">[docs]</a>    <span class="k">def</span> <span class="nf">subsetByOverlaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="s2">&quot;RangeSummarizedExperiment&quot;</span><span class="p">],</span>
+        <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">queryType</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
         <span class="n">maxGap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">minOverlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -789,7 +785,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset a `RangeSummarizedExperiment` by feature overlaps.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (Union[GenomicRanges, &quot;RangeSummarizedExperiment&quot;]): query ranges.</span>
+<span class="sd">            query (GRangesOrRangeSE): query ranges.</span>
 <span class="sd">            queryType (str, optional): overlap query type, must be one of</span>
 <span class="sd">                - &quot;any&quot;: any overlap is good.</span>
 <span class="sd">                - &quot;start&quot;: overlap at the beginning of the intervals.</span>

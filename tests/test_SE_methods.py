@@ -134,6 +134,11 @@ def test_SE_subset(summarized_experiments):
 
     assert subset_se.assay("counts").shape == (2, 2)
 
+    # subset by invalid indexes
+    se = summarized_experiments.se1
+    with pytest.raises(TypeError):
+        subset_se = se["hello world", {"a": [1, 2, 3]}]
+
 
 def test_SE_subsetAssays():
     tse = SummarizedExperiment(

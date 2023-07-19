@@ -78,7 +78,7 @@ class RangeSummarizedExperiment(BaseSE):
             rowData (BiocOrPandasFrame, optional): features, must be the
                 same length as rows of the matrices in assays. Defaults to None.
             colData (BiocOrPandasFrame, optional): sample data, must be
-                the same length as rows of the matrices in assays. Defaults to None.
+                the same length as columns of the matrices in assays. Defaults to None.
             metadata (MutableMapping, optional): experiment metadata describing the
                 methods. Defaults to None.
         """

@@ -139,6 +139,10 @@ def test_SE_subset(summarized_experiments):
     with pytest.raises(TypeError):
         subset_se = se["hello world", {"a": [1, 2, 3]}]
 
+    # subset by name when index is not available
+    with pytest.raises(ValueError):
+        subset_tse = tse[["0", "1", "2"], ["2", "3"]]
+
 
 def test_SE_subsetAssays():
     tse = SummarizedExperiment(

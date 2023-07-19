@@ -415,6 +415,7 @@ class BaseSE:
                 rowIndices = get_indexes_from_names(
                     self._rows.index, pd.Index(rowIndices)
                 )
+
             if isinstance(self._rows, pd.DataFrame):
                 new_rows = self._rows.iloc[rowIndices]
             else:
@@ -425,6 +426,7 @@ class BaseSE:
                 colIndices = get_indexes_from_names(
                     self._cols.index, pd.Index(colIndices)
                 )
+
             if isinstance(self._cols, pd.DataFrame):
                 new_cols = self._cols.iloc[colIndices]
             else:

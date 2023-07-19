@@ -123,6 +123,17 @@ def test_SE_subset(summarized_experiments):
     with pytest.raises(ValueError):
         subset_se = se[["HER2", "BRCA1", "RAND"], ["cell_1", "cell_3"]]
 
+    # subset BiocFrame
+    se = summarized_experiments.se_biocframe_1
+    subset_se = se[["HER2", "BRCA1"], ["cell_1", "cell_3"]]
+    assert subset_se is not None
+    assert isinstance(subset_se, SummarizedExperiment)
+
+    assert len(subset_se.rowData) == 2
+    assert len(subset_se.colData) == 2
+
+    assert subset_se.assay("counts").shape == (2, 2)
+
 
 def test_SE_subsetAssays():
     tse = SummarizedExperiment(

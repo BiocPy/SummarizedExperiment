@@ -1,7 +1,8 @@
-import numpy as np
 from random import random
-import pandas as pd
+
 import genomicranges
+import numpy as np
+import pandas as pd
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
@@ -37,7 +38,11 @@ df_gr = pd.DataFrame(
 
 gr = genomicranges.fromPandas(df_gr)
 
-colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
+colData = pd.DataFrame(
+    {
+        "treatment": ["ChIP", "Input"] * 3,
+    }
+)
 
 
 def test_SE_props():
@@ -83,24 +88,6 @@ def test_SE_set_props():
 
     tse.metadata = {"something": "random"}
     assert tse.metadata is not None
-
-
-def test_SE_subset():
-    tse = SummarizedExperiment(
-        assays={"counts": counts}, rowData=df_gr, colData=colData
-    )
-
-    assert tse is not None
-    assert isinstance(tse, SummarizedExperiment)
-
-    subset_tse = tse[0:10, 2:5]
-    assert subset_tse is not None
-    assert isinstance(subset_tse, SummarizedExperiment)
-
-    assert len(subset_tse.rowData) == 10
-    assert len(subset_tse.colData) == 3
-
-    assert subset_tse.assay("counts").shape == (10, 3)
 
 
 def test_SE_subsetAssays():

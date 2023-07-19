@@ -1,20 +1,20 @@
-from typing import MutableMapping, Optional, Sequence, Tuple, Union
+from typing import MutableMapping, Optional, Sequence, Union
 
 import numpy as np
-import pandas as pd
-from biocframe import BiocFrame
-from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges, SeqInfo
-from scipy import sparse as sp
 
+from ._types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 from .BaseSE import BaseSE
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
+GRangesOrRangeSE = Union[GenomicRanges, "RangeSummarizedExperiment"]
 
-def _check_gr_or_rse(x: Union[GenomicRanges, "RangeSummarizedExperiment"]):
+
+# TODO: technically should be in _type_checks but fails due to circular imports.
+def _check_gr_or_rse(x: GRangesOrRangeSE):
     """Check if the object is either a `RangeSummarizedExperiment` or `GenomicRanges`.
 
     Args:
@@ -29,9 +29,7 @@ def _check_gr_or_rse(x: Union[GenomicRanges, "RangeSummarizedExperiment"]):
         )
 
 
-def _access_granges(
-    x: Union[GenomicRanges, "RangeSummarizedExperiment"]
-) -> GenomicRanges:
+def _access_granges(x: GRangesOrRangeSE) -> GenomicRanges:
     """Access ranges from the object.
 
     Args:
@@ -54,12 +52,10 @@ class RangeSummarizedExperiment(BaseSE):
 
     def __init__(
         self,
-        assays: MutableMapping[
-            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
-        ],
+        assays: MutableMapping[str, MatrixTypes],
         rowRanges: Optional[GenomicRanges],
-        rowData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
-        colData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
+        rowData: Optional[BiocOrPandasFrame] = None,
+        colData: Optional[BiocOrPandasFrame] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
         """Initialize a Range Summarized Experiment (RSE) object.
@@ -73,16 +69,16 @@ class RangeSummarizedExperiment(BaseSE):
         use a `SummarizedExperiment` instead!
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): dictionary
+            assays (MutableMapping[str, MatrixTypes]): dictionary
                 of matrices, with assay names as keys and matrices represented as dense
                 (numpy) or sparse (scipy) matrices. All matrices across assays must
                 have the same dimensions (number of rows, number of columns).
             rowRanges (GenomicRanges): genomic ranges, must be the same length as
                 rows of the matrices in assays.
-            rowData (Union[pd.DataFrame, BiocFrame], optional): features, must be the
+            rowData (BiocOrPandasFrame, optional): features, must be the
                 same length as rows of the matrices in assays. Defaults to None.
-            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
-                the same length as rows of the matrices in assays. Defaults to None.
+            colData (BiocOrPandasFrame, optional): sample data, must be
+                the same length as columns of the matrices in assays. Defaults to None.
             metadata (MutableMapping, optional): experiment metadata describing the
                 methods. Defaults to None.
         """
@@ -189,13 +185,13 @@ class RangeSummarizedExperiment(BaseSE):
 
     def __getitem__(
         self,
-        args: Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]],
+        args: SlicerArgTypes,
     ) -> "RangeSummarizedExperiment":
         """Subset a `RangeSummarizedExperiment`.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]): indices to slice. tuple can
-                contains slices along row and column dimensions.
+            args (SlicerArgTypes): indices to slice.
+                tuple can contains slices along row and column dimensions.
 
         Raises:
             ValueError: Too many or few slices.
@@ -221,7 +217,7 @@ class RangeSummarizedExperiment(BaseSE):
     def __str__(self) -> str:
         pattern = (
             f"Class RangeSummarizedExperiment with {self.shape[0]} features and {self.shape[1]} samples \n"
-            f"  assays: {list(self._assays.keys())} \n"
+            f"  assays: {list(self.assays.keys())} \n"
             f"  features: {self.rowData.columns if self.rowData is not None else None} \n"
             f"  sample data: {self.colData.columns if self.colData is not None else None}"
         )
@@ -247,14 +243,14 @@ class RangeSummarizedExperiment(BaseSE):
 
     def nearest(
         self,
-        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        query: GRangesOrRangeSE,
         ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions, both upstream and downstream that overlap with
         each range in `query`.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals
+            query (GRangesOrRangeSE): query intervals
                 to find nearest positions.
             ignoreStrand (bool, optional): ignore strand during looksups?
                 Defaults to False.
@@ -277,14 +273,14 @@ class RangeSummarizedExperiment(BaseSE):
 
     def precede(
         self,
-        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        query: GRangesOrRangeSE,
         ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions, only downstream that overlap with
         each range in `query`.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals
+            query (GRangesOrRangeSE): query intervals
                 to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
@@ -306,14 +302,14 @@ class RangeSummarizedExperiment(BaseSE):
 
     def follow(
         self,
-        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        query: GRangesOrRangeSE,
         ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions, only upstream that overlap with the
         each range in `query`.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals
+            query (GRangesOrRangeSE): query intervals
                 to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
@@ -334,7 +330,7 @@ class RangeSummarizedExperiment(BaseSE):
 
     def distanceToNearest(
         self,
-        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        query: GRangesOrRangeSE,
         ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
         """Search nearest positions only downstream that overlap with the
@@ -343,7 +339,7 @@ class RangeSummarizedExperiment(BaseSE):
         Technically same as `nearest` since we also return `distance` to the nearest match.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals
+            query (GRangesOrRangeSE): query intervals
                 to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
@@ -534,7 +530,7 @@ class RangeSummarizedExperiment(BaseSE):
 
     def findOverlaps(
         self,
-        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        query: GRangesOrRangeSE,
         queryType: str = "any",
         maxGap: int = -1,
         minOverlap: int = 1,
@@ -543,7 +539,7 @@ class RangeSummarizedExperiment(BaseSE):
         """Find overlaps between subject (self) and query ranges.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query ranges.
+            query (GRangesOrRangeSE): query ranges.
             queryType (str, optional): overlap query type, must be one of
                 - "any": any overlap is good.
                 - "start": overlap at the beginning of the intervals.
@@ -576,7 +572,7 @@ class RangeSummarizedExperiment(BaseSE):
 
     def subsetByOverlaps(
         self,
-        query: Union[GenomicRanges, "RangeSummarizedExperiment"],
+        query: GRangesOrRangeSE,
         queryType: str = "any",
         maxGap: int = -1,
         minOverlap: int = 1,
@@ -585,7 +581,7 @@ class RangeSummarizedExperiment(BaseSE):
         """Subset a `RangeSummarizedExperiment` by feature overlaps.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query ranges.
+            query (GRangesOrRangeSE): query ranges.
             queryType (str, optional): overlap query type, must be one of
                 - "any": any overlap is good.
                 - "start": overlap at the beginning of the intervals.

@@ -1,11 +1,6 @@
-from typing import MutableMapping, Optional, Sequence, Tuple, Union
+from typing import MutableMapping, Optional
 
-import numpy as np
-import pandas as pd
-from biocframe import BiocFrame
-from filebackedarray import H5BackedDenseData, H5BackedSparseData
-from scipy import sparse as sp
-
+from ._types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 from .BaseSE import BaseSE
 
 __author__ = "jkanche"
@@ -20,11 +15,9 @@ class SummarizedExperiment(BaseSE):
 
     def __init__(
         self,
-        assays: MutableMapping[
-            str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
-        ],
-        rowData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
-        colData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
+        assays: MutableMapping[str, MatrixTypes],
+        rowData: Optional[BiocOrPandasFrame] = None,
+        colData: Optional[BiocOrPandasFrame] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
         """Initialize a Summarized Experiment (SE).
@@ -33,14 +26,14 @@ class SummarizedExperiment(BaseSE):
         samples.
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]]): dictionary
+            assays (MutableMapping[str, MatrixTypes]): dictionary
                 of matrices, with assay names as keys and matrices represented as dense
                 (numpy) or sparse (scipy) matrices. All matrices across assays must
                 have the same dimensions (number of rows, number of columns).
-            rowData (Union[pd.DataFrame, BiocFrame], optional): features, must be the same length as
+            rowData (BiocOrPandasFrame, optional): features, must be the same length as
                 rows of the matrices in assays. Defaults to None.
-            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
-                the same length as rows of the matrices in assays. Defaults to None.
+            colData (BiocOrPandasFrame, optional): sample data, must be
+                the same length as columns of the matrices in assays. Defaults to None.
             metadata (MutableMapping, optional): experiment metadata describing the
                 methods. Defaults to None.
         """
@@ -48,13 +41,13 @@ class SummarizedExperiment(BaseSE):
 
     def __getitem__(
         self,
-        args: Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]],
+        args: SlicerArgTypes,
     ) -> "SummarizedExperiment":
         """Subset a `SummarizedExperiment`.
 
         Args:
-            args (Tuple[Union[Sequence[int], slice], Optional[Union[Sequence[int], slice]]]): indices to slice. tuple can
-                contains slices along dimensions.
+            args (SlicerArgTypes): indices to slice.
+                tuple can contains slices along dimensions (rows, cols).
 
         Raises:
             ValueError: Too many or few slices.
@@ -73,8 +66,8 @@ class SummarizedExperiment(BaseSE):
     def __str__(self) -> str:
         pattern = (
             f"Class SummarizedExperiment with {self.shape[0]} features and {self.shape[1]} samples \n"
-            f"  assays: {list(self._assays.keys())} \n"
-            f"  features: {self._rows.columns if self._rows is not None else None} \n"
-            f"  sample data: {self._cols.columns if self._cols is not None else None}"
+            f"  assays: {list(self.assays.keys())} \n"
+            f"  features: {self.rowData.columns if self._rows is not None else None} \n"
+            f"  sample data: {self.colData.columns if self._cols is not None else None}"
         )
         return pattern

@@ -19,14 +19,18 @@ def combine_metadata(ses: Sequence["BaseSE"]) -> Optional[MutableMapping]:
             combined_metadata.extend(se.metadata.values())
     return dict(enumerate(combined_metadata))
 
-def concatenate(ses: Sequence["BaseSE"], property: Literal["rowData", "colData"]):
+
+def concatenate(
+    ses: Sequence["BaseSE"], experiment_metadata: Literal["rowData", "colData"]
+):
     """Concatenate along the concatenation axis.
-    
+
     Args:
         ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        property (Literal["rowData", "colData"]): the property to concatenate along.
+        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to concatenate along.
     """
-    return pd.concat([getattr(se, property) for se in ses])
+    return pd.concat([getattr(se, experiment_metadata) for se in ses])
+
 
 def impose_common_precision(x: np.ndarray, y: np.ndarray):
     """Ensure input arrays have compatible dtypes.

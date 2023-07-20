@@ -568,17 +568,7 @@ class BaseSE:
             colDatas.append(se.colData.copy())
 
         new_colData = reduce(lambda left, right: pd.concat([left, right]), colDatas)
-
-        if useNames:
-            validate_row_names(rowDatas)
-            new_rowData = combine(rowDatas)
-        else:
-            # do not need to validate number of features because we already
-            # did that in validate_shapes()
-            row_names = rowDatas[0].index
-            for rowData in rowDatas[1:]:
-                rowData.index = row_names
-            new_rowData = combine(rowDatas)
+        new_rowData = combine(rowDatas, useNames)
 
         unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
 
@@ -595,7 +585,7 @@ class BaseSE:
                     pd.DataFrame(
                         to_numpy(curr_assay),
                         columns=se.colData.index,
-                        index=se.rowData.index if useNames else row_names,
+                        index=se.rowData.index if useNames else self.rowData.index,
                     )
                 )
 

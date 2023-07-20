@@ -3,17 +3,26 @@ from functools import reduce
 import pandas as pd
 import numpy as np
 
+from ._validators import validate_row_names
 
-def combine(dfs: Sequence[pd.DataFrame]) -> pd.DataFrame:
-    """Combine DataFrames.
+
+def combine(rowDatas: Sequence[pd.DataFrame], useNames: bool) -> pd.DataFrame:
+    """Combine rowDatas.
 
     Args:
-        dfs (pd.DataFrame): DataFrames to combine.
+        rowDatas (pd.DataFrame): rowDatas to combine.
+        useNames (bool): whether or not to use index names.
 
     Returns:
-        pd.DataFrame: combined DataFrame.
+        pd.DataFrame: combined rowDatas.
     """
-    return reduce(lambda left, right: left.combine_first(right), dfs)
+    if useNames:
+        validate_row_names(rowDatas)
+    else:
+        row_names = rowDatas[0].index
+        for rowData in rowDatas[1:]:
+            rowData.index = row_names
+    return reduce(lambda left, right: left.combine_first(right), rowDatas)
 
 
 def create_samples_if_missing(sample_names: Sequence[str], df: pd.DataFrame):

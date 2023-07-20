@@ -1,5 +1,5 @@
 from functools import singledispatch
-from typing import Sequence
+from typing import Sequence, Any
 
 import pandas as pd
 from biocframe import BiocFrame
@@ -10,11 +10,11 @@ __license__ = "MIT"
 
 
 @singledispatch
-def get_colnames(x) -> Sequence[str]:
+def get_colnames(x: Any) -> Sequence[str]:
     """Access column names from various objects.
 
     Args:
-        x (any): supported object.
+        x (Any): supported object.
 
     Raises:
         NotImplementedError: if type is not supported.
@@ -39,7 +39,7 @@ def _(x: BiocFrame) -> Sequence[str]:
 
 
 @singledispatch
-def set_colnames(x, names: Sequence[str]):
+def set_colnames(x: Any, names: Sequence[str]):
     """Set column names for various objects.
 
     Args:

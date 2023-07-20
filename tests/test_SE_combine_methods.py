@@ -39,7 +39,8 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
     1. Test with same number of rows and same row names.
     2. Test with same number of rows but different row names.
     3. Test with overlapping sample names.
-    4. Test with different number of rows.
+    4. Test with empty rowData and colData.
+    5. Test with different number of rows.
     """
 
     # Scenario 1: same number of rows and same row names
@@ -73,7 +74,7 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
     )
 
     # Scenario 3: overlapping sample names
-    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=True)
+    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=False)
 
     make_assertions(
         combined=combined,
@@ -85,7 +86,20 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         colData_cols=["sample", "disease", "doublet_score", "qual"]
     )
 
-    # Scenario 4: different number of rows
+    # Scenario 4: empty rowData and colData
+    combined = summarized_experiments.se1.combineCols(summarized_experiments.se_nonames, useNames=False)
+
+    make_assertions(
+        combined=combined,
+        shape=(3, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=["HER2", "BRCA1", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_1", "cell_2", "cell_3", "cell_1", "cell_2", "cell_3"],
+        colData_cols=["sample", "disease"]
+    )
+
+    # Scenario 5: different number of rows
     with pytest.raises(ValueError):
         summarized_experiments.se3.combineCols(
             summarized_experiments.se4, useNames=False
@@ -110,6 +124,8 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
     3. Test with different number of rows.
     4. Test with null row name.
     5. Test with duplicated row name.
+    6. Test with overlapping sample names.
+    7. Test with empty rowData and colData.
     """
 
     # Scenario 1: same number of rows and same row names
@@ -204,6 +220,32 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
     with pytest.raises(ValueError):
         summarized_experiments.se1.combineCols(se_duplicated_row_name, useNames=True)
 
+    # Scenario 6: overlapping sample names
+    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=True)
+
+    make_assertions(
+        combined=combined,
+        shape=(5, 6),
+        assay_names=["counts", "lognorm", "beta"],
+        rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"],
+        colData_cols=["sample", "disease", "doublet_score", "qual"]
+    )
+
+    # Scenario 7: empty rowData and colData
+    combined = summarized_experiments.se1.combineCols(summarized_experiments.se_nonames, useNames=True)
+
+    make_assertions(
+        combined=combined,
+        shape=(3, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=["HER2", "BRCA1", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_1", "cell_2", "cell_3", "cell_1", "cell_2", "cell_3"],
+        colData_cols=["sample", "disease"]
+    )
+
 
 def test_SE_combineCols_mix_sparse_and_dense(summarized_experiments):
     """
@@ -220,7 +262,7 @@ def test_SE_combineCols_mix_sparse_and_dense(summarized_experiments):
 
     # Scenario 1: both dense and sparse arrays
     combined = summarized_experiments.se3.combineCols(
-        summarized_experiments.se4, summarized_experiments.se5, useNames=True
+        summarized_experiments.se4, summarized_experiments.se_sparse, useNames=True
     )
 
     make_assertions(

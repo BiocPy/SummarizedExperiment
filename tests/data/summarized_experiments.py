@@ -123,7 +123,7 @@ colData5 = pd.DataFrame(
     },
     index=["cell_13", "cell_14", "cell_15"],
 )
-se5 = SummarizedExperiment(
+se_sparse = SummarizedExperiment(
     assays={
         "counts": sp.lil_matrix(np.random.poisson(lam=7, size=(5, 3))),
         "lognorm": sp.lil_matrix(np.random.lognormal(size=(5, 3))),
@@ -151,4 +151,22 @@ se6 = SummarizedExperiment(
     rowData=rowData4,
     colData=colData6,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
+)
+
+rowData_nonames = pd.DataFrame(
+    {},
+    index=["HER2", "BRCA1", "TPFK"],
+)
+colData_nonames = pd.DataFrame(
+    {},
+    index=["cell_1", "cell_2", "cell_3"],
+)
+se_nonames = SummarizedExperiment(
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
+    rowData=rowData_nonames,
+    colData=colData_nonames,
+    metadata={},
 )

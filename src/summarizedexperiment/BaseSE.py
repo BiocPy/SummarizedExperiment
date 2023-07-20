@@ -584,9 +584,7 @@ class BaseSE:
                 )
 
             merged_assays = reduce(
-                lambda left, right: pd.merge(
-                    left, right, left_index=True, right_index=True, how="outer"
-                ),
+                lambda left, right: pd.concat([left, right], axis=1),
                 curr_assays,
             )
 

@@ -1,4 +1,3 @@
-from asyncore import close_all
 from typing import Union, Dict, Any
 from genomicranges import GenomicRanges
 import numpy as np

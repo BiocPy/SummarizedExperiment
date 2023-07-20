@@ -1,6 +1,6 @@
 # SummarizedExperiment
 
-Container to represent data from genomic experiments, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html). It uses efficient structures already available in the Python/Pandas/numpy eco-system & adds an familiar interfaces.
+Container to represent data from genomic experiments, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html). It uses efficient structures already available in the Pandas/numpy eco-system & adds a familiar interface.
 
 
 ## Install
@@ -69,6 +69,7 @@ trse = SummarizedExperiment(
 )
 ```
 
+For more use cases including subset, checkout the [documentation](https://biocpy.github.io/SummarizedExperiment/)
 
 <!-- pyscaffold-notes -->
 

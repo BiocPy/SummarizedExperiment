@@ -1,7 +1,7 @@
 import warnings
 from collections import OrderedDict
 from functools import reduce
-from typing import MutableMapping, Optional, Sequence, Tuple, Union, Literal
+from typing import MutableMapping, Optional, Sequence, Tuple, Union
 
 import anndata
 import numpy as np
@@ -14,6 +14,8 @@ from scipy import sparse as sp
 
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
+from .dispatchers.to_numpy import to_numpy
+from .utils import combine, create_samples_if_missing, create_features_if_missing
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -516,22 +518,26 @@ class BaseSE:
             rowData (DataFrame): The rowData to validate.
 
         Returns:
-            bool: True if the rowData has non-null, non-duplicated row names. 
+            bool: True if the rowData has non-null, non-duplicated row names.
         """
-        any_null = rowData.index.isnull().values.any()
+        any_null = rowData.index.isnull().any()
         any_duplicated = rowData.index.duplicated().any()
         return (not any_null) and (not any_duplicated)
 
     def combineCols(
         self,
-        *ses: "BaseSE",
-        use_names: bool = True
+        *summarized_experiments: "BaseSE",
+        use_names: bool = True,
+        # fill: Optional[str] = None  # currently pd.combine_first doesn't have an argument to control fill value (open another PR?)
     ) -> "BaseSE":
-        """Concatenate multiple `SummarizedExperiment` objects.
-        Assume we are working with RNA-Seq experiments for now.
+        """A more flexible version of `cbind`. Permits differences in the number and identity of rows,
+        differences in `colData` fields, and even differences in the available `assays` among
+        `SummarizedExperiment` objects being combined.
+
+        Only considering RNA-Seq experiments for now.
 
         Args:
-            ses ("BaseSE"): `SummarizedExperiment` objects to concatenate.
+            summarized_experiments ("BaseSE"): `SummarizedExperiment` objects to concatenate.
             use_names (bool):
                 If `True`, then each input `SummarizedExperiment` must have non-null, non-duplicated row names.
                 The row names of the resultant `SummarizedExperiment` object will be the union of the row
@@ -547,52 +553,64 @@ class BaseSE:
         Returns:
             BaseSE: new concatenated `SummarizedExperiment` object.
         """
+
+        ses = [self] + list(summarized_experiments)
+
         all_types = [isinstance(se, BaseSE) for se in ses]
         if not all(all_types):
-            raise TypeError("not all provided objects are `SummarizedExperiment` objects")
+            raise TypeError(
+                "not all provided objects are `SummarizedExperiment` objects"
+            )
 
         all_shapes = [se.shape for se in ses]
         is_all_shapes_same = all_shapes.count(all_shapes[0]) == len(all_shapes)
         if not is_all_shapes_same:
             raise ValueError("not all assays have the same dimensions")
-        
+
+        new_metadata = {}
+        for se in ses:
+            if se.metadata:
+                new_metadata.update(se.metadata.copy())
+
         rowDatas = []
         colDatas = []
         for se in ses:
-            rowDatas.append(se._rows) # temporary solution
-            colDatas.append(se.colData)
-        rowDatas.append(self._rows) # temporary solution
-        colDatas.append(self.colData)
-        
+            rowDatas.append(se.rowData.copy())
+            colDatas.append(se.colData.copy())
+
+        new_colData = reduce(lambda left, right: pd.concat([left, right]), colDatas)
+
         if use_names:
-            is_valid_row_names = all([self._validate_row_names(rowData) for rowData in rowDatas])
+            is_valid_row_names = all(
+                [self._validate_row_names(rowData) for rowData in rowDatas]
+            )
             if not is_valid_row_names:
-                raise ValueError("at least one input `SummarizedExperiment` has null or duplicated row names")
+                raise ValueError(
+                    "at least one input `SummarizedExperiment` has null or duplicated row names"
+                )
+            new_rowData = combine(rowDatas)
         else:
-            num_rows = [rowData.shape for rowData in rowDatas]
+            num_rows = [rowData.shape[0] for rowData in rowDatas]
             is_same_num_rows = num_rows.count(num_rows[0]) == len(num_rows)
             if not is_same_num_rows:
-                raise ValueError("not all `SummarizedExperiment` objects have the same number of rows. \
-                                 Consider setting `use_names=True`")
-
-        new_rowData = reduce(
-            lambda left, right: pd.concat([left, right]), rowDatas
-        ).sort_index()
-        if use_names:
-            new_colData = reduce(
-                lambda left, right: left.combine_first(right), colDatas
-            ).sort_index()
-        else:
-            new_colData = reduce(
-                lambda left, right: pd.concat([left, right]), colDatas
-            ).sort_index()
+                raise ValueError(
+                    "not all `SummarizedExperiment` objects have the same number of rows. \
+                                 Consider setting `use_names=True`"
+                )
+            row_names = rowDatas[0].index
+            for rowData in rowDatas[1:]:
+                rowData.index = row_names
+            new_rowData = combine(rowDatas)
 
         assays = [se.assays for se in ses]
-        assays.append(self.assays)
         assay_names = []
         for assay in assays:
             assay_names.extend(list(assay.keys()))
         unique_assay_names = list(set(assay_names))
+
+        no_assay_name = [assay_name is None for assay_name in unique_assay_names]
+        if any(no_assay_name) and (not all(no_assay_name)):
+            raise ValueError("named and unnamed assays cannot be mixed")
 
         new_assays = {}
         for assay_name in unique_assay_names:
@@ -603,29 +621,31 @@ class BaseSE:
                 curr_assay = se.assays[assay_name]
                 curr_assays.append(
                     pd.DataFrame(
-                        curr_assay, columns=se.colData.index, index=se.rowData.index
-                    )
-                    if isinstance(curr_assay, np.ndarray)
-                    else pd.DataFrame.sparse.from_spmatrix(
-                        curr_assay, columns=se.colData.index, index=se.rowData.index
+                        to_numpy(curr_assay),
+                        columns=se.colData.index,
+                        index=se.rowData.index if use_names else row_names,
                     )
                 )
 
-            merged_assays = reduce(
-                lambda left, right: pd.merge(
-                    left, right, left_index=True, right_index=True, how=how
-                ),
-                curr_assays,
-            )
-            merged_assays = merged_assays.sort_index().sort_values(
-                by=merged_assays.columns.tolist()
-            )
-            merged_assays = sp.csr_matrix(merged_assays.values)
-            new_assays[assay_name] = merged_assays
+            if use_names:
+                merged_assays = reduce(
+                    lambda left, right: pd.merge(
+                        left, right, left_index=True, right_index=True, how="outer"
+                    ),
+                    curr_assays,
+                )
+            else:
+                merged_assays = reduce(
+                    lambda left, right: pd.concat([left, right], axis=1), curr_assays
+                )
 
-        return SummarizedExperiment(
-            assays=new_assays,
-            rowData=new_rowData,
-            colData=new_colData,
-            metadata=metadata
+            create_samples_if_missing(new_colData.index.tolist(), merged_assays)
+            merged_assays = create_features_if_missing(
+                new_rowData.index.tolist(), merged_assays
+            )
+            new_rowData = new_rowData.reindex(index=merged_assays.index)
+            new_assays[assay_name] = merged_assays.values
+
+        return BaseSE(
+            assays=new_assays, rows=new_rowData, cols=new_colData, metadata=new_metadata
         )

@@ -2,18 +2,20 @@ from typing import Optional, Sequence, Tuple, Union, Literal, MutableMapping
 from functools import reduce
 import pandas as pd
 import numpy as np
-from biocframe import BiocFrame
+import scipy.sparse as sp
+
+ArrayTypes = Union[np.ndarray, sp.lil_matrix]
 
 from ._validators import validate_names, validate_shapes
 from .dispatchers.combiners import combine, combine_prefer_left, combine_ignore_names
 
 
-def _impose_common_precision(x: np.ndarray, y: np.ndarray):
+def _impose_common_precision(x: ArrayTypes, y: ArrayTypes):
     """Ensure input arrays have compatible dtypes.
 
     Args:
-        x (np.ndarray): first array.
-        y (np.ndarray): second array.
+        x (ArrayTypes): first array.
+        y (ArrayTypes): second array.
     """
     dtype = np.find_common_type([x.dtype, y.dtype], [])
     if x.dtype != dtype:
@@ -79,24 +81,24 @@ def combine_non_concatenation_axis(
         return reduce(combine_ignore_names, all_experiment_metadata).set_index(names)
 
 
-def combine_assays(
+def combine_assays_by_column(
     assay_name: str,
     ses: Sequence["BaseSE"],
-    other: Union[pd.DataFrame, BiocFrame],
+    names: pd.Index,
     shape: Tuple[int, int],
     useNames: bool,
 ) -> np.ndarray:
-    """Combine assays across all "SummarizedExperiment" objects.
+    """Combine assays across all "SummarizedExperiment" objects by column.
 
     Args:
         assay_name (str): name of the assay.
         ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
-        other (Union[pd.DataFrame, BiocFrame]): object from the non-concatenation axis.
+        names (pd.Index): names of the metadata from the non-concatenation axis.
         shape (Tuple[int, int]): shape of the combined assay.
         useNames (bool): see `combineCols()`.
     """
     col_idx = 0
-    merged_assays = np.zeros(shape=shape)
+    merged_assays = sp.lil_matrix(shape)
     for se in ses:
         offset = se.shape[1]
         if assay_name not in se.assays:
@@ -107,10 +109,57 @@ def combine_assays(
             curr_assay = se.assays[assay_name]
             _impose_common_precision(merged_assays, curr_assay)
             if useNames:
-                shared_idxs = np.argwhere(other.index.isin(se.rownames)).squeeze()
+                shared_idxs = np.argwhere(names.isin(se.rownames)).squeeze()
                 merged_assays[shared_idxs, col_idx : col_idx + offset] = curr_assay
             else:
                 merged_assays[:, col_idx : col_idx + offset] = curr_assay
         col_idx += offset
 
     return merged_assays
+
+
+def combine_assays_by_row(
+    assay_name: str,
+    ses: Sequence["BaseSE"],
+    names: pd.Index,
+    shape: Tuple[int, int],
+    useNames: bool,
+) -> np.ndarray:
+    """Combine assays across all "SummarizedExperiment" objects by row.
+
+    Args:
+        assay_name (str): name of the assay.
+        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        names (pd.Index): names of the metadata from the non-concatenation axis.
+        shape (Tuple[int, int]): shape of the combined assay.
+        useNames (bool): see `combineCols()`.
+    """
+    raise NotImplementedError("combine_assays_by_row not implemented yet")
+
+
+def combine_assays(
+    assay_name: str,
+    ses: Sequence["BaseSE"],
+    names: pd.Index,
+    by: Literal["row", "column"],
+    shape: Tuple[int, int],
+    useNames: bool,
+) -> np.ndarray:
+    """Combine assays across all "SummarizedExperiment" objects.
+
+    Args:
+        assay_name (str): name of the assay.
+        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        names (pd.Index): names of the metadata from the non-concatenation axis.
+        by (Literal["row", "column"]): the concatenation axis.
+        shape (Tuple[int, int]): shape of the combined assay.
+        useNames (bool): see `combineCols()`.
+    """
+    if by == "row":
+        return combine_assays_by_row(
+            assay_name=assay_name, ses=ses, names=names, shape=shape, useNames=useNames
+        )
+    elif by == "column":
+        return combine_assays_by_column(
+            assay_name=assay_name, ses=ses, names=names, shape=shape, useNames=useNames
+        )

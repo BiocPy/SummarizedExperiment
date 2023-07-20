@@ -550,15 +550,16 @@ class BaseSE:
             ses, experiment_metadata="rowData", useNames=useNames
         )
 
-        new_shape = (len(new_rowData), len(new_colData))
+        # need to make this colData/rowData agnostic
         new_assays = {}
         unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
         for assay_name in unique_assay_names:
             merged_assays = combine_assays(
                 assay_name=assay_name,
                 ses=ses,
-                other=new_rowData,
-                shape=(new_shape),
+                names=new_rowData.index,
+                by="column",
+                shape=(len(new_rowData), len(new_colData)),
                 useNames=useNames,
             )
             new_assays[assay_name] = merged_assays

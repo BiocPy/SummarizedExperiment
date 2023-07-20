@@ -24,7 +24,10 @@ colData1 = pd.DataFrame(
     index=["cell_1", "cell_2", "cell_3"],
 )
 se1 = SummarizedExperiment(
-    assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
     rowData=rowData1,
     colData=colData1,
     metadata={"seq_type": "paired"},
@@ -47,7 +50,10 @@ colData2 = pd.DataFrame(
     index=["cell_4", "cell_5", "cell_6"],
 )
 se2 = SummarizedExperiment(
-    assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
     rowData=rowData2,
     colData=colData2,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
@@ -70,7 +76,10 @@ colData3 = pd.DataFrame(
     index=["cell_7", "cell_8", "cell_9"],
 )
 se3 = SummarizedExperiment(
-    assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
     rowData=rowData3,
     colData=colData3,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
@@ -93,7 +102,11 @@ colData4 = pd.DataFrame(
     index=["cell_10", "cell_11", "cell_12"],
 )
 se4 = SummarizedExperiment(
-    assays={"counts": np.random.poisson(lam=5, size=(5, 3))},
+    assays={
+        "counts": np.random.poisson(lam=5, size=(5, 3)),
+        "lognorm": np.random.lognormal(size=(5, 3)),
+        "beta": np.random.beta(a=1, b=1, size=(5, 3))
+    },
     rowData=rowData4,
     colData=colData4,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
@@ -124,7 +137,12 @@ def test_SE_combineCols_useNames_false():
     assert combined.shape == (3, 6)
 
     assert all(
-        row_name in combined.rowData.index.tolist()
+        assay_name in combined.assays
+        for assay_name in ["counts", "lognorm"]
+    )
+
+    assert all(
+        row_name in combined.rownames
         for row_name in ["HER2", "BRCA1", "TPFK"]
     )
 
@@ -134,7 +152,7 @@ def test_SE_combineCols_useNames_false():
     )
 
     assert all(
-        col_name in combined.colData.index.tolist()
+        col_name in combined.colnames
         for col_name in ["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"]
     )
 
@@ -149,7 +167,12 @@ def test_SE_combineCols_useNames_false():
     assert combined.shape == (3, 6)
 
     assert all(
-        row_name in combined.rowData.index.tolist()
+        assay_name in combined.assays
+        for assay_name in ["counts", "lognorm"]
+    )
+
+    assert all(
+        row_name in combined.rownames
         for row_name in ["HER2", "BRCA1", "TPFK"]
     )
 
@@ -159,7 +182,7 @@ def test_SE_combineCols_useNames_false():
     )
 
     assert all(
-        col_name in combined.colData.index.tolist()
+        col_name in combined.colnames
         for col_name in ["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"]
     )
 
@@ -199,7 +222,12 @@ def test_SE_combineCols_useNames_true():
     assert combined.shape == (3, 6)
 
     assert all(
-        row_name in combined.rowData.index.tolist()
+        assay_name in combined.assays
+        for assay_name in ["counts", "lognorm"]
+    )
+
+    assert all(
+        row_name in combined.rownames
         for row_name in ["HER2", "BRCA1", "TPFK"]
     )
 
@@ -209,7 +237,7 @@ def test_SE_combineCols_useNames_true():
     )
 
     assert all(
-        col_name in combined.colData.index.tolist()
+        col_name in combined.colnames
         for col_name in ["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"]
     )
 
@@ -224,7 +252,12 @@ def test_SE_combineCols_useNames_true():
     assert combined.shape == (5, 6)
 
     assert all(
-        row_name in combined.rowData.index.tolist()
+        assay_name in combined.assays
+        for assay_name in ["counts", "lognorm"]
+    )
+
+    assert all(
+        row_name in combined.rownames
         for row_name in ["HER2", "BRCA1", "BRCA2", "MYC", "TPFK"]
     )
 
@@ -234,7 +267,7 @@ def test_SE_combineCols_useNames_true():
     )
 
     assert all(
-        col_name in combined.colData.index.tolist()
+        col_name in combined.colnames
         for col_name in ["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"]
     )
 
@@ -249,7 +282,21 @@ def test_SE_combineCols_useNames_true():
     assert combined.shape == (5, 6)
 
     assert all(
-        row_name in combined.rowData.index.tolist()
+        assay_name in combined.assays
+        for assay_name in ["counts", "lognorm", "beta"]
+    )
+
+    # assert se4 samples are non-nan and other entries are 0 for 'beta' assay
+    se4_sample_vals = se4.colnames
+    se4_sample_idxs = np.argwhere(combined.colData.index.isin(se4_sample_vals))
+    beta_assay = combined.assays["beta"]
+    non_se4_samples = np.delete(beta_assay, se4_sample_idxs, axis=1)
+
+    assert not np.any(non_se4_samples)
+    assert not np.isnan(beta_assay[:, se4_sample_idxs].any())
+
+    assert all(
+        row_name in combined.rownames
         for row_name in ["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"]
     )
 
@@ -259,7 +306,7 @@ def test_SE_combineCols_useNames_true():
     )
 
     assert all(
-        col_name in combined.colData.index.tolist()
+        col_name in combined.colnames
         for col_name in ["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12"]
     )
 

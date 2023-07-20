@@ -1,54 +1,55 @@
-from typing import Sequence
-from functools import reduce
+from typing import Sequence, Tuple, Union
 import pandas as pd
 import numpy as np
-
-from ._validators import validate_names, validate_shapes
-
-
-def blend(dfs: Sequence[pd.DataFrame], useNames: bool) -> pd.DataFrame:
-    """Blend DataFrames.
-
-    Args:
-        dfs (pd.DataFrame): DataFrames to blend.
-        useNames (bool): whether or not to use names.
-
-    Returns:
-        pd.DataFrame: blended DataFrame objects.
-    """
-    if useNames:
-        validate_names(dfs)
-    else:
-        validate_shapes(dfs)
-        names = dfs[0].index
-        for df in dfs[1:]:
-            df.index = names
-    return reduce(lambda left, right: left.combine_first(right), dfs)
+from biocframe import BiocFrame
 
 
-def create_samples_if_missing(sample_names: Sequence[str], df: pd.DataFrame):
-    """Create a new sample populated with nans if it doesn't exist.
+def impose_common_precision(x: np.ndarray, y: np.ndarray):
+    """Ensure input arrays have compatible dtypes.
 
     Args:
-        sample_names (str): List of sample names that should exist.
-        df (pd.DataFrame): The dataframe.
+        x (np.ndarray): first array.
+        y (np.ndarray): second array.
     """
-    for sample_name in sample_names:
-        if sample_name not in df.columns:
-            df[sample_name] = np.nan
+    dtype = np.find_common_type([x.dtype, y.dtype], [])
+    if x.dtype != dtype:
+        x = x.astype(dtype)
+    if y.dtype != dtype:
+        y = y.astype(dtype)
 
 
-def create_features_if_missing(
-    feature_names: Sequence[str], df: pd.DataFrame
-) -> pd.DataFrame:
-    """Create a new feature populated with nans if it doesn't exist.
+def combine_assays(
+    assay_name: str,
+    ses: Sequence["BaseSE"],
+    other: Union[pd.DataFrame, BiocFrame],
+    shape: Tuple[int, int],
+    useNames: bool,
+) -> np.ndarray:
+    """Combine assays across all "SummarizedExperiment" objects.
 
     Args:
-        feature_names (str): List of feature names that should exist.
-        df (pd.DataFrame): The dataframe.
-
-    Returns:
-        pd.DataFrame: Assay with missing features added.
+        assay_name (str): name of the assay.
+        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        other (Union[pd.DataFrame, BiocFrame]): object from the non-concatenation axis.
+        shape (Tuple[int, int]): shape of the combined assay.
+        useNames (bool): see `combineCols()`.
     """
-    all_features = df.index.union(feature_names, sort=False)
-    return df.reindex(index=all_features)
+    col_idx = 0
+    merged_assays = np.zeros(shape=shape)
+    for se in ses:
+        offset = se.shape[1]
+        if assay_name not in se.assays:
+            merged_assays[
+                :, col_idx : col_idx + offset
+            ] = 0  # do we want to fill with np.nan or 0's?
+        else:
+            curr_assay = se.assays[assay_name]
+            impose_common_precision(merged_assays, curr_assay)
+            if useNames:
+                shared_idxs = np.argwhere(other.index.isin(se.rownames)).squeeze()
+                merged_assays[shared_idxs, col_idx : col_idx + offset] = curr_assay
+            else:
+                merged_assays[:, col_idx : col_idx + offset] = curr_assay
+        col_idx += offset
+
+    return merged_assays

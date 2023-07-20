@@ -13,10 +13,9 @@ from scipy import sparse as sp
 
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
-from .dispatchers.to_numpy import to_numpy
-from .dispatchers.combine import combine
-from ._validators import validate_objects
-from ._concat import blend, create_samples_if_missing, create_features_if_missing
+from .dispatchers.combine import combine, combine_other
+from ._validators import validate_objects, validate_names, validate_shapes
+from ._concat import combine_assays
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -512,9 +511,7 @@ class BaseSE:
 
         return obj
 
-    def combineCols(
-        self, *experiments: "BaseSE", useNames: bool = True, fill=np.nan
-    ) -> "BaseSE":
+    def combineCols(self, *experiments: "BaseSE", useNames: bool = True) -> "BaseSE":
         """A more flexible version of `cbind`. Permits differences in the number and identity of rows,
         differences in `colData` fields, and even differences in the available `assays` among
         `SummarizedExperiment` objects being combined.
@@ -530,8 +527,6 @@ class BaseSE:
                 If `False`, then each input `SummarizedExperiment` object must have the same number of rows.
                 The row names of the resultant `SummarizedExperiment` object will simply be the row names of
                 the first `SummarizedExperiment`.
-            fill (scalar value):
-                The value to fill NaNs.
 
         Raises:
             TypeError:
@@ -553,51 +548,34 @@ class BaseSE:
                 all_metadata.extend(se.metadata.values())
         new_metadata = dict(enumerate(all_metadata))
 
+        # can probably do something better than appending rowData and colData to a list
         rowDatas = []
         colDatas = []
         for se in ses:
             rowDatas.append(se.rowData.copy())
             colDatas.append(se.colData.copy())
-
         new_colData = reduce(combine, colDatas)
-        new_rowData = blend(rowDatas, useNames)
 
-        unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
+        if useNames:
+            validate_names(rowDatas)
+        else:
+            validate_shapes(rowDatas)
+            for rowData in rowDatas[1:]:
+                rowData.index = self.rownames
+        new_rowData = reduce(combine_other, rowDatas)
+
+        new_shape = (len(new_rowData), len(new_colData))
         new_assays = {}
+        unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
         for assay_name in unique_assay_names:
-            # if useNames=False, we simply stack horizontally
-            # if useNames=True:
-            #   for each assay_name there are 2 cases (comparing with rowData.index):
-            #       - assay_name has feature -> just stack horizontally
-            #       - assay_name lacks feature -> stack array of 0's with length num samples
-            curr_assays = []
-            for se in ses:
-                if assay_name not in se.assays:
-                    continue
-                curr_assay = se.assays[assay_name]
-                curr_assays.append(
-                    pd.DataFrame(
-                        to_numpy(curr_assay),
-                        columns=se.colData.index,
-                        index=se.rowData.index if useNames else self.rowData.index,
-                    )
-                )
-
-            merged_assays = reduce(
-                lambda left, right: pd.concat([left, right], axis=1),
-                curr_assays,
+            merged_assays = combine_assays(
+                assay_name=assay_name,
+                ses=ses,
+                other=new_rowData,
+                shape=(new_shape),
+                useNames=useNames
             )
-
-            create_samples_if_missing(new_colData.index.tolist(), merged_assays)
-            merged_assays = create_features_if_missing(
-                new_rowData.index.tolist(), merged_assays
-            )
-            new_rowData = new_rowData.reindex(index=merged_assays.index)
-            new_assays[assay_name] = (
-                merged_assays.values
-                if fill is None
-                else merged_assays.replace(np.nan, fill).values
-            )
+            new_assays[assay_name] = merged_assays
 
         current_class_const = type(self)
         return current_class_const(new_assays, new_rowData, new_colData, new_metadata)

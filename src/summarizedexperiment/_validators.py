@@ -2,6 +2,21 @@ from typing import Sequence
 import pandas as pd
 
 
+def validate_objects(objs, target_type):
+    """Validate all provided objects are `target_type`.
+
+    Args:
+        objs: objects to validate.
+        target_type (type): type to check objects against.
+
+    Raises:
+        TypeError: if any of the provided objects are not `target_type`. 
+    """
+    all_types = [isinstance(obj, target_type) for obj in objs]
+    if not all(all_types):
+        raise TypeError(f"not all provided objects are {target_type.__name__} objects")
+
+
 def validate_names(dfs: Sequence[pd.DataFrame]):
     """Validate names across dataframes.
 
@@ -33,21 +48,6 @@ def validate_names(dfs: Sequence[pd.DataFrame]):
         raise ValueError(
             "at least one input `SummarizedExperiment` has null or duplicated row names"
         )
-
-
-def validate_objects(objs, target_type):
-    """Validate all provided objects are `target_type`.
-
-    Args:
-        objs: objects to validate.
-        target_type (type): type to check objects against.
-
-    Raises:
-        TypeError: if any of the provided objects are not `target_type`. 
-    """
-    all_types = [isinstance(obj, target_type) for obj in objs]
-    if not all(all_types):
-        raise TypeError(f"not all provided objects are {str(target_type)} objects")
 
 
 def validate_shapes(dfs: Sequence[pd.DataFrame]):

@@ -52,8 +52,8 @@ def combine_concatenation_axis(
     Returns:
         concatenated_df (pd.DataFrame): the concatenated experiment metadata.
     """
-    all_experiment_attribute = [getattr(se, experiment_attribute) for se in ses]
-    return reduce(combine, all_experiment_attribute)
+    all_experiment_attributes = [getattr(se, experiment_attribute) for se in ses]
+    return reduce(combine, all_experiment_attributes)
 
 
 def combine_non_concatenation_axis(
@@ -71,19 +71,19 @@ def combine_non_concatenation_axis(
     Returns:
         concatenated_df (pd.DataFrame): the concatenated experiment metadata.
     """
-    all_experiment_attribute = [getattr(se, experiment_attribute) for se in ses]
+    all_experiment_attributes = [getattr(se, experiment_attribute) for se in ses]
     if useNames:
         validate_names(ses, experiment_attribute=experiment_attribute)
         return reduce(
             lambda left, right: combine(left, right, prefer_left=True),
-            all_experiment_attribute,
+            all_experiment_attributes,
         )
     else:
         validate_shapes(ses, experiment_attribute=experiment_attribute)
         names = getattr(ses[0], experiment_attribute).index
         return reduce(
             lambda left, right: combine(left, right, ignore_names=True),
-            all_experiment_attribute,
+            all_experiment_attributes,
         ).set_index(names)
 
 

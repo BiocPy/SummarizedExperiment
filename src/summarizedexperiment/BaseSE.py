@@ -13,9 +13,9 @@ from scipy import sparse as sp
 
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
-from .dispatchers.combine import combine, combine_other
+from .dispatchers.combine import combine_other
 from ._validators import validate_objects, validate_names, validate_shapes
-from ._concat import combine_assays
+from ._concat import concatenate, combine_metadata, combine_assays
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -542,24 +542,26 @@ class BaseSE:
         validate_objects(experiments, BaseSE)
 
         ses = [self] + list(experiments)
-        all_metadata = []
-        for se in ses:
-            if se.metadata:
-                all_metadata.extend(se.metadata.values())
-        new_metadata = dict(enumerate(all_metadata))
 
-        # can probably do something better than appending rowData and colData to a list
+        if not all([isinstance(se.colData, pd.DataFrame) for se in ses]):
+            raise NotImplementedError("all colData objects must be pandas DataFrames")
+
+        if not all([isinstance(se.rowData, pd.DataFrame) for se in ses]):
+            raise NotImplementedError("all rowData objects must be pandas DataFrames")
+
+        new_metadata = combine_metadata(ses)
+
+        new_colData = concatenate(ses, property="colData")
+
+        # can probably do something better than appending rowData to a list
         rowDatas = []
-        colDatas = []
         for se in ses:
             rowDatas.append(se.rowData.copy())
-            colDatas.append(se.colData.copy())
-        new_colData = reduce(combine, colDatas)
 
         if useNames:
-            validate_names(rowDatas)
+            validate_names(ses, property="rowData")
         else:
-            validate_shapes(rowDatas)
+            validate_shapes(ses, property="rowData")
             for rowData in rowDatas[1:]:
                 rowData.index = self.rownames
         new_rowData = reduce(combine_other, rowDatas)

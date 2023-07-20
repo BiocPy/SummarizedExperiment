@@ -1,8 +1,32 @@
-from typing import Sequence, Tuple, Union
+from typing import Optional, Sequence, Tuple, Union, Literal, MutableMapping
 import pandas as pd
 import numpy as np
 from biocframe import BiocFrame
 
+
+def combine_metadata(ses: Sequence["BaseSE"]) -> Optional[MutableMapping]:
+    """Combine metadata across experiments.
+
+    Args:
+        ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
+
+    Returns:
+        combined_metadata (Optional[MutableMapping]): combined metadata.
+    """
+    combined_metadata = []
+    for se in ses:
+        if se.metadata:
+            combined_metadata.extend(se.metadata.values())
+    return dict(enumerate(combined_metadata))
+
+def concatenate(ses: Sequence["BaseSE"], property: Literal["rowData", "colData"]):
+    """Concatenate along the concatenation axis.
+    
+    Args:
+        ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
+        property (Literal["rowData", "colData"]): the property to concatenate along.
+    """
+    return pd.concat([getattr(se, property) for se in ses])
 
 def impose_common_precision(x: np.ndarray, y: np.ndarray):
     """Ensure input arrays have compatible dtypes.

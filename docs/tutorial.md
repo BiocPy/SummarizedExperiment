@@ -61,11 +61,25 @@ tse = SummarizedExperiment(
 )
 ```
 
-### File backed mode for large datasets
+##  `RangeSummarizedExperiment`
+
+`RangeSummarizedExperiment` represents features as [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges).
+
+```python
+gr = GenomicRanges.fromPandas(df_gr)
+
+trse = SummarizedExperiment(
+    assays={"counts": counts}, rowRanges=gr, colData=colData
+)
+```
+
+## File backed mode for large datasets
 
 In addition to fully realized matrices in memory, SE/RSE also support file backed arrays and matrices. [FileBackedArray](https://github.com/BiocPy/FileBackedArray) package provides a file backed class for H5 backed matrices.
 
 ```python
+from filebackedarray import H5BackedSparseData
+
 df_gr = pd.DataFrame(
     {
         "seqnames": [
@@ -91,7 +105,7 @@ df_gr = pd.DataFrame(
 
 colData = pd.DataFrame({"treatment": ["ChIP"] * 3005,})
 
-assay = H5BackedData("tests/data/tenx.sub.h5", "matrix")
+assay = H5BackedSparseData("tests/data/tenx.sub.h5", "matrix")
 
 tse = SummarizedExperiment(
     assays={"counts_backed": assay},
@@ -100,17 +114,6 @@ tse = SummarizedExperiment(
 )
 ```
 
-##  `RangeSummarizedExperiment`
-
-`RangeSummarizedExperiment` represents features as [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges).
-
-```python
-gr = GenomicRanges.fromPandas(df_gr)
-
-trse = SummarizedExperiment(
-    assays={"counts": counts}, rowRanges=gr, colData=colData
-)
-```
 
 ## Accessors
 

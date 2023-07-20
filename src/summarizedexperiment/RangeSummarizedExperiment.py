@@ -1,10 +1,10 @@
-from typing import Union, Tuple, Sequence, Optional, MutableMapping
-import pandas as pd
-import numpy as np
-from scipy import sparse as sp
+from typing import MutableMapping, Optional, Sequence, Tuple, Union
 
+import numpy as np
+import pandas as pd
 from biocframe import BiocFrame
 from genomicranges import GenomicRanges, SeqInfo
+from scipy import sparse as sp
 
 from .BaseSE import BaseSE
 
@@ -28,23 +28,23 @@ class RangeSummarizedExperiment(BaseSE):
         """Initialize a Range Summarized Experiment (RSE) object.
 
         The key difference between this and `SummarizedExperiment` is enforcing
-        type for feature information (`rowRanges`), must be a `GenomicRanges` object. 
+        type for feature information (`rowRanges`), must be a `GenomicRanges` object.
         This allows us to provides new methods, to perform genomic range based
         operations over experimental data.
 
-        Note: If `rowRanges` is empty, None or not a genomic ranges object, 
+        Note: If `rowRanges` is empty, None or not a genomic ranges object,
         use a `SummarizedExperiment` instead!
 
         Args:
-            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary 
-                of matrices, with assay names as keys and matrices represented as dense 
-                (numpy) or sparse (scipy) matrices. All matrices across assays must 
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary
+                of matrices, with assay names as keys and matrices represented as dense
+                (numpy) or sparse (scipy) matrices. All matrices across assays must
                 have the same dimensions (number of rows, number of columns).
-            rowRanges (GenomicRanges): features, must be the same length as 
+            rowRanges (GenomicRanges): features, must be the same length as
                 rows of the matrices in assays.
-            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be 
+            colData (Union[pd.DataFrame, BiocFrame], optional): sample data, must be
                 the same length as rows of the matrices in assays. Defaults to None.
-            metadata (MutableMapping, optional): experiment metadata describing the 
+            metadata (MutableMapping, optional): experiment metadata describing the
                 methods. Defaults to None.
         """
         super().__init__(assays, rowRanges, colData, metadata)
@@ -186,14 +186,14 @@ class RangeSummarizedExperiment(BaseSE):
         """Calculate coverage for each chromosome.
 
         Args:
-            shift (int, optional): shifts all genomic positions by specified number 
+            shift (int, optional): shifts all genomic positions by specified number
                 of positions. Defaults to 0.
             width (int, optional): restrict the width of all chromosomes.
                 Defaults to None.
             weight (int, optional): weight to use. Defaults to 1.
 
         Returns:
-            MutableMapping[str, np.ndarray]: a dictionary containing chromosome names 
+            MutableMapping[str, np.ndarray]: a dictionary containing chromosome names
             as keys and the coverage vector as values.
         """
         return self.rowRanges.coverage(shift=shift, width=width, weight=weight)
@@ -203,21 +203,21 @@ class RangeSummarizedExperiment(BaseSE):
         query: Union[GenomicRanges, "RangeSummarizedExperiment"],
         ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
-        """Search nearest positions, both upstream and downstream that overlap with 
+        """Search nearest positions, both upstream and downstream that overlap with
         each range in `query`.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals 
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals
                 to find nearest positions.
-            ignoreStrand (bool, optional): ignore strand during looksups? 
+            ignoreStrand (bool, optional): ignore strand during looksups?
                 Defaults to False.
 
         Raises:
-            TypeError: if `query` is not a `RangeSummarizedExperiment` 
+            TypeError: if `query` is not a `RangeSummarizedExperiment`
                 or `GenomicRanges`.
-            
+
         Returns:
-            Optional[Sequence[Optional[int]]]: List of possible hit indices 
+            Optional[Sequence[Optional[int]]]: List of possible hit indices
             for each interval in `query`. If there are no hits, returns None.
         """
 
@@ -241,20 +241,20 @@ class RangeSummarizedExperiment(BaseSE):
         query: Union[GenomicRanges, "RangeSummarizedExperiment"],
         ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
-        """Search nearest positions, only downstream that overlap with 
+        """Search nearest positions, only downstream that overlap with
         each range in `query`.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals 
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals
                 to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
-            TypeError: if query is not a `RangeSummarizedExperiment` or 
+            TypeError: if query is not a `RangeSummarizedExperiment` or
             `GenomicRanges`.
-        
+
         Returns:
-            Optional[Sequence[Optional[int]]]: List of possible hit indices 
+            Optional[Sequence[Optional[int]]]: List of possible hit indices
             for each interval in `query`. If there are no hits, returns None.
         """
 
@@ -278,20 +278,20 @@ class RangeSummarizedExperiment(BaseSE):
         query: Union[GenomicRanges, "RangeSummarizedExperiment"],
         ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
-        """Search nearest positions, only upstream that overlap with the 
+        """Search nearest positions, only upstream that overlap with the
         each range in `query`.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals 
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals
                 to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
         Raises:
-            TypeError: if query is not a `RangeSummarizedExperiment` or 
+            TypeError: if query is not a `RangeSummarizedExperiment` or
             `GenomicRanges`.
 
         Returns:
-            Optional[Sequence[Optional[int]]]: List of possible hit indices 
+            Optional[Sequence[Optional[int]]]: List of possible hit indices
             for each interval in `query`. If there are no hits, returns None.
         """
         if not (
@@ -314,13 +314,13 @@ class RangeSummarizedExperiment(BaseSE):
         query: Union[GenomicRanges, "RangeSummarizedExperiment"],
         ignoreStrand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
-        """Search nearest positions only downstream that overlap with the 
+        """Search nearest positions only downstream that overlap with the
         each genomics interval in `query`.
-        
+
         Technically same as `nearest` since we also return `distance` to the nearest match.
 
         Args:
-            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals 
+            query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query intervals
                 to find nearest positions.
             ignoreStrand (bool, optional): ignore strand? Defaults to False.
 
@@ -328,7 +328,7 @@ class RangeSummarizedExperiment(BaseSE):
             TypeError: if query is not a `RangeSummarizedExperiment` or `GenomicRanges`.
 
         Returns:
-            Optional[Sequence[Optional[int]]]: List of possible hit indices 
+            Optional[Sequence[Optional[int]]]: List of possible hit indices
             for each interval in `query`. If there are no hits, returns None.
         """
         if not (
@@ -365,7 +365,7 @@ class RangeSummarizedExperiment(BaseSE):
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Returns:
-            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object 
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object
             with the flanked ranges.
         """
         new_ranges = self.rowRanges.flank(
@@ -380,14 +380,17 @@ class RangeSummarizedExperiment(BaseSE):
         )
 
     def resize(
-        self, width: int, fix: str = "start", ignoreStrand: bool = False,
+        self,
+        width: int,
+        fix: str = "start",
+        ignoreStrand: bool = False,
     ) -> "RangeSummarizedExperiment":
-        """Resize `rowRanges` to the specified `width` where either the `start`, 
+        """Resize `rowRanges` to the specified `width` where either the `start`,
         `end`, or `center` is used as an anchor.
 
         Args:
             width (int): width to resize by.
-            fix (str, optional): fix positions by `start`, `end` or `center`. 
+            fix (str, optional): fix positions by `start`, `end` or `center`.
                 Defaults to "start".
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
@@ -395,7 +398,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: parameter fix is neither `start`, `cetner`, or `end`.
 
         Returns:
-            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object 
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object
             with the resized ranges.
         """
         new_ranges = self.rowRanges.resize(
@@ -418,7 +421,7 @@ class RangeSummarizedExperiment(BaseSE):
             shift (int, optional): shift interval. Defaults to 0.
 
         Returns:
-            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` 
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment`
             object with the shifted ranges.
         """
 
@@ -440,13 +443,13 @@ class RangeSummarizedExperiment(BaseSE):
         """Extend `rowRanges` to promoter regions.
 
         Args:
-            upstream (int, optional): number of positions to extend 
+            upstream (int, optional): number of positions to extend
                 in the 5' direction . Defaults to 2000.
-            downstream (int, optional): number of positions to extend 
+            downstream (int, optional): number of positions to extend
                 in the 3' direction. Defaults to 200.
 
         Returns:
-            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` 
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment`
             object with the extended ranges for promoter regions.
         """
         new_ranges = self.rowRanges.promoters(upstream=upstream, downstream=downstream)
@@ -469,11 +472,11 @@ class RangeSummarizedExperiment(BaseSE):
         Args:
             start (int, optional): start position. Defaults to None.
             end (int, optional): end position. Defaults to None.
-            keepAllRanges (bool, optional): Keep intervals that do not 
+            keepAllRanges (bool, optional): Keep intervals that do not
                 overlap with start and end?. Defaults to False.
 
         Returns:
-            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` 
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment`
             object with restricted intervals.
         """
         new_ranges = self.rowRanges.restrict(
@@ -506,7 +509,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: when parameters were set incorrectly or rowRanges is empty
 
         Returns:
-            RangeSummarizedExperiment:  a new `RangeSummarizedExperiment` 
+            RangeSummarizedExperiment:  a new `RangeSummarizedExperiment`
             object with narrow positions.
         """
         new_ranges = self.rowRanges.narrow(start=start, width=width, end=end)
@@ -530,22 +533,22 @@ class RangeSummarizedExperiment(BaseSE):
 
         Args:
             query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query ranges.
-            queryType (str, optional): overlap query type, must be one of 
+            queryType (str, optional): overlap query type, must be one of
                 - "any": any overlap is good.
                 - "start": overlap at the beginning of the intervals.
                 - "end": must overlap at the end of the intervals.
-                - "within": fully contain the query interval. 
+                - "within": fully contain the query interval.
                 Defaults to any.
-            maxGap (int, optional): maximum gap allowed in the overlap. 
+            maxGap (int, optional): maximum gap allowed in the overlap.
                 Defaults to -1 (no gap allowed).
-            minOverlap (int, optional): minimum overlap with query. Defaults to 1. 
+            minOverlap (int, optional): minimum overlap with query. Defaults to 1.
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Raises:
             TypeError: if query is not a `RangeSummarizedExperiment` or `GenomicRanges`.
 
         Returns:
-            Optional["RangeSummarizedExperiment"]: A `RangeSummarizedExperiment` object 
+            Optional["RangeSummarizedExperiment"]: A `RangeSummarizedExperiment` object
             with the same length as query, containing hits to overlapping indices.
         """
 
@@ -581,22 +584,22 @@ class RangeSummarizedExperiment(BaseSE):
 
         Args:
             query (Union[GenomicRanges, "RangeSummarizedExperiment"]): query ranges.
-            queryType (str, optional): overlap query type, must be one of 
+            queryType (str, optional): overlap query type, must be one of
                 - "any": any overlap is good.
                 - "start": overlap at the beginning of the intervals.
                 - "end": must overlap at the end of the intervals.
-                - "within": fully contain the query interval. 
+                - "within": fully contain the query interval.
                 Defaults to any.
-            maxGap (int, optional): maximum gap allowed in the overlap. 
+            maxGap (int, optional): maximum gap allowed in the overlap.
                 Defaults to -1 (no gap allowed).
-            minOverlap (int, optional): minimum overlap with query. Defaults to 1. 
+            minOverlap (int, optional): minimum overlap with query. Defaults to 1.
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Raises:
             TypeError: if query is not a `RangeSummarizedExperiment` or `GenomicRanges`.
 
         Returns:
-            Optional["RangeSummarizedExperiment"]: new `RangeSummarizedExperiment` 
+            Optional["RangeSummarizedExperiment"]: new `RangeSummarizedExperiment`
             object. None if there are no indices to slice.
         """
 
@@ -650,7 +653,7 @@ class RangeSummarizedExperiment(BaseSE):
             ignoreStrand (bool, optional): ignore strand?. Defaults to False.
 
         Returns:
-            "RangeSummarizedExperiment": a new sorted 
+            "RangeSummarizedExperiment": a new sorted
             `RangeSummarizedExperiment` object.
         """
         order = self.rowRanges._generic_order(ignoreStrand=ignoreStrand)

@@ -61,6 +61,45 @@ tse = SummarizedExperiment(
 )
 ```
 
+### File backed mode for large datasets
+
+In addition to fully realized matrices in memory, SE/RSE also support file backed arrays and matrices. [FileBackedArray](https://github.com/BiocPy/FileBackedArray) package provides a file backed class for H5 backed matrices.
+
+```python
+df_gr = pd.DataFrame(
+    {
+        "seqnames": [
+            "chr1",
+            "chr2",
+            "chr2",
+            "chr2",
+            "chr1",
+            "chr1",
+            "chr3",
+            "chr3",
+            "chr3",
+            "chr3",
+        ]
+        * 100,
+        "starts": range(0, 1000),
+        "ends": range(0, 1000),
+        "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"] * 100,
+        "score": range(0, 1000),
+        "GC": [random() for _ in range(10)] * 100,
+    }
+)
+
+colData = pd.DataFrame({"treatment": ["ChIP"] * 3005,})
+
+assay = H5BackedData("tests/data/tenx.sub.h5", "matrix")
+
+tse = SummarizedExperiment(
+    assays={"counts_backed": assay},
+    rowData=df_gr,
+    colData=colData,
+)
+```
+
 ##  `RangeSummarizedExperiment`
 
 `RangeSummarizedExperiment` represents features as [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges).
@@ -107,3 +146,4 @@ tse.subsetOverlaps(query)
 ```
 
 Checkout the API docs or GenomicRanges for list of interval based operations.
+

@@ -3,7 +3,7 @@ from functools import reduce
 import pandas as pd
 import numpy as np
 
-from ._validators import validate_names
+from ._validators import validate_names, validate_num_rows
 
 
 def blend(dfs: Sequence[pd.DataFrame], useNames: bool) -> pd.DataFrame:
@@ -18,6 +18,8 @@ def blend(dfs: Sequence[pd.DataFrame], useNames: bool) -> pd.DataFrame:
     """
     if useNames:
         validate_names(dfs)
+    else:
+        validate_num_rows(dfs)
     return reduce(lambda left, right: left.combine_first(right), dfs)
 
 

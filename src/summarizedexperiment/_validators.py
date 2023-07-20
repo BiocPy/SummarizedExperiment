@@ -50,16 +50,16 @@ def validate_objects(objs, target_type):
         raise TypeError(f"not all provided objects are {str(target_type)} objects")
 
 
-def validate_shapes(ses: Sequence["BaseSE"]):
-    """Validate experiment shapes.
+def validate_num_rows(dfs: Sequence[pd.DataFrame]):
+    """Validate number of rows across dataframes.
 
     Args:
-        ses (BaseSE): experiments to validate.
+        dfs (pd.DataFrame): DataFrames to validate.
 
     Raises:
-        ValueError: if assays do not all have the same dimensions.
+        ValueError: if all objects do not have the same number of rows.
     """
-    all_shapes = [se.shape for se in ses]
-    is_all_shapes_same = all_shapes.count(all_shapes[0]) == len(all_shapes)
-    if not is_all_shapes_same:
-        raise ValueError("not all assays have the same dimensions")
+    all_num_rows = [df.shape[0] for df in dfs]
+    is_all_num_rows_same = all_num_rows.count(all_num_rows[0]) == len(all_num_rows)
+    if not is_all_num_rows_same:
+        raise ValueError("not all objects have the same number of rows")

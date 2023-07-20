@@ -14,12 +14,7 @@ from scipy import sparse as sp
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
 from .dispatchers.to_numpy import to_numpy
-from ._validators import (
-    validate_shapes,
-    validate_objects,
-    validate_row_names,
-    validate_assay_names,
-)
+from ._validators import validate_shapes, validate_objects
 from ._concat import combine, create_samples_if_missing, create_features_if_missing
 
 __author__ = "jkanche"
@@ -571,9 +566,6 @@ class BaseSE:
         new_rowData = combine(rowDatas, useNames)
 
         unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
-
-        validate_assay_names(unique_assay_names)
-
         new_assays = {}
         for assay_name in unique_assay_names:
             curr_assays = []

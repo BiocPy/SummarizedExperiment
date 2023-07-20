@@ -1,4 +1,4 @@
-from genomicranges import GenomicRanges
+import genomicranges
 import numpy as np
 from random import random
 import pandas as pd
@@ -37,7 +37,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df_gr)
+gr = genomicranges.fromPandas(df_gr)
 
 colData = pd.DataFrame({"treatment": ["ChIP", "Input"] * 3,})
 

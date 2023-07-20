@@ -5,7 +5,7 @@ import numpy as np
 from biocframe import BiocFrame
 
 from ._validators import validate_names, validate_shapes
-from .dispatchers.combine import combine, combine_prefer_left, combine_ignore_names
+from .dispatchers.combiners import combine, combine_prefer_left, combine_ignore_names
 
 
 def _impose_common_precision(x: np.ndarray, y: np.ndarray):
@@ -38,14 +38,14 @@ def combine_metadata(ses: Sequence["BaseSE"]) -> Optional[MutableMapping]:
     return dict(enumerate(combined_metadata))
 
 
-def concatenate(
+def combine_concatenation_axis(
     ses: Sequence["BaseSE"], experiment_metadata: Literal["rowData", "colData"]
 ) -> pd.DataFrame:
-    """Concatenate along the concatenation axis.
+    """Method for combining metadata along the concatenation axis.
 
     Args:
         ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to concatenate along.
+        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to combine.
 
     Returns:
         concatenated_df (pd.DataFrame): the concatenated experiment metadata.
@@ -54,16 +54,16 @@ def concatenate(
     return reduce(combine, all_experiment_metadata)
 
 
-def concatenate_other(
+def combine_non_concatenation_axis(
     ses: Sequence["BaseSE"],
     experiment_metadata: Literal["rowData", "colData"],
     useNames: bool,
 ) -> pd.DataFrame:
-    """Concatenate along the non-concatenation axis, ignoring names.
+    """Method for combining metadata along the non-concatenation axis.
 
     Args:
         ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to concatenate along.
+        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to combine.
         useName (bool): see `combineCols()`
 
     Returns:

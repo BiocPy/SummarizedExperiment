@@ -9,6 +9,20 @@ __copyright__ = "keviny2"
 __license__ = "MIT"
 
 
+def make_assertions(combined, shape, assay_names, rownames, rowData_cols, colnames, colData_cols):
+    assert combined.shape == shape
+
+    assert sorted(list(combined.assays)) == sorted(assay_names)
+
+    assert sorted(combined.rownames) == sorted(rownames)
+
+    assert sorted(combined.rowData.columns.tolist()) == sorted(rowData_cols)
+
+    assert sorted(combined.colnames) == sorted(colnames)
+
+    assert sorted(combined.colData.columns.tolist()) == sorted(colData_cols)
+
+
 def test_SE_combineCols_useNames_false(summarized_experiments):
     """
     Test case to verify combineCols(..., useNames=False).
@@ -24,8 +38,8 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
     Test Scenarios:
     1. Test with same number of rows and same row names.
     2. Test with same number of rows but different row names.
-    3. Test with different number of rows.
-    4. Test with overlapping sample names.
+    3. Test with overlapping sample names.
+    4. Test with different number of rows.
     """
 
     # Scenario 1: same number of rows and same row names
@@ -33,25 +47,14 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         summarized_experiments.se2, useNames=False
     )
 
-    assert combined.shape == (3, 6)
-
-    assert all(assay_name in combined.assays for assay_name in ["counts", "lognorm"])
-
-    assert all(row_name in combined.rownames for row_name in ["HER2", "BRCA1", "TPFK"])
-
-    assert all(
-        col_name in combined.rowData.columns.tolist()
-        for col_name in ["seqnames", "start", "end"]
-    )
-
-    assert all(
-        col_name in combined.colnames
-        for col_name in ["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"]
-    )
-
-    assert all(
-        col_name in combined.colData.columns.tolist()
-        for col_name in ["sample", "disease", "doublet_score"]
+    make_assertions(
+        combined=combined,
+        shape=(3, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=["HER2", "BRCA1", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
+        colData_cols=["sample", "disease", "doublet_score"]
     )
 
     # Scenario 2: same number of rows but different row names
@@ -59,60 +62,34 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         summarized_experiments.se3, useNames=False
     )
 
-    assert combined.shape == (3, 6)
-
-    assert all(assay_name in combined.assays for assay_name in ["counts", "lognorm"])
-
-    assert all(row_name in combined.rownames for row_name in ["HER2", "BRCA1", "TPFK"])
-
-    assert all(
-        col_name in combined.rowData.columns.tolist()
-        for col_name in ["seqnames", "start", "end"]
+    make_assertions(
+        combined=combined,
+        shape=(3, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=["HER2", "BRCA1", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"],
+        colData_cols=["sample", "disease", "doublet_score"]
     )
 
-    assert all(
-        col_name in combined.colnames
-        for col_name in ["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"]
+    # Scenario 3: overlapping sample names
+    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=True)
+
+    make_assertions(
+        combined=combined,
+        shape=(5, 6),
+        assay_names=["counts", "lognorm", "beta"],
+        rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"],
+        colData_cols=["sample", "disease", "doublet_score", "qual"]
     )
 
-    assert all(
-        col_name in combined.colData.columns.tolist()
-        for col_name in ["sample", "disease", "doublet_score"]
-    )
-
-    # Scenario 3: different number of rows
+    # Scenario 4: different number of rows
     with pytest.raises(ValueError):
         summarized_experiments.se3.combineCols(
             summarized_experiments.se4, useNames=False
         )
-
-    # Scenario 4: overlapping sample names
-    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=True)
-
-    assert combined.shape == (5, 6)
-
-    assert all(
-        assay_name in combined.assays for assay_name in ["counts", "lognorm", "beta"]
-    )
-
-    assert all(
-        row_name in combined.rownames
-        for row_name in ["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"]
-    )
-
-    assert all(
-        col_name in combined.rowData.columns.tolist()
-        for col_name in ["seqnames", "start", "end"]
-    )
-
-    assert sorted(combined.colnames) == sorted(
-        ["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"]
-    )
-
-    assert all(
-        col_name in combined.colData.columns.tolist()
-        for col_name in ["sample", "disease", "doublet_score", "qual"]
-    )
 
 
 def test_SE_combineCols_useNames_true(summarized_experiments):
@@ -140,25 +117,14 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se2, useNames=True
     )
 
-    assert combined.shape == (3, 6)
-
-    assert all(assay_name in combined.assays for assay_name in ["counts", "lognorm"])
-
-    assert all(row_name in combined.rownames for row_name in ["HER2", "BRCA1", "TPFK"])
-
-    assert all(
-        col_name in combined.rowData.columns.tolist()
-        for col_name in ["seqnames", "start", "end"]
-    )
-
-    assert all(
-        col_name in combined.colnames
-        for col_name in ["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"]
-    )
-
-    assert all(
-        col_name in combined.colData.columns.tolist()
-        for col_name in ["sample", "disease", "doublet_score"]
+    make_assertions(
+        combined=combined,
+        shape=(3, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=["HER2", "BRCA1", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
+        colData_cols=["sample", "disease", "doublet_score"]
     )
 
     # Scenario 2: same number of rows but different row names
@@ -166,28 +132,14 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se3, useNames=True
     )
 
-    assert combined.shape == (5, 6)
-
-    assert all(assay_name in combined.assays for assay_name in ["counts", "lognorm"])
-
-    assert all(
-        row_name in combined.rownames
-        for row_name in ["HER2", "BRCA1", "BRCA2", "MYC", "TPFK"]
-    )
-
-    assert all(
-        col_name in combined.rowData.columns.tolist()
-        for col_name in ["seqnames", "start", "end"]
-    )
-
-    assert all(
-        col_name in combined.colnames
-        for col_name in ["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"]
-    )
-
-    assert all(
-        col_name in combined.colData.columns.tolist()
-        for col_name in ["sample", "disease", "doublet_score"]
+    make_assertions(
+        combined=combined,
+        shape=(5, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=["HER2", "BRCA1", "BRCA2", "MYC", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"],
+        colData_cols=["sample", "disease", "doublet_score"]
     )
 
     # Scenario 3: different number of rows
@@ -195,10 +147,14 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se4, useNames=True
     )
 
-    assert combined.shape == (5, 6)
-
-    assert all(
-        assay_name in combined.assays for assay_name in ["counts", "lognorm", "beta"]
+    make_assertions(
+        combined=combined,
+        shape=(5, 6),
+        assay_names=["counts", "lognorm", "beta"],
+        rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12"],
+        colData_cols=["sample", "disease", "doublet_score"]
     )
 
     # assert se4 samples are non-nan and other entries are 0 for 'beta' assay
@@ -209,26 +165,6 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
 
     assert not np.any(non_se4_samples)
     assert not np.isnan(beta_assay[:, se4_sample_idxs].any())
-
-    assert all(
-        row_name in combined.rownames
-        for row_name in ["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"]
-    )
-
-    assert all(
-        col_name in combined.rowData.columns.tolist()
-        for col_name in ["seqnames", "start", "end"]
-    )
-
-    assert all(
-        col_name in combined.colnames
-        for col_name in ["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12"]
-    )
-
-    assert all(
-        col_name in combined.colData.columns.tolist()
-        for col_name in ["sample", "disease", "doublet_score"]
-    )
 
     # Scenario 4: null row name
     rowData_null_row_name = pd.DataFrame(
@@ -287,36 +223,14 @@ def test_SE_combineCols_mix_sparse_and_dense(summarized_experiments):
         summarized_experiments.se4, summarized_experiments.se5, useNames=True
     )
 
-    assert combined.shape == (7, 9)
-
-    assert all(
-        row_name in combined.rownames
-        for row_name in ["MYC", "BRCA1", "BRCA2", "TPFK", "GSS", "PIK3CA", "HRAS"]
-    )
-
-    assert all(
-        col_name in combined.rowData.columns.tolist()
-        for col_name in ["seqnames", "start", "end"]
-    )
-
-    assert all(
-        col_name in combined.colnames
-        for col_name in [
-            "cell_7",
-            "cell_8",
-            "cell_9",
-            "cell_10",
-            "cell_11",
-            "cell_12",
-            "cell_13",
-            "cell_14",
-            "cell_15",
-        ]
-    )
-
-    assert all(
-        col_name in combined.colData.columns.tolist()
-        for col_name in ["sample", "disease", "doublet_score"]
+    make_assertions(
+        combined=combined,
+        shape=(7, 9),
+        assay_names=["counts", "lognorm", "beta"],
+        rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS", "PIK3CA", "HRAS"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12", "cell_13", "cell_14", "cell_15"],
+        colData_cols=["sample", "disease", "doublet_score"]
     )
 
 

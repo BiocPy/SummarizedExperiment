@@ -7,7 +7,7 @@ import scipy.sparse as sp
 ArrayTypes = Union[np.ndarray, sp.lil_matrix]
 
 from ._validators import validate_names, validate_shapes
-from .dispatchers.combiners import combine, combine_prefer_left, combine_ignore_names
+from .dispatchers.combiners import combine
 
 
 def _impose_common_precision(x: ArrayTypes, y: ArrayTypes):
@@ -74,11 +74,17 @@ def combine_non_concatenation_axis(
     all_experiment_attribute = [getattr(se, experiment_attribute) for se in ses]
     if useNames:
         validate_names(ses, experiment_attribute=experiment_attribute)
-        return reduce(combine_prefer_left, all_experiment_attribute)
+        return reduce(
+            lambda left, right: combine(left, right, prefer_left=True),
+            all_experiment_attribute,
+        )
     else:
         validate_shapes(ses, experiment_attribute=experiment_attribute)
         names = getattr(ses[0], experiment_attribute).index
-        return reduce(combine_ignore_names, all_experiment_attribute).set_index(names)
+        return reduce(
+            lambda left, right: combine(left, right, ignore_names=True),
+            all_experiment_attribute,
+        ).set_index(names)
 
 
 def combine_assays_by_column(

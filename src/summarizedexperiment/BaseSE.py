@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from typing import MutableMapping, Optional, Sequence, Tuple, Union
+from typing import MutableMapping, Optional, Sequence, Tuple, Union, Literal
 
 import anndata
 import numpy as np
@@ -473,3 +473,94 @@ class BaseSE:
         )
 
         return obj
+
+    def concat(
+        self,
+        *ses: "BaseSE",
+        how: Literal["left", "right", "inner", "outer", "cross"] = "outer",
+        metadata: Optional[MutableMapping[str, str]] = None,
+    ) -> "BaseSE":
+        """Concatenate multiple `SummarizedExperiment` objects.
+        Assume we are working with RNA-Seq experiments for now.
+
+        Args:
+            ses ("BaseSE"): `SummarizedExperiment` objects to concatenate.
+            how (Literal["left", "right", "inner", "outer", "cross"]):
+                How to handle the operation of the two `SummarizedExperiment` objects.
+
+                * left: use calling frame's index (or column if on is specified)
+                * right: use `other`'s index.
+                * outer: form union of calling frame's index (or column if on is
+                specified) with `other`'s index, and sort it.
+                lexicographically.
+                * inner: form intersection of calling frame's index (or column if
+                on is specified) with `other`'s index, preserving the order
+                of the calling's one.
+                * cross: creates the cartesian product from both frames, preserves the order
+                of the left keys.
+                (from pandas docstring for `pd.DataFrame.join`)
+            metadata (MutableMapping[str, str]): Metadata of the new `SummarizedExperiment`.
+
+        Raises:
+            TypeError: if any of the provided objects are not "SummarizedExperiment".
+            ValueError: if not all assays have the same dimensions.
+
+        Returns:
+            BaseSE: new concatenated `SummarizedExperiment` object.
+        """
+        all_types = [isinstance(se, BaseSE) for se in ses]
+        if not all(all_types):
+            raise TypeError("not all provided objects are `SummarizedExperiment` objects")
+
+        all_shapes = [se.shape for se in ses]
+        is_all_shapes_same = all_shapes.count(all_shapes[0]) == len(all_shapes)
+        if not is_all_shapes_same:
+            raise ValueError("not all assays have the same dimensions")
+
+        new_assays = {}
+        assay_names = ses[0].assays.keys()
+        for assay_name in assay_names:
+            curr_assays = []
+            for sce in ses:
+                curr_assay = sce.assays[assay_name]
+                curr_assays.append(
+                    pd.DataFrame(
+                        curr_assay, columns=sce.colData.index, index=sce.rowData.index
+                    )
+                    if isinstance(curr_assay, np.ndarray)
+                    else pd.DataFrame.sparse.from_spmatrix(
+                        curr_assay, columns=sce.colData.index, index=sce.rowData.index
+                    )
+                )
+
+            merged_assays = reduce(
+                lambda left, right: pd.merge(
+                    left, right, left_index=True, right_index=True, how=how
+                ),
+                curr_assays,
+            )
+            merged_assays = merged_assays.sort_index().sort_values(
+                by=merged_assays.columns.tolist()
+            )
+            merged_assays = sp.csr_matrix(merged_assays.values)
+            new_assays[assay_name] = merged_assays
+
+        rowDatas = []
+        colDatas = []
+        for sce in ses:
+            rowDatas.append(sce.rowData)
+            colDatas.append(sce.colData)
+
+        new_rowData = reduce(
+            lambda left, right: left.combine_first(right), rowDatas
+        ).sort_index()
+        new_colData = reduce(
+            lambda left, right: left.combine_first(right), colDatas
+        ).sort_index()
+
+        return SummarizedExperiment(
+            assays=new_assays,
+            rowData=new_rowData,
+            colData=new_colData,
+            metadata=metadata
+        )

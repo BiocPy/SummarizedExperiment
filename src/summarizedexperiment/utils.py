@@ -14,8 +14,6 @@ def combine(dfs: Sequence[DataFrame]) -> DataFrame:
     Returns:
         DataFrame: combined DataFrame.
     """
-    # Bioc gives a warning if similar columns don't have same values -
-    # could we use pd.combine to do this?
     return reduce(lambda left, right: left.combine_first(right), dfs)
 
 

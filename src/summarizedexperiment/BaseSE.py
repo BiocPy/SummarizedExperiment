@@ -525,10 +525,7 @@ class BaseSE:
         return (not any_null) and (not any_duplicated)
 
     def combineCols(
-        self,
-        *summarized_experiments: "BaseSE",
-        use_names: bool = True,
-        # fill: Optional[str] = None  # currently pd.combine_first doesn't have an argument to control fill value (open another PR?)
+        self, *summarized_experiments: "BaseSE", use_names: bool = True, fill=np.nan
     ) -> "BaseSE":
         """A more flexible version of `cbind`. Permits differences in the number and identity of rows,
         differences in `colData` fields, and even differences in the available `assays` among
@@ -545,6 +542,8 @@ class BaseSE:
                 If `False`, then each input `SummarizedExperiment` object must have the same number of rows.
                 The row names of the resultant `SummarizedExperiment` object will simply be the row names of
                 the first `SummarizedExperiment`.
+            fill (scalar value):
+                The value to fill NaNs.
 
         Raises:
             TypeError: if any of the provided objects are not "SummarizedExperiment".
@@ -644,7 +643,11 @@ class BaseSE:
                 new_rowData.index.tolist(), merged_assays
             )
             new_rowData = new_rowData.reindex(index=merged_assays.index)
-            new_assays[assay_name] = merged_assays.values
+            new_assays[assay_name] = (
+                merged_assays.values
+                if fill is None
+                else merged_assays.replace(np.nan, fill).values
+            )
 
         return BaseSE(
             assays=new_assays, rows=new_rowData, cols=new_colData, metadata=new_metadata

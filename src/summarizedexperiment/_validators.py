@@ -12,7 +12,7 @@ def validate_objects(objs, target_type):
     Raises:
         TypeError: if any of the provided objects are not `target_type`.
     """
-    all_types = [isinstance(obj, target_type) for obj in objs]
+    all_types = [issubclass(type(obj), target_type) for obj in objs]
     if not all(all_types):
         raise TypeError(f"not all provided objects are {target_type.__name__} objects")
 

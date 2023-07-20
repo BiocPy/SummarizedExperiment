@@ -1,6 +1,5 @@
 import warnings
 from collections import OrderedDict
-from functools import reduce
 from typing import MutableMapping, Optional, Sequence, Tuple, Union
 
 import anndata

@@ -535,7 +535,7 @@ class BaseSE:
                 - if all objects do not have the same number of rows (useNames=False)
 
         Returns:
-            BaseSE: new concatenated `SummarizedExperiment` object.
+            BaseSE: combined `SummarizedExperiment` object.
         """
 
         validate_objects(experiments, BaseSE)

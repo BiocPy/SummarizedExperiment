@@ -14,6 +14,7 @@ from scipy import sparse as sp
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
 from .dispatchers.to_numpy import to_numpy
+from .dispatchers.concatenate import concatenate
 from ._validators import validate_shapes, validate_objects
 from ._concat import combine, create_samples_if_missing, create_features_if_missing
 
@@ -562,7 +563,7 @@ class BaseSE:
             rowDatas.append(se.rowData.copy())
             colDatas.append(se.colData.copy())
 
-        new_colData = reduce(lambda left, right: pd.concat([left, right]), colDatas)
+        new_colData = reduce(concatenate, colDatas)
         new_rowData = combine(rowDatas, useNames)
 
         unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}

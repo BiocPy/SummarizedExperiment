@@ -6,7 +6,6 @@ from typing import MutableMapping, Optional, Sequence, Tuple, Union
 import anndata
 import numpy as np
 import pandas as pd
-from pandas import DataFrame
 from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
@@ -15,6 +14,13 @@ from scipy import sparse as sp
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
 from .dispatchers.to_numpy import to_numpy
+from ._validators import (
+    validate_shapes,
+    validate_objects,
+    validate_row_names,
+    validate_assay_names,
+)
+from ._concat import combine, create_samples_if_missing, create_features_if_missing
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -510,107 +516,8 @@ class BaseSE:
 
         return obj
 
-    def _validate_row_names(self, rowDatas: Sequence[DataFrame]) -> bool:
-        """Validate there are no null or duplicated row names in any rowData in rowDatas.
-
-        Args:
-            rowDatas (DataFrame): rowDatas to validate.
-        """
-
-        def _validate_single_rowData(rowData: DataFrame):
-            """Validate there are no null or duplicated row names.
-
-            Args:
-                rowData (DataFrame): rowData to validate.
-
-            Returns:
-                bool: `True` if rowData does not have any null or duplicated row names.
-                    `False` otherwise.
-            """
-            any_null = rowData.index.isnull().any()
-            any_duplicated = rowData.index.duplicated().any()
-            return (not any_null) and (not any_duplicated)
-
-        is_valid_row_names = all(
-            [_validate_single_rowData(rowData) for rowData in rowDatas]
-        )
-        if not is_valid_row_names:
-            raise ValueError(
-                "at least one input `SummarizedExperiment` has null or duplicated row names"
-            )
-
-    def _validate_objects(self, objs):
-        """Validate all objects are `SummarizedExperiment` objects.
-
-        Args:
-            objs: objects to validate.
-        """
-        all_types = [isinstance(obj, BaseSE) for obj in objs]
-        if not all(all_types):
-            raise TypeError(
-                "not all provided objects are `SummarizedExperiment` objects"
-            )
-
-    def _validate_shapes(self, ses: Sequence["BaseSE"]):
-        """Validate all `SummarizedExperiment` objects have the same shape.
-
-        Args:
-            ses (BaseSE): `SummarizedExperiment` objects to validate.
-        """
-        all_shapes = [se.shape for se in ses]
-        is_all_shapes_same = all_shapes.count(all_shapes[0]) == len(all_shapes)
-        if not is_all_shapes_same:
-            raise ValueError("not all assays have the same dimensions")
-
-    def _validate_assay_names(self, unique_assay_names: Sequence[str]):
-        """Validate named and unnamed assays are not mixed.
-        
-        Args:
-            unique_assay_names (Sequence[str]): list of assay names.
-        """
-        no_assay_name = [assay_name is None for assay_name in unique_assay_names]
-        if any(no_assay_name) and (not all(no_assay_name)):
-            raise ValueError("named and unnamed assays cannot be mixed")
-
-    def _combine(self, dfs: Sequence[DataFrame]) -> DataFrame:
-        """Combine DataFrames.
-
-        Args:
-            dfs (DataFrame): DataFrames to combine.
-
-        Returns:
-            DataFrame: combined DataFrame.
-        """
-        return reduce(lambda left, right: left.combine_first(right), dfs)
-
-    def _create_samples_if_missing(self, sample_names: Sequence[str], df: DataFrame):
-        """Create a new sample populated with nans if it doesn't exist.
-
-        Args:
-            sample_names (str): List of sample names that should exist.
-            df (DataFrame): The dataframe.
-        """
-        for sample_name in sample_names:
-            if sample_name not in df.columns:
-                df[sample_name] = np.nan
-
-    def _create_features_if_missing(
-        self, feature_names: Sequence[str], df: DataFrame
-    ) -> DataFrame:
-        """Create a new feature populated with nans if it doesn't exist.
-
-        Args:
-            feature_names (str): List of feature names that should exist.
-            df (DataFrame): The dataframe.
-
-        Returns:
-            DataFrame: Assay with missing features added.
-        """
-        all_features = df.index.union(feature_names, sort=False)
-        return df.reindex(index=all_features)
-
     def combineCols(
-        self, *summarized_experiments: "BaseSE", use_names: bool = True, fill=np.nan
+        self, *experiments: "BaseSE", useNames: bool = True, fill=np.nan
     ) -> "BaseSE":
         """A more flexible version of `cbind`. Permits differences in the number and identity of rows,
         differences in `colData` fields, and even differences in the available `assays` among
@@ -619,8 +526,8 @@ class BaseSE:
         Only considering RNA-Seq experiments for now.
 
         Args:
-            summarized_experiments ("BaseSE"): `SummarizedExperiment` objects to concatenate.
-            use_names (bool):
+            experiments ("BaseSE"): `SummarizedExperiment` objects to concatenate.
+            useNames (bool):
                 If `True`, then each input `SummarizedExperiment` must have non-null, non-duplicated row names.
                 The row names of the resultant `SummarizedExperiment` object will be the union of the row
                 names across all input objects.
@@ -631,23 +538,28 @@ class BaseSE:
                 The value to fill NaNs.
 
         Raises:
-            TypeError: if any of the provided objects are not "SummarizedExperiment".
-            ValueError: if not all assays have the same dimensions.
+            TypeError:
+                - if any of the provided objects are not "SummarizedExperiment".
+            ValueError:
+                - if there are null or duplicated row names
+                - if not all assays have the same dimensions
+                - if named and unnamed assays are mixed
 
         Returns:
             BaseSE: new concatenated `SummarizedExperiment` object.
         """
 
-        self._validate_objects(summarized_experiments)
+        validate_objects(experiments, BaseSE)
 
-        ses = [self] + list(summarized_experiments)
+        ses = [self] + list(experiments)
 
-        self._validate_shapes(ses)
+        validate_shapes(ses)
 
-        new_metadata = {}
+        all_metadata = []
         for se in ses:
             if se.metadata:
-                new_metadata.update(se.metadata.copy())
+                all_metadata.extend(se.metadata.values())
+        new_metadata = dict(enumerate(all_metadata))
 
         rowDatas = []
         colDatas = []
@@ -657,22 +569,20 @@ class BaseSE:
 
         new_colData = reduce(lambda left, right: pd.concat([left, right]), colDatas)
 
-        if use_names:
-            self._validate_row_names(rowDatas)
-            new_rowData = self._combine(rowDatas)
+        if useNames:
+            validate_row_names(rowDatas)
+            new_rowData = combine(rowDatas)
         else:
+            # do not need to validate number of features because we already
+            # did that in validate_shapes()
             row_names = rowDatas[0].index
             for rowData in rowDatas[1:]:
                 rowData.index = row_names
-            new_rowData = self._combine(rowDatas)
+            new_rowData = combine(rowDatas)
 
-        assays = [se.assays for se in ses]
-        assay_names = []
-        for assay in assays:
-            assay_names.extend(list(assay.keys()))
-        unique_assay_names = list(set(assay_names))
+        unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
 
-        self._validate_assay_names(unique_assay_names)
+        validate_assay_names(unique_assay_names)
 
         new_assays = {}
         for assay_name in unique_assay_names:
@@ -685,24 +595,19 @@ class BaseSE:
                     pd.DataFrame(
                         to_numpy(curr_assay),
                         columns=se.colData.index,
-                        index=se.rowData.index if use_names else row_names,
+                        index=se.rowData.index if useNames else row_names,
                     )
                 )
 
-            if use_names:
-                merged_assays = reduce(
-                    lambda left, right: pd.merge(
-                        left, right, left_index=True, right_index=True, how="outer"
-                    ),
-                    curr_assays,
-                )
-            else:
-                merged_assays = reduce(
-                    lambda left, right: pd.concat([left, right], axis=1), curr_assays
-                )
+            merged_assays = reduce(
+                lambda left, right: pd.merge(
+                    left, right, left_index=True, right_index=True, how="outer"
+                ),
+                curr_assays,
+            )
 
-            self._create_samples_if_missing(new_colData.index.tolist(), merged_assays)
-            merged_assays = self._create_features_if_missing(
+            create_samples_if_missing(new_colData.index.tolist(), merged_assays)
+            merged_assays = create_features_if_missing(
                 new_rowData.index.tolist(), merged_assays
             )
             new_rowData = new_rowData.reindex(index=merged_assays.index)
@@ -712,6 +617,5 @@ class BaseSE:
                 else merged_assays.replace(np.nan, fill).values
             )
 
-        return BaseSE(
-            assays=new_assays, rows=new_rowData, cols=new_colData, metadata=new_metadata
-        )
+        current_class_const = type(self)
+        return current_class_const(new_assays, new_rowData, new_colData, new_metadata)

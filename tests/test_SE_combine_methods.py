@@ -94,7 +94,7 @@ se5 = SummarizedExperiment(
 
 
 def test_SE_combineCols():
-    combined_true = se1.combineCols(se2, use_names=True)
+    combined_true = se1.combineCols(se2, useNames=True)
 
     assert combined_true.shape == (6, 6)
 
@@ -108,7 +108,7 @@ def test_SE_combineCols():
         for col_name in ["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"]
     )
 
-    combined_false = se2.combineCols(se3, use_names=False)
+    combined_false = se2.combineCols(se3, useNames=False)
 
     assert combined_false.shape == (3, 6)
 

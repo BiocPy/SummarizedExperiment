@@ -13,9 +13,8 @@ from scipy import sparse as sp
 
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
-from .dispatchers.combine import combine_other
-from ._validators import validate_objects, validate_names, validate_shapes
-from ._concat import concatenate, combine_metadata, combine_assays
+from ._validators import validate_objects
+from ._concat import concatenate, concatenate_other, combine_metadata, combine_assays
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -545,28 +544,13 @@ class BaseSE:
 
         ses = [self] + list(experiments)
 
-        if not all([isinstance(se.colData, pd.DataFrame) for se in ses]):
-            raise NotImplementedError("all colData objects must be pandas DataFrames")
-
-        if not all([isinstance(se.rowData, pd.DataFrame) for se in ses]):
-            raise NotImplementedError("all rowData objects must be pandas DataFrames")
-
         new_metadata = combine_metadata(ses)
 
         new_colData = concatenate(ses, experiment_metadata="colData")
 
-        # can probably do something better than appending rowData to a list
-        rowDatas = []
-        for se in ses:
-            rowDatas.append(se.rowData.copy())
-
-        if useNames:
-            validate_names(ses, experiment_metadata="rowData")
-        else:
-            validate_shapes(ses, experiment_metadata="rowData")
-            for rowData in rowDatas[1:]:
-                rowData.index = self.rownames
-        new_rowData = reduce(combine_other, rowDatas)
+        new_rowData = concatenate_other(
+            ses, experiment_metadata="rowData", useNames=useNames
+        )
 
         new_shape = (len(new_rowData), len(new_colData))
         new_assays = {}

@@ -2,34 +2,34 @@ from typing import Sequence
 import pandas as pd
 
 
-def validate_row_names(rowDatas: Sequence[pd.DataFrame]):
-    """Validate names across rowDatas.
+def validate_names(dfs: Sequence[pd.DataFrame]):
+    """Validate names across dataframes.
 
     Args:
-        rowDatas (pd.DataFrame): rowDatas to validate.
+        dfs (pd.DataFrame): DataFrames to validate.
 
     Raises:
-        ValueError: if there are null or duplicated row names.
+        ValueError: if there are null or duplicated names.
     """
 
-    def _validate_single_rowData(rowData: pd.DataFrame) -> bool:
-        """Validate there are no null or duplicated row names.
+    def _validate_single_df(df: pd.DataFrame) -> bool:
+        """Validate there are no null or duplicated names.
 
         Args:
-            rowData (pd.DataFrame): rowData to validate.
+            df (pd.DataFrame): DataFrame to validate.
 
         Returns:
-            bool: `True` if rowData does not have any null or duplicated row names.
+            bool: `True` if df does not have any null or duplicated names.
                 `False` otherwise.
         """
-        any_null = rowData.index.isnull().any()
-        any_duplicated = rowData.index.duplicated().any()
+        any_null = df.index.isnull().any()
+        any_duplicated = df.index.duplicated().any()
         return (not any_null) and (not any_duplicated)
 
-    is_valid_row_names = all(
-        [_validate_single_rowData(rowData) for rowData in rowDatas]
+    is_valid_names = all(
+        [_validate_single_df(df) for df in dfs]
     )
-    if not is_valid_row_names:
+    if not is_valid_names:
         raise ValueError(
             "at least one input `SummarizedExperiment` has null or duplicated row names"
         )

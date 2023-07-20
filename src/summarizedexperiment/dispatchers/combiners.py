@@ -83,7 +83,7 @@ def combine_ignore_names(left, right) -> Union[pd.DataFrame, BiocFrame]:
 def _(left: pd.DataFrame, right) -> pd.DataFrame:
     if not isinstance(right, pd.DataFrame):
         raise NotImplementedError(f"{type(right)} object are not supported")
-    return left.reset_index(drop=False).combine_first(right.reset_index(drop=False))
+    return left.reset_index(drop=True).combine_first(right.reset_index(drop=True))
 
 
 @combine_ignore_names.register

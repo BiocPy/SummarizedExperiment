@@ -15,7 +15,7 @@ from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
 from .dispatchers.to_numpy import to_numpy
 from .dispatchers.combine import combine
-from ._validators import validate_shapes, validate_objects
+from ._validators import validate_objects
 from ._concat import blend, create_samples_if_missing, create_features_if_missing
 
 __author__ = "jkanche"
@@ -537,9 +537,8 @@ class BaseSE:
             TypeError:
                 - if any of the provided objects are not "SummarizedExperiment".
             ValueError:
-                - if there are null or duplicated row names
-                - if not all assays have the same dimensions
-                - if named and unnamed assays are mixed
+                - if there are null or duplicated row names (useNames=True)
+                - if all objects do not have the same number of rows (useNames=False)
 
         Returns:
             BaseSE: new concatenated `SummarizedExperiment` object.
@@ -548,9 +547,6 @@ class BaseSE:
         validate_objects(experiments, BaseSE)
 
         ses = [self] + list(experiments)
-
-        validate_shapes(ses)
-
         all_metadata = []
         for se in ses:
             if se.metadata:

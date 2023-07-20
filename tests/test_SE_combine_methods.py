@@ -122,11 +122,14 @@ def test_SE_combineCols():
         for col_name in ["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"]
     )
 
+    # not all objects are "SummarizedExperiment"
     with pytest.raises(TypeError):
         se1.combineCols(pd.DataFrame({"dummy": ["val_1", "val_2", "val_3"]}))
 
+    # different number of rows when useNames=False
     with pytest.raises(ValueError):
-        se1.combineCols(se4)
+        se1.combineCols(se4, useNames=False)
 
+    # null or duplicated rows when useNames=True
     with pytest.raises(ValueError):
-        se4.combineCols(se5)
+        se4.combineCols(se5, useNames=True)

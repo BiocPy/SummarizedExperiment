@@ -87,7 +87,7 @@ def combine_assays_by_column(
     names: pd.Index,
     shape: Tuple[int, int],
     useNames: bool,
-) -> np.ndarray:
+) -> sp.lil_matrix:
     """Combine assays across all "SummarizedExperiment" objects by column.
 
     Args:
@@ -96,6 +96,9 @@ def combine_assays_by_column(
         names (pd.Index): names of the metadata from the non-concatenation axis.
         shape (Tuple[int, int]): shape of the combined assay.
         useNames (bool): see `combineCols()`.
+
+    Returns:
+        merged_assays (sp.lil_matrix): a sparse array of the merged assays.
     """
     col_idx = 0
     merged_assays = sp.lil_matrix(shape)
@@ -163,3 +166,5 @@ def combine_assays(
         return combine_assays_by_column(
             assay_name=assay_name, ses=ses, names=names, shape=shape, useNames=useNames
         )
+    else:
+        raise ValueError(f"cannot combine assays by {by}. can only combine by row or column.")

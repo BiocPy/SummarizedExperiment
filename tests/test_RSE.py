@@ -52,13 +52,11 @@ def test_RSE_creation():
     assert isinstance(trse, RangeSummarizedExperiment)
 
 
-def test_RSE_none():
-    tse = RangeSummarizedExperiment(assays={"counts": counts})
-
-    assert tse is not None
-    assert isinstance(tse, RangeSummarizedExperiment)
+def test_RSE_none_should_fail():
+    with pytest.raises(Exception):
+        RangeSummarizedExperiment(assays={"counts": counts})
 
 
 def test_RSE_should_fail():
     with pytest.raises(Exception):
-        tse = RangeSummarizedExperiment(assays={"counts": counts}, rowRanges=df_gr)
+        RangeSummarizedExperiment(assays={"counts": counts}, rowRanges=df_gr)

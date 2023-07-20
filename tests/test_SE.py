@@ -65,6 +65,16 @@ def test_SE_none():
     assert isinstance(tse, SummarizedExperiment)
     assert tse.shape == (200, 6)
 
+    tse.rownames = [f"row_{i}" for i in range(200)]
+    assert tse.rownames is not None
+    assert len(tse.rownames) == 200
+    assert tse.rowData.shape[0] == 200
+
+    tse.colnames = [f"col_{i}" for i in range(6)]
+    assert tse.colnames is not None
+    assert len(tse.colnames) == 6
+    assert tse.colData.shape[0] == 6
+
 
 def test_SE_export():
     tse = SummarizedExperiment(assays={"counts": counts}, rowData=gr, colData=colData)

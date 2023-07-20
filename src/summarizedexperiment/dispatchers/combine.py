@@ -4,8 +4,8 @@ from biocframe import BiocFrame
 
 
 @singledispatch
-def concatenate(left, right) -> pd.DataFrame:
-    """Concatenate various objects together.
+def combine(left, right) -> pd.DataFrame:
+    """Combine various objects together.
 
     Args:
         x (any): supported object.
@@ -14,23 +14,23 @@ def concatenate(left, right) -> pd.DataFrame:
         NotImplementedError: if type is not supported.
 
     Returns:
-        pd.DataFrame: concatenated DataFrame.
+        pd.DataFrame: combined DataFrame.
     """
     raise NotImplementedError(
-        f"cannot concatenate classes: {type(left)} and {type(right)}"
+        f"cannot combine classes: {type(left)} and {type(right)}"
     )
 
 
-@concatenate.register
+@combine.register
 def _(left: pd.DataFrame, right: pd.DataFrame) -> pd.DataFrame:
     return pd.concat([left, right])
 
 
-@concatenate.register
+@combine.register
 def _(left: BiocFrame, right) -> pd.DataFrame:
     raise NotImplementedError("BiocFrame objects are currently not supported.")
 
 
-@concatenate.register
+@combine.register
 def _(left, right: BiocFrame) -> pd.DataFrame:
     raise NotImplementedError("BiocFrame objects are currently not supported.")

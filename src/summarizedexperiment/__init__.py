@@ -24,3 +24,4 @@ finally:
 from .SummarizedExperiment import SummarizedExperiment
 from .RangeSummarizedExperiment import RangeSummarizedExperiment
 from .RangedSummarizedExperiment import RangedSummarizedExperiment
+from .utils import concat

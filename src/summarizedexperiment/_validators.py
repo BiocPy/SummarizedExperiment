@@ -40,9 +40,9 @@ def validate_names(
             bool: `True` if df does not have any null or duplicated names.
                 `False` otherwise.
         """
-        any_null = df.index.isnull().any()
-        any_duplicated = df.index.duplicated().any()
-        return (not any_null) and (not any_duplicated)
+        any_null = any(name is None for name in df.index)
+        any_duplicates = len(df.index) != len(set(df.index))
+        return (not any_null) and (not any_duplicates)
 
     is_valid_names = all(
         [_validate_single_df(getattr(se, experiment_attribute)) for se in ses]

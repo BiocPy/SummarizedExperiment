@@ -1,43 +1,95 @@
-from functools import singledispatch
+from multipledispatch import dispatch
 import pandas as pd
 from biocframe import BiocFrame
 
 
-@singledispatch
-def combine(
-    left, right, ignore_names: bool = False, prefer_left: bool = False
-) -> pd.DataFrame:
-    """Combine various objects.
+def validate_inputs(ignore_names: bool, prefer_left: bool):
+    """Ensure boolean values are valid.
 
     Args:
-        x (any): supported object.
-    Raises:
-        NotImplementedError: if type is not supported.
-    Returns:
-        pd.DataFrame: combined DataFrame.
+        ignore_names (bool): if `True`, index names will be ignored when combining.
+        prefer_left (bool): if `True`, only null values in the left dataframe
+            will be populated by values from the right dataframe.
     """
-    raise NotImplementedError(f"cannot combine: {type(left)} and {type(right)}")
-
-
-@combine.register
-def _(
-    left: pd.DataFrame, right, ignore_names: bool = False, prefer_left: bool = False
-) -> pd.DataFrame:
     if ignore_names and prefer_left:
-        raise ValueError("Somehow `useNames=True` and `useNames=False` simultaneously.")
-    if not isinstance(right, pd.DataFrame):
-        raise NotImplementedError(f"{type(right)} object are not supported")
+        raise ValueError("`ignore_names` and `prefer_left` cannot both be `True`")
 
+
+def combine_dataframes(
+    left: pd.DataFrame, right: pd.DataFrame, ignore_names: bool, prefer_left: bool
+) -> pd.DataFrame:
+    """Combine dataframes with the appropriate method.
+
+    Args:
+        left (pd.DataFrame): a dataframe.
+        right (pd.DataFrame): a dataframe.
+        ignore_names (bool): if `True`, index names will be ignored when combining.
+        prefer_left (bool): if `True`, only null values in the left dataframe
+            will be populated by values from the right dataframe.
+    Returns:
+        pd.DataFrame: the combined dataframe.
+    """
+    validate_inputs(ignore_names, prefer_left)
     if ignore_names:
         return left.reset_index(drop=True).combine_first(right.reset_index(drop=True))
-    elif prefer_left:
+    if prefer_left:
         return left.combine_first(right)
-    else:
-        return pd.concat([left, right])
+    return pd.concat([left, right])
 
 
-@combine.register
-def _(
-    left: BiocFrame, right, ignore_names: bool = False, prefer_left: bool = False
+@dispatch(pd.DataFrame, pd.DataFrame)
+def combine(
+    left: pd.DataFrame,
+    right: pd.DataFrame,
+    ignore_names: bool = False,
+    prefer_left: bool = False,
 ) -> pd.DataFrame:
-    raise NotImplementedError("BiocFrame objects are currently not supported.")
+    return combine_dataframes(
+        left, right, ignore_names=ignore_names, prefer_left=prefer_left
+    )
+
+
+@dispatch(BiocFrame, BiocFrame)
+def combine(
+    left: BiocFrame,
+    right: BiocFrame,
+    ignore_names: bool = False,
+    prefer_left: bool = False,
+) -> pd.DataFrame:
+    return combine_dataframes(
+        left.to_pandas(),
+        right.to_pandas(),
+        ignore_names=ignore_names,
+        prefer_left=prefer_left,
+    )
+
+
+@dispatch(pd.DataFrame, BiocFrame)
+def combine(
+    left: pd.DataFrame,
+    right: BiocFrame,
+    ignore_names: bool = False,
+    prefer_left: bool = False,
+) -> pd.DataFrame:
+    return combine_dataframes(
+        left, right.to_pandas(), ignore_names=ignore_names, prefer_left=prefer_left
+    )
+
+
+@dispatch(BiocFrame, pd.DataFrame)
+def combine(
+    left: BiocFrame,
+    right: BiocFrame,
+    ignore_names: bool = False,
+    prefer_left: bool = False,
+) -> pd.DataFrame:
+    return combine_dataframes(
+        left.to_pandas(), right, ignore_names=ignore_names, prefer_left=prefer_left
+    )
+
+
+@dispatch(object, object)
+def combine(
+    left: object, right: object, ignore_names: bool = False, prefer_left: bool = False
+):
+    raise ValueError(f"Cannot combine types: {type(left)} and {type(right)}")

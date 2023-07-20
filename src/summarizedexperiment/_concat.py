@@ -6,15 +6,15 @@ import numpy as np
 from ._validators import validate_names
 
 
-def combine(dfs: Sequence[pd.DataFrame], useNames: bool) -> pd.DataFrame:
-    """Combine DataFrames.
+def blend(dfs: Sequence[pd.DataFrame], useNames: bool) -> pd.DataFrame:
+    """Blend DataFrames.
 
     Args:
-        dfs (pd.DataFrame): DataFrames to combine.
+        dfs (pd.DataFrame): DataFrames to blend.
         useNames (bool): whether or not to use names.
 
     Returns:
-        pd.DataFrame: combined DataFrame objects.
+        pd.DataFrame: blended DataFrame objects.
     """
     if useNames:
         validate_names(dfs)

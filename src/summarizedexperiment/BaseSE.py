@@ -14,7 +14,12 @@ from scipy import sparse as sp
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
 from ._validators import validate_objects
-from ._combiners import combine_concatenation_axis, combine_non_concatenation_axis, combine_metadata, combine_assays
+from ._combiners import (
+    combine_concatenation_axis,
+    combine_non_concatenation_axis,
+    combine_metadata,
+    combine_assays,
+)
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

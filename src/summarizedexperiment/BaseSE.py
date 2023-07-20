@@ -549,10 +549,10 @@ class BaseSE:
 
         new_metadata = combine_metadata(ses)
 
-        new_colData = combine_concatenation_axis(ses, experiment_metadata="colData")
+        new_colData = combine_concatenation_axis(ses, experiment_attribute="colData")
 
         new_rowData = combine_non_concatenation_axis(
-            ses, experiment_metadata="rowData", useNames=useNames
+            ses, experiment_attribute="rowData", useNames=useNames
         )
 
         new_assays = {}

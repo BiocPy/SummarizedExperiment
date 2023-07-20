@@ -555,7 +555,6 @@ class BaseSE:
             ses, experiment_metadata="rowData", useNames=useNames
         )
 
-        # need to make this colData/rowData agnostic
         new_assays = {}
         unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
         for assay_name in unique_assay_names:

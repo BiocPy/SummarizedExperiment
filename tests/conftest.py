@@ -7,4 +7,10 @@
     - https://docs.pytest.org/en/stable/writing_plugins.html
 """
 
-# import pytest
+import pytest
+import data.summarized_experiments as ses
+
+
+@pytest.fixture
+def summarized_experiments():
+    return ses

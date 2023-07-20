@@ -1,9 +1,11 @@
 from typing import Union, MutableMapping, Sequence, Tuple, Optional
 from biocframe import BiocFrame
+from genomicranges import GenomicRanges
 from scipy import sparse as sp
 import numpy as np
 import pandas as pd
 from collections import OrderedDict
+import anndata
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -357,3 +359,24 @@ class BaseSE:
             return self._cols.index.tolist()
         else:
             return self._cols.rowNames
+
+    def toAnnData(self,) -> anndata.AnnData:
+        """Transform `SingleCellExperiment` objects to `AnnData`, 
+
+        Returns:
+            anndata.AnnData: returns an AnnData representation of SE.
+        """
+
+        layers = OrderedDict()
+        for asy, mat in self.assays.items():
+            layers[asy] = mat.transpose()
+
+        trows = self.rowData
+        if isinstance(self.rowData, GenomicRanges):
+            trows = self.rowData.toPandas()
+
+        obj = anndata.AnnData(
+            obs=self.colData, var=trows, uns=self.metadata, layers=layers,
+        )
+
+        return obj

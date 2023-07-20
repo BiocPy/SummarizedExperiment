@@ -542,6 +542,9 @@ class BaseSE:
             BaseSE: combined `SummarizedExperiment` object.
         """
 
+        if len(experiments) == 1 and isinstance(experiments[0], list):
+            experiments = experiments[0]
+
         validate_objects(experiments, BaseSE)
 
         ses = [self] + list(experiments)

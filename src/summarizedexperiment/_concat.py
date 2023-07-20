@@ -8,35 +8,6 @@ from ._validators import validate_names, validate_shapes
 from .dispatchers.combine import combine, combine_prefer_left, combine_ignore_names
 
 
-def _drop_index(df: pd.DataFrame) -> pd.DataFrame:
-    """Drop the indexes of a dataframe.
-
-    Args:
-        df (pd.DataFrame): a dataframe.
-
-    Returns:
-        df (pd.DataFrame): a dataframe with indexes removed.
-    """
-    return df.reset_index(drop=True)
-
-
-def _merge_ignore_names(dfs: Sequence[pd.DataFrame]) -> pd.DataFrame:
-    """Merge dataframes ignoring names.
-
-    Args:
-        dfs (Sequence[pd.DataFrame]): dataframes to merge.
-
-    Returns:
-        merged_df (pd.DataFrame): the merged dataframe.
-    """
-    if len(dfs) == 1:
-        return _drop_index(dfs[0])
-
-    return pd.concat(
-        [_drop_index(dfs[0]), _merge_ignore_names(dfs[1:])], axis=1, join="inner"
-    )
-
-
 def _impose_common_precision(x: np.ndarray, y: np.ndarray):
     """Ensure input arrays have compatible dtypes.
 

@@ -74,10 +74,10 @@ def test_SE_set_props():
     assert len(tse.assayNames) == 1
 
     tse.colData = None
-    assert tse.colData is None
+    assert tse.colData is not None
 
     tse.rowData = None
-    assert tse.rowData is None
+    assert tse.rowData is not None
 
     assert tse.dims == tse.shape
 

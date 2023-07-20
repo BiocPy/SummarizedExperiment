@@ -511,16 +511,22 @@ class BaseSE:
         return obj
 
     def _validate_row_names(self, rowDatas: Sequence[DataFrame]) -> bool:
-        """Validate that all rowDatas have non-null, non-duplicated row names.
+        """Validate there are no null or duplicated row names in any rowData in rowDatas.
 
         Args:
-            rowData (DataFrame): The rowData to validate.
-
-        Returns:
-            bool: True if the rowData has non-null, non-duplicated row names.
+            rowDatas (DataFrame): rowDatas to validate.
         """
 
         def _validate_single_rowData(rowData: DataFrame):
+            """Validate there are no null or duplicated row names.
+
+            Args:
+                rowData (DataFrame): rowData to validate.
+
+            Returns:
+                bool: `True` if rowData does not have any null or duplicated row names.
+                    `False` otherwise.
+            """
             any_null = rowData.index.isnull().any()
             any_duplicated = rowData.index.duplicated().any()
             return (not any_null) and (not any_duplicated)
@@ -533,20 +539,35 @@ class BaseSE:
                 "at least one input `SummarizedExperiment` has null or duplicated row names"
             )
 
-    def _validate_objects(self, ses: Sequence["BaseSE"]):
-        all_types = [isinstance(se, BaseSE) for se in ses]
+    def _validate_objects(self, objs):
+        """Validate all objects are `SummarizedExperiment` objects.
+
+        Args:
+            objs: objects to validate.
+        """
+        all_types = [isinstance(obj, BaseSE) for obj in objs]
         if not all(all_types):
             raise TypeError(
                 "not all provided objects are `SummarizedExperiment` objects"
             )
 
     def _validate_shapes(self, ses: Sequence["BaseSE"]):
+        """Validate all `SummarizedExperiment` objects have the same shape.
+
+        Args:
+            ses (BaseSE): `SummarizedExperiment` objects to validate.
+        """
         all_shapes = [se.shape for se in ses]
         is_all_shapes_same = all_shapes.count(all_shapes[0]) == len(all_shapes)
         if not is_all_shapes_same:
             raise ValueError("not all assays have the same dimensions")
 
     def _validate_assay_names(self, unique_assay_names: Sequence[str]):
+        """Validate named and unnamed assays are not mixed.
+        
+        Args:
+            unique_assay_names (Sequence[str]): list of assay names.
+        """
         no_assay_name = [assay_name is None for assay_name in unique_assay_names]
         if any(no_assay_name) and (not all(no_assay_name)):
             raise ValueError("named and unnamed assays cannot be mixed")

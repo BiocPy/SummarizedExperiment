@@ -18,6 +18,13 @@ from ._types import (
 )
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
+from ._validators import validate_objects
+from ._combiners import (
+    combine_concatenation_axis,
+    combine_non_concatenation_axis,
+    combine_metadata,
+    combine_assays,
+)
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -536,3 +543,62 @@ class BaseSE:
         )
 
         return obj
+
+    def combineCols(self, *experiments: "BaseSE", useNames: bool = True) -> "BaseSE":
+        """A more flexible version of `cbind`. Permits differences in the number and identity of rows,
+        differences in `colData` fields, and even differences in the available `assays` among
+        `SummarizedExperiment` objects being combined.
+
+        Only considering RNA-Seq experiments for now.
+
+        Args:
+            experiments ("BaseSE"): `SummarizedExperiment` objects to concatenate.
+            useNames (bool):
+                If `True`, then each input `SummarizedExperiment` must have non-null, non-duplicated row names.
+                The row names of the resultant `SummarizedExperiment` object will be the union of the row
+                names across all input objects.
+                If `False`, then each input `SummarizedExperiment` object must have the same number of rows.
+                The row names of the resultant `SummarizedExperiment` object will simply be the row names of
+                the first `SummarizedExperiment`.
+
+        Raises:
+            TypeError:
+                - if any of the provided objects are not "SummarizedExperiment".
+            ValueError:
+                - if there are null or duplicated row names (useNames=True)
+                - if all objects do not have the same number of rows (useNames=False)
+
+        Returns:
+            BaseSE: combined `SummarizedExperiment` object.
+        """
+
+        if len(experiments) == 1 and isinstance(experiments[0], list):
+            experiments = experiments[0]
+
+        validate_objects(experiments, BaseSE)
+
+        ses = [self] + list(experiments)
+
+        new_metadata = combine_metadata(ses)
+
+        new_colData = combine_concatenation_axis(ses, experiment_attribute="colData")
+
+        new_rowData = combine_non_concatenation_axis(
+            ses, experiment_attribute="rowData", useNames=useNames
+        )
+
+        new_assays = {}
+        unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
+        for assay_name in unique_assay_names:
+            merged_assays = combine_assays(
+                assay_name=assay_name,
+                ses=ses,
+                names=new_rowData.index,
+                by="column",
+                shape=(len(new_rowData), len(new_colData)),
+                useNames=useNames,
+            )
+            new_assays[assay_name] = merged_assays
+
+        current_class_const = type(self)
+        return current_class_const(new_assays, new_rowData, new_colData, new_metadata)

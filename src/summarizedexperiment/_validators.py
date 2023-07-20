@@ -50,16 +50,18 @@ def validate_objects(objs, target_type):
         raise TypeError(f"not all provided objects are {str(target_type)} objects")
 
 
-def validate_num_rows(dfs: Sequence[pd.DataFrame]):
-    """Validate number of rows across dataframes.
+def validate_shapes(dfs: Sequence[pd.DataFrame]):
+    """Validate shapes across dataframes.
 
     Args:
         dfs (pd.DataFrame): DataFrames to validate.
 
     Raises:
-        ValueError: if all objects do not have the same number of rows.
+        ValueError: if all objects do not have the same shape of interest:
+            - number of rows for cbind() and combineCols()
+            - number of columns for rbind() and combineRows()
     """
-    all_num_rows = [df.shape[0] for df in dfs]
-    is_all_num_rows_same = all_num_rows.count(all_num_rows[0]) == len(all_num_rows)
-    if not is_all_num_rows_same:
-        raise ValueError("not all objects have the same number of rows")
+    all_shapes = [df.shape[0] for df in dfs]
+    is_all_same_shape = all_shapes.count(all_shapes[0]) == len(all_shapes)
+    if not is_all_same_shape:
+        raise ValueError("not all objects have the same shape")

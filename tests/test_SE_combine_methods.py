@@ -24,11 +24,11 @@ se1 = SummarizedExperiment(
 )
 
 rowData2 = pd.DataFrame(
-    {"meta1": ["val_1", "val_2", "val_3"], "meta2": ["elem_1", "elem_2", "elem_3"]},
+    {"annot1": ["val_1", "val_2", "val_3"], "annot2": ["elem_1", "elem_2", "elem_3"]},
     index=["MYC", "BRCA2", "GSS"],
 )
 colData2 = pd.DataFrame(
-    {"meta1": ["val_1", "val_2", "val_3"], "meta2": ["dat_1", "dat_2", "dat_3"]},
+    {"annot1": ["val_1", "val_2", "val_3"], "annot2": ["dat_1", "dat_2", "dat_3"]},
     index=["cell_4", "cell_5", "cell_6"],
 )
 se2 = SummarizedExperiment(
@@ -39,11 +39,11 @@ se2 = SummarizedExperiment(
 )
 
 rowData3 = pd.DataFrame(
-    {"meta1": ["val_1", "val_2", "val_3"], "meta2": ["elem_1", "elem_2", "elem_3"]},
+    {"meta1": ["val_1", "val_2", "val_3"], "annot2": ["elem_1", "elem_2", "elem_3"]},
     index=["MYC", "BRCA2", "GSS"],
 )
 colData3 = pd.DataFrame(
-    {"meta1": ["val_1", "val_2", "val_3"], "meta2": ["dat_1", "dat_2", "dat_3"]},
+    {"meta1": ["val_1", "val_2", "val_3"], "annot2": ["dat_1", "dat_2", "dat_3"]},
     index=["cell_7", "cell_8", "cell_9"],
 )
 se3 = SummarizedExperiment(
@@ -67,7 +67,10 @@ colData4 = pd.DataFrame(
     index=["cell_7", "cell_8", "cell_9"],
 )
 se4 = SummarizedExperiment(
-    assays={"counts": np.random.poisson(lam=5, size=(4, 3))},
+    assays={
+        "counts": np.random.poisson(lam=5, size=(4, 3)),
+        "log": np.log(np.random.poisson(lam=5, size=(4, 3)))
+    },
     rowData=rowData4,
     colData=colData4,
 )
@@ -94,6 +97,8 @@ se5 = SummarizedExperiment(
 
 
 def test_SE_combineCols():
+
+    # useNames=True where row names are disjoint
     combined_true = se1.combineCols(se2, useNames=True)
 
     assert combined_true.shape == (6, 6)
@@ -108,6 +113,17 @@ def test_SE_combineCols():
         for col_name in ["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"]
     )
 
+    assert all(
+        col_name in combined_true.rowData.columns.tolist()
+        for col_name in ["meta1", "meta2", "annot1", "annot2"]
+    )
+
+    assert all(
+        col_name in combined_true.colData.columns.tolist()
+        for col_name in ["meta1", "meta2", "annot1", "annot2"]
+    )
+
+    # useNames=False and row names are all the same
     combined_false = se2.combineCols(se3, useNames=False)
 
     assert combined_false.shape == (3, 6)
@@ -121,6 +137,19 @@ def test_SE_combineCols():
         col_name in combined_false.colData.index.tolist()
         for col_name in ["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"]
     )
+
+    assert all(
+        col_name in combined_false.rowData.columns.tolist()
+        for col_name in ["meta1", "annot1", "annot2"]
+    )
+
+    assert all(
+        col_name in combined_true.colData.columns.tolist()
+        for col_name in ["meta1", "annot1", "annot2"]
+    )
+
+    # test multiple assays
+    combined_multiple = se1.combineCols([se2, se3, se4])
 
     # not all objects are "SummarizedExperiment"
     with pytest.raises(TypeError):

@@ -9,7 +9,9 @@ __copyright__ = "keviny2"
 __license__ = "MIT"
 
 
-def make_assertions(combined, shape, assay_names, rownames, rowData_cols, colnames, colData_cols):
+def make_assertions(
+    combined, shape, assay_names, rownames, rowData_cols, colnames, colData_cols
+):
     assert combined.shape == shape
 
     assert sorted(list(combined.assays)) == sorted(assay_names)
@@ -55,7 +57,7 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         rownames=["HER2", "BRCA1", "TPFK"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
-        colData_cols=["sample", "disease", "doublet_score"]
+        colData_cols=["sample", "disease", "doublet_score"],
     )
 
     # Scenario 2: same number of rows but different row names
@@ -70,11 +72,13 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         rownames=["HER2", "BRCA1", "TPFK"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"],
-        colData_cols=["sample", "disease", "doublet_score"]
+        colData_cols=["sample", "disease", "doublet_score"],
     )
 
     # Scenario 3: overlapping sample names
-    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=False)
+    combined = summarized_experiments.se4.combineCols(
+        summarized_experiments.se6, useNames=False
+    )
 
     make_assertions(
         combined=combined,
@@ -83,11 +87,13 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"],
-        colData_cols=["sample", "disease", "doublet_score", "qual"]
+        colData_cols=["sample", "disease", "doublet_score", "qual"],
     )
 
     # Scenario 4: empty rowData and colData
-    combined = summarized_experiments.se1.combineCols(summarized_experiments.se_nonames, useNames=False)
+    combined = summarized_experiments.se1.combineCols(
+        summarized_experiments.se_nonames, useNames=False
+    )
 
     make_assertions(
         combined=combined,
@@ -96,7 +102,7 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         rownames=["HER2", "BRCA1", "TPFK"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_1", "cell_2", "cell_3", "cell_1", "cell_2", "cell_3"],
-        colData_cols=["sample", "disease"]
+        colData_cols=["sample", "disease"],
     )
 
     # Scenario 5: different number of rows
@@ -140,7 +146,7 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         rownames=["HER2", "BRCA1", "TPFK"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
-        colData_cols=["sample", "disease", "doublet_score"]
+        colData_cols=["sample", "disease", "doublet_score"],
     )
 
     # Scenario 2: same number of rows but different row names
@@ -155,7 +161,7 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         rownames=["HER2", "BRCA1", "BRCA2", "MYC", "TPFK"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"],
-        colData_cols=["sample", "disease", "doublet_score"]
+        colData_cols=["sample", "disease", "doublet_score"],
     )
 
     # Scenario 3: different number of rows
@@ -170,7 +176,7 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12"],
-        colData_cols=["sample", "disease", "doublet_score"]
+        colData_cols=["sample", "disease", "doublet_score"],
     )
 
     # assert se4 samples are non-nan and other entries are 0 for 'beta' assay
@@ -221,7 +227,9 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se1.combineCols(se_duplicated_row_name, useNames=True)
 
     # Scenario 6: overlapping sample names
-    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=True)
+    combined = summarized_experiments.se4.combineCols(
+        summarized_experiments.se6, useNames=True
+    )
 
     make_assertions(
         combined=combined,
@@ -230,11 +238,13 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"],
-        colData_cols=["sample", "disease", "doublet_score", "qual"]
+        colData_cols=["sample", "disease", "doublet_score", "qual"],
     )
 
     # Scenario 7: empty rowData and colData
-    combined = summarized_experiments.se1.combineCols(summarized_experiments.se_nonames, useNames=True)
+    combined = summarized_experiments.se1.combineCols(
+        summarized_experiments.se_nonames, useNames=True
+    )
 
     make_assertions(
         combined=combined,
@@ -243,7 +253,7 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         rownames=["HER2", "BRCA1", "TPFK"],
         rowData_cols=["seqnames", "start", "end"],
         colnames=["cell_1", "cell_2", "cell_3", "cell_1", "cell_2", "cell_3"],
-        colData_cols=["sample", "disease"]
+        colData_cols=["sample", "disease"],
     )
 
 
@@ -271,8 +281,18 @@ def test_SE_combineCols_mix_sparse_and_dense(summarized_experiments):
         assay_names=["counts", "lognorm", "beta"],
         rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS", "PIK3CA", "HRAS"],
         rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12", "cell_13", "cell_14", "cell_15"],
-        colData_cols=["sample", "disease", "doublet_score"]
+        colnames=[
+            "cell_7",
+            "cell_8",
+            "cell_9",
+            "cell_10",
+            "cell_11",
+            "cell_12",
+            "cell_13",
+            "cell_14",
+            "cell_15",
+        ],
+        colData_cols=["sample", "disease", "doublet_score"],
     )
 
 

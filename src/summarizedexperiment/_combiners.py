@@ -41,44 +41,44 @@ def combine_metadata(ses: Sequence["BaseSE"]) -> Optional[MutableMapping]:
 
 
 def combine_concatenation_axis(
-    ses: Sequence["BaseSE"], experiment_metadata: Literal["rowData", "colData"]
+    ses: Sequence["BaseSE"], experiment_attribute: Literal["rowData", "colData"]
 ) -> pd.DataFrame:
     """Method for combining metadata along the concatenation axis.
 
     Args:
         ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to combine.
+        experiment_attribute (Literal["rowData", "colData"]): the experiment_attribute to combine.
 
     Returns:
         concatenated_df (pd.DataFrame): the concatenated experiment metadata.
     """
-    all_experiment_metadata = [getattr(se, experiment_metadata) for se in ses]
-    return reduce(combine, all_experiment_metadata)
+    all_experiment_attribute = [getattr(se, experiment_attribute) for se in ses]
+    return reduce(combine, all_experiment_attribute)
 
 
 def combine_non_concatenation_axis(
     ses: Sequence["BaseSE"],
-    experiment_metadata: Literal["rowData", "colData"],
+    experiment_attribute: Literal["rowData", "colData"],
     useNames: bool,
 ) -> pd.DataFrame:
     """Method for combining metadata along the non-concatenation axis.
 
     Args:
         ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to combine.
+        experiment_attribute (Literal["rowData", "colData"]): the experiment_attribute to combine.
         useName (bool): see `combineCols()`
 
     Returns:
         concatenated_df (pd.DataFrame): the concatenated experiment metadata.
     """
-    all_experiment_metadata = [getattr(se, experiment_metadata) for se in ses]
+    all_experiment_attribute = [getattr(se, experiment_attribute) for se in ses]
     if useNames:
-        validate_names(ses, experiment_metadata=experiment_metadata)
-        return reduce(combine_prefer_left, all_experiment_metadata)
+        validate_names(ses, experiment_attribute=experiment_attribute)
+        return reduce(combine_prefer_left, all_experiment_attribute)
     else:
-        validate_shapes(ses, experiment_metadata=experiment_metadata)
-        names = getattr(ses[0], experiment_metadata).index
-        return reduce(combine_ignore_names, all_experiment_metadata).set_index(names)
+        validate_shapes(ses, experiment_attribute=experiment_attribute)
+        names = getattr(ses[0], experiment_attribute).index
+        return reduce(combine_ignore_names, all_experiment_attribute).set_index(names)
 
 
 def combine_assays_by_column(

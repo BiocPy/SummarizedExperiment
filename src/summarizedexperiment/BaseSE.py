@@ -538,8 +538,6 @@ class BaseSE:
             BaseSE: new concatenated `SummarizedExperiment` object.
         """
 
-        # TODO: consolidate validation functions into a single function
-
         validate_objects(experiments, BaseSE)
 
         ses = [self] + list(experiments)

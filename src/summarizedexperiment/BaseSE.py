@@ -14,7 +14,7 @@ from scipy import sparse as sp
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
 from ._validators import validate_objects
-from ._concat import concatenate, concatenate_other, combine_metadata, combine_assays
+from ._combiners import combine_concatenation_axis, combine_non_concatenation_axis, combine_metadata, combine_assays
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -544,9 +544,9 @@ class BaseSE:
 
         new_metadata = combine_metadata(ses)
 
-        new_colData = concatenate(ses, experiment_metadata="colData")
+        new_colData = combine_concatenation_axis(ses, experiment_metadata="colData")
 
-        new_rowData = concatenate_other(
+        new_rowData = combine_non_concatenation_axis(
             ses, experiment_metadata="rowData", useNames=useNames
         )
 

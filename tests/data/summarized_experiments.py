@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import scipy.sparse as sp
+from biocframe import BiocFrame
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 rowData1 = pd.DataFrame(
@@ -169,4 +170,55 @@ se_nonames = SummarizedExperiment(
     rowData=rowData_nonames,
     colData=colData_nonames,
     metadata={},
+)
+
+rowData_biocframe_1 = BiocFrame(
+    {
+        "seqnames": ["chr_5", "chr_3", "chr_2"],
+        "start": [10293804, 12098948, 20984392],
+        "end": [28937947, 3872839, 329837492]
+    },
+    rowNames=["HER2", "BRCA1", "TPFK"],
+)
+colData_biocframe_1 = BiocFrame(
+    {
+        "sample": ["SAM_1", "SAM_3", "SAM_3"],
+        "disease": ["True", "True", "True"],
+    },
+    rowNames=["cell_1", "cell_2", "cell_3"],
+)
+se_biocframe_1 = SummarizedExperiment(
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
+    rowData=rowData_biocframe_1,
+    colData=colData_biocframe_1,
+    metadata={"seq_platform": "Illumina NovaSeq 6000"},
+)
+
+rowData_biocframe_2 = BiocFrame(
+    {
+        "seqnames": ["chr_5", "chr_3", "chr_2"],
+        "start": [10293804, 12098948, 20984392],
+        "end": [28937947, 3872839, 329837492]
+    },
+    rowNames=["HER2", "BRCA1", "TPFK"],
+)
+colData_biocframe_2 = BiocFrame(
+    {
+        "sample": ["SAM_4", "SAM_5", "SAM_6"],
+        "disease": ["True", "False", "True"],
+        "doublet_score": [.05, .23, .54]
+    },
+    rowNames=["cell_4", "cell_5", "cell_6"],
+)
+se_biocframe_2 = SummarizedExperiment(
+    assays={
+        "counts": np.random.poisson(lam=7, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
+    rowData=rowData_biocframe_2,
+    colData=colData_biocframe_2,
+    metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )

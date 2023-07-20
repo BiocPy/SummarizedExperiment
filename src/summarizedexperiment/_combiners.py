@@ -84,11 +84,13 @@ def combine_non_concatenation_axis(
         )
     else:
         validate_shapes(ses, experiment_attribute=experiment_attribute)
-        names = getattr(ses[0], experiment_attribute).index
-        return reduce(
+        combined_dataframe = reduce(
             lambda left, right: combine(left, right, ignore_names=True),
             all_experiment_attributes,
-        ).set_index(names)
+        )
+        names = getattr(ses[0], experiment_attribute).index
+        combined_dataframe.index = names
+        return combined_dataframe
 
 
 def combine_assays_by_column(

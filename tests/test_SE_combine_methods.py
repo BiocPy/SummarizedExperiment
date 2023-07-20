@@ -13,15 +13,10 @@ def make_assertions(
     combined, shape, assay_names, rownames, rowData_cols, colnames, colData_cols
 ):
     assert combined.shape == shape
-
     assert sorted(list(combined.assays)) == sorted(assay_names)
-
     assert sorted(combined.rownames) == sorted(rownames)
-
     assert sorted(combined.rowData.columns.tolist()) == sorted(rowData_cols)
-
     assert sorted(combined.colnames) == sorted(colnames)
-
     assert sorted(combined.colData.columns.tolist()) == sorted(colData_cols)
 
 
@@ -313,3 +308,65 @@ def test_SE_combineCols_not_all_SE(summarized_experiments):
     # Scenario 1: one object as a pandas DataFrame
     with pytest.raises(TypeError):
         summarized_experiments.se1.combineCols(pd.DataFrame({"dummy": [1, 2, 3]}))
+
+
+def test_SE_combineCols_biocframe(summarized_experiments):
+    """
+    Test case to verify combineCols() correctly handles BiocFrames.
+
+    Test Steps:
+    1. Set up the "SummarizedExperiment" inputs.
+    2. Invoke combineCols() with the inputs.
+    3. Assert the expected output.
+
+    Test Scenarios:
+    1. Test when both `rowData` are of type `BiocFrame` and `useNames=True`.
+    2. Test when both `rowData` are of type `BiocFrame` and `useNames=False`.
+    3. Test when one `rowData` is a `pd.DataFrame` and the other a `BiocFrame`.
+    """
+
+    # Scenario 1: both `rowData` are of type `BiocFrame` and `useNames=True`
+    combined = summarized_experiments.se_biocframe_1.combineCols(
+        summarized_experiments.se_biocframe_2, useNames=True
+    )
+
+    make_assertions(
+        combined=combined,
+        shape=(3, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=["HER2", "BRCA1", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
+        colData_cols=["sample", "disease", "doublet_score"],
+    )
+
+    # Scenario 2: both `rowData` are of type `BiocFrame` and `useNames=False`
+    combined = summarized_experiments.se_biocframe_1.combineCols(
+        summarized_experiments.se_biocframe_2, useNames=False
+    )
+
+    make_assertions(
+        combined=combined,
+        shape=(3, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=["HER2", "BRCA1", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
+        colData_cols=["sample", "disease", "doublet_score"],
+    )
+
+    # Scenario 3: Test when one `rowData` is a `pd.DataFrame` and the other a `BiocFrame`.
+    combined = summarized_experiments.se_biocframe_1.combineCols(
+        summarized_experiments.se3, useNames=True
+    )
+
+    make_assertions(
+        combined=combined,
+        shape=(5, 6),
+        assay_names=["counts", "lognorm"],
+        rownames=['BRCA1', 'BRCA2', 'HER2', 'MYC', 'TPFK'],
+        rowData_cols=["seqnames", "start", "end"],
+        colnames=["cell_1", "cell_2", "cell_3", "cell_7", "cell_8", "cell_9"],
+        colData_cols=["sample", "disease", "doublet_score"],
+    )
+

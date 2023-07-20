@@ -17,12 +17,14 @@ def validate_objects(objs, target_type):
         raise TypeError(f"not all provided objects are {target_type.__name__} objects")
 
 
-def validate_names(ses: Sequence["BaseSE"], property: Literal["rowData", "colData"]):
+def validate_names(
+    ses: Sequence["BaseSE"], experiment_metadata: Literal["rowData", "colData"]
+):
     """Validate names across experiments.
 
     Args:
         ses (Sequence[BaseSE]): SummarizedExperiment objects to validate.
-        property (Literal["rowData", "colData"]): the property to validate.
+        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to validate.
 
     Raises:
         ValueError: if there are null or duplicated names.
@@ -43,7 +45,7 @@ def validate_names(ses: Sequence["BaseSE"], property: Literal["rowData", "colDat
         return (not any_null) and (not any_duplicated)
 
     is_valid_names = all(
-        [_validate_single_df(getattr(se, property)) for se in ses]
+        [_validate_single_df(getattr(se, experiment_metadata)) for se in ses]
     )
     if not is_valid_names:
         raise ValueError(
@@ -51,19 +53,21 @@ def validate_names(ses: Sequence["BaseSE"], property: Literal["rowData", "colDat
         )
 
 
-def validate_shapes(ses: Sequence["BaseSE"], property: Literal["rowData", "colData"]):
+def validate_shapes(
+    ses: Sequence["BaseSE"], experiment_metadata: Literal["rowData", "colData"]
+):
     """Validate shapes across experiments.
 
     Args:
         ses (Sequence[BaseSE]): SummarizedExperiment objects to validate.
-        property (Literal["rowData", "colData"]): the property to validate.
+        experiment_metadata (Literal["rowData", "colData"]): the experiment_metadata to validate.
 
     Raises:
         ValueError: if all objects do not have the same shape of interest:
             - number of rows for cbind() and combineCols()
             - number of columns for rbind() and combineRows()
     """
-    all_shapes = [getattr(se, property).shape[0] for se in ses]
+    all_shapes = [getattr(se, experiment_metadata).shape[0] for se in ses]
     is_all_same_shape = all_shapes.count(all_shapes[0]) == len(all_shapes)
     if not is_all_same_shape:
         raise ValueError("not all objects have the same shape")

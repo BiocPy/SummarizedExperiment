@@ -539,6 +539,8 @@ class BaseSE:
             BaseSE: new concatenated `SummarizedExperiment` object.
         """
 
+        # TODO: consolidate validation functions into a single function
+
         validate_objects(experiments, BaseSE)
 
         ses = [self] + list(experiments)
@@ -551,7 +553,7 @@ class BaseSE:
 
         new_metadata = combine_metadata(ses)
 
-        new_colData = concatenate(ses, property="colData")
+        new_colData = concatenate(ses, experiment_metadata="colData")
 
         # can probably do something better than appending rowData to a list
         rowDatas = []
@@ -559,9 +561,9 @@ class BaseSE:
             rowDatas.append(se.rowData.copy())
 
         if useNames:
-            validate_names(ses, property="rowData")
+            validate_names(ses, experiment_metadata="rowData")
         else:
-            validate_shapes(ses, property="rowData")
+            validate_shapes(ses, experiment_metadata="rowData")
             for rowData in rowDatas[1:]:
                 rowData.index = self.rownames
         new_rowData = reduce(combine_other, rowDatas)
@@ -575,7 +577,7 @@ class BaseSE:
                 ses=ses,
                 other=new_rowData,
                 shape=(new_shape),
-                useNames=useNames
+                useNames=useNames,
             )
             new_assays[assay_name] = merged_assays
 

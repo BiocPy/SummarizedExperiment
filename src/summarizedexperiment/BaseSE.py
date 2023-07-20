@@ -565,6 +565,11 @@ class BaseSE:
         unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
         new_assays = {}
         for assay_name in unique_assay_names:
+            # if useNames=False, we simply stack horizontally
+            # if useNames=True:
+            #   for each assay_name there are 2 cases (comparing with rowData.index):
+            #       - assay_name has feature -> just stack horizontally
+            #       - assay_name lacks feature -> stack array of 0's with length num samples
             curr_assays = []
             for se in ses:
                 if assay_name not in se.assays:

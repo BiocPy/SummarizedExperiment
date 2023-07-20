@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+import scipy.sparse as sp
 import pytest
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
@@ -95,7 +96,7 @@ rowData4 = pd.DataFrame(
 )
 colData4 = pd.DataFrame(
     {
-        "sample": ["SAM_7", "SAM_8", "SAM_9"],
+        "sample": ["SAM_10", "SAM_11", "SAM_12"],
         "disease": ["True", "False", "False"],
         "doublet_score": [.15, .62, .18]
     },
@@ -109,6 +110,33 @@ se4 = SummarizedExperiment(
     },
     rowData=rowData4,
     colData=colData4,
+    metadata={"seq_platform": "Illumina NovaSeq 6000"},
+)
+
+rowData5 = pd.DataFrame(
+    {
+        "seqnames": ["chr_7", "chr_5", "chr_4", "chr_Y", "chr_8"],
+        "start": [1084390, 1273987, 18279843, 243879798, 127987239],
+        "end": [243895239, 128973192, 290823094, 390820395, 238798237]
+    },
+    index=["MYC", "BRCA1", "PIK3CA", "TPFK", "HRAS"],
+)
+colData5 = pd.DataFrame(
+    {
+        "sample": ["SAM_13", "SAM_14", "SAM_15"],
+        "disease": ["True", "True", "True"],
+        "doublet_score": [.32, .51, .09]
+    },
+    index=["cell_13", "cell_14", "cell_15"],
+)
+se5 = SummarizedExperiment(
+    assays={
+        "counts": sp.lil_matrix(np.random.poisson(lam=7, size=(5, 3))),
+        "lognorm": sp.lil_matrix(np.random.lognormal(size=(5, 3))),
+        "beta": sp.lil_matrix(np.random.beta(a=2, b=1, size=(5, 3)))
+    },
+    rowData=rowData5,
+    colData=colData5,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -289,7 +317,7 @@ def test_SE_combineCols_useNames_true():
     # assert se4 samples are non-nan and other entries are 0 for 'beta' assay
     se4_sample_vals = se4.colnames
     se4_sample_idxs = np.argwhere(combined.colData.index.isin(se4_sample_vals))
-    beta_assay = combined.assays["beta"]
+    beta_assay = combined.assays["beta"].toarray()
     non_se4_samples = np.delete(beta_assay, se4_sample_idxs, axis=1)
 
     assert not np.any(non_se4_samples)
@@ -352,6 +380,32 @@ def test_SE_combineCols_useNames_true():
 
     with pytest.raises(ValueError):
         se1.combineCols(se_duplicated_row_name, useNames=True)
+
+
+def test_SE_combineCols_mix_sparse_and_dense():
+    combined = se3.combineCols(se4, se5, useNames=True)
+
+    assert combined.shape == (7, 9)
+
+    assert all(
+        row_name in combined.rownames
+        for row_name in ["MYC", "BRCA1", "BRCA2", "TPFK", "GSS", "PIK3CA", "HRAS"]
+    )
+
+    assert all(
+        col_name in combined.rowData.columns.tolist()
+        for col_name in ["seqnames", "start", "end"]
+    )
+
+    assert all(
+        col_name in combined.colnames
+        for col_name in ["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12", "cell_13", "cell_14", "cell_15"]
+    )
+
+    assert all(
+        col_name in combined.colData.columns.tolist()
+        for col_name in ["sample", "disease", "doublet_score"]
+    )
 
 
 def test_SE_combineCols_not_all_SE():

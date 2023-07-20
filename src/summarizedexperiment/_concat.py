@@ -20,6 +20,9 @@ def blend(dfs: Sequence[pd.DataFrame], useNames: bool) -> pd.DataFrame:
         validate_names(dfs)
     else:
         validate_shapes(dfs)
+        names = dfs[0].index
+        for df in dfs[1:]:
+            df.index = names
     return reduce(lambda left, right: left.combine_first(right), dfs)
 
 

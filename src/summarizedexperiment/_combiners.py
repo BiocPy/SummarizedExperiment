@@ -6,7 +6,7 @@ import scipy.sparse as sp
 
 ArrayTypes = Union[np.ndarray, sp.lil_matrix]
 
-from ._validators import validate_names, validate_shapes
+from ._validators import validate_names, validate_shapes, validate_experiment_attribute
 from .dispatchers.combiners import combine
 
 
@@ -52,6 +52,8 @@ def combine_concatenation_axis(
     Returns:
         concatenated_df (pd.DataFrame): the concatenated experiment metadata.
     """
+    validate_experiment_attribute(experiment_attribute=experiment_attribute)
+
     all_experiment_attributes = [getattr(se, experiment_attribute) for se in ses]
     return reduce(combine, all_experiment_attributes)
 
@@ -71,6 +73,8 @@ def combine_non_concatenation_axis(
     Returns:
         concatenated_df (pd.DataFrame): the concatenated experiment metadata.
     """
+    validate_experiment_attribute(experiment_attribute=experiment_attribute)
+
     all_experiment_attributes = [getattr(se, experiment_attribute) for se in ses]
     if useNames:
         validate_names(ses, experiment_attribute=experiment_attribute)

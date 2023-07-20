@@ -22,7 +22,7 @@ class BaseSE:
         cols: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
-        """Initialize an instance of `BaseSE`
+        """Initialize an instance of `BaseSE`.
 
         Args:
             assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary of matrices,
@@ -55,7 +55,7 @@ class BaseSE:
                 or isinstance(self._rows, BiocFrame)
             ):
                 raise TypeError(
-                    "rowData must be either a pandas DataFrame or a BiocFrame object"
+                    "rowData must be either a pandas `DataFrame` or a `BiocFrame` object"
                 )
 
         if self._cols is not None:
@@ -64,7 +64,7 @@ class BaseSE:
                 or isinstance(self._cols, BiocFrame)
             ):
                 raise TypeError(
-                    "colData must be either a pandas DataFrame or a BiocFrame object"
+                    "colData must be either a pandas `DataFrame` or a `BiocFrame` object"
                 )
 
     def _validate(self):
@@ -111,7 +111,7 @@ class BaseSE:
 
     @property
     def assays(self) -> MutableMapping[str, Union[np.ndarray, sp.spmatrix]]:
-        """Access assays.
+        """Get assays.
 
         Returns:
             MutableMapping[str, Union[np.ndarray, sp.spmatrix]]: a dictionary of experiments.
@@ -122,7 +122,7 @@ class BaseSE:
     def assays(
         self, assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]]
     ) -> None:
-        """Set assays
+        """Set assays.
 
         Args:
             assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): sets the assays
@@ -132,7 +132,7 @@ class BaseSE:
 
     @property
     def colData(self) -> Optional[Union[pd.DataFrame, BiocFrame]]:
-        """Access sample data.
+        """Get sample data.
 
         Returns:
             Optional[Union[pd.DataFrame, BiocFrame]]: returns sample data.
@@ -151,7 +151,7 @@ class BaseSE:
 
     @property
     def metadata(self) -> Optional[MutableMapping]:
-        """Access metadata.
+        """Get metadata.
 
         Returns:
             Optional[MutableMapping]: metadata object, usually a dictionary.
@@ -160,7 +160,7 @@ class BaseSE:
 
     @metadata.setter
     def metadata(self, metadata: Optional[MutableMapping]):
-        """Set new metadata.
+        """Set metadata.
 
         Args:
             metadata (Optional[MutableMapping]): new metadata object
@@ -188,7 +188,7 @@ class BaseSE:
 
     @property
     def assayNames(self) -> Sequence[str]:
-        """Access assay names.
+        """Get assay names.
 
         Returns:
             Sequence[str]: list of assay names
@@ -197,13 +197,13 @@ class BaseSE:
 
     @assayNames.setter
     def assayNames(self, names: Sequence[str]):
-        """Set new assay names.
+        """Set assay names.
 
         Args:
             names (Sequence[str]): new names
 
         Raises:
-            ValueError: not enough values
+            ValueError: if enough names are not provided
         """
         current_names = list(self._assays.keys())
         if len(names) != len(current_names):
@@ -228,8 +228,8 @@ class BaseSE:
             self.shape[0],
             self.shape[1],
             list(self._assays.keys()),
-            self._cols.columns if self._cols is not None else None,
             self._rows.columns if self._rows is not None else None,
+            self._cols.columns if self._cols is not None else None,
         )
 
     def assay(self, name: str) -> Union[np.ndarray, sp.spmatrix]:
@@ -242,7 +242,7 @@ class BaseSE:
             ValueError: if assay name does not exist
 
         Returns:
-            Union[np.ndarray, sp.spmatrix]: the experiment data
+            Union[np.ndarray, sp.spmatrix]: The experiment data
         """
         if name not in self._assays:
             raise ValueError(f"Assay {name} does not exist")
@@ -333,3 +333,27 @@ class BaseSE:
         new_assays = self.subsetAssays(rowIndices=rowIndices, colIndices=colIndices)
 
         return (new_rows, new_cols, new_assays)
+
+    @property
+    def rownames(self) -> Sequence[str]:
+        """Get row/feature index
+
+        Returns:
+            Sequence[str]: list of row index names
+        """
+        if isinstance(self._rows, pd.DataFrame):
+            return self._rows.index.tolist()
+        else:
+            return self._rows.rowNames
+
+    @property
+    def colnames(self) -> Sequence[str]:
+        """Get column/sample names
+
+        Returns:
+            Sequence[str]: list of column names
+        """
+        if isinstance(self._cols, pd.DataFrame):
+            return self._cols.index.tolist()
+        else:
+            return self._cols.rowNames

@@ -55,7 +55,7 @@ class RangeSummarizedExperiment(BaseSE):
 
     @property
     def rowRanges(self) -> Optional[GenomicRanges]:
-        """Access features.
+        """Get features.
 
         Returns:
             Optional[GenomicRanges]: returns features.
@@ -74,7 +74,7 @@ class RangeSummarizedExperiment(BaseSE):
 
     @property
     def end(self) -> Sequence[int]:
-        """Access end positions from row ranges
+        """Get end positions from row ranges.
 
         Returns:
             Sequence[int]: end locations
@@ -83,7 +83,7 @@ class RangeSummarizedExperiment(BaseSE):
 
     @property
     def start(self) -> Sequence[int]:
-        """Access start positions from row ranges
+        """Get start positions from row ranges
 
         Returns:
             Sequence[int]: start positions
@@ -161,14 +161,14 @@ class RangeSummarizedExperiment(BaseSE):
             self.shape[0],
             self.shape[1],
             list(self._assays.keys()),
-            self.cols.columns if self.cols is not None else None,
-            self.rows.columns if self.rows is not None else None,
+            self._rows.columns if self._rows is not None else None,
+            self._cols.columns if self._cols is not None else None,
         )
 
     def coverage(
         self, shift: int = 0, width: Optional[int] = None, weight: int = 1
     ) -> MutableMapping[str, np.ndarray]:
-        """Calculate coverage for each chromosome
+        """Calculate coverage for each chromosome.
 
         Args:
             shift (int, optional): shift all genomic positions. Defaults to 0.
@@ -201,7 +201,7 @@ class RangeSummarizedExperiment(BaseSE):
 
         Raises:
             TypeError: if query is not of type `RangeSummarizedExperiment` or `GenomicRanges`
-            ValueError: if rowRanges is empty
+            ValueError: if `rowRanges` is empty
             
         Returns:
             Optional[Sequence[Optional[int]]]: List of possible hit indices for each interval in `query`
@@ -345,7 +345,7 @@ class RangeSummarizedExperiment(BaseSE):
         both: bool = False,
         ignoreStrand: bool = False,
     ) -> "RangeSummarizedExperiment":
-        """Flank row ranges and return new RSE
+        """Flank row ranges.
 
         Args:
             width (int): width to flank by
@@ -357,7 +357,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: rowRanges is empty
 
         Returns:
-            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with the flanked intervals
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with the flanked intervals
         """
         if self.rowRanges is None:
             raise ValueError("rowRanges is None")
@@ -376,7 +376,7 @@ class RangeSummarizedExperiment(BaseSE):
     def resize(
         self, width: int, fix: str = "start", ignoreStrand: bool = False,
     ) -> "RangeSummarizedExperiment":
-        """Resize row ranges and return new RSE
+        """Resize row ranges
 
         Args:
             width (int): width to resize
@@ -387,7 +387,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: parameter fix is neither `start` nor `end` or rowRanges is empty
 
         Returns:
-            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with the resized intervals
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with the resized intervals
         """
 
         if self.rowRanges is None:
@@ -405,7 +405,7 @@ class RangeSummarizedExperiment(BaseSE):
         )
 
     def shift(self, shift: int = 0) -> "RangeSummarizedExperiment":
-        """Shift row ranges and return new RSE
+        """Shift row ranges
 
         Args:
             shift (int, optional): shift interval. Defaults to 0.
@@ -414,7 +414,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: rowRanges is empty
 
         Returns:
-            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with the shifted intervals
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with the shifted intervals
         """
 
         if self.rowRanges is None:
@@ -432,7 +432,7 @@ class RangeSummarizedExperiment(BaseSE):
     def promoters(
         self, upstream: int = 2000, downstream: int = 200
     ) -> "RangeSummarizedExperiment":
-        """Extend row ranges to promoter regions and return new RSE
+        """Extend row ranges to promoter regions.
 
         Args:
             upstream (int, optional): number of positions to extend in the 5' direction . Defaults to 2000.
@@ -442,7 +442,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: rowRanges is empty
 
         Returns:
-            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with the extended intervals for promoter regions
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with the extended intervals for promoter regions
         """
 
         if self.rowRanges is None:
@@ -463,7 +463,7 @@ class RangeSummarizedExperiment(BaseSE):
         end: Optional[int] = None,
         keepAllRanges: bool = False,
     ) -> "RangeSummarizedExperiment":
-        """Restrict row ranges and return new RSE.
+        """Restrict row ranges.
 
         Args:
             start (Optional[int], optional): start position. Defaults to None.
@@ -474,7 +474,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: rowRanges is empty
 
         Returns:
-            RangeSummarizedExperiment: a new RangeSummarizedExperiment object with restricted intervals
+            RangeSummarizedExperiment: a new `RangeSummarizedExperiment` object with restricted intervals
         """
 
         if self.rowRanges is None:
@@ -497,7 +497,7 @@ class RangeSummarizedExperiment(BaseSE):
         width: Optional[int] = None,
         end: Optional[int] = None,
     ) -> "RangeSummarizedExperiment":
-        """Narrow row ranges and return new RSE.
+        """Narrow row ranges.
 
         Args:
             start (Optional[int], optional): relative start position. Defaults to None.
@@ -508,7 +508,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: when parameters were set incorrectly or rowRanges is empty
 
         Returns:
-            RangeSummarizedExperiment:  a new RangeSummarizedExperiment object with narrow positions
+            RangeSummarizedExperiment:  a new `RangeSummarizedExperiment` object with narrow positions
         """
 
         if self.rowRanges is None:
@@ -550,7 +550,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: if rowRanges is empty
 
         Returns:
-            Optional["RangeSummarizedExperiment"]: A RangeSummarizedExperiment object with the same length as query, 
+            Optional["RangeSummarizedExperiment"]: A `RangeSummarizedExperiment` object with the same length as query, 
                 containing hits to overlapping indices.
         """
 
@@ -585,7 +585,7 @@ class RangeSummarizedExperiment(BaseSE):
         minOverlap: int = 1,
         ignoreStrand: bool = False,
     ) -> Optional["RangeSummarizedExperiment"]:
-        """Subset a `RangeSummarizedExperiment` by feature overlaps
+        """Subset a `RangeSummarizedExperiment` by feature overlaps.
 
         Args:
             query (RangeSummarizedExperiment): query `RangeSummarizedExperiment`.
@@ -660,7 +660,7 @@ class RangeSummarizedExperiment(BaseSE):
     def sort(
         self, decreasing: bool = False, ignoreStrand: bool = False
     ) -> "RangeSummarizedExperiment":
-        """Sort the RangeSummarizedExperiment by row ranges.
+        """Sort the `RangeSummarizedExperiment` by row ranges.
 
         Args:
             decreasing (bool, optional): decreasing order?. Defaults to False.
@@ -670,7 +670,7 @@ class RangeSummarizedExperiment(BaseSE):
             ValueError: rowRanges is empty
 
         Returns:
-            "RangeSummarizedExperiment": a new sorted RangeSummarizedExperiment object.
+            "RangeSummarizedExperiment": a new sorted `RangeSummarizedExperiment` object.
         """
 
         if self.rowRanges is None:

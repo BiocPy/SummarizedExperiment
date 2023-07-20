@@ -63,17 +63,3 @@ def validate_shapes(ses: Sequence["BaseSE"]):
     is_all_shapes_same = all_shapes.count(all_shapes[0]) == len(all_shapes)
     if not is_all_shapes_same:
         raise ValueError("not all assays have the same dimensions")
-
-
-def validate_assay_names(unique_assay_names: Sequence[str]):
-    """Validate named and unnamed assays are not mixed.
-
-    Args:
-        unique_assay_names (Sequence[str]): list of assay names.
-
-    Raises:
-        ValueError: if named and unnamed assays are mixed.
-    """
-    no_assay_name = [assay_name is None for assay_name in unique_assay_names]
-    if any(no_assay_name) and (not all(no_assay_name)):
-        raise ValueError("named and unnamed assays cannot be mixed")

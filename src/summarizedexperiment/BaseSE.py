@@ -1,10 +1,12 @@
 import warnings
 from collections import OrderedDict
+from functools import reduce
 from typing import MutableMapping, Optional, Sequence, Tuple, Union, Literal
 
 import anndata
 import numpy as np
 import pandas as pd
+from pandas import DataFrame
 from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
@@ -507,32 +509,36 @@ class BaseSE:
 
         return obj
 
-    def concat(
+    def _validate_row_names(self, rowData: DataFrame) -> bool:
+        """Validate that all rowDatas have non-null, non-duplicated row names.
+
+        Args:
+            rowData (DataFrame): The rowData to validate.
+
+        Returns:
+            bool: True if the rowData has non-null, non-duplicated row names. 
+        """
+        any_null = rowData.index.isnull().values.any()
+        any_duplicated = rowData.index.duplicated().any()
+        return (not any_null) and (not any_duplicated)
+
+    def combineCols(
         self,
         *ses: "BaseSE",
-        how: Literal["left", "right", "inner", "outer", "cross"] = "outer",
-        metadata: Optional[MutableMapping[str, str]] = None,
+        use_names: bool = True
     ) -> "BaseSE":
         """Concatenate multiple `SummarizedExperiment` objects.
         Assume we are working with RNA-Seq experiments for now.
 
         Args:
             ses ("BaseSE"): `SummarizedExperiment` objects to concatenate.
-            how (Literal["left", "right", "inner", "outer", "cross"]):
-                How to handle the operation of the two `SummarizedExperiment` objects.
-
-                * left: use calling frame's index (or column if on is specified)
-                * right: use `other`'s index.
-                * outer: form union of calling frame's index (or column if on is
-                specified) with `other`'s index, and sort it.
-                lexicographically.
-                * inner: form intersection of calling frame's index (or column if
-                on is specified) with `other`'s index, preserving the order
-                of the calling's one.
-                * cross: creates the cartesian product from both frames, preserves the order
-                of the left keys.
-                (from pandas docstring for `pd.DataFrame.join`)
-            metadata (MutableMapping[str, str]): Metadata of the new `SummarizedExperiment`.
+            use_names (bool):
+                If `True`, then each input `SummarizedExperiment` must have non-null, non-duplicated row names.
+                The row names of the resultant `SummarizedExperiment` object will be the union of the row
+                names across all input objects.
+                If `False`, then each input `SummarizedExperiment` object must have the same number of rows.
+                The row names of the resultant `SummarizedExperiment` object will simply be the row names of
+                the first `SummarizedExperiment`.
 
         Raises:
             TypeError: if any of the provided objects are not "SummarizedExperiment".
@@ -549,20 +555,59 @@ class BaseSE:
         is_all_shapes_same = all_shapes.count(all_shapes[0]) == len(all_shapes)
         if not is_all_shapes_same:
             raise ValueError("not all assays have the same dimensions")
+        
+        rowDatas = []
+        colDatas = []
+        for se in ses:
+            rowDatas.append(se._rows) # temporary solution
+            colDatas.append(se.colData)
+        rowDatas.append(self._rows) # temporary solution
+        colDatas.append(self.colData)
+        
+        if use_names:
+            is_valid_row_names = all([self._validate_row_names(rowData) for rowData in rowDatas])
+            if not is_valid_row_names:
+                raise ValueError("at least one input `SummarizedExperiment` has null or duplicated row names")
+        else:
+            num_rows = [rowData.shape for rowData in rowDatas]
+            is_same_num_rows = num_rows.count(num_rows[0]) == len(num_rows)
+            if not is_same_num_rows:
+                raise ValueError("not all `SummarizedExperiment` objects have the same number of rows. \
+                                 Consider setting `use_names=True`")
+
+        new_rowData = reduce(
+            lambda left, right: pd.concat([left, right]), rowDatas
+        ).sort_index()
+        if use_names:
+            new_colData = reduce(
+                lambda left, right: left.combine_first(right), colDatas
+            ).sort_index()
+        else:
+            new_colData = reduce(
+                lambda left, right: pd.concat([left, right]), colDatas
+            ).sort_index()
+
+        assays = [se.assays for se in ses]
+        assays.append(self.assays)
+        assay_names = []
+        for assay in assays:
+            assay_names.extend(list(assay.keys()))
+        unique_assay_names = list(set(assay_names))
 
         new_assays = {}
-        assay_names = ses[0].assays.keys()
-        for assay_name in assay_names:
+        for assay_name in unique_assay_names:
             curr_assays = []
-            for sce in ses:
-                curr_assay = sce.assays[assay_name]
+            for se in ses:
+                if assay_name not in se.assays:
+                    continue
+                curr_assay = se.assays[assay_name]
                 curr_assays.append(
                     pd.DataFrame(
-                        curr_assay, columns=sce.colData.index, index=sce.rowData.index
+                        curr_assay, columns=se.colData.index, index=se.rowData.index
                     )
                     if isinstance(curr_assay, np.ndarray)
                     else pd.DataFrame.sparse.from_spmatrix(
-                        curr_assay, columns=sce.colData.index, index=sce.rowData.index
+                        curr_assay, columns=se.colData.index, index=se.rowData.index
                     )
                 )
 
@@ -577,19 +622,6 @@ class BaseSE:
             )
             merged_assays = sp.csr_matrix(merged_assays.values)
             new_assays[assay_name] = merged_assays
-
-        rowDatas = []
-        colDatas = []
-        for sce in ses:
-            rowDatas.append(sce.rowData)
-            colDatas.append(sce.colData)
-
-        new_rowData = reduce(
-            lambda left, right: left.combine_first(right), rowDatas
-        ).sort_index()
-        new_colData = reduce(
-            lambda left, right: left.combine_first(right), colDatas
-        ).sort_index()
 
         return SummarizedExperiment(
             assays=new_assays,

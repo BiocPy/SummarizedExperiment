@@ -21,8 +21,18 @@ class SummarizedExperiment(BaseSE):
         assays: MutableMapping[str, Union[np.ndarray, sp.spmatrix]],
         rowData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
         colData: Optional[Union[pd.DataFrame, BiocFrame]] = None,
-        metadata: MutableMapping = None,
+        metadata: Optional[MutableMapping] = None,
     ) -> None:
+        """Initialize a new `SummarizedExperiment`.
+
+        Args:
+            assays (MutableMapping[str, Union[np.ndarray, sp.spmatrix]]): dictionary of matrices,
+                with assay names as keys and matrices represented as dense (numpy) or sparse (scipy) matrices.
+                All matrices across assays must have the same dimensions (number of rows, number of columns).
+            rowData (Optional[GenomicRanges], optional): features, must be the same length as rows of the matrices in assays. Defaults to None.
+            colData (Optional[Union[pd.DataFrame, BiocFrame]], optional): sample data, must be the same length as rows of the matrices in assays. Defaults to None.
+            metadata (Optional[MutableMapping], optional): experiment metadata describing the methods. Defaults to None.
+        """
         super().__init__(assays, rowData, colData, metadata)
 
     @property

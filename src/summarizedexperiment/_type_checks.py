@@ -64,14 +64,31 @@ def is_matrix_like(x: Any) -> bool:
     return isinstance(x, MatrixProtocol)
 
 
-def is_list_of_type(x: Any, type: callable) -> bool:
-    """Checks if `x` is a list of booleans.
+def is_list_of_type(x: Any, target_type: callable) -> bool:
+    """Checks if `x` is a list of `target_type`.
 
     Args:
         x (Any): any object.
-        type (callable): Type to check for, e.g. str, int
+        target_type (callable): Type to check for, e.g. str, int
 
     Returns:
         bool: True if `x` is list and all values are of the same type.
     """
-    return isinstance(x, list) and all(isinstance(item, type) for item in x)
+    return (isinstance(x, list) or isinstance(x, tuple)) and all(
+        isinstance(item, target_type) for item in x
+    )
+
+
+def is_list_of_subclass(x: Any, target_type: callable) -> bool:
+    """Checks if all provided objects are `target_type`.
+
+    Args:
+        x (Any): any object.
+        target_type (callable): type to check objects against.
+
+    Returns:
+        bool: True if `x` is list and all objects are derivatives of the same class.
+    """
+    return (isinstance(x, list) or isinstance(x, tuple)) and all(
+        issubclass(type(item), target_type) for item in x
+    )

@@ -9,7 +9,12 @@ from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 
 from ._slicer_utils import get_indexes_from_bools, get_indexes_from_names
-from ._type_checks import is_bioc_or_pandas_frame, is_list_of_type, is_matrix_like
+from ._type_checks import (
+    is_bioc_or_pandas_frame,
+    is_list_of_type,
+    is_matrix_like,
+    is_list_of_subclass,
+)
 from ._types import (
     BiocOrPandasFrame,
     MatrixSlicerTypes,
@@ -18,7 +23,6 @@ from ._types import (
 )
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
-from ._validators import validate_objects
 from ._combiners import (
     combine_concatenation_axis,
     combine_non_concatenation_axis,
@@ -35,7 +39,7 @@ class BaseSE:
     """Base class for Summarized Experiment.
 
     Represents genomic experiment data (`assays`), features (`rowdata`),
-    sample data (`coldata`) and any other metadata.
+    sample data (`coldata`) and any other `metadata`.
 
     Args:
         assays (MutableMapping[str, MatrixTypes]): dictionary
@@ -319,7 +323,7 @@ class BaseSE:
             f"Class BaseSE with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {list(self.assays.keys())} \n"
             f"  features: {self.rowData.columns if self._rows is not None else None} \n"
-            f"  sample data: {self.colData.columns if self._cols is not None else None}"
+            f"  sample data: {self.colData.columns if self.colData is not None else None}"
         )
         return pattern
 
@@ -545,25 +549,29 @@ class BaseSE:
         return obj
 
     def combineCols(self, *experiments: "BaseSE", useNames: bool = True) -> "BaseSE":
-        """A more flexible version of `cbind`. Permits differences in the number and identity of rows,
-        differences in `colData` fields, and even differences in the available `assays` among
-        `SummarizedExperiment` objects being combined.
+        """A more flexible version of `cbind`. Permits differences in the number
+        and identity of rows, differences in `colData` fields, and even differences
+        in the available `assays` among `SummarizedExperiment` objects being combined.
 
-        Only considering RNA-Seq experiments for now.
+        Currently does not support range based merging of feature information when
+        performing this operation.
+
+        The row names of the resultant `SummarizedExperiment` object will
+        simply be the row names of the first `SummarizedExperiment`.
 
         Args:
-            experiments ("BaseSE"): `SummarizedExperiment` objects to concatenate.
+            experiments ("BaseSE"): `SummarizedExperiment`-like objects to concatenate.
             useNames (bool):
-                If `True`, then each input `SummarizedExperiment` must have non-null, non-duplicated row names.
-                The row names of the resultant `SummarizedExperiment` object will be the union of the row
-                names across all input objects.
-                If `False`, then each input `SummarizedExperiment` object must have the same number of rows.
-                The row names of the resultant `SummarizedExperiment` object will simply be the row names of
-                the first `SummarizedExperiment`.
+                - If `True`, then each input `SummarizedExperiment` must have non-null,
+                non-duplicated row names. The row names of the resultant
+                `SummarizedExperiment` object will be the union of the row names
+                across all input objects.
+                - If `False`, then each input `SummarizedExperiment` object must
+                have the same number of rows.
 
         Raises:
             TypeError:
-                - if any of the provided objects are not "SummarizedExperiment".
+                if any of the provided objects are not "SummarizedExperiment"-like.
             ValueError:
                 - if there are null or duplicated row names (useNames=True)
                 - if all objects do not have the same number of rows (useNames=False)
@@ -572,17 +580,15 @@ class BaseSE:
             BaseSE: combined `SummarizedExperiment` object.
         """
 
-        if len(experiments) == 1 and isinstance(experiments[0], list):
-            experiments = experiments[0]
-
-        validate_objects(experiments, BaseSE)
+        if not is_list_of_subclass(experiments, BaseSE):
+            raise TypeError(
+                "not all provided objects are `SummarizedExperiment`-like objects"
+            )
 
         ses = [self] + list(experiments)
 
         new_metadata = combine_metadata(ses)
-
         new_colData = combine_concatenation_axis(ses, experiment_attribute="colData")
-
         new_rowData = combine_non_concatenation_axis(
             ses, experiment_attribute="rowData", useNames=useNames
         )

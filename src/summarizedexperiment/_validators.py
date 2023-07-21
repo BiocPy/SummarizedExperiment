@@ -2,21 +2,6 @@ from typing import Sequence, Literal
 import pandas as pd
 
 
-def validate_objects(objs, target_type):
-    """Validate all provided objects are `target_type`.
-
-    Args:
-        objs: objects to validate.
-        target_type (type): type to check objects against.
-
-    Raises:
-        TypeError: if any of the provided objects are not `target_type`.
-    """
-    all_types = [issubclass(type(obj), target_type) for obj in objs]
-    if not all(all_types):
-        raise TypeError(f"not all provided objects are {target_type.__name__} objects")
-
-
 def validate_names(
     ses: Sequence["BaseSE"], experiment_attribute: Literal["rowData", "colData"]
 ):

@@ -2,6 +2,10 @@ from multipledispatch import dispatch
 import pandas as pd
 from biocframe import BiocFrame
 
+__author__ = "keviny2"
+__copyright__ = "keviny2"
+__license__ = "MIT"
+
 
 def validate_inputs(ignore_names: bool, prefer_left: bool):
     """Ensure boolean values are valid.

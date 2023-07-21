@@ -9,6 +9,10 @@ ArrayTypes = Union[np.ndarray, sp.lil_matrix]
 from ._validators import validate_names, validate_shapes, validate_experiment_attribute
 from .dispatchers.combiners import combine
 
+__author__ = "keviny2"
+__copyright__ = "keviny2"
+__license__ = "MIT"
+
 
 def _impose_common_precision(x: ArrayTypes, y: ArrayTypes):
     """Ensure input arrays have compatible dtypes.

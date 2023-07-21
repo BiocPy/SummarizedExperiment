@@ -1,6 +1,10 @@
 from typing import Sequence, Literal
 import pandas as pd
 
+__author__ = "keviny2"
+__copyright__ = "keviny2"
+__license__ = "MIT"
+
 
 def validate_objects(objs, target_type):
     """Validate all provided objects are `target_type`.

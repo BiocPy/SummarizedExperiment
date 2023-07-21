@@ -30,7 +30,7 @@ from ._combiners import (
     combine_assays,
 )
 
-__author__ = "jkanche"
+__author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 

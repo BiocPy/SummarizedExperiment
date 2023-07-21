@@ -1,12 +1,13 @@
-from typing import Optional, Sequence, Tuple, Union, Literal, MutableMapping
 from functools import reduce
-import pandas as pd
+from typing import Literal, MutableMapping, Optional, Sequence, Tuple, Union
+
 import numpy as np
+import pandas as pd
 import scipy.sparse as sp
 
 ArrayTypes = Union[np.ndarray, sp.lil_matrix]
 
-from ._validators import validate_names, validate_shapes, validate_experiment_attribute
+from ._validators import validate_experiment_attribute, validate_names, validate_shapes
 from .dispatchers.combiners import combine
 
 

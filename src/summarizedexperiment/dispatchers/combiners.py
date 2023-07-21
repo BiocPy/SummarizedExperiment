@@ -1,6 +1,10 @@
-from multipledispatch import dispatch
 import pandas as pd
 from biocframe import BiocFrame
+from multipledispatch import dispatch
+
+__author__ = "keviny2"
+__copyright__ = "keviny2"
+__license__ = "MIT"
 
 
 def validate_inputs(ignore_names: bool, prefer_left: bool):
@@ -26,10 +30,12 @@ def combine_dataframes(
         ignore_names (bool): if `True`, index names will be ignored when combining.
         prefer_left (bool): if `True`, only null values in the left dataframe
             will be populated by values from the right dataframe.
+
     Returns:
         pd.DataFrame: the combined dataframe.
     """
     validate_inputs(ignore_names, prefer_left)
+
     if ignore_names:
         return left.reset_index(drop=True).combine_first(right.reset_index(drop=True))
     if prefer_left:
@@ -92,4 +98,4 @@ def combine(
 def combine(
     left: object, right: object, ignore_names: bool = False, prefer_left: bool = False
 ):
-    raise ValueError(f"Cannot combine types: {type(left)} and {type(right)}")
+    raise TypeError(f"Cannot combine types: {type(left)} and {type(right)}")

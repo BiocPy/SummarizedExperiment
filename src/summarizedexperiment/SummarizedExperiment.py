@@ -1,6 +1,6 @@
 from typing import MutableMapping, Optional
 
-from ._types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
+from .utils._types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 from .BaseSE import BaseSE
 
 __author__ = "jkanche"

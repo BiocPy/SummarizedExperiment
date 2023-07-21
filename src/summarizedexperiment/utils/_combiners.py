@@ -1,32 +1,31 @@
 from functools import reduce
-from typing import Literal, MutableMapping, Optional, Sequence, Tuple, Union
+from typing import Literal, MutableMapping, Optional, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 
-ArrayTypes = Union[np.ndarray, sp.lil_matrix]
-
+from ._types import ArrayTypes
 from ._validators import validate_experiment_attribute, validate_names, validate_shapes
-from .dispatchers.combiners import combine
+from ..dispatchers.combiners import combine
 
 __author__ = "keviny2"
 __copyright__ = "keviny2"
 __license__ = "MIT"
 
 
-def _impose_common_precision(x: ArrayTypes, y: ArrayTypes):
-    """Ensure input arrays have compatible dtypes.
+def _impose_common_precision(*x: ArrayTypes) -> Sequence[ArrayTypes]:
+    """Check and tranform input arrays into common dtypes.
 
     Args:
-        x (ArrayTypes): first array.
-        y (ArrayTypes): second array.
+        *x (ArrayTypes): array like objects (either sparse or dense).
+
+    Returns:
+        Sequence[ArrayTypes]: all transformed matrices
     """
-    dtype = np.find_common_type([x.dtype, y.dtype], [])
-    if x.dtype != dtype:
-        x = x.astype(dtype)
-    if y.dtype != dtype:
-        y = y.astype(dtype)
+    common_dtype = np.find_common_type([m.dtype for m in x], [])
+
+    return [(m.astype(common_dtype) if m.dtype != common_dtype else m) for m in x]
 
 
 def combine_metadata(ses: Sequence["BaseSE"]) -> Optional[MutableMapping]:

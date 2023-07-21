@@ -8,14 +8,14 @@ from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 
-from ._slicer_utils import get_indexes_from_bools, get_indexes_from_names
-from ._type_checks import (
+from .utils._slicer import get_indexes_from_bools, get_indexes_from_names
+from .utils._type_checks import (
     is_bioc_or_pandas_frame,
     is_list_of_type,
     is_matrix_like,
     is_list_of_subclass,
 )
-from ._types import (
+from .utils._types import (
     BiocOrPandasFrame,
     MatrixSlicerTypes,
     MatrixTypes,
@@ -23,7 +23,7 @@ from ._types import (
 )
 from .dispatchers.colnames import get_colnames, set_colnames
 from .dispatchers.rownames import get_rownames, set_rownames
-from ._combiners import (
+from .utils._combiners import (
     combine_concatenation_axis,
     combine_non_concatenation_axis,
     combine_metadata,

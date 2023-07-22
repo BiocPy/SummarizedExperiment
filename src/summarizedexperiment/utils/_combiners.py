@@ -5,11 +5,11 @@ import numpy as np
 import pandas as pd
 import scipy.sparse as sp
 
+from ..dispatchers.combiners import combine
 from ._types import ArrayTypes
 from ._validators import validate_experiment_attribute, validate_names, validate_shapes
-from ..dispatchers.combiners import combine
 
-__author__ = "keviny2"
+__author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"
 __license__ = "MIT"
 
@@ -24,24 +24,23 @@ def _impose_common_precision(*x: ArrayTypes) -> Sequence[ArrayTypes]:
         Sequence[ArrayTypes]: all transformed matrices
     """
     common_dtype = np.find_common_type([m.dtype for m in x], [])
-
     return [(m.astype(common_dtype) if m.dtype != common_dtype else m) for m in x]
 
 
-def combine_metadata(ses: Sequence["BaseSE"]) -> Optional[MutableMapping]:
+def combine_metadata(experiments: Sequence["BaseSE"]) -> MutableMapping:
     """Combine metadata across experiments.
 
     Args:
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
+        experiments (Sequence[BaseSE]): "SummarizedExperiment"-like objects.
 
     Returns:
-        combined_metadata (Optional[MutableMapping]): combined metadata.
+        MutableMapping: combined metadata.
     """
-    combined_metadata = []
-    for se in ses:
+    combined_metadata = {}
+    for i, se in enumerate(experiments):
         if se.metadata:
-            combined_metadata.extend(se.metadata.values())
-    return dict(enumerate(combined_metadata))
+            combined_metadata[i] = se.metadata
+    return combined_metadata
 
 
 def combine_concatenation_axis(

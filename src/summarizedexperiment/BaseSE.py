@@ -588,10 +588,10 @@ class BaseSE:
 
         new_metadata = combine_metadata(experiments)
 
-        all_coldata = [getattr(f, "colData") for f in experiments]
+        all_coldata = [getattr(e, "colData") for e in experiments]
         new_colData = combine_frames(all_coldata, axis=0, useNames=False)
 
-        all_rowdata = [getattr(f, "rowData") for f in experiments]
+        all_rowdata = [getattr(e, "rowData") for e in experiments]
         new_rowData = combine_frames(all_rowdata, axis=1, useNames=useNames)
 
         new_assays = {}

@@ -37,7 +37,7 @@ def combine_metadata(experiments: Sequence["BaseSE"]) -> MutableMapping:
     """
     combined_metadata = {}
     for i, se in enumerate(experiments):
-        if se.metadata:
+        if se.metadata is not None:
             combined_metadata[i] = se.metadata
 
     return combined_metadata
@@ -57,7 +57,9 @@ def combine_frames(
     Returns:
         pd.DataFrame: merged data frame
     """
-    all_as_pandas = [(m.to_pandas() if isinstance(x, BiocFrame) else m) for m in x]
+    print("inputs", x)
+    all_as_pandas = [(m.to_pandas() if isinstance(m, BiocFrame) else m) for m in x]
+    print("as_pandas", all_as_pandas)
 
     if useNames is True:
         validate_names(all_as_pandas)

@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 import pytest
-
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "keviny2"
@@ -49,8 +48,8 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         combined=combined,
         shape=(3, 6),
         assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
+        rownames=[i for i in range(3)],
+        rowData_cols=["seqnames", "start", "end", "index"] * 2,
         colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
         colData_cols=["sample", "disease", "doublet_score"],
     )
@@ -64,8 +63,8 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         combined=combined,
         shape=(3, 6),
         assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
+        rownames=[i for i in range(3)],
+        rowData_cols=["seqnames", "start", "end", "index"] * 2,
         colnames=["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"],
         colData_cols=["sample", "disease", "doublet_score"],
     )
@@ -79,8 +78,8 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         combined=combined,
         shape=(5, 6),
         assay_names=["counts", "lognorm", "beta"],
-        rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
-        rowData_cols=["seqnames", "start", "end"],
+        rownames=[i for i in range(5)],
+        rowData_cols=["seqnames", "start", "end", "index"] * 2,
         colnames=["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"],
         colData_cols=["sample", "disease", "doublet_score", "qual"],
     )
@@ -94,8 +93,8 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
         combined=combined,
         shape=(3, 6),
         assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
+        rownames=[i for i in range(3)],
+        rowData_cols=["end", "index", "index", "seqnames", "start"],
         colnames=["cell_1", "cell_2", "cell_3", "cell_1", "cell_2", "cell_3"],
         colData_cols=["sample", "disease"],
     )
@@ -139,7 +138,7 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         shape=(3, 6),
         assay_names=["counts", "lognorm"],
         rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
+        rowData_cols=["seqnames", "start", "end"] * 2,
         colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
         colData_cols=["sample", "disease", "doublet_score"],
     )
@@ -154,7 +153,7 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         shape=(5, 6),
         assay_names=["counts", "lognorm"],
         rownames=["HER2", "BRCA1", "BRCA2", "MYC", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
+        rowData_cols=["seqnames", "start", "end"] * 2,
         colnames=["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"],
         colData_cols=["sample", "disease", "doublet_score"],
     )
@@ -169,7 +168,7 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         shape=(5, 6),
         assay_names=["counts", "lognorm", "beta"],
         rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
-        rowData_cols=["seqnames", "start", "end"],
+        rowData_cols=["seqnames", "start", "end"] * 2,
         colnames=["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12"],
         colData_cols=["sample", "disease", "doublet_score"],
     )
@@ -231,7 +230,7 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         shape=(5, 6),
         assay_names=["counts", "lognorm", "beta"],
         rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
-        rowData_cols=["seqnames", "start", "end"],
+        rowData_cols=["seqnames", "start", "end"] * 2,
         colnames=["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"],
         colData_cols=["sample", "disease", "doublet_score", "qual"],
     )
@@ -275,7 +274,7 @@ def test_SE_combineCols_mix_sparse_and_dense(summarized_experiments):
         shape=(7, 9),
         assay_names=["counts", "lognorm", "beta"],
         rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS", "PIK3CA", "HRAS"],
-        rowData_cols=["seqnames", "start", "end"],
+        rowData_cols=["seqnames", "start", "end"] * 3,
         colnames=[
             "cell_7",
             "cell_8",
@@ -335,7 +334,7 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         shape=(3, 6),
         assay_names=["counts", "lognorm"],
         rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
+        rowData_cols=["seqnames", "start", "end"] * 2,
         colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
         colData_cols=["sample", "disease", "doublet_score"],
     )
@@ -349,8 +348,8 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         combined=combined,
         shape=(3, 6),
         assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
+        rownames=[i for i in range(3)],
+        rowData_cols=["seqnames", "start", "end", "index"] * 2,
         colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
         colData_cols=["sample", "disease", "doublet_score"],
     )
@@ -364,9 +363,8 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         combined=combined,
         shape=(5, 6),
         assay_names=["counts", "lognorm"],
-        rownames=['BRCA1', 'BRCA2', 'HER2', 'MYC', 'TPFK'],
-        rowData_cols=["seqnames", "start", "end"],
+        rownames=["BRCA1", "BRCA2", "HER2", "MYC", "TPFK"],
+        rowData_cols=["seqnames", "start", "end"] * 2,
         colnames=["cell_1", "cell_2", "cell_3", "cell_7", "cell_8", "cell_9"],
         colData_cols=["sample", "disease", "doublet_score"],
     )
-

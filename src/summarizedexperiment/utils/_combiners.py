@@ -61,15 +61,17 @@ def combine_frames(
 
     if useNames is True:
         validate_names(all_as_pandas)
-    elif axis == 0:
+    else:
         validate_shapes(all_as_pandas)
+        # reset names
+        all_as_pandas = [df.reset_index() for df in all_as_pandas]
 
-    return pd.concat(all_as_pandas, ignore_index=(not useNames), axis=axis)
+    return pd.concat(all_as_pandas, axis=axis)
 
 
 def combine_assays_by_column(
     assay_name: str,
-    ses: Sequence["BaseSE"],
+    experiments: Sequence["BaseSE"],
     names: pd.Index,
     shape: Tuple[int, int],
     useNames: bool,
@@ -78,17 +80,17 @@ def combine_assays_by_column(
 
     Args:
         assay_name (str): name of the assay.
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        experiments (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
         names (pd.Index): names of the metadata from the non-concatenation axis.
         shape (Tuple[int, int]): shape of the combined assay.
         useNames (bool): see `combineCols()`.
 
     Returns:
-        merged_assays (sp.lil_matrix): a sparse array of the merged assays.
+        sp.lil_matrix: a sparse array of the merged assays.
     """
     col_idx = 0
     merged_assays = sp.lil_matrix(shape)
-    for se in ses:
+    for i, se in enumerate(experiments):
         offset = se.shape[1]
         if assay_name not in se.assays:
             merged_assays[
@@ -102,6 +104,7 @@ def combine_assays_by_column(
                 merged_assays[shared_idxs, col_idx : col_idx + offset] = curr_assay
             else:
                 merged_assays[:, col_idx : col_idx + offset] = curr_assay
+
         col_idx += offset
 
     return merged_assays
@@ -109,7 +112,7 @@ def combine_assays_by_column(
 
 def combine_assays_by_row(
     assay_name: str,
-    ses: Sequence["BaseSE"],
+    experiments: Sequence["BaseSE"],
     names: pd.Index,
     shape: Tuple[int, int],
     useNames: bool,
@@ -118,7 +121,7 @@ def combine_assays_by_row(
 
     Args:
         assay_name (str): name of the assay.
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        experiments (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
         names (pd.Index): names of the metadata from the non-concatenation axis.
         shape (Tuple[int, int]): shape of the combined assay.
         useNames (bool): see `combineCols()`.
@@ -128,7 +131,7 @@ def combine_assays_by_row(
 
 def combine_assays(
     assay_name: str,
-    ses: Sequence["BaseSE"],
+    experiments: Sequence["BaseSE"],
     names: pd.Index,
     by: Literal["row", "column"],
     shape: Tuple[int, int],
@@ -138,22 +141,30 @@ def combine_assays(
 
     Args:
         assay_name (str): name of the assay.
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        experiments (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
         names (pd.Index): names of the metadata from the non-concatenation axis.
         by (Literal["row", "column"]): the concatenation axis.
         shape (Tuple[int, int]): shape of the combined assay.
         useNames (bool): see `combineCols()`.
 
     Returns:
-        merged_assays (sp.lil_matrix): a sparse array of the merged assays.
+        sp.lil_matrix: a sparse array of the merged assays.
     """
     if by == "row":
         return combine_assays_by_row(
-            assay_name=assay_name, ses=ses, names=names, shape=shape, useNames=useNames
+            assay_name=assay_name,
+            experiments=experiments,
+            names=names,
+            shape=shape,
+            useNames=useNames,
         )
     elif by == "column":
         return combine_assays_by_column(
-            assay_name=assay_name, ses=ses, names=names, shape=shape, useNames=useNames
+            assay_name=assay_name,
+            experiments=experiments,
+            names=names,
+            shape=shape,
+            useNames=useNames,
         )
     else:
         raise ValueError(

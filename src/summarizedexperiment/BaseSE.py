@@ -588,10 +588,10 @@ class BaseSE:
 
         new_metadata = combine_metadata(experiments)
 
-        all_coldata = [getattr(e, "colData") for e in experiments]
-        new_colData = combine_frames(all_coldata, axis=0, useNames=False)
+        all_coldata = [getattr(e, "colData") for e in ses]
+        new_colData = combine_frames(all_coldata, axis=0, useNames=True)
 
-        all_rowdata = [getattr(e, "rowData") for e in experiments]
+        all_rowdata = [getattr(e, "rowData") for e in ses]
         new_rowData = combine_frames(all_rowdata, axis=1, useNames=useNames)
 
         new_assays = {}
@@ -599,7 +599,7 @@ class BaseSE:
         for assay_name in unique_assay_names:
             merged_assays = combine_assays(
                 assay_name=assay_name,
-                ses=ses,
+                experiments=ses,
                 names=new_rowData.index,
                 by="column",
                 shape=(len(new_rowData), len(new_colData)),

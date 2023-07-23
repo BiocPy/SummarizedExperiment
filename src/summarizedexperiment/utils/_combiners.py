@@ -57,9 +57,7 @@ def combine_frames(
     Returns:
         pd.DataFrame: merged data frame
     """
-    print("inputs", x)
     all_as_pandas = [(m.to_pandas() if isinstance(m, BiocFrame) else m) for m in x]
-    print("as_pandas", all_as_pandas)
 
     if useNames is True:
         validate_names(all_as_pandas)

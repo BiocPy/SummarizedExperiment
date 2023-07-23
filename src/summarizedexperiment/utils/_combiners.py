@@ -1,13 +1,12 @@
-from functools import reduce
-from typing import Literal, MutableMapping, Optional, Sequence, Tuple
+from typing import Literal, MutableMapping, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
+from biocframe import BiocFrame
 
-from ..dispatchers.combiners import combine
-from ._types import ArrayTypes
-from ._validators import validate_experiment_attribute, validate_names, validate_shapes
+from ._types import ArrayTypes, BiocOrPandasFrame
+from ._validators import validate_names, validate_shapes
 
 __author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"
@@ -40,60 +39,32 @@ def combine_metadata(experiments: Sequence["BaseSE"]) -> MutableMapping:
     for i, se in enumerate(experiments):
         if se.metadata:
             combined_metadata[i] = se.metadata
+
     return combined_metadata
 
 
-def combine_concatenation_axis(
-    ses: Sequence["BaseSE"], experiment_attribute: Literal["rowData", "colData"]
+def combine_frames(
+    x: Sequence[BiocOrPandasFrame], useNames: bool, axis: int
 ) -> pd.DataFrame:
-    """Method for combining metadata along the concatenation axis.
+    """Combine a Bioc or Pandas dataframe.
 
     Args:
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        experiment_attribute (Literal["rowData", "colData"]): the experiment_attribute to combine.
+        x (Sequence[BiocOrPandasFrame]): input frames.
+        useNames (bool): use index names to merge? Otherwise merges
+            pair-wise along an axis.
+        axis (int): axis to merge on, 0 for rows, 1 for columns.
 
     Returns:
-        concatenated_df (pd.DataFrame): the concatenated experiment metadata.
+        pd.DataFrame: merged data frame
     """
-    validate_experiment_attribute(experiment_attribute=experiment_attribute)
+    all_as_pandas = [(m.to_pandas() if isinstance(x, BiocFrame) else m) for m in x]
 
-    all_experiment_attributes = [getattr(se, experiment_attribute) for se in ses]
-    return reduce(combine, all_experiment_attributes)
+    if useNames is True:
+        validate_names(all_as_pandas)
+    elif axis == 0:
+        validate_shapes(all_as_pandas)
 
-
-def combine_non_concatenation_axis(
-    ses: Sequence["BaseSE"],
-    experiment_attribute: Literal["rowData", "colData"],
-    useNames: bool,
-) -> pd.DataFrame:
-    """Method for combining metadata along the non-concatenation axis.
-
-    Args:
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        experiment_attribute (Literal["rowData", "colData"]): the experiment_attribute to combine.
-        useName (bool): see `combineCols()`
-
-    Returns:
-        concatenated_df (pd.DataFrame): the concatenated experiment metadata.
-    """
-    validate_experiment_attribute(experiment_attribute=experiment_attribute)
-
-    all_experiment_attributes = [getattr(se, experiment_attribute) for se in ses]
-    if useNames:
-        validate_names(ses, experiment_attribute=experiment_attribute)
-        return reduce(
-            lambda left, right: combine(left, right, prefer_left=True),
-            all_experiment_attributes,
-        )
-    else:
-        validate_shapes(ses, experiment_attribute=experiment_attribute)
-        combined_dataframe = reduce(
-            lambda left, right: combine(left, right, ignore_names=True),
-            all_experiment_attributes,
-        )
-        names = getattr(ses[0], experiment_attribute).index
-        combined_dataframe.index = names
-        return combined_dataframe
+    return pd.concat(all_as_pandas, ignore_index=(not useNames), axis=axis)
 
 
 def combine_assays_by_column(

@@ -8,26 +8,25 @@ from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 
+from .dispatchers.colnames import get_colnames, set_colnames
+from .dispatchers.rownames import get_rownames, set_rownames
+from .utils._combiners import (
+    combine_assays,
+    combine_frames,
+    combine_metadata,
+)
 from .utils._slicer import get_indexes_from_bools, get_indexes_from_names
 from .utils._type_checks import (
     is_bioc_or_pandas_frame,
+    is_list_of_subclass,
     is_list_of_type,
     is_matrix_like,
-    is_list_of_subclass,
 )
 from .utils._types import (
     BiocOrPandasFrame,
     MatrixSlicerTypes,
     MatrixTypes,
     SlicerArgTypes,
-)
-from .dispatchers.colnames import get_colnames, set_colnames
-from .dispatchers.rownames import get_rownames, set_rownames
-from .utils._combiners import (
-    combine_concatenation_axis,
-    combine_non_concatenation_axis,
-    combine_metadata,
-    combine_assays,
 )
 
 __author__ = "jkanche, keviny2"
@@ -587,11 +586,13 @@ class BaseSE:
 
         ses = [self] + list(experiments)
 
-        new_metadata = combine_metadata(ses)
-        new_colData = combine_concatenation_axis(ses, experiment_attribute="colData")
-        new_rowData = combine_non_concatenation_axis(
-            ses, experiment_attribute="rowData", useNames=useNames
-        )
+        new_metadata = combine_metadata(experiments)
+
+        all_coldata = [getattr(f, "colData") for f in experiments]
+        new_colData = combine_frames(all_coldata, axis=0, useNames=False)
+
+        all_rowdata = [getattr(f, "rowData") for f in experiments]
+        new_rowData = combine_frames(all_rowdata, axis=1, useNames=useNames)
 
         new_assays = {}
         unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}

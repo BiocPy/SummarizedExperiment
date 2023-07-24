@@ -44,6 +44,14 @@ summarizedexperiment.SummarizedExperiment module
    :undoc-members:
    :show-inheritance:
 
+summarizedexperiment.types module
+---------------------------------
+
+.. automodule:: summarizedexperiment.types
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

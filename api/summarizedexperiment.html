@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="summarizedexperiment.dispatchers package" href="summarizedexperiment.dispatchers.html" /><link rel="prev" title="summarizedexperiment" href="modules.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
-        <title>summarizedexperiment package - SummarizedExperiment 0.2.9 documentation</title>
+        <title>summarizedexperiment package - SummarizedExperiment 0.2.10 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">SummarizedExperiment 0.2.9 documentation</div></a>
+      <a href="../index.html"><div class="brand">SummarizedExperiment 0.2.10 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.9 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.10 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -962,6 +962,42 @@ features, sample data and any other metadata.</p>
 </section>
 <section id="module-summarizedexperiment.types">
 <span id="summarizedexperiment-types-module"></span><h2>summarizedexperiment.types module<a class="headerlink" href="#module-summarizedexperiment.types" title="Permalink to this heading">#</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="summarizedexperiment.types.SlicerResult">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">summarizedexperiment.types.</span></span><span class="sig-name descname"><span class="pre">SlicerResult</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rowData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">assays</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rowIndices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colIndices</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#summarizedexperiment.types.SlicerResult" title="Permalink to this definition">#</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#tuple" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="summarizedexperiment.types.SlicerResult.assays">
+<span class="sig-name descname"><span class="pre">assays</span></span><a class="headerlink" href="#summarizedexperiment.types.SlicerResult.assays" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 2</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="summarizedexperiment.types.SlicerResult.colData">
+<span class="sig-name descname"><span class="pre">colData</span></span><a class="headerlink" href="#summarizedexperiment.types.SlicerResult.colData" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 1</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="summarizedexperiment.types.SlicerResult.colIndices">
+<span class="sig-name descname"><span class="pre">colIndices</span></span><a class="headerlink" href="#summarizedexperiment.types.SlicerResult.colIndices" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 4</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="summarizedexperiment.types.SlicerResult.rowData">
+<span class="sig-name descname"><span class="pre">rowData</span></span><a class="headerlink" href="#summarizedexperiment.types.SlicerResult.rowData" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 0</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="summarizedexperiment.types.SlicerResult.rowIndices">
+<span class="sig-name descname"><span class="pre">rowIndices</span></span><a class="headerlink" href="#summarizedexperiment.types.SlicerResult.rowIndices" title="Permalink to this definition">#</a></dt>
+<dd><p>Alias for field number 3</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="module-summarizedexperiment">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-summarizedexperiment" title="Permalink to this heading">#</a></h2>
@@ -1080,7 +1116,17 @@ features, sample data and any other metadata.</p>
 <li><a class="reference internal" href="#summarizedexperiment.SummarizedExperiment.SummarizedExperiment"><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-summarizedexperiment.types">summarizedexperiment.types module</a></li>
+<li><a class="reference internal" href="#module-summarizedexperiment.types">summarizedexperiment.types module</a><ul>
+<li><a class="reference internal" href="#summarizedexperiment.types.SlicerResult"><code class="docutils literal notranslate"><span class="pre">SlicerResult</span></code></a><ul>
+<li><a class="reference internal" href="#summarizedexperiment.types.SlicerResult.assays"><code class="docutils literal notranslate"><span class="pre">SlicerResult.assays</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.types.SlicerResult.colData"><code class="docutils literal notranslate"><span class="pre">SlicerResult.colData</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.types.SlicerResult.colIndices"><code class="docutils literal notranslate"><span class="pre">SlicerResult.colIndices</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.types.SlicerResult.rowData"><code class="docutils literal notranslate"><span class="pre">SlicerResult.rowData</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.types.SlicerResult.rowIndices"><code class="docutils literal notranslate"><span class="pre">SlicerResult.rowIndices</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-summarizedexperiment">Module contents</a></li>
 </ul>
 </li>

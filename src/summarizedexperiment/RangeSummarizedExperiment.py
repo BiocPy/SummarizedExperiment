@@ -199,18 +199,17 @@ class RangeSummarizedExperiment(BaseSE):
         Returns:
             RangeSummarizedExperiment: Sliced `RangeSummarizedExperiment` object.
         """
-        new_rows, new_cols, new_assays = self._slice(args)
-        rowIndices = args[0]
+        sliced_objs = self._slice(args)
 
         new_rowRanges = None
-        if rowIndices is not None and self.rowRanges is not None:
-            new_rowRanges = self.rowRanges[rowIndices, :]
+        if sliced_objs.rowIndices is not None and self.rowRanges is not None:
+            new_rowRanges = self.rowRanges[sliced_objs.rowIndices, :]
 
         return RangeSummarizedExperiment(
-            assays=new_assays,
+            assays=sliced_objs.assays,
             rowRanges=new_rowRanges,
-            rowData=new_rows,
-            colData=new_cols,
+            rowData=sliced_objs.rowData,
+            colData=sliced_objs.colData,
             metadata=self.metadata,
         )
 

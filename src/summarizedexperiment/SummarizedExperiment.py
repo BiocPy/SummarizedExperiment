@@ -55,11 +55,11 @@ class SummarizedExperiment(BaseSE):
         Returns:
             SummarizedExperiment: sliced `SummarizedExperiment` object.
         """
-        new_rows, new_cols, new_assays = self._slice(args)
+        sliced_objs = self._slice(args)
         return SummarizedExperiment(
-            assays=new_assays,
-            rowData=new_rows,
-            colData=new_cols,
+            assays=sliced_objs.assays,
+            rowData=sliced_objs.rowData,
+            colData=sliced_objs.colData,
             metadata=self.metadata,
         )
 
@@ -67,7 +67,7 @@ class SummarizedExperiment(BaseSE):
         pattern = (
             f"Class SummarizedExperiment with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {list(self.assays.keys())} \n"
-            f"  features: {self.rowData.columns if self._rows is not None else None} \n"
-            f"  sample data: {self.colData.columns if self._cols is not None else None}"
+            f"  features: {self.rowData.columns if self.rowData is not None else None} \n"
+            f"  sample data: {self.colData.columns if self.colData is not None else None}"
         )
         return pattern

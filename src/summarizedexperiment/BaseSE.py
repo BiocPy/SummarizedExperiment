@@ -17,6 +17,7 @@ from .types import (
     MatrixSlicerTypes,
     MatrixTypes,
     SlicerArgTypes,
+    SlicerResult,
 )
 
 __author__ = "jkanche"
@@ -311,8 +312,8 @@ class BaseSE:
         pattern = (
             f"Class BaseSE with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {list(self.assays.keys())} \n"
-            f"  features: {self.rowData.columns if self._rows is not None else None} \n"
-            f"  sample data: {self.colData.columns if self._cols is not None else None}"
+            f"  features: {self.rowData.columns if self.rowData is not None else None} \n"
+            f"  sample data: {self.colData.columns if self.colData is not None else None}"
         )
         return pattern
 
@@ -372,7 +373,7 @@ class BaseSE:
     def _slice(
         self,
         args: SlicerArgTypes,
-    ) -> Tuple[BiocOrPandasFrame, BiocOrPandasFrame, MutableMapping[str, MatrixTypes],]:
+    ) -> SlicerResult:
         """Internal method to slice `SE` by index.
 
         Args:
@@ -383,8 +384,7 @@ class BaseSE:
             ValueError: Too many or too few slices provided.
 
         Returns:
-            Tuple[BiocOrPandasFrame, BiocOrPandasFrame, MutableMapping[str, MatrixTypes]]:
-            sliced row, cols and assays.
+            SlicerResult: sliced tuple.
         """
 
         if isinstance(args, tuple):
@@ -408,10 +408,10 @@ class BaseSE:
         new_cols = None
         new_assays = None
 
-        if rowIndices is not None and self._rows is not None:
+        if rowIndices is not None and self.rowData is not None:
             if is_list_of_type(rowIndices, str):
                 rowIndices = get_indexes_from_names(
-                    self._rows.index, pd.Index(rowIndices)
+                    self.rowData.index, pd.Index(rowIndices)
                 )
             elif is_list_of_type(rowIndices, bool):
                 if len(rowIndices) != self.shape[0]:
@@ -421,17 +421,17 @@ class BaseSE:
                     )
                 rowIndices = get_indexes_from_bools(rowIndices)
             elif is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
-                if isinstance(self._rows, pd.DataFrame):
-                    new_rows = self._rows.iloc[rowIndices]
+                if isinstance(self.rowData, pd.DataFrame):
+                    new_rows = self.rowData.iloc[rowIndices]
                 else:
-                    new_rows = self._rows[rowIndices, :]
+                    new_rows = self.rowData[rowIndices, :]
             else:
                 raise TypeError("rowIndices not supported!")
 
-        if colIndices is not None and self._cols is not None:
+        if colIndices is not None and self.colData is not None:
             if is_list_of_type(colIndices, str):
                 colIndices = get_indexes_from_names(
-                    self._cols.index, pd.Index(colIndices)
+                    self.colData.index, pd.Index(colIndices)
                 )
             elif is_list_of_type(colIndices, bool):
                 if len(colIndices) != self.shape[1]:
@@ -441,16 +441,16 @@ class BaseSE:
                     )
                 colIndices = get_indexes_from_bools(colIndices)
             elif is_list_of_type(colIndices, int) or isinstance(colIndices, slice):
-                if isinstance(self._cols, pd.DataFrame):
-                    new_cols = self._cols.iloc[colIndices]
+                if isinstance(self.colData, pd.DataFrame):
+                    new_cols = self.colData.iloc[colIndices]
                 else:
-                    new_cols = self._cols[colIndices, :]
+                    new_cols = self.colData[colIndices, :]
             else:
                 raise TypeError("colIndices not supported!")
 
         new_assays = self.subsetAssays(rowIndices=rowIndices, colIndices=colIndices)
 
-        return (new_rows, new_cols, new_assays)
+        return SlicerResult(new_rows, new_cols, new_assays, rowIndices, colIndices)
 
     @property
     def rownames(self) -> Sequence[str]:
@@ -524,12 +524,12 @@ class BaseSE:
 
             layers[asy] = mat.transpose()
 
-        trows = self._rows
-        if isinstance(self._rows, GenomicRanges):
-            trows = self._rows.toPandas()
+        trows = self.rowData
+        if isinstance(self.rowData, GenomicRanges):
+            trows = self.rowData.toPandas()
 
         obj = anndata.AnnData(
-            obs=self._cols,
+            obs=self.colData,
             var=trows,
             uns=self.metadata,
             layers=layers,

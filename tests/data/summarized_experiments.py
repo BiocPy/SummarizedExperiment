@@ -4,11 +4,30 @@ import scipy.sparse as sp
 from biocframe import BiocFrame
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
+
+ncols = 10
+nrows = 100
+se_unnamed = SummarizedExperiment(
+    assays={"counts": np.random.poisson(lam=10, size=(100, 10))}
+)
+se_unnamed.colData["A"] = [1] * ncols
+se_unnamed.rowData["A"] = [1] * nrows
+
+se_unnamed_2 = SummarizedExperiment(
+    assays={
+        "counts": np.random.poisson(lam=10, size=(100, 10)),
+        "normalized": np.random.normal(size=(100, 10))
+    }
+)
+se_unnamed_2.colData["A"] = [2] * ncols
+se_unnamed_2.colData["B"] = [3] * ncols
+se_unnamed_2.rowData["B"] = ["B"] * nrows
+
 rowData1 = pd.DataFrame(
     {
         "seqnames": ["chr_5", "chr_3", "chr_2"],
-        "start": [10293804, 12098948, 20984392],
-        "end": [28937947, 3872839, 329837492]
+        "start": [500, 300, 200],
+        "end": [510, 310, 210]
     },
     index=["HER2", "BRCA1", "TPFK"],
 )
@@ -32,8 +51,8 @@ se1 = SummarizedExperiment(
 rowData2 = pd.DataFrame(
     {
         "seqnames": ["chr_5", "chr_3", "chr_2"],
-        "start": [10293804, 12098948, 20984392],
-        "end": [28937947, 3872839, 329837492]
+        "start": [500, 300, 200],
+        "end": [510, 310, 210]
     },
     index=["HER2", "BRCA1", "TPFK"],
 )
@@ -57,9 +76,9 @@ se2 = SummarizedExperiment(
 
 rowData3 = pd.DataFrame(
     {
-        "seqnames": ["chr_7", "chr_1", "chr_Y"],
-        "start": [1084390, 1874937, 243879798],
-        "end": [243895239, 358908298, 390820395]
+        "seqnames": ["chr_7", "chr_1", "chr_9"],
+        "start": [700, 100, 900],
+        "end": [710, 110, 910]
     },
     index=["MYC", "BRCA2", "TPFK"],
 )
@@ -83,9 +102,9 @@ se3 = SummarizedExperiment(
 
 rowData4 = pd.DataFrame(
     {
-        "seqnames": ["chr_7", "chr_5", "chr_1", "chr_Y", "chr_3"],
-        "start": [1084390, 1273987, 1874937, 243879798, 2217981273],
-        "end": [243895239, 128973192, 358908298, 390820395, 1987238927]
+        "seqnames": ["chr_7", "chr_5", "chr_1", "chr_9", "chr_3"],
+        "start": [700, 500, 100, 900, 300],
+        "end": [710, 510, 110, 910, 310]
     },
     index=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
 )
@@ -110,9 +129,9 @@ se4 = SummarizedExperiment(
 
 rowData5 = pd.DataFrame(
     {
-        "seqnames": ["chr_7", "chr_5", "chr_4", "chr_Y", "chr_8"],
-        "start": [1084390, 1273987, 18279843, 243879798, 127987239],
-        "end": [243895239, 128973192, 290823094, 390820395, 238798237]
+        "seqnames": ["chr_7", "chr_5", "chr_4", "chr_9", "chr_8"],
+        "start": [700, 500, 400, 900, 800],
+        "end": [710, 510, 410, 910, 810]
     },
     index=["MYC", "BRCA1", "PIK3CA", "TPFK", "HRAS"],
 )
@@ -172,11 +191,41 @@ se_nonames = SummarizedExperiment(
     metadata={},
 )
 
+rowData_null_row_name = pd.DataFrame(
+    {
+        "seqnames": ["chr_5", "chr_3", "chr_2"],
+        "start": [500, 300, 200],
+        "end": [510, 310, 210]
+    },
+    index=[None, "BRCA1", "TPFK"],
+)
+se_null_row_name = SummarizedExperiment(
+    assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
+    rowData=rowData_null_row_name,
+    colData=colData1,
+    metadata={"seq_type": "paired"},
+)
+
+rowData_duplicated_row_name = pd.DataFrame(
+    {
+        "seqnames": ["chr_5", "chr_3", "chr_2"],
+        "start": [500, 300, 200],
+        "end": [510, 310, 210]
+    },
+    index=["HER2", "HER2", "TPFK"],
+)
+se_duplicated_row_name = SummarizedExperiment(
+    assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
+    rowData=rowData_duplicated_row_name,
+    colData=colData1,
+    metadata={"seq_type": "paired"},
+)
+
 rowData_biocframe_1 = BiocFrame(
     {
         "seqnames": ["chr_5", "chr_3", "chr_2"],
-        "start": [10293804, 12098948, 20984392],
-        "end": [28937947, 3872839, 329837492]
+        "start": [500, 300, 200],
+        "end": [510, 310, 210]
     },
     rowNames=["HER2", "BRCA1", "TPFK"],
 )
@@ -200,8 +249,8 @@ se_biocframe_1 = SummarizedExperiment(
 rowData_biocframe_2 = BiocFrame(
     {
         "seqnames": ["chr_5", "chr_3", "chr_2"],
-        "start": [10293804, 12098948, 20984392],
-        "end": [28937947, 3872839, 329837492]
+        "start": [500, 300, 200],
+        "end": [510, 310, 210]
     },
     rowNames=["HER2", "BRCA1", "TPFK"],
 )

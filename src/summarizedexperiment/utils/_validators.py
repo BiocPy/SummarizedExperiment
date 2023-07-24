@@ -1,5 +1,7 @@
 from typing import Sequence, Literal
 import pandas as pd
+from biocframe import BiocFrame
+from ._types import BiocOrPandasFrame
 
 __author__ = "keviny2"
 __copyright__ = "keviny2"
@@ -19,12 +21,10 @@ def validate_names(
         ValueError: if there are null or duplicated names.
     """
 
-    def _validate_single_df(df: pd.DataFrame) -> bool:
+    def _validate_single_df(df: BiocOrPandasFrame) -> bool:
         """Validate there are no null or duplicated names.
-
         Args:
             df (pd.DataFrame): DataFrame to validate.
-
         Returns:
             bool: `True` if df does not have any null or duplicated names.
                 `False` otherwise.

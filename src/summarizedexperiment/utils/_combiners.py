@@ -92,7 +92,8 @@ def combine_non_concatenation_axis(
             all_experiment_attributes,
         )
         names = getattr(ses[0], experiment_attribute).index
-        combined_dataframe.index = names
+        if names is not None:
+            combined_dataframe.index = names
         return combined_dataframe
 
 

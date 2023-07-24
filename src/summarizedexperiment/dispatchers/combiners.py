@@ -85,7 +85,7 @@ def combine(
 @dispatch(BiocFrame, pd.DataFrame)
 def combine(
     left: BiocFrame,
-    right: BiocFrame,
+    right: pd.DataFrame,
     ignore_names: bool = False,
     prefer_left: bool = False,
 ) -> pd.DataFrame:

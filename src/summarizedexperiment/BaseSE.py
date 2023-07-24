@@ -10,14 +10,14 @@ from genomicranges import GenomicRanges
 
 from ._slicer_utils import get_indexes_from_bools, get_indexes_from_names
 from ._type_checks import is_bioc_or_pandas_frame, is_list_of_type, is_matrix_like
-from ._types import (
+from .dispatchers.colnames import get_colnames, set_colnames
+from .dispatchers.rownames import get_rownames, set_rownames
+from .types import (
     BiocOrPandasFrame,
     MatrixSlicerTypes,
     MatrixTypes,
     SlicerArgTypes,
 )
-from .dispatchers.colnames import get_colnames, set_colnames
-from .dispatchers.rownames import get_rownames, set_rownames
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

@@ -3,8 +3,8 @@ from typing import MutableMapping, Optional, Sequence, Union
 import numpy as np
 from genomicranges import GenomicRanges, SeqInfo
 
-from ._types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 from .BaseSE import BaseSE
+from .types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

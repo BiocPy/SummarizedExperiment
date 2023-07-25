@@ -12,6 +12,6 @@ import data.summarized_experiments as ses
 
 
 @pytest.fixture
-def test_data():
+def summarized_experiments():
     return ses
 

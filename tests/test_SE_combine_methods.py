@@ -78,9 +78,9 @@ def checkIdentical(
     assert se.colData.equals(target_colData)
 
 
-def test_SE_combineCols_unnamed(test_data):
+def test_SE_combineCols_unnamed(summarized_experiments):
     """Test case to verify combineCols() when the inputs have unnamed rows."""
-    combined = test_data.se_unnamed.combineCols(test_data.se_unnamed_2, useNames=False)
+    combined = summarized_experiments.se_unnamed.combineCols(summarized_experiments.se_unnamed_2, useNames=False)
 
     checkIdentical(
         se=combined,
@@ -97,7 +97,7 @@ def test_SE_combineCols_unnamed(test_data):
     )
 
 
-def test_SE_combineCols_useNames_false(test_data):
+def test_SE_combineCols_useNames_false(summarized_experiments):
     """
     Test case to verify combineCols(..., useNames=False).
 
@@ -110,7 +110,7 @@ def test_SE_combineCols_useNames_false(test_data):
     """
 
     # Scenario 1: same number of rows and same row names
-    combined = test_data.se1.combineCols(test_data.se2, useNames=False)
+    combined = summarized_experiments.se1.combineCols(summarized_experiments.se2, useNames=False)
 
     checkIdentical(
         se=combined,
@@ -135,7 +135,7 @@ def test_SE_combineCols_useNames_false(test_data):
     )
 
     # Scenario 2: same number of rows but different row names
-    combined = test_data.se2.combineCols(test_data.se3, useNames=False)
+    combined = summarized_experiments.se2.combineCols(summarized_experiments.se3, useNames=False)
 
     checkIdentical(
         se=combined,
@@ -160,7 +160,7 @@ def test_SE_combineCols_useNames_false(test_data):
     )
 
     # Scenario 3: overlapping sample names
-    combined = test_data.se4.combineCols(test_data.se6, useNames=False)
+    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=False)
 
     checkIdentical(
         se=combined,
@@ -186,7 +186,7 @@ def test_SE_combineCols_useNames_false(test_data):
     )
 
     # Scenario 4: empty rowData and colData
-    combined = test_data.se1.combineCols(test_data.se_nonames, useNames=False)
+    combined = summarized_experiments.se1.combineCols(summarized_experiments.se_nonames, useNames=False)
 
     checkIdentical(
         se=combined,
@@ -211,10 +211,10 @@ def test_SE_combineCols_useNames_false(test_data):
 
     # Scenario 5: different number of rows
     with pytest.raises(ValueError):
-        test_data.se3.combineCols(test_data.se4, useNames=False)
+        summarized_experiments.se3.combineCols(summarized_experiments.se4, useNames=False)
 
 
-def test_SE_combineCols_useNames_true(test_data):
+def test_SE_combineCols_useNames_true(summarized_experiments):
     """
     Test case to verify combineCols(..., useNames=True).
 
@@ -237,8 +237,8 @@ def test_SE_combineCols_useNames_true(test_data):
     """
 
     # Scenario 1: same number of rows and same row names
-    combined = test_data.se1.combineCols(
-        test_data.se2, useNames=True
+    combined = summarized_experiments.se1.combineCols(
+        summarized_experiments.se2, useNames=True
     )
 
     make_assertions(
@@ -252,8 +252,8 @@ def test_SE_combineCols_useNames_true(test_data):
     )
 
     # Scenario 2: same number of rows but different row names
-    combined = test_data.se2.combineCols(
-        test_data.se3, useNames=True
+    combined = summarized_experiments.se2.combineCols(
+        summarized_experiments.se3, useNames=True
     )
 
     make_assertions(
@@ -267,8 +267,8 @@ def test_SE_combineCols_useNames_true(test_data):
     )
 
     # Scenario 3: different number of rows
-    combined = test_data.se3.combineCols(
-        test_data.se4, useNames=True
+    combined = summarized_experiments.se3.combineCols(
+        summarized_experiments.se4, useNames=True
     )
 
     make_assertions(
@@ -282,7 +282,7 @@ def test_SE_combineCols_useNames_true(test_data):
     )
 
     # assert se4 samples are non-nan and other entries are 0 for 'beta' assay
-    se4_sample_vals = test_data.se4.colnames
+    se4_sample_vals = summarized_experiments.se4.colnames
     se4_sample_idxs = np.argwhere(combined.colData.index.isin(se4_sample_vals))
     beta_assay = combined.assays["beta"].toarray()
     non_se4_samples = np.delete(beta_assay, se4_sample_idxs, axis=1)
@@ -302,12 +302,12 @@ def test_SE_combineCols_useNames_true(test_data):
     se_null_row_name = SummarizedExperiment(
         assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
         rowData=rowData_null_row_name,
-        colData=test_data.colData1,
+        colData=summarized_experiments.colData1,
         metadata={"seq_type": "paired"},
     )
 
     with pytest.raises(ValueError):
-        test_data.se1.combineCols(se_null_row_name, useNames=True)
+        summarized_experiments.se1.combineCols(se_null_row_name, useNames=True)
 
     # Scenario 5: duplicated row name
     rowData_duplicated_row_name = pd.DataFrame(
@@ -321,16 +321,16 @@ def test_SE_combineCols_useNames_true(test_data):
     se_duplicated_row_name = SummarizedExperiment(
         assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
         rowData=rowData_duplicated_row_name,
-        colData=test_data.colData1,
+        colData=summarized_experiments.colData1,
         metadata={"seq_type": "paired"},
     )
 
     with pytest.raises(ValueError):
-        test_data.se1.combineCols(se_duplicated_row_name, useNames=True)
+        summarized_experiments.se1.combineCols(se_duplicated_row_name, useNames=True)
 
     # Scenario 6: overlapping sample names
-    combined = test_data.se4.combineCols(
-        test_data.se6, useNames=True
+    combined = summarized_experiments.se4.combineCols(
+        summarized_experiments.se6, useNames=True
     )
 
     make_assertions(
@@ -344,8 +344,8 @@ def test_SE_combineCols_useNames_true(test_data):
     )
 
     # Scenario 7: empty rowData and colData
-    combined = test_data.se1.combineCols(
-        test_data.se_nonames, useNames=True
+    combined = summarized_experiments.se1.combineCols(
+        summarized_experiments.se_nonames, useNames=True
     )
 
     make_assertions(
@@ -359,7 +359,7 @@ def test_SE_combineCols_useNames_true(test_data):
     )
 
 
-def test_SE_combineCols_mix_sparse_and_dense(test_data):
+def test_SE_combineCols_mix_sparse_and_dense(summarized_experiments):
     """
     Test case to verify combineCols() when assays differ in dtype.
 
@@ -373,8 +373,8 @@ def test_SE_combineCols_mix_sparse_and_dense(test_data):
     """
 
     # Scenario 1: both dense and sparse arrays
-    combined = test_data.se3.combineCols(
-        test_data.se4, test_data.se_sparse, useNames=True
+    combined = summarized_experiments.se3.combineCols(
+        summarized_experiments.se4, summarized_experiments.se_sparse, useNames=True
     )
 
     make_assertions(
@@ -398,7 +398,7 @@ def test_SE_combineCols_mix_sparse_and_dense(test_data):
     )
 
 
-def test_SE_combineCols_not_all_SE(test_data):
+def test_SE_combineCols_not_all_SE(summarized_experiments):
     """
     Test case to verify combineCols() throws an error if not all inputs are
     "SummarizedExperiment" objects.
@@ -414,10 +414,10 @@ def test_SE_combineCols_not_all_SE(test_data):
 
     # Scenario 1: one object as a pandas DataFrame
     with pytest.raises(TypeError):
-        test_data.se1.combineCols(pd.DataFrame({"dummy": [1, 2, 3]}))
+        summarized_experiments.se1.combineCols(pd.DataFrame({"dummy": [1, 2, 3]}))
 
 
-def test_SE_combineCols_biocframe(test_data):
+def test_SE_combineCols_biocframe(summarized_experiments):
     """
     Test case to verify combineCols() correctly handles BiocFrames.
 
@@ -433,8 +433,8 @@ def test_SE_combineCols_biocframe(test_data):
     """
 
     # Scenario 1: both `rowData` are of type `BiocFrame` and `useNames=True`
-    combined = test_data.se_biocframe_1.combineCols(
-        test_data.se_biocframe_2, useNames=True
+    combined = summarized_experiments.se_biocframe_1.combineCols(
+        summarized_experiments.se_biocframe_2, useNames=True
     )
 
     make_assertions(
@@ -448,8 +448,8 @@ def test_SE_combineCols_biocframe(test_data):
     )
 
     # Scenario 2: both `rowData` are of type `BiocFrame` and `useNames=False`
-    combined = test_data.se_biocframe_1.combineCols(
-        test_data.se_biocframe_2, useNames=False
+    combined = summarized_experiments.se_biocframe_1.combineCols(
+        summarized_experiments.se_biocframe_2, useNames=False
     )
 
     make_assertions(
@@ -463,8 +463,8 @@ def test_SE_combineCols_biocframe(test_data):
     )
 
     # Scenario 3: Test when one `rowData` is a `pd.DataFrame` and the other a `BiocFrame`.
-    combined = test_data.se_biocframe_1.combineCols(
-        test_data.se3, useNames=True
+    combined = summarized_experiments.se_biocframe_1.combineCols(
+        summarized_experiments.se3, useNames=True
     )
 
     make_assertions(

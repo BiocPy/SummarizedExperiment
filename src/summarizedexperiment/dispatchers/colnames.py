@@ -1,5 +1,5 @@
 from functools import singledispatch
-from typing import Sequence, Any
+from typing import Any, Sequence
 
 import pandas as pd
 from biocframe import BiocFrame

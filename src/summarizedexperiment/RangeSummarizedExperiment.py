@@ -93,7 +93,8 @@ class RangeSummarizedExperiment(BaseSE):
             rows (GenomicRanges): genomic features (rowRanges).
 
         Raises:
-            ValueError: when number of rows does not match between `rowRanges` & `assays`.
+            ValueError: when number of rows does not match between `rowRanges` &
+                `assays`.
             TypeError: when `rowRanges` is not a `GenomicRanges` object.
         """
         if not (isinstance(rowsRanges, GenomicRanges)):
@@ -335,7 +336,8 @@ class RangeSummarizedExperiment(BaseSE):
         """Search nearest positions only downstream that overlap with the
         each genomics interval in `query`.
 
-        Technically same as `nearest` since we also return `distance` to the nearest match.
+        Technically same as `nearest` since we also return `distance` to the
+        nearest match.
 
         Args:
             query (GRangesOrRangeSE): query intervals

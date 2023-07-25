@@ -1,0 +1,10 @@
+summarizedexperiment.utils package
+==================================
+
+Module contents
+---------------
+
+.. automodule:: summarizedexperiment.utils
+   :members:
+   :undoc-members:
+   :show-inheritance:

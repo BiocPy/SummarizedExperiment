@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
-        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.2.10 documentation</title>
+        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.2.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.2.10 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.2.11 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.10 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.11 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -162,6 +162,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="../../api/summarizedexperiment.html">summarizedexperiment package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of summarizedexperiment package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="../../api/summarizedexperiment.dispatchers.html">summarizedexperiment.dispatchers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/summarizedexperiment.utils.html">summarizedexperiment.utils package</a></li>
 </ul>
 </li>
 </ul>
@@ -210,8 +211,12 @@
 <span class="kn">from</span> <span class="nn">filebackedarray</span> <span class="kn">import</span> <span class="n">H5BackedDenseData</span><span class="p">,</span> <span class="n">H5BackedSparseData</span>
 <span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
 
-<span class="kn">from</span> <span class="nn">._slicer_utils</span> <span class="kn">import</span> <span class="n">get_indexes_from_bools</span><span class="p">,</span> <span class="n">get_indexes_from_names</span>
-<span class="kn">from</span> <span class="nn">._type_checks</span> <span class="kn">import</span> <span class="n">is_bioc_or_pandas_frame</span><span class="p">,</span> <span class="n">is_list_of_type</span><span class="p">,</span> <span class="n">is_matrix_like</span>
+<span class="kn">from</span> <span class="nn">._type_checks</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">is_bioc_or_pandas_frame</span><span class="p">,</span>
+    <span class="n">is_list_of_subclass</span><span class="p">,</span>
+    <span class="n">is_list_of_type</span><span class="p">,</span>
+    <span class="n">is_matrix_like</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.dispatchers.colnames</span> <span class="kn">import</span> <span class="n">get_colnames</span><span class="p">,</span> <span class="n">set_colnames</span>
 <span class="kn">from</span> <span class="nn">.dispatchers.rownames</span> <span class="kn">import</span> <span class="n">get_rownames</span><span class="p">,</span> <span class="n">set_rownames</span>
 <span class="kn">from</span> <span class="nn">.types</span> <span class="kn">import</span> <span class="p">(</span>
@@ -221,8 +226,14 @@
     <span class="n">SlicerArgTypes</span><span class="p">,</span>
     <span class="n">SlicerResult</span><span class="p">,</span>
 <span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.utils._combiners</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">combine_assays</span><span class="p">,</span>
+    <span class="n">combine_frames</span><span class="p">,</span>
+    <span class="n">combine_metadata</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.utils._slicer</span> <span class="kn">import</span> <span class="n">get_indexes_from_bools</span><span class="p">,</span> <span class="n">get_indexes_from_names</span>
 
-<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche, keviny2&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
@@ -231,7 +242,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for Summarized Experiment.</span>
 
 <span class="sd">    Represents genomic experiment data (`assays`), features (`rowdata`),</span>
-<span class="sd">    sample data (`coldata`) and any other metadata.</span>
+<span class="sd">    sample data (`coldata`) and any other `metadata`.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        assays (MutableMapping[str, MatrixTypes]): dictionary</span>
@@ -579,8 +590,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to slice `SE` by index.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            args (SlicerArgTypes): indices or names to slice. tuple contains slices along</span>
-<span class="sd">                dimensions (rows, cols).</span>
+<span class="sd">            args (SlicerArgTypes): indices or names to slice. tuple contains</span>
+<span class="sd">                slices along dimensions (rows, cols).</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: Too many or too few slices provided.</span>
@@ -719,9 +730,9 @@
             <span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                     <span class="sa">f</span><span class="s2">&quot;assay </span><span class="si">{</span><span class="n">asy</span><span class="si">}</span><span class="s2"> is not supported. Uses a file backed representation.&quot;</span>
-                    <span class="s2">&quot;while this is fine, this is currently not supported because `AnnData` uses&quot;</span>
-                    <span class="s2">&quot;a transposed representation (cells X features) rather than the &quot;</span>
-                    <span class="s2">&quot;bioconductor version (features X cells)&quot;</span>
+                    <span class="s2">&quot;while this is fine, this is currently not supported because &quot;</span>
+                    <span class="s2">&quot;`AnnData` uses a transposed representation (cells X features) &quot;</span>
+                    <span class="s2">&quot;rather than the bioconductor version (features X cells)&quot;</span>
                 <span class="p">)</span>
 
             <span class="n">layers</span><span class="p">[</span><span class="n">asy</span><span class="p">]</span> <span class="o">=</span> <span class="n">mat</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
@@ -737,7 +748,93 @@
             <span class="n">layers</span><span class="o">=</span><span class="n">layers</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">obj</span></div></div>
+        <span class="k">return</span> <span class="n">obj</span></div>
+
+<div class="viewcode-block" id="BaseSE.combineCols"><a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.combineCols">[docs]</a>    <span class="k">def</span> <span class="nf">combineCols</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="n">experiments</span><span class="p">:</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">,</span>
+        <span class="n">useNames</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">removeDuplicateColumns</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A more flexible version of `cbind`. Permits differences in the number</span>
+<span class="sd">        and identity of rows, differences in `colData` fields, and even differences</span>
+<span class="sd">        in the available `assays` among `SummarizedExperiment` objects being combined.</span>
+
+<span class="sd">        Currently does not support range based merging of feature information when</span>
+<span class="sd">        performing this operation.</span>
+
+<span class="sd">        The row names of the resultant `SummarizedExperiment` object will</span>
+<span class="sd">        simply be the row names of the first `SummarizedExperiment`.</span>
+
+<span class="sd">        Note: if `removeDuplicateColumns` is True, we only keep the columns from this</span>
+<span class="sd">        object (self). you can always do this operation later, but its useful when you</span>
+<span class="sd">        are merging multiple summarized experiments and need to track metadata across</span>
+<span class="sd">        objects.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.</span>
+<span class="sd">            useNames (bool):</span>
+<span class="sd">                - If `True`, then each input `SummarizedExperiment` must have non-null,</span>
+<span class="sd">                non-duplicated row names. The row names of the resultant</span>
+<span class="sd">                `SummarizedExperiment` object will be the union of the row names</span>
+<span class="sd">                across all input objects.</span>
+<span class="sd">                - If `False`, then each input `SummarizedExperiment` object must</span>
+<span class="sd">                have the same number of rows.</span>
+<span class="sd">            removeDuplicateColumns (bool): If `True`, remove any duplicate columns in</span>
+<span class="sd">                `rowData` or `colData` of the resultant `SummarizedExperiment`. Defaults</span>
+<span class="sd">                to `True`.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                if any of the provided objects are not &quot;SummarizedExperiment&quot;-like.</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                - if there are null or duplicated row names (useNames=True)</span>
+<span class="sd">                - if all objects do not have the same number of rows (useNames=False)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            BaseSE: combined `SummarizedExperiment` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">is_list_of_subclass</span><span class="p">(</span><span class="n">experiments</span><span class="p">,</span> <span class="n">BaseSE</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;not all provided objects are `SummarizedExperiment`-like objects&quot;</span>
+            <span class="p">)</span>
+
+        <span class="n">ses</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">experiments</span><span class="p">)</span>
+
+        <span class="n">new_metadata</span> <span class="o">=</span> <span class="n">combine_metadata</span><span class="p">(</span><span class="n">experiments</span><span class="p">)</span>
+
+        <span class="n">all_coldata</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;colData&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ses</span><span class="p">]</span>
+        <span class="n">new_colData</span> <span class="o">=</span> <span class="n">combine_frames</span><span class="p">(</span>
+            <span class="n">all_coldata</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">useNames</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">removeDuplicateColumns</span><span class="o">=</span><span class="n">removeDuplicateColumns</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">all_rowdata</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="s2">&quot;rowData&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">ses</span><span class="p">]</span>
+        <span class="n">new_rowData</span> <span class="o">=</span> <span class="n">combine_frames</span><span class="p">(</span>
+            <span class="n">all_rowdata</span><span class="p">,</span>
+            <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">useNames</span><span class="o">=</span><span class="n">useNames</span><span class="p">,</span>
+            <span class="n">removeDuplicateColumns</span><span class="o">=</span><span class="n">removeDuplicateColumns</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="n">new_assays</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">unique_assay_names</span> <span class="o">=</span> <span class="p">{</span><span class="n">assay_name</span> <span class="k">for</span> <span class="n">se</span> <span class="ow">in</span> <span class="n">ses</span> <span class="k">for</span> <span class="n">assay_name</span> <span class="ow">in</span> <span class="n">se</span><span class="o">.</span><span class="n">assayNames</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">assay_name</span> <span class="ow">in</span> <span class="n">unique_assay_names</span><span class="p">:</span>
+            <span class="n">merged_assays</span> <span class="o">=</span> <span class="n">combine_assays</span><span class="p">(</span>
+                <span class="n">assay_name</span><span class="o">=</span><span class="n">assay_name</span><span class="p">,</span>
+                <span class="n">experiments</span><span class="o">=</span><span class="n">ses</span><span class="p">,</span>
+                <span class="n">names</span><span class="o">=</span><span class="n">new_rowData</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+                <span class="n">by</span><span class="o">=</span><span class="s2">&quot;column&quot;</span><span class="p">,</span>
+                <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">new_rowData</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_colData</span><span class="p">)),</span>
+                <span class="n">useNames</span><span class="o">=</span><span class="n">useNames</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">new_assays</span><span class="p">[</span><span class="n">assay_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">merged_assays</span>
+
+        <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span><span class="n">new_assays</span><span class="p">,</span> <span class="n">new_rowData</span><span class="p">,</span> <span class="n">new_colData</span><span class="p">,</span> <span class="n">new_metadata</span><span class="p">)</span></div></div>
 </pre></div>
         </article>
       </div>

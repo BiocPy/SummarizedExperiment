@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="License" href="license.html" /><link rel="prev" title="SummarizedExperiment" href="readme.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
-        <title>Tutorial - SummarizedExperiment 0.2.10 documentation</title>
+        <title>Tutorial - SummarizedExperiment 0.2.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.2.10 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.2.11 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.10 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.11 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -163,6 +163,7 @@
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/summarizedexperiment.html">summarizedexperiment package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of summarizedexperiment package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/summarizedexperiment.dispatchers.html">summarizedexperiment.dispatchers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/summarizedexperiment.utils.html">summarizedexperiment.utils package</a></li>
 </ul>
 </li>
 </ul>
@@ -398,6 +399,98 @@
 </div>
 <p>Checkout the API docs or GenomicRanges for list of interval based operations.</p>
 </section>
+<section id="combine-operations">
+<h2>Combine operations<a class="headerlink" href="#combine-operations" title="Permalink to this heading">#</a></h2>
+<p>The combine methods in <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> are used to merge or combine multiple <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> objects, allowing users to aggregate data from different experiments or conditions. First, let’s create multiple <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> objects for combining later.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rowData1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr_5&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_2&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10293804</span><span class="p">,</span> <span class="mi">12098948</span><span class="p">,</span> <span class="mi">20984392</span><span class="p">],</span>
+        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">28937947</span><span class="p">,</span> <span class="mi">3872839</span><span class="p">,</span> <span class="mi">329837492</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA1&quot;</span><span class="p">,</span> <span class="s2">&quot;TPFK&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">colData1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SAM_1&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_3&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_3&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;disease&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">],</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cell_1&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_2&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_3&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">se1</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+        <span class="s2">&quot;lognorm&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="p">},</span>
+    <span class="n">rowData</span><span class="o">=</span><span class="n">rowData1</span><span class="p">,</span>
+    <span class="n">colData</span><span class="o">=</span><span class="n">colData1</span><span class="p">,</span>
+    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seq_type&quot;</span><span class="p">:</span> <span class="s2">&quot;paired&quot;</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">rowData2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr_5&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_2&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">10293804</span><span class="p">,</span> <span class="mi">12098948</span><span class="p">,</span> <span class="mi">20984392</span><span class="p">],</span>
+        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">28937947</span><span class="p">,</span> <span class="mi">3872839</span><span class="p">,</span> <span class="mi">329837492</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA1&quot;</span><span class="p">,</span> <span class="s2">&quot;TPFK&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">colData2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SAM_4&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_5&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_6&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;disease&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;doublet_score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">.05</span><span class="p">,</span> <span class="mf">.23</span><span class="p">,</span> <span class="mf">.54</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cell_4&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_5&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_6&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">se2</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+        <span class="s2">&quot;lognorm&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="p">},</span>
+    <span class="n">rowData</span><span class="o">=</span><span class="n">rowData2</span><span class="p">,</span>
+    <span class="n">colData</span><span class="o">=</span><span class="n">colData2</span><span class="p">,</span>
+    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seq_platform&quot;</span><span class="p">:</span> <span class="s2">&quot;Illumina NovaSeq 6000&quot;</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">rowData3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr_7&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_1&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_Y&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1084390</span><span class="p">,</span> <span class="mi">1874937</span><span class="p">,</span> <span class="mi">243879798</span><span class="p">],</span>
+        <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">243895239</span><span class="p">,</span> <span class="mi">358908298</span><span class="p">,</span> <span class="mi">390820395</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;MYC&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA2&quot;</span><span class="p">,</span> <span class="s2">&quot;TPFK&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">colData3</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SAM_7&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_8&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_9&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;disease&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span><span class="p">],</span>
+        <span class="s2">&quot;doublet_score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">.15</span><span class="p">,</span> <span class="mf">.62</span><span class="p">,</span> <span class="mf">.18</span><span class="p">]</span>
+    <span class="p">},</span>
+    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cell_7&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_8&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_9&quot;</span><span class="p">],</span>
+<span class="p">)</span>
+<span class="n">se3</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+        <span class="s2">&quot;lognorm&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
+        <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+    <span class="p">},</span>
+    <span class="n">rowData</span><span class="o">=</span><span class="n">rowData3</span><span class="p">,</span>
+    <span class="n">colData</span><span class="o">=</span><span class="n">colData3</span><span class="p">,</span>
+    <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seq_platform&quot;</span><span class="p">:</span> <span class="s2">&quot;Illumina NovaSeq 6000&quot;</span><span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<section id="combinecols">
+<h3>combineCols()<a class="headerlink" href="#combinecols" title="Permalink to this heading">#</a></h3>
+<p>concatenate columns (samples or cells) of multiple <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> objects, returning a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> with columns equal to the concatenation of columns across all inputs. <code class="docutils literal notranslate"><span class="pre">combineCols()</span></code> allows for differences in the number and names of rows, differences in the available <code class="docutils literal notranslate"><span class="pre">colData</span></code> fields, and even differences in the available <code class="docutils literal notranslate"><span class="pre">assays</span></code> among the objects being combined.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">se_combined</span> <span class="o">=</span> <span class="n">se1</span><span class="o">.</span><span class="n">combineCols</span><span class="p">(</span><span class="n">se2</span><span class="p">,</span> <span class="n">se3</span><span class="p">)</span> <span class="c1"># OR se1.combineCols([se2, se3])</span>
+</pre></div>
+</div>
+<p>parameters are available to keep duplicate rows, or perform row-wise concatenation instead of index available on the rows.</p>
+<p><em><strong>Note: currently does not support range based concatenation.</strong></em></p>
+</section>
+</section>
 </section>
 
         </article>
@@ -470,6 +563,10 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#range-based-operations">Range based operations</a></li>
+<li><a class="reference internal" href="#combine-operations">Combine operations</a><ul>
+<li><a class="reference internal" href="#combinecols">combineCols()</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

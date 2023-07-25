@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="summarizedexperiment.dispatchers package" href="summarizedexperiment.dispatchers.html" /><link rel="prev" title="summarizedexperiment" href="modules.html" />
 
     <!-- Generated with Sphinx 6.2.1 and Furo 2023.05.20 -->
-        <title>summarizedexperiment package - SummarizedExperiment 0.2.10 documentation</title>
+        <title>summarizedexperiment package - SummarizedExperiment 0.2.11 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?digest=e6660623a769aa55fea372102b9bf3151b292993" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">SummarizedExperiment 0.2.10 documentation</div></a>
+      <a href="../index.html"><div class="brand">SummarizedExperiment 0.2.11 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.10 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.2.11 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -163,6 +163,7 @@
 <li class="toctree-l1 current has-children"><a class="reference internal" href="modules.html">Module Reference</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
 <li class="toctree-l2 current has-children current-page"><a class="current reference internal" href="#">summarizedexperiment package</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of summarizedexperiment package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="summarizedexperiment.dispatchers.html">summarizedexperiment.dispatchers package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="summarizedexperiment.utils.html">summarizedexperiment.utils package</a></li>
 </ul>
 </li>
 </ul>
@@ -222,6 +223,10 @@
 <li class="toctree-l2"><a class="reference internal" href="summarizedexperiment.dispatchers.html#module-summarizedexperiment.dispatchers">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="summarizedexperiment.utils.html">summarizedexperiment.utils package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="summarizedexperiment.utils.html#module-summarizedexperiment.utils">Module contents</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </section>
@@ -236,7 +241,7 @@
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.9/library/functions.html#object" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Base class for Summarized Experiment.</p>
 <p>Represents genomic experiment data (<cite>assays</cite>), features (<cite>rowdata</cite>),
-sample data (<cite>coldata</cite>) and any other metadata.</p>
+sample data (<cite>coldata</cite>) and any other <cite>metadata</cite>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -326,6 +331,57 @@ experiments names as keys and matrix data as values.</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>Sequence[<a class="reference external" href="https://docs.python.org/3.9/library/stdtypes.html#str" title="(in Python v3.9)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="summarizedexperiment.BaseSE.BaseSE.combineCols">
+<span class="sig-name descname"><span class="pre">combineCols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">experiments</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE" title="summarizedexperiment.BaseSE.BaseSE"><span class="pre">BaseSE</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">useNames</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">removeDuplicateColumns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE" title="summarizedexperiment.BaseSE.BaseSE"><span class="pre">BaseSE</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/BaseSE.html#BaseSE.combineCols"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.BaseSE.BaseSE.combineCols" title="Permalink to this definition">#</a></dt>
+<dd><p>A more flexible version of <cite>cbind</cite>. Permits differences in the number
+and identity of rows, differences in <cite>colData</cite> fields, and even differences
+in the available <cite>assays</cite> among <cite>SummarizedExperiment</cite> objects being combined.</p>
+<p>Currently does not support range based merging of feature information when
+performing this operation.</p>
+<p>The row names of the resultant <cite>SummarizedExperiment</cite> object will
+simply be the row names of the first <cite>SummarizedExperiment</cite>.</p>
+<p>Note: if <cite>removeDuplicateColumns</cite> is True, we only keep the columns from this
+object (self). you can always do this operation later, but its useful when you
+are merging multiple summarized experiments and need to track metadata across
+objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>experiments</strong> (<a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE" title="summarizedexperiment.BaseSE.BaseSE"><em>BaseSE</em></a>) – <cite>SummarizedExperiment</cite>-like objects to concatenate.</p></li>
+<li><p><strong>useNames</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – <ul>
+<li><p>If <cite>True</cite>, then each input <cite>SummarizedExperiment</cite> must have non-null,</p></li>
+</ul>
+<p>non-duplicated row names. The row names of the resultant
+<cite>SummarizedExperiment</cite> object will be the union of the row names
+across all input objects.
+- If <cite>False</cite>, then each input <cite>SummarizedExperiment</cite> object must
+have the same number of rows.</p>
+</p></li>
+<li><p><strong>removeDuplicateColumns</strong> (<a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – If <cite>True</cite>, remove any duplicate columns in
+<cite>rowData</cite> or <cite>colData</cite> of the resultant <cite>SummarizedExperiment</cite>. Defaults
+to <cite>True</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#TypeError" title="(in Python v3.9)"><strong>TypeError</strong></a> – if any of the provided objects are not “SummarizedExperiment”-like.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.9/library/exceptions.html#ValueError" title="(in Python v3.9)"><strong>ValueError</strong></a> – <ul>
+<li><p>if there are null or duplicated row names (useNames=True)
+    - if all objects do not have the same number of rows (useNames=False)</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>combined <cite>SummarizedExperiment</cite> object.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE" title="summarizedexperiment.BaseSE.BaseSE">BaseSE</a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -480,7 +536,8 @@ as keys and the coverage vector as values.</p>
 <span class="sig-name descname"><span class="pre">distanceToNearest</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">query</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">GenomicRanges</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment" title="summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment"><span class="pre">RangeSummarizedExperiment</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignoreStrand</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#bool" title="(in Python v3.9)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.9/library/typing.html#typing.Sequence" title="(in Python v3.9)"><span class="pre">Sequence</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.9/library/functions.html#int" title="(in Python v3.9)"><span class="pre">int</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.9/library/constants.html#None" title="(in Python v3.9)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../_modules/summarizedexperiment/RangeSummarizedExperiment.html#RangeSummarizedExperiment.distanceToNearest"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.RangeSummarizedExperiment.RangeSummarizedExperiment.distanceToNearest" title="Permalink to this definition">#</a></dt>
 <dd><p>Search nearest positions only downstream that overlap with the
 each genomics interval in <cite>query</cite>.</p>
-<p>Technically same as <cite>nearest</cite> since we also return <cite>distance</cite> to the nearest match.</p>
+<p>Technically same as <cite>nearest</cite> since we also return <cite>distance</cite> to the
+nearest match.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
@@ -1069,6 +1126,7 @@ features, sample data and any other metadata.</p>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.assays"><code class="docutils literal notranslate"><span class="pre">BaseSE.assays</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.colData"><code class="docutils literal notranslate"><span class="pre">BaseSE.colData</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.colnames"><code class="docutils literal notranslate"><span class="pre">BaseSE.colnames</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.combineCols"><code class="docutils literal notranslate"><span class="pre">BaseSE.combineCols()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.dims"><code class="docutils literal notranslate"><span class="pre">BaseSE.dims</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.metadata"><code class="docutils literal notranslate"><span class="pre">BaseSE.metadata</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.BaseSE.BaseSE.rowData"><code class="docutils literal notranslate"><span class="pre">BaseSE.rowData</span></code></a></li>

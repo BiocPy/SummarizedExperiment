@@ -209,3 +209,99 @@ tse.subsetByOverlaps(query)
 ```
 
 Checkout the API docs or GenomicRanges for list of interval based operations.
+
+## Combine operations
+
+The combine methods in `SummarizedExperiment` are used to merge or combine multiple `SummarizedExperiment` objects, allowing users to aggregate data from different experiments or conditions. First, let's create multiple `SummarizedExperiment` objects for combining later.
+
+```python
+rowData1 = pd.DataFrame(
+    {
+        "seqnames": ["chr_5", "chr_3", "chr_2"],
+        "start": [10293804, 12098948, 20984392],
+        "end": [28937947, 3872839, 329837492]
+    },
+    index=["HER2", "BRCA1", "TPFK"],
+)
+colData1 = pd.DataFrame(
+    {
+        "sample": ["SAM_1", "SAM_3", "SAM_3"],
+        "disease": ["True", "True", "True"],
+    },
+    index=["cell_1", "cell_2", "cell_3"],
+)
+se1 = SummarizedExperiment(
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
+    rowData=rowData1,
+    colData=colData1,
+    metadata={"seq_type": "paired"},
+)
+
+rowData2 = pd.DataFrame(
+    {
+        "seqnames": ["chr_5", "chr_3", "chr_2"],
+        "start": [10293804, 12098948, 20984392],
+        "end": [28937947, 3872839, 329837492]
+    },
+    index=["HER2", "BRCA1", "TPFK"],
+)
+colData2 = pd.DataFrame(
+    {
+        "sample": ["SAM_4", "SAM_5", "SAM_6"],
+        "disease": ["True", "False", "True"],
+        "doublet_score": [.05, .23, .54]
+    },
+    index=["cell_4", "cell_5", "cell_6"],
+)
+se2 = SummarizedExperiment(
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3))
+    },
+    rowData=rowData2,
+    colData=colData2,
+    metadata={"seq_platform": "Illumina NovaSeq 6000"},
+)
+
+rowData3 = pd.DataFrame(
+    {
+        "seqnames": ["chr_7", "chr_1", "chr_Y"],
+        "start": [1084390, 1874937, 243879798],
+        "end": [243895239, 358908298, 390820395]
+    },
+    index=["MYC", "BRCA2", "TPFK"],
+)
+colData3 = pd.DataFrame(
+    {
+        "sample": ["SAM_7", "SAM_8", "SAM_9"],
+        "disease": ["True", "False", "False"],
+        "doublet_score": [.15, .62, .18]
+    },
+    index=["cell_7", "cell_8", "cell_9"],
+)
+se3 = SummarizedExperiment(
+    assays={
+        "counts": np.random.poisson(lam=5, size=(3, 3)),
+        "lognorm": np.random.lognormal(size=(3, 3)),
+        "beta": np.random.beta(a=1, b=1, size=(3, 3))
+    },
+    rowData=rowData3,
+    colData=colData3,
+    metadata={"seq_platform": "Illumina NovaSeq 6000"},
+)
+```
+
+### combineCols()
+
+concatenate columns (samples or cells) of multiple `SummarizedExperiment` objects, returning a `SummarizedExperiment` with columns equal to the concatenation of columns across all inputs. `combineCols()` allows for differences in the number and names of rows, differences in the available `colData` fields, and even differences in the available `assays` among the objects being combined. 
+
+```python
+se_combined = se1.combineCols(se2, se3) # OR se1.combineCols([se2, se3])
+```
+
+parameters are available to keep duplicate rows, or perform row-wise concatenation instead of index available on the rows.
+
+***Note: currently does not support range based concatenation.***

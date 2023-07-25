@@ -430,7 +430,8 @@ class BaseSE:
                         f"the shape provided {len(rowIndices)}, must be {self.shape[0]}"
                     )
                 rowIndices = get_indexes_from_bools(rowIndices)
-            elif is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
+            
+            if is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
                 if isinstance(self.rowData, pd.DataFrame):
                     new_rows = self.rowData.iloc[rowIndices]
                 else:
@@ -450,7 +451,8 @@ class BaseSE:
                         f"the shape provided {len(colIndices)}, must be {self.shape[1]}"
                     )
                 colIndices = get_indexes_from_bools(colIndices)
-            elif is_list_of_type(colIndices, int) or isinstance(colIndices, slice):
+            
+            if is_list_of_type(colIndices, int) or isinstance(colIndices, slice):
                 if isinstance(self.colData, pd.DataFrame):
                     new_cols = self.colData.iloc[colIndices]
                 else:

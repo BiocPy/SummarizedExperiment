@@ -8,26 +8,25 @@ from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 
+from .dispatchers.colnames import get_colnames, set_colnames
+from .dispatchers.rownames import get_rownames, set_rownames
+from .utils._combiners import (
+    combine_assays,
+    combine_frames,
+    combine_metadata,
+)
 from .utils._slicer import get_indexes_from_bools, get_indexes_from_names
 from .utils._type_checks import (
     is_bioc_or_pandas_frame,
+    is_list_of_subclass,
     is_list_of_type,
     is_matrix_like,
-    is_list_of_subclass,
 )
 from .utils._types import (
     BiocOrPandasFrame,
     MatrixSlicerTypes,
     MatrixTypes,
     SlicerArgTypes,
-)
-from .dispatchers.colnames import get_colnames, set_colnames
-from .dispatchers.rownames import get_rownames, set_rownames
-from .utils._combiners import (
-    combine_concatenation_axis,
-    combine_non_concatenation_axis,
-    combine_metadata,
-    combine_assays,
 )
 
 __author__ = "jkanche, keviny2"
@@ -548,7 +547,12 @@ class BaseSE:
 
         return obj
 
-    def combineCols(self, *experiments: "BaseSE", useNames: bool = True) -> "BaseSE":
+    def combineCols(
+        self,
+        *experiments: "BaseSE",
+        useNames: bool = True,
+        removeDuplicateColumns: bool = True,
+    ) -> "BaseSE":
         """A more flexible version of `cbind`. Permits differences in the number
         and identity of rows, differences in `colData` fields, and even differences
         in the available `assays` among `SummarizedExperiment` objects being combined.
@@ -559,8 +563,13 @@ class BaseSE:
         The row names of the resultant `SummarizedExperiment` object will
         simply be the row names of the first `SummarizedExperiment`.
 
+        Note: if `removeDuplicateColumns` is True, we only keep the columns from this
+        object (self). you can always do this operation later, but its useful when you
+        are merging multiple summarized experiments and need to track metadata across
+        objects.
+
         Args:
-            experiments ("BaseSE"): `SummarizedExperiment`-like objects to concatenate.
+            experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.
             useNames (bool):
                 - If `True`, then each input `SummarizedExperiment` must have non-null,
                 non-duplicated row names. The row names of the resultant
@@ -568,6 +577,9 @@ class BaseSE:
                 across all input objects.
                 - If `False`, then each input `SummarizedExperiment` object must
                 have the same number of rows.
+            removeDuplicateColumns (bool): If `True`, remove any duplicate columns in
+                `rowData` or `colData` of the resultant `SummarizedExperiment`. Defaults 
+                to `True`.
 
         Raises:
             TypeError:
@@ -587,10 +599,22 @@ class BaseSE:
 
         ses = [self] + list(experiments)
 
-        new_metadata = combine_metadata(ses)
-        new_colData = combine_concatenation_axis(ses, experiment_attribute="colData")
-        new_rowData = combine_non_concatenation_axis(
-            ses, experiment_attribute="rowData", useNames=useNames
+        new_metadata = combine_metadata(experiments)
+
+        all_coldata = [getattr(e, "colData") for e in ses]
+        new_colData = combine_frames(
+            all_coldata,
+            axis=0,
+            useNames=True,
+            removeDuplicateColumns=removeDuplicateColumns,
+        )
+
+        all_rowdata = [getattr(e, "rowData") for e in ses]
+        new_rowData = combine_frames(
+            all_rowdata,
+            axis=1,
+            useNames=useNames,
+            removeDuplicateColumns=removeDuplicateColumns,
         )
 
         new_assays = {}
@@ -598,7 +622,7 @@ class BaseSE:
         for assay_name in unique_assay_names:
             merged_assays = combine_assays(
                 assay_name=assay_name,
-                ses=ses,
+                experiments=ses,
                 names=new_rowData.index,
                 by="column",
                 shape=(len(new_rowData), len(new_colData)),

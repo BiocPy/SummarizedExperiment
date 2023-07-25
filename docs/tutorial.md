@@ -210,7 +210,7 @@ tse.subsetByOverlaps(query)
 
 Checkout the API docs or GenomicRanges for list of interval based operations.
 
-# Combining
+## Combine operations
 
 The combine methods in `SummarizedExperiment` are used to merge or combine multiple `SummarizedExperiment` objects, allowing users to aggregate data from different experiments or conditions. First, let's create multiple `SummarizedExperiment` objects for combining later.
 
@@ -294,9 +294,14 @@ se3 = SummarizedExperiment(
 )
 ```
 
-## combineCols()
-Combine columns (samples) of multiple `SummarizedExperiment` objects, returning a `SummarizedExperiment` with columns equal to the concatenation of columns across all inputs. `combineCols()` allows for differences in the number and names of rows, differences in the available `colData` fields, and even differences in the available `assays` among the objects being combined. 
+### combineCols()
+
+concatenate columns (samples or cells) of multiple `SummarizedExperiment` objects, returning a `SummarizedExperiment` with columns equal to the concatenation of columns across all inputs. `combineCols()` allows for differences in the number and names of rows, differences in the available `colData` fields, and even differences in the available `assays` among the objects being combined. 
 
 ```python
 se_combined = se1.combineCols(se2, se3) # OR se1.combineCols([se2, se3])
 ```
+
+parameters are available to keep duplicate rows, or perform row-wise concatenation instead of index available on the rows.
+
+***Note: currently does not support range based concatenation.***

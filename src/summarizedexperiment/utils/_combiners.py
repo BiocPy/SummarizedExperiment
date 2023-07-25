@@ -1,13 +1,12 @@
-from functools import reduce
-from typing import Literal, MutableMapping, Optional, Sequence, Tuple
+from typing import Literal, MutableMapping, Sequence, Tuple
 
 import numpy as np
 import pandas as pd
 import scipy.sparse as sp
+from biocframe import BiocFrame
 
-from ..dispatchers.combiners import combine
-from ._types import ArrayTypes
-from ._validators import validate_experiment_attribute, validate_names, validate_shapes
+from ._types import ArrayTypes, BiocOrPandasFrame
+from ._validators import validate_names, validate_shapes
 
 __author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"
@@ -27,6 +26,18 @@ def _impose_common_precision(*x: ArrayTypes) -> Sequence[ArrayTypes]:
     return [(m.astype(common_dtype) if m.dtype != common_dtype else m) for m in x]
 
 
+def _remove_duplicate_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Remove duplicate columns from a pandas DataFrame.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame with possible duplicate columns.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with duplicate columns removed.
+    """
+    return df.loc[:, ~df.columns.duplicated()]
+
+
 def combine_metadata(experiments: Sequence["BaseSE"]) -> MutableMapping:
     """Combine metadata across experiments.
 
@@ -38,68 +49,54 @@ def combine_metadata(experiments: Sequence["BaseSE"]) -> MutableMapping:
     """
     combined_metadata = {}
     for i, se in enumerate(experiments):
-        if se.metadata:
+        if se.metadata is not None:
             combined_metadata[i] = se.metadata
+
     return combined_metadata
 
 
-def combine_concatenation_axis(
-    ses: Sequence["BaseSE"], experiment_attribute: Literal["rowData", "colData"]
-) -> pd.DataFrame:
-    """Method for combining metadata along the concatenation axis.
-
-    Args:
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        experiment_attribute (Literal["rowData", "colData"]): the experiment_attribute to combine.
-
-    Returns:
-        concatenated_df (pd.DataFrame): the concatenated experiment metadata.
-    """
-    validate_experiment_attribute(experiment_attribute=experiment_attribute)
-
-    all_experiment_attributes = [getattr(se, experiment_attribute) for se in ses]
-    return reduce(combine, all_experiment_attributes)
-
-
-def combine_non_concatenation_axis(
-    ses: Sequence["BaseSE"],
-    experiment_attribute: Literal["rowData", "colData"],
+def combine_frames(
+    x: Sequence[BiocOrPandasFrame],
     useNames: bool,
+    axis: int,
+    removeDuplicateColumns: bool,
 ) -> pd.DataFrame:
-    """Method for combining metadata along the non-concatenation axis.
+    """Combine a Bioc or Pandas dataframe.
 
     Args:
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects.
-        experiment_attribute (Literal["rowData", "colData"]): the experiment_attribute to combine.
-        useName (bool): see `combineCols()`
+        x (Sequence[BiocOrPandasFrame]): input frames.
+        useNames (bool): use index names to merge? Otherwise merges
+            pair-wise along an axis.
+        axis (int): axis to merge on, 0 for rows, 1 for columns.
+        removeDuplicateColumns (bool): If `True`, remove any duplicate columns in
+            `rowData` or `colData` of the resultant `SummarizedExperiment`.
 
     Returns:
-        concatenated_df (pd.DataFrame): the concatenated experiment metadata.
+        pd.DataFrame: merged data frame
     """
-    validate_experiment_attribute(experiment_attribute=experiment_attribute)
+    all_as_pandas = [(m.to_pandas() if isinstance(m, BiocFrame) else m) for m in x]
 
-    all_experiment_attributes = [getattr(se, experiment_attribute) for se in ses]
-    if useNames:
-        validate_names(ses, experiment_attribute=experiment_attribute)
-        return reduce(
-            lambda left, right: combine(left, right, prefer_left=True),
-            all_experiment_attributes,
-        )
+    if useNames is True:
+        validate_names(all_as_pandas)
     else:
-        validate_shapes(ses, experiment_attribute=experiment_attribute)
-        combined_dataframe = reduce(
-            lambda left, right: combine(left, right, ignore_names=True),
-            all_experiment_attributes,
-        )
-        names = getattr(ses[0], experiment_attribute).index
-        if names is not None:
-            combined_dataframe.index = names
-        return combined_dataframe
+        validate_shapes(all_as_pandas)
+        # reset names
+        all_as_pandas = [df.reset_index(drop=True) for df in all_as_pandas]
+
+    concat_df = pd.concat(all_as_pandas, axis=axis)
+
+    if (useNames is False) and (x[0].index is not None):
+        concat_df.index = x[0].index
+
+    if removeDuplicateColumns:
+        return _remove_duplicate_columns(concat_df)
+
+    return concat_df
 
 
 def combine_assays_by_column(
     assay_name: str,
-    ses: Sequence["BaseSE"],
+    experiments: Sequence["BaseSE"],
     names: pd.Index,
     shape: Tuple[int, int],
     useNames: bool,
@@ -108,17 +105,17 @@ def combine_assays_by_column(
 
     Args:
         assay_name (str): name of the assay.
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        experiments (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
         names (pd.Index): names of the metadata from the non-concatenation axis.
         shape (Tuple[int, int]): shape of the combined assay.
         useNames (bool): see `combineCols()`.
 
     Returns:
-        merged_assays (sp.lil_matrix): a sparse array of the merged assays.
+        sp.lil_matrix: a sparse array of the merged assays.
     """
     col_idx = 0
     merged_assays = sp.lil_matrix(shape)
-    for se in ses:
+    for i, se in enumerate(experiments):
         offset = se.shape[1]
         if assay_name not in se.assays:
             merged_assays[
@@ -132,6 +129,7 @@ def combine_assays_by_column(
                 merged_assays[shared_idxs, col_idx : col_idx + offset] = curr_assay
             else:
                 merged_assays[:, col_idx : col_idx + offset] = curr_assay
+
         col_idx += offset
 
     return merged_assays
@@ -139,7 +137,7 @@ def combine_assays_by_column(
 
 def combine_assays_by_row(
     assay_name: str,
-    ses: Sequence["BaseSE"],
+    experiments: Sequence["BaseSE"],
     names: pd.Index,
     shape: Tuple[int, int],
     useNames: bool,
@@ -148,7 +146,7 @@ def combine_assays_by_row(
 
     Args:
         assay_name (str): name of the assay.
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        experiments (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
         names (pd.Index): names of the metadata from the non-concatenation axis.
         shape (Tuple[int, int]): shape of the combined assay.
         useNames (bool): see `combineCols()`.
@@ -158,7 +156,7 @@ def combine_assays_by_row(
 
 def combine_assays(
     assay_name: str,
-    ses: Sequence["BaseSE"],
+    experiments: Sequence["BaseSE"],
     names: pd.Index,
     by: Literal["row", "column"],
     shape: Tuple[int, int],
@@ -168,22 +166,30 @@ def combine_assays(
 
     Args:
         assay_name (str): name of the assay.
-        ses (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
+        experiments (Sequence[BaseSE]): "SummarizedExperiment" objects whose assays to combine.
         names (pd.Index): names of the metadata from the non-concatenation axis.
         by (Literal["row", "column"]): the concatenation axis.
         shape (Tuple[int, int]): shape of the combined assay.
         useNames (bool): see `combineCols()`.
 
     Returns:
-        merged_assays (sp.lil_matrix): a sparse array of the merged assays.
+        sp.lil_matrix: a sparse array of the merged assays.
     """
     if by == "row":
         return combine_assays_by_row(
-            assay_name=assay_name, ses=ses, names=names, shape=shape, useNames=useNames
+            assay_name=assay_name,
+            experiments=experiments,
+            names=names,
+            shape=shape,
+            useNames=useNames,
         )
     elif by == "column":
         return combine_assays_by_column(
-            assay_name=assay_name, ses=ses, names=names, shape=shape, useNames=useNames
+            assay_name=assay_name,
+            experiments=experiments,
+            names=names,
+            shape=shape,
+            useNames=useNames,
         )
     else:
         raise ValueError(

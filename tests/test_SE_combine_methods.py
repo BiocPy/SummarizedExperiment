@@ -1,10 +1,9 @@
-from typing import Union, MutableMapping, Sequence, Tuple
+from typing import Sequence, Tuple
+
 import numpy as np
 import pandas as pd
 import pytest
-
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
-from biocframe import BiocFrame
 
 __author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"
@@ -49,7 +48,7 @@ def test_SE_combineCols_unnamed(summarized_experiments):
                 "A": np.repeat([1, 2], 10),
                 "B": np.repeat([np.nan, 3], 10),
             },
-            index=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * 2
+            index=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * 2,
         ),
     )
 
@@ -214,19 +213,19 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         target_assay_names=["counts", "lognorm"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_5', 'chr_3', 'chr_2'],
-                'start': [500, 300, 200],
-                'end': [510, 310, 210],
+                "seqnames": ["chr_5", "chr_3", "chr_2"],
+                "start": [500, 300, 200],
+                "end": [510, 310, 210],
             },
-            index=['HER2', 'BRCA1', 'TPFK']
+            index=["HER2", "BRCA1", "TPFK"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_1', 'SAM_2', 'SAM_3', 'SAM_4', 'SAM_5', 'SAM_6'],
-                'disease': ['True', 'True', 'True', 'True', 'False', 'True'],
-                'doublet_score': [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
+                "sample": ["SAM_1", "SAM_2", "SAM_3", "SAM_4", "SAM_5", "SAM_6"],
+                "disease": ["True", "True", "True", "True", "False", "True"],
+                "doublet_score": [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
             },
-            index=['cell_1', 'cell_2', 'cell_3', 'cell_4', 'cell_5', 'cell_6']
+            index=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
         ),
     )
 
@@ -241,19 +240,19 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         target_assay_names=["counts", "lognorm"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_5', 'chr_3', 'chr_2', np.nan, np.nan],
-                'start': [500.0, 300.0, 200.0, np.nan, np.nan],
-                'end': [510.0, 310.0, 210.0, np.nan, np.nan],
+                "seqnames": ["chr_5", "chr_3", "chr_2", np.nan, np.nan],
+                "start": [500.0, 300.0, 200.0, np.nan, np.nan],
+                "end": [510.0, 310.0, 210.0, np.nan, np.nan],
             },
-            index=['HER2', 'BRCA1', 'TPFK', 'MYC', 'BRCA2']
+            index=["HER2", "BRCA1", "TPFK", "MYC", "BRCA2"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_4', 'SAM_5', 'SAM_6', 'SAM_7', 'SAM_8', 'SAM_9'],
-                'disease': ['True', 'False', 'True', 'True', 'False', 'False'],
-                'doublet_score': [0.05, 0.23, 0.54, 0.15, 0.62, 0.18],
+                "sample": ["SAM_4", "SAM_5", "SAM_6", "SAM_7", "SAM_8", "SAM_9"],
+                "disease": ["True", "False", "True", "True", "False", "False"],
+                "doublet_score": [0.05, 0.23, 0.54, 0.15, 0.62, 0.18],
             },
-            index=['cell_4', 'cell_5', 'cell_6', 'cell_7', 'cell_8', 'cell_9']
+            index=["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"],
         ),
     )
 
@@ -268,20 +267,20 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         target_assay_names=["counts", "lognorm", "beta"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_7', 'chr_1', 'chr_9', np.nan, np.nan],
-                'start': [700.0, 100.0, 900.0, np.nan, np.nan],
-                'end': [710.0, 110.0, 910.0, np.nan, np.nan],
+                "seqnames": ["chr_7", "chr_1", "chr_9", np.nan, np.nan],
+                "start": [700.0, 100.0, 900.0, np.nan, np.nan],
+                "end": [710.0, 110.0, 910.0, np.nan, np.nan],
             },
-            index=['MYC', 'BRCA2', 'TPFK', 'BRCA1', 'GSS']
+            index=["MYC", "BRCA2", "TPFK", "BRCA1", "GSS"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_7', 'SAM_8', 'SAM_9', 'SAM_10', 'SAM_11', 'SAM_12'],
-                'disease': ['True', 'False', 'False', 'True', 'False', 'False'],
-                'doublet_score': [0.15, 0.62, 0.18, 0.15, 0.62, 0.18],
+                "sample": ["SAM_7", "SAM_8", "SAM_9", "SAM_10", "SAM_11", "SAM_12"],
+                "disease": ["True", "False", "False", "True", "False", "False"],
+                "doublet_score": [0.15, 0.62, 0.18, 0.15, 0.62, 0.18],
             },
-            index=['cell_7', 'cell_8', 'cell_9', 'cell_10', 'cell_11', 'cell_12']
-        ),        
+            index=["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12"],
+        ),
     )
 
     # assert se4 samples are non-nan and other entries are 0 for 'beta' assay
@@ -342,21 +341,21 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         target_assay_names=["counts", "lognorm", "beta"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_7', 'chr_5', 'chr_1', 'chr_9', 'chr_3'],
-                'start': [700, 500, 100, 900, 300],
-                'end': [710, 510, 110, 910, 310],
+                "seqnames": ["chr_7", "chr_5", "chr_1", "chr_9", "chr_3"],
+                "start": [700, 500, 100, 900, 300],
+                "end": [710, 510, 110, 910, 310],
             },
-            index=['MYC', 'BRCA1', 'BRCA2', 'TPFK', 'GSS']
+            index=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_10', 'SAM_11', 'SAM_12', 'SAM_10', 'SAM_11', 'SAM_12'],
-                'disease': ['True', 'False', 'False', 'True', 'False', 'False'],
-                'doublet_score': [0.15, 0.62, 0.18, np.nan, np.nan, np.nan],
-                'qual': [np.nan, np.nan, np.nan, 0.95, 0.92, 0.98],
+                "sample": ["SAM_10", "SAM_11", "SAM_12", "SAM_10", "SAM_11", "SAM_12"],
+                "disease": ["True", "False", "False", "True", "False", "False"],
+                "doublet_score": [0.15, 0.62, 0.18, np.nan, np.nan, np.nan],
+                "qual": [np.nan, np.nan, np.nan, 0.95, 0.92, 0.98],
             },
-            index=['cell_10', 'cell_11', 'cell_12', 'cell_10', 'cell_11', 'cell_12']
-        ),        
+            index=["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"],
+        ),
     )
 
     # Scenario 7: empty rowData and colData
@@ -370,18 +369,18 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         target_assay_names=["counts", "lognorm"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_5', 'chr_3', 'chr_2'],
-                'start': [500, 300, 200],
-                'end': [510, 310, 210],
+                "seqnames": ["chr_5", "chr_3", "chr_2"],
+                "start": [500, 300, 200],
+                "end": [510, 310, 210],
             },
-            index=['HER2', 'BRCA1', 'TPFK']
+            index=["HER2", "BRCA1", "TPFK"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_1', 'SAM_2', 'SAM_3', np.nan, np.nan, np.nan],
-                'disease': ['True', 'True', 'True', np.nan, np.nan, np.nan],
+                "sample": ["SAM_1", "SAM_2", "SAM_3", np.nan, np.nan, np.nan],
+                "disease": ["True", "True", "True", np.nan, np.nan, np.nan],
             },
-            index=['cell_1', 'cell_2', 'cell_3', 'cell_1', 'cell_2', 'cell_3']
+            index=["cell_1", "cell_2", "cell_3", "cell_1", "cell_2", "cell_3"],
         ),
     )
 
@@ -410,20 +409,50 @@ def test_SE_combineCols_mix_sparse_and_dense(summarized_experiments):
         target_assay_names=["counts", "lognorm", "beta"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_7', 'chr_1', 'chr_9', np.nan, np.nan, np.nan, np.nan],
-                'start': [700.0, 100.0, 900.0, np.nan, np.nan, np.nan, np.nan],
-                'end': [710.0, 110.0, 910.0, np.nan, np.nan, np.nan, np.nan],
+                "seqnames": ["chr_7", "chr_1", "chr_9", np.nan, np.nan, np.nan, np.nan],
+                "start": [700.0, 100.0, 900.0, np.nan, np.nan, np.nan, np.nan],
+                "end": [710.0, 110.0, 910.0, np.nan, np.nan, np.nan, np.nan],
             },
-            index=['MYC', 'BRCA2', 'TPFK', 'BRCA1', 'GSS', 'PIK3CA', 'HRAS']
+            index=["MYC", "BRCA2", "TPFK", "BRCA1", "GSS", "PIK3CA", "HRAS"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_7', 'SAM_8', 'SAM_9', 'SAM_10', 'SAM_11', 'SAM_12', 'SAM_13', 'SAM_14', 'SAM_15'],
-                'disease': ['True', 'False', 'False', 'True', 'False', 'False', 'True', 'True', 'True'],
-                'doublet_score': [0.15, 0.62, 0.18, 0.15, 0.62, 0.18, 0.32, 0.51, 0.09],
+                "sample": [
+                    "SAM_7",
+                    "SAM_8",
+                    "SAM_9",
+                    "SAM_10",
+                    "SAM_11",
+                    "SAM_12",
+                    "SAM_13",
+                    "SAM_14",
+                    "SAM_15",
+                ],
+                "disease": [
+                    "True",
+                    "False",
+                    "False",
+                    "True",
+                    "False",
+                    "False",
+                    "True",
+                    "True",
+                    "True",
+                ],
+                "doublet_score": [0.15, 0.62, 0.18, 0.15, 0.62, 0.18, 0.32, 0.51, 0.09],
             },
-            index=['cell_7', 'cell_8', 'cell_9', 'cell_10', 'cell_11', 'cell_12', 'cell_13', 'cell_14', 'cell_15']
-        ),        
+            index=[
+                "cell_7",
+                "cell_8",
+                "cell_9",
+                "cell_10",
+                "cell_11",
+                "cell_12",
+                "cell_13",
+                "cell_14",
+                "cell_15",
+            ],
+        ),
     )
 
 
@@ -472,19 +501,19 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         target_assay_names=["counts", "lognorm"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_5', 'chr_3', 'chr_2'],
-                'start': [500, 300, 200],
-                'end': [510, 310, 210],
+                "seqnames": ["chr_5", "chr_3", "chr_2"],
+                "start": [500, 300, 200],
+                "end": [510, 310, 210],
             },
-            index=['HER2', 'BRCA1', 'TPFK']
+            index=["HER2", "BRCA1", "TPFK"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_1', 'SAM_3', 'SAM_3', 'SAM_4', 'SAM_5', 'SAM_6'],
-                'disease': ['True', 'True', 'True', 'True', 'False', 'True'],
-                'doublet_score': [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
+                "sample": ["SAM_1", "SAM_3", "SAM_3", "SAM_4", "SAM_5", "SAM_6"],
+                "disease": ["True", "True", "True", "True", "False", "True"],
+                "doublet_score": [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
             },
-            index=['cell_1', 'cell_2', 'cell_3', 'cell_4', 'cell_5', 'cell_6']
+            index=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
         ),
     )
 
@@ -499,20 +528,20 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         target_assay_names=["counts", "lognorm"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_5', 'chr_3', 'chr_2'],
-                'start': [500, 300, 200],
-                'end': [510, 310, 210],
+                "seqnames": ["chr_5", "chr_3", "chr_2"],
+                "start": [500, 300, 200],
+                "end": [510, 310, 210],
             },
-            index=['HER2', 'BRCA1', 'TPFK']
+            index=["HER2", "BRCA1", "TPFK"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_1', 'SAM_3', 'SAM_3', 'SAM_4', 'SAM_5', 'SAM_6'],
-                'disease': ['True', 'True', 'True', 'True', 'False', 'True'],
-                'doublet_score': [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
+                "sample": ["SAM_1", "SAM_3", "SAM_3", "SAM_4", "SAM_5", "SAM_6"],
+                "disease": ["True", "True", "True", "True", "False", "True"],
+                "doublet_score": [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
             },
-            index=['cell_1', 'cell_2', 'cell_3', 'cell_4', 'cell_5', 'cell_6']
-        ),        
+            index=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
+        ),
     )
 
     # Scenario 3: Test when one `rowData` is a `pd.DataFrame` and the other a `BiocFrame`.
@@ -526,18 +555,18 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         target_assay_names=["counts", "lognorm"],
         target_rowData=pd.DataFrame(
             data={
-                'seqnames': ['chr_5', 'chr_3', 'chr_2', np.nan, np.nan],
-                'start': [500.0, 300.0, 200.0, np.nan, np.nan],
-                'end': [510.0, 310.0, 210.0, np.nan, np.nan],
+                "seqnames": ["chr_5", "chr_3", "chr_2", np.nan, np.nan],
+                "start": [500.0, 300.0, 200.0, np.nan, np.nan],
+                "end": [510.0, 310.0, 210.0, np.nan, np.nan],
             },
-            index=['HER2', 'BRCA1', 'TPFK', 'MYC', 'BRCA2']
+            index=["HER2", "BRCA1", "TPFK", "MYC", "BRCA2"],
         ),
         target_colData=pd.DataFrame(
             data={
-                'sample': ['SAM_1', 'SAM_3', 'SAM_3', 'SAM_7', 'SAM_8', 'SAM_9'],
-                'disease': ['True', 'True', 'True', 'True', 'False', 'False'],
-                'doublet_score': [np.nan, np.nan, np.nan, 0.15, 0.62, 0.18],
+                "sample": ["SAM_1", "SAM_3", "SAM_3", "SAM_7", "SAM_8", "SAM_9"],
+                "disease": ["True", "True", "True", "True", "False", "False"],
+                "doublet_score": [np.nan, np.nan, np.nan, 0.15, 0.62, 0.18],
             },
-            index=['cell_1', 'cell_2', 'cell_3', 'cell_7', 'cell_8', 'cell_9']
-        ),        
+            index=["cell_1", "cell_2", "cell_3", "cell_7", "cell_8", "cell_9"],
+        ),
     )

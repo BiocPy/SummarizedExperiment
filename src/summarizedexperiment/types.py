@@ -1,3 +1,4 @@
+from collections import namedtuple
 from typing import Sequence, Tuple, Union
 
 import numpy as np
@@ -5,8 +6,6 @@ import pandas as pd
 from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from scipy import sparse as sp
-
-from collections import namedtuple
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

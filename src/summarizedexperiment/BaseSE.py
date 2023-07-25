@@ -8,7 +8,6 @@ from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 
-from .utils._slicer import get_indexes_from_bools, get_indexes_from_names
 from ._type_checks import (
     is_bioc_or_pandas_frame,
     is_list_of_subclass,
@@ -29,6 +28,7 @@ from .utils._combiners import (
     combine_frames,
     combine_metadata,
 )
+from .utils._slicer import get_indexes_from_bools, get_indexes_from_names
 
 __author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"

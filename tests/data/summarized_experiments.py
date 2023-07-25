@@ -8,15 +8,15 @@ from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 ncols = 10
 nrows = 100
 se_unnamed = SummarizedExperiment(
-    assays={"counts": np.random.poisson(lam=10, size=(100, 10))}
+    assays={"counts": np.random.poisson(lam=10, size=(nrows, ncols))}
 )
 se_unnamed.colData["A"] = [1] * ncols
 se_unnamed.rowData["A"] = [1] * nrows
 
 se_unnamed_2 = SummarizedExperiment(
     assays={
-        "counts": np.random.poisson(lam=10, size=(100, 10)),
-        "normalized": np.random.normal(size=(100, 10))
+        "counts": np.random.poisson(lam=10, size=(nrows, ncols)),
+        "normalized": np.random.normal(size=(nrows, ncols))
     }
 )
 se_unnamed_2.colData["A"] = [2] * ncols
@@ -33,7 +33,7 @@ rowData1 = pd.DataFrame(
 )
 colData1 = pd.DataFrame(
     {
-        "sample": ["SAM_1", "SAM_3", "SAM_3"],
+        "sample": ["SAM_1", "SAM_2", "SAM_3"],
         "disease": ["True", "True", "True"],
     },
     index=["cell_1", "cell_2", "cell_3"],

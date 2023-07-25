@@ -297,8 +297,8 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
     rowData_null_row_name = pd.DataFrame(
         {
             "seqnames": ["chr_5", "chr_3", "chr_2"],
-            "start": [10293804, 12098948, 20984392],
-            "end": [28937947, 3872839, 329837492],
+            "start": [500, 300, 200],
+            "end": [510, 310, 210],
         },
         index=[None, "BRCA1", "TPFK"],
     )
@@ -316,8 +316,8 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
     rowData_duplicated_row_name = pd.DataFrame(
         {
             "seqnames": ["chr_5", "chr_3", "chr_2"],
-            "start": [10293804, 12098948, 20984392],
-            "end": [28937947, 3872839, 329837492],
+            "start": [500, 300, 200],
+            "end": [510, 310, 210],
         },
         index=["HER2", "HER2", "TPFK"],
     )

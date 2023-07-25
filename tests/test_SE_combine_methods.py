@@ -253,14 +253,26 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se2, useNames=True
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(3, 6),
-        assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
-        colData_cols=["sample", "disease", "doublet_score"],
+    checkIdentical(
+        se=combined,
+        target_shape=(3, 6),
+        target_assay_names=["counts", "lognorm"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_5', 'chr_3', 'chr_2'],
+                'start': [500, 300, 200],
+                'end': [510, 310, 210],
+            },
+            index=['HER2', 'BRCA1', 'TPFK']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_1', 'SAM_2', 'SAM_3', 'SAM_4', 'SAM_5', 'SAM_6'],
+                'disease': ['True', 'True', 'True', 'True', 'False', 'True'],
+                'doublet_score': [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
+            },
+            index=['cell_1', 'cell_2', 'cell_3', 'cell_4', 'cell_5', 'cell_6']
+        ),
     )
 
     # Scenario 2: same number of rows but different row names
@@ -268,14 +280,26 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se3, useNames=True
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(5, 6),
-        assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "BRCA2", "MYC", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_4", "cell_5", "cell_6", "cell_7", "cell_8", "cell_9"],
-        colData_cols=["sample", "disease", "doublet_score"],
+    checkIdentical(
+        se=combined,
+        target_shape=(5, 6),
+        target_assay_names=["counts", "lognorm"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_5', 'chr_3', 'chr_2', np.nan, np.nan],
+                'start': [500.0, 300.0, 200.0, np.nan, np.nan],
+                'end': [510.0, 310.0, 210.0, np.nan, np.nan],
+            },
+            index=['HER2', 'BRCA1', 'TPFK', 'MYC', 'BRCA2']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_4', 'SAM_5', 'SAM_6', 'SAM_7', 'SAM_8', 'SAM_9'],
+                'disease': ['True', 'False', 'True', 'True', 'False', 'False'],
+                'doublet_score': [0.05, 0.23, 0.54, 0.15, 0.62, 0.18],
+            },
+            index=['cell_4', 'cell_5', 'cell_6', 'cell_7', 'cell_8', 'cell_9']
+        ),
     )
 
     # Scenario 3: different number of rows
@@ -283,14 +307,26 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se4, useNames=True
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(5, 6),
-        assay_names=["counts", "lognorm", "beta"],
-        rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_7", "cell_8", "cell_9", "cell_10", "cell_11", "cell_12"],
-        colData_cols=["sample", "disease", "doublet_score"],
+    checkIdentical(
+        se=combined,
+        target_shape=(5, 6),
+        target_assay_names=["counts", "lognorm", "beta"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_7', 'chr_1', 'chr_9', np.nan, np.nan],
+                'start': [700.0, 100.0, 900.0, np.nan, np.nan],
+                'end': [710.0, 110.0, 910.0, np.nan, np.nan],
+            },
+            index=['MYC', 'BRCA2', 'TPFK', 'BRCA1', 'GSS']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_7', 'SAM_8', 'SAM_9', 'SAM_10', 'SAM_11', 'SAM_12'],
+                'disease': ['True', 'False', 'False', 'True', 'False', 'False'],
+                'doublet_score': [0.15, 0.62, 0.18, 0.15, 0.62, 0.18],
+            },
+            index=['cell_7', 'cell_8', 'cell_9', 'cell_10', 'cell_11', 'cell_12']
+        ),        
     )
 
     # assert se4 samples are non-nan and other entries are 0 for 'beta' assay
@@ -345,14 +381,27 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se6, useNames=True
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(5, 6),
-        assay_names=["counts", "lognorm", "beta"],
-        rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_10", "cell_11", "cell_12", "cell_10", "cell_11", "cell_12"],
-        colData_cols=["sample", "disease", "doublet_score", "qual"],
+    checkIdentical(
+        se=combined,
+        target_shape=(5, 6),
+        target_assay_names=["counts", "lognorm", "beta"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_7', 'chr_5', 'chr_1', 'chr_9', 'chr_3'],
+                'start': [700, 500, 100, 900, 300],
+                'end': [710, 510, 110, 910, 310],
+            },
+            index=['MYC', 'BRCA1', 'BRCA2', 'TPFK', 'GSS']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_10', 'SAM_11', 'SAM_12', 'SAM_10', 'SAM_11', 'SAM_12'],
+                'disease': ['True', 'False', 'False', 'True', 'False', 'False'],
+                'doublet_score': [0.15, 0.62, 0.18, np.nan, np.nan, np.nan],
+                'qual': [np.nan, np.nan, np.nan, 0.95, 0.92, 0.98],
+            },
+            index=['cell_10', 'cell_11', 'cell_12', 'cell_10', 'cell_11', 'cell_12']
+        ),        
     )
 
     # Scenario 7: empty rowData and colData
@@ -360,14 +409,25 @@ def test_SE_combineCols_useNames_true(summarized_experiments):
         summarized_experiments.se_nonames, useNames=True
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(3, 6),
-        assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_1", "cell_2", "cell_3", "cell_1", "cell_2", "cell_3"],
-        colData_cols=["sample", "disease"],
+    checkIdentical(
+        se=combined,
+        target_shape=(3, 6),
+        target_assay_names=["counts", "lognorm"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_5', 'chr_3', 'chr_2'],
+                'start': [500, 300, 200],
+                'end': [510, 310, 210],
+            },
+            index=['HER2', 'BRCA1', 'TPFK']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_1', 'SAM_2', 'SAM_3', np.nan, np.nan, np.nan],
+                'disease': ['True', 'True', 'True', np.nan, np.nan, np.nan],
+            },
+            index=['cell_1', 'cell_2', 'cell_3', 'cell_1', 'cell_2', 'cell_3']
+        ),
     )
 
 
@@ -389,24 +449,26 @@ def test_SE_combineCols_mix_sparse_and_dense(summarized_experiments):
         summarized_experiments.se4, summarized_experiments.se_sparse, useNames=True
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(7, 9),
-        assay_names=["counts", "lognorm", "beta"],
-        rownames=["MYC", "BRCA1", "BRCA2", "TPFK", "GSS", "PIK3CA", "HRAS"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=[
-            "cell_7",
-            "cell_8",
-            "cell_9",
-            "cell_10",
-            "cell_11",
-            "cell_12",
-            "cell_13",
-            "cell_14",
-            "cell_15",
-        ],
-        colData_cols=["sample", "disease", "doublet_score"],
+    checkIdentical(
+        se=combined,
+        target_shape=(7, 9),
+        target_assay_names=["counts", "lognorm", "beta"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_7', 'chr_1', 'chr_9', np.nan, np.nan, np.nan, np.nan],
+                'start': [700.0, 100.0, 900.0, np.nan, np.nan, np.nan, np.nan],
+                'end': [710.0, 110.0, 910.0, np.nan, np.nan, np.nan, np.nan],
+            },
+            index=['MYC', 'BRCA2', 'TPFK', 'BRCA1', 'GSS', 'PIK3CA', 'HRAS']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_7', 'SAM_8', 'SAM_9', 'SAM_10', 'SAM_11', 'SAM_12', 'SAM_13', 'SAM_14', 'SAM_15'],
+                'disease': ['True', 'False', 'False', 'True', 'False', 'False', 'True', 'True', 'True'],
+                'doublet_score': [0.15, 0.62, 0.18, 0.15, 0.62, 0.18, 0.32, 0.51, 0.09],
+            },
+            index=['cell_7', 'cell_8', 'cell_9', 'cell_10', 'cell_11', 'cell_12', 'cell_13', 'cell_14', 'cell_15']
+        ),        
     )
 
 
@@ -449,14 +511,26 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         summarized_experiments.se_biocframe_2, useNames=True
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(3, 6),
-        assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
-        colData_cols=["sample", "disease", "doublet_score"],
+    checkIdentical(
+        se=combined,
+        target_shape=(3, 6),
+        target_assay_names=["counts", "lognorm"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_5', 'chr_3', 'chr_2'],
+                'start': [500, 300, 200],
+                'end': [510, 310, 210],
+            },
+            index=['HER2', 'BRCA1', 'TPFK']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_1', 'SAM_3', 'SAM_3', 'SAM_4', 'SAM_5', 'SAM_6'],
+                'disease': ['True', 'True', 'True', 'True', 'False', 'True'],
+                'doublet_score': [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
+            },
+            index=['cell_1', 'cell_2', 'cell_3', 'cell_4', 'cell_5', 'cell_6']
+        ),
     )
 
     # Scenario 2: both `rowData` are of type `BiocFrame` and `useNames=False`
@@ -464,14 +538,26 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         summarized_experiments.se_biocframe_2, useNames=False
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(3, 6),
-        assay_names=["counts", "lognorm"],
-        rownames=["HER2", "BRCA1", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_1", "cell_2", "cell_3", "cell_4", "cell_5", "cell_6"],
-        colData_cols=["sample", "disease", "doublet_score"],
+    checkIdentical(
+        se=combined,
+        target_shape=(3, 6),
+        target_assay_names=["counts", "lognorm"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_5', 'chr_3', 'chr_2'],
+                'start': [500, 300, 200],
+                'end': [510, 310, 210],
+            },
+            index=['HER2', 'BRCA1', 'TPFK']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_1', 'SAM_3', 'SAM_3', 'SAM_4', 'SAM_5', 'SAM_6'],
+                'disease': ['True', 'True', 'True', 'True', 'False', 'True'],
+                'doublet_score': [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
+            },
+            index=['cell_1', 'cell_2', 'cell_3', 'cell_4', 'cell_5', 'cell_6']
+        ),        
     )
 
     # Scenario 3: Test when one `rowData` is a `pd.DataFrame` and the other a `BiocFrame`.
@@ -479,12 +565,24 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         summarized_experiments.se3, useNames=True
     )
 
-    make_assertions(
-        combined=combined,
-        shape=(5, 6),
-        assay_names=["counts", "lognorm"],
-        rownames=["BRCA1", "BRCA2", "HER2", "MYC", "TPFK"],
-        rowData_cols=["seqnames", "start", "end"],
-        colnames=["cell_1", "cell_2", "cell_3", "cell_7", "cell_8", "cell_9"],
-        colData_cols=["sample", "disease", "doublet_score"],
+    checkIdentical(
+        se=combined,
+        target_shape=(5, 6),
+        target_assay_names=["counts", "lognorm"],
+        target_rowData=pd.DataFrame(
+            data={
+                'seqnames': ['chr_5', 'chr_3', 'chr_2', np.nan, np.nan],
+                'start': [500.0, 300.0, 200.0, np.nan, np.nan],
+                'end': [510.0, 310.0, 210.0, np.nan, np.nan],
+            },
+            index=['HER2', 'BRCA1', 'TPFK', 'MYC', 'BRCA2']
+        ),
+        target_colData=pd.DataFrame(
+            data={
+                'sample': ['SAM_1', 'SAM_3', 'SAM_3', 'SAM_7', 'SAM_8', 'SAM_9'],
+                'disease': ['True', 'True', 'True', 'True', 'False', 'False'],
+                'doublet_score': [np.nan, np.nan, np.nan, 0.15, 0.62, 0.18],
+            },
+            index=['cell_1', 'cell_2', 'cell_3', 'cell_7', 'cell_8', 'cell_9']
+        ),        
     )

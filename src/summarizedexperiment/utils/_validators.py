@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from ._types import BiocOrPandasFrame
+from ..types import BiocOrPandasFrame
 
 __author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"

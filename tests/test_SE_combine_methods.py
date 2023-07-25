@@ -80,7 +80,9 @@ def checkIdentical(
 
 def test_SE_combineCols_unnamed(summarized_experiments):
     """Test case to verify combineCols() when the inputs have unnamed rows."""
-    combined = summarized_experiments.se_unnamed.combineCols(summarized_experiments.se_unnamed_2, useNames=False)
+    combined = summarized_experiments.se_unnamed.combineCols(
+        summarized_experiments.se_unnamed_2, useNames=False
+    )
 
     checkIdentical(
         se=combined,
@@ -110,7 +112,9 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
     """
 
     # Scenario 1: same number of rows and same row names
-    combined = summarized_experiments.se1.combineCols(summarized_experiments.se2, useNames=False)
+    combined = summarized_experiments.se1.combineCols(
+        summarized_experiments.se2, useNames=False
+    )
 
     checkIdentical(
         se=combined,
@@ -135,7 +139,9 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
     )
 
     # Scenario 2: same number of rows but different row names
-    combined = summarized_experiments.se2.combineCols(summarized_experiments.se3, useNames=False)
+    combined = summarized_experiments.se2.combineCols(
+        summarized_experiments.se3, useNames=False
+    )
 
     checkIdentical(
         se=combined,
@@ -160,7 +166,9 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
     )
 
     # Scenario 3: overlapping sample names
-    combined = summarized_experiments.se4.combineCols(summarized_experiments.se6, useNames=False)
+    combined = summarized_experiments.se4.combineCols(
+        summarized_experiments.se6, useNames=False
+    )
 
     checkIdentical(
         se=combined,
@@ -186,7 +194,9 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
     )
 
     # Scenario 4: empty rowData and colData
-    combined = summarized_experiments.se1.combineCols(summarized_experiments.se_nonames, useNames=False)
+    combined = summarized_experiments.se1.combineCols(
+        summarized_experiments.se_nonames, useNames=False
+    )
 
     checkIdentical(
         se=combined,
@@ -211,7 +221,9 @@ def test_SE_combineCols_useNames_false(summarized_experiments):
 
     # Scenario 5: different number of rows
     with pytest.raises(ValueError):
-        summarized_experiments.se3.combineCols(summarized_experiments.se4, useNames=False)
+        summarized_experiments.se3.combineCols(
+            summarized_experiments.se4, useNames=False
+        )
 
 
 def test_SE_combineCols_useNames_true(summarized_experiments):

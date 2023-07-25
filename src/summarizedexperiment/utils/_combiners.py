@@ -56,7 +56,10 @@ def combine_metadata(experiments: Sequence["BaseSE"]) -> MutableMapping:
 
 
 def combine_frames(
-    x: Sequence[BiocOrPandasFrame], useNames: bool, axis: int
+    x: Sequence[BiocOrPandasFrame],
+    useNames: bool,
+    axis: int,
+    removeDuplicateColumns: bool,
 ) -> pd.DataFrame:
     """Combine a Bioc or Pandas dataframe.
 
@@ -65,6 +68,8 @@ def combine_frames(
         useNames (bool): use index names to merge? Otherwise merges
             pair-wise along an axis.
         axis (int): axis to merge on, 0 for rows, 1 for columns.
+        removeDuplicateColumns (bool): If `True`, remove any duplicate columns in
+            `rowData` or `colData` of the resultant `SummarizedExperiment`.
 
     Returns:
         pd.DataFrame: merged data frame
@@ -79,9 +84,14 @@ def combine_frames(
         all_as_pandas = [df.reset_index(drop=True) for df in all_as_pandas]
 
     concat_df = pd.concat(all_as_pandas, axis=axis)
+
     if (useNames is False) and (x[0].index is not None):
         concat_df.index = x[0].index
-    return _remove_duplicate_columns(concat_df)
+
+    if removeDuplicateColumns:
+        return _remove_duplicate_columns(concat_df)
+
+    return concat_df
 
 
 def combine_assays_by_column(

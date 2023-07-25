@@ -547,7 +547,12 @@ class BaseSE:
 
         return obj
 
-    def combineCols(self, *experiments: "BaseSE", useNames: bool = True) -> "BaseSE":
+    def combineCols(
+        self,
+        *experiments: "BaseSE",
+        useNames: bool = True,
+        removeDuplicateColumns: bool = True,
+    ) -> "BaseSE":
         """A more flexible version of `cbind`. Permits differences in the number
         and identity of rows, differences in `colData` fields, and even differences
         in the available `assays` among `SummarizedExperiment` objects being combined.
@@ -567,6 +572,8 @@ class BaseSE:
                 across all input objects.
                 - If `False`, then each input `SummarizedExperiment` object must
                 have the same number of rows.
+            removeDuplicateColumns (bool): If `True`, remove any duplicate columns in
+                `rowData` or `colData` of the resultant `SummarizedExperiment`.
 
         Raises:
             TypeError:
@@ -589,10 +596,20 @@ class BaseSE:
         new_metadata = combine_metadata(experiments)
 
         all_coldata = [getattr(e, "colData") for e in ses]
-        new_colData = combine_frames(all_coldata, axis=0, useNames=True)
+        new_colData = combine_frames(
+            all_coldata,
+            axis=0,
+            useNames=True,
+            removeDuplicateColumns=removeDuplicateColumns,
+        )
 
         all_rowdata = [getattr(e, "rowData") for e in ses]
-        new_rowData = combine_frames(all_rowdata, axis=1, useNames=useNames)
+        new_rowData = combine_frames(
+            all_rowdata,
+            axis=1,
+            useNames=useNames,
+            removeDuplicateColumns=removeDuplicateColumns,
+        )
 
         new_assays = {}
         unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}

@@ -563,8 +563,13 @@ class BaseSE:
         The row names of the resultant `SummarizedExperiment` object will
         simply be the row names of the first `SummarizedExperiment`.
 
+        Note: if `removeDuplicateColumns` is True, we only keep the columns from this
+        object (self). you can always do this operation later, but its useful when you
+        are merging multiple summarized experiments and need to track metadata across
+        objects.
+
         Args:
-            experiments ("BaseSE"): `SummarizedExperiment`-like objects to concatenate.
+            experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.
             useNames (bool):
                 - If `True`, then each input `SummarizedExperiment` must have non-null,
                 non-duplicated row names. The row names of the resultant
@@ -573,7 +578,8 @@ class BaseSE:
                 - If `False`, then each input `SummarizedExperiment` object must
                 have the same number of rows.
             removeDuplicateColumns (bool): If `True`, remove any duplicate columns in
-                `rowData` or `colData` of the resultant `SummarizedExperiment`.
+                `rowData` or `colData` of the resultant `SummarizedExperiment`. Defaults 
+                to `True`.
 
         Raises:
             TypeError:

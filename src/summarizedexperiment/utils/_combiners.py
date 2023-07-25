@@ -64,9 +64,12 @@ def combine_frames(
     else:
         validate_shapes(all_as_pandas)
         # reset names
-        all_as_pandas = [df.reset_index() for df in all_as_pandas]
+        all_as_pandas = [df.reset_index(drop=True) for df in all_as_pandas]
 
-    return pd.concat(all_as_pandas, axis=axis)
+    concat_df = pd.concat(all_as_pandas, axis=axis)
+    if useNames is False:
+        concat_df.index = x[0].index
+    return concat_df
 
 
 def combine_assays_by_column(

@@ -8,18 +8,29 @@ from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 
-from ._slicer_utils import get_indexes_from_bools, get_indexes_from_names
-from ._type_checks import is_bioc_or_pandas_frame, is_list_of_type, is_matrix_like
-from ._types import (
+from ._type_checks import (
+    is_bioc_or_pandas_frame,
+    is_list_of_subclass,
+    is_list_of_type,
+    is_matrix_like,
+)
+from .dispatchers.colnames import get_colnames, set_colnames
+from .dispatchers.rownames import get_rownames, set_rownames
+from .types import (
     BiocOrPandasFrame,
     MatrixSlicerTypes,
     MatrixTypes,
     SlicerArgTypes,
+    SlicerResult,
 )
-from .dispatchers.colnames import get_colnames, set_colnames
-from .dispatchers.rownames import get_rownames, set_rownames
+from .utils._combiners import (
+    combine_assays,
+    combine_frames,
+    combine_metadata,
+)
+from .utils._slicer import get_indexes_from_bools, get_indexes_from_names
 
-__author__ = "jkanche"
+__author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
@@ -28,7 +39,7 @@ class BaseSE:
     """Base class for Summarized Experiment.
 
     Represents genomic experiment data (`assays`), features (`rowdata`),
-    sample data (`coldata`) and any other metadata.
+    sample data (`coldata`) and any other `metadata`.
 
     Args:
         assays (MutableMapping[str, MatrixTypes]): dictionary
@@ -311,8 +322,8 @@ class BaseSE:
         pattern = (
             f"Class BaseSE with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {list(self.assays.keys())} \n"
-            f"  features: {self.rowData.columns if self._rows is not None else None} \n"
-            f"  sample data: {self.colData.columns if self._cols is not None else None}"
+            f"  features: {self.rowData.columns if self.rowData is not None else None} \n"
+            f"  sample data: {self.colData.columns if self.colData is not None else None}"
         )
         return pattern
 
@@ -372,19 +383,18 @@ class BaseSE:
     def _slice(
         self,
         args: SlicerArgTypes,
-    ) -> Tuple[BiocOrPandasFrame, BiocOrPandasFrame, MutableMapping[str, MatrixTypes],]:
+    ) -> SlicerResult:
         """Internal method to slice `SE` by index.
 
         Args:
-            args (SlicerArgTypes): indices or names to slice. tuple contains slices along
-                dimensions (rows, cols).
+            args (SlicerArgTypes): indices or names to slice. tuple contains
+                slices along dimensions (rows, cols).
 
         Raises:
             ValueError: Too many or too few slices provided.
 
         Returns:
-            Tuple[BiocOrPandasFrame, BiocOrPandasFrame, MutableMapping[str, MatrixTypes]]:
-            sliced row, cols and assays.
+            SlicerResult: sliced tuple.
         """
 
         if isinstance(args, tuple):
@@ -408,10 +418,10 @@ class BaseSE:
         new_cols = None
         new_assays = None
 
-        if rowIndices is not None and self._rows is not None:
+        if rowIndices is not None and self.rowData is not None:
             if is_list_of_type(rowIndices, str):
                 rowIndices = get_indexes_from_names(
-                    self._rows.index, pd.Index(rowIndices)
+                    self.rowData.index, pd.Index(rowIndices)
                 )
             elif is_list_of_type(rowIndices, bool):
                 if len(rowIndices) != self.shape[0]:
@@ -421,17 +431,17 @@ class BaseSE:
                     )
                 rowIndices = get_indexes_from_bools(rowIndices)
             elif is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
-                if isinstance(self._rows, pd.DataFrame):
-                    new_rows = self._rows.iloc[rowIndices]
+                if isinstance(self.rowData, pd.DataFrame):
+                    new_rows = self.rowData.iloc[rowIndices]
                 else:
-                    new_rows = self._rows[rowIndices, :]
+                    new_rows = self.rowData[rowIndices, :]
             else:
                 raise TypeError("rowIndices not supported!")
 
-        if colIndices is not None and self._cols is not None:
+        if colIndices is not None and self.colData is not None:
             if is_list_of_type(colIndices, str):
                 colIndices = get_indexes_from_names(
-                    self._cols.index, pd.Index(colIndices)
+                    self.colData.index, pd.Index(colIndices)
                 )
             elif is_list_of_type(colIndices, bool):
                 if len(colIndices) != self.shape[1]:
@@ -441,16 +451,16 @@ class BaseSE:
                     )
                 colIndices = get_indexes_from_bools(colIndices)
             elif is_list_of_type(colIndices, int) or isinstance(colIndices, slice):
-                if isinstance(self._cols, pd.DataFrame):
-                    new_cols = self._cols.iloc[colIndices]
+                if isinstance(self.colData, pd.DataFrame):
+                    new_cols = self.colData.iloc[colIndices]
                 else:
-                    new_cols = self._cols[colIndices, :]
+                    new_cols = self.colData[colIndices, :]
             else:
                 raise TypeError("colIndices not supported!")
 
         new_assays = self.subsetAssays(rowIndices=rowIndices, colIndices=colIndices)
 
-        return (new_rows, new_cols, new_assays)
+        return SlicerResult(new_rows, new_cols, new_assays, rowIndices, colIndices)
 
     @property
     def rownames(self) -> Sequence[str]:
@@ -517,22 +527,108 @@ class BaseSE:
             ):
                 raise ValueError(
                     f"assay {asy} is not supported. Uses a file backed representation."
-                    "while this is fine, this is currently not supported because `AnnData` uses"
-                    "a transposed representation (cells X features) rather than the "
-                    "bioconductor version (features X cells)"
+                    "while this is fine, this is currently not supported because "
+                    "`AnnData` uses a transposed representation (cells X features) "
+                    "rather than the bioconductor version (features X cells)"
                 )
 
             layers[asy] = mat.transpose()
 
-        trows = self._rows
-        if isinstance(self._rows, GenomicRanges):
-            trows = self._rows.toPandas()
+        trows = self.rowData
+        if isinstance(self.rowData, GenomicRanges):
+            trows = self.rowData.toPandas()
 
         obj = anndata.AnnData(
-            obs=self._cols,
+            obs=self.colData,
             var=trows,
             uns=self.metadata,
             layers=layers,
         )
 
         return obj
+
+    def combineCols(
+        self,
+        *experiments: "BaseSE",
+        useNames: bool = True,
+        removeDuplicateColumns: bool = True,
+    ) -> "BaseSE":
+        """A more flexible version of `cbind`. Permits differences in the number
+        and identity of rows, differences in `colData` fields, and even differences
+        in the available `assays` among `SummarizedExperiment` objects being combined.
+
+        Currently does not support range based merging of feature information when
+        performing this operation.
+
+        The row names of the resultant `SummarizedExperiment` object will
+        simply be the row names of the first `SummarizedExperiment`.
+
+        Note: if `removeDuplicateColumns` is True, we only keep the columns from this
+        object (self). you can always do this operation later, but its useful when you
+        are merging multiple summarized experiments and need to track metadata across
+        objects.
+
+        Args:
+            experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.
+            useNames (bool):
+                - If `True`, then each input `SummarizedExperiment` must have non-null,
+                non-duplicated row names. The row names of the resultant
+                `SummarizedExperiment` object will be the union of the row names
+                across all input objects.
+                - If `False`, then each input `SummarizedExperiment` object must
+                have the same number of rows.
+            removeDuplicateColumns (bool): If `True`, remove any duplicate columns in
+                `rowData` or `colData` of the resultant `SummarizedExperiment`. Defaults
+                to `True`.
+
+        Raises:
+            TypeError:
+                if any of the provided objects are not "SummarizedExperiment"-like.
+            ValueError:
+                - if there are null or duplicated row names (useNames=True)
+                - if all objects do not have the same number of rows (useNames=False)
+
+        Returns:
+            BaseSE: combined `SummarizedExperiment` object.
+        """
+
+        if not is_list_of_subclass(experiments, BaseSE):
+            raise TypeError(
+                "not all provided objects are `SummarizedExperiment`-like objects"
+            )
+
+        ses = [self] + list(experiments)
+
+        new_metadata = combine_metadata(experiments)
+
+        all_coldata = [getattr(e, "colData") for e in ses]
+        new_colData = combine_frames(
+            all_coldata,
+            axis=0,
+            useNames=True,
+            removeDuplicateColumns=removeDuplicateColumns,
+        )
+
+        all_rowdata = [getattr(e, "rowData") for e in ses]
+        new_rowData = combine_frames(
+            all_rowdata,
+            axis=1,
+            useNames=useNames,
+            removeDuplicateColumns=removeDuplicateColumns,
+        )
+
+        new_assays = {}
+        unique_assay_names = {assay_name for se in ses for assay_name in se.assayNames}
+        for assay_name in unique_assay_names:
+            merged_assays = combine_assays(
+                assay_name=assay_name,
+                experiments=ses,
+                names=new_rowData.index,
+                by="column",
+                shape=(len(new_rowData), len(new_colData)),
+                useNames=useNames,
+            )
+            new_assays[assay_name] = merged_assays
+
+        current_class_const = type(self)
+        return current_class_const(new_assays, new_rowData, new_colData, new_metadata)

@@ -3,8 +3,8 @@ from typing import MutableMapping, Optional, Sequence, Union
 import numpy as np
 from genomicranges import GenomicRanges, SeqInfo
 
-from ._types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 from .BaseSE import BaseSE
+from .types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -93,7 +93,8 @@ class RangeSummarizedExperiment(BaseSE):
             rows (GenomicRanges): genomic features (rowRanges).
 
         Raises:
-            ValueError: when number of rows does not match between `rowRanges` & `assays`.
+            ValueError: when number of rows does not match between `rowRanges` &
+                `assays`.
             TypeError: when `rowRanges` is not a `GenomicRanges` object.
         """
         if not (isinstance(rowsRanges, GenomicRanges)):
@@ -199,18 +200,17 @@ class RangeSummarizedExperiment(BaseSE):
         Returns:
             RangeSummarizedExperiment: Sliced `RangeSummarizedExperiment` object.
         """
-        new_rows, new_cols, new_assays = self._slice(args)
-        rowIndices = args[0]
+        sliced_objs = self._slice(args)
 
         new_rowRanges = None
-        if rowIndices is not None and self.rowRanges is not None:
-            new_rowRanges = self.rowRanges[rowIndices, :]
+        if sliced_objs.rowIndices is not None and self.rowRanges is not None:
+            new_rowRanges = self.rowRanges[sliced_objs.rowIndices, :]
 
         return RangeSummarizedExperiment(
-            assays=new_assays,
+            assays=sliced_objs.assays,
             rowRanges=new_rowRanges,
-            rowData=new_rows,
-            colData=new_cols,
+            rowData=sliced_objs.rowData,
+            colData=sliced_objs.colData,
             metadata=self.metadata,
         )
 
@@ -336,7 +336,8 @@ class RangeSummarizedExperiment(BaseSE):
         """Search nearest positions only downstream that overlap with the
         each genomics interval in `query`.
 
-        Technically same as `nearest` since we also return `distance` to the nearest match.
+        Technically same as `nearest` since we also return `distance` to the
+        nearest match.
 
         Args:
             query (GRangesOrRangeSE): query intervals

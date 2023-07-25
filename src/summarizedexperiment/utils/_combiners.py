@@ -26,6 +26,18 @@ def _impose_common_precision(*x: ArrayTypes) -> Sequence[ArrayTypes]:
     return [(m.astype(common_dtype) if m.dtype != common_dtype else m) for m in x]
 
 
+def _remove_duplicate_columns(df: pd.DataFrame) -> pd.DataFrame:
+    """Remove duplicate columns from a pandas DataFrame.
+
+    Args:
+        df (pd.DataFrame): The input DataFrame with possible duplicate columns.
+
+    Returns:
+        pd.DataFrame: A new DataFrame with duplicate columns removed.
+    """
+    return df.loc[:, ~df.columns.duplicated()]
+
+
 def combine_metadata(experiments: Sequence["BaseSE"]) -> MutableMapping:
     """Combine metadata across experiments.
 
@@ -67,9 +79,9 @@ def combine_frames(
         all_as_pandas = [df.reset_index(drop=True) for df in all_as_pandas]
 
     concat_df = pd.concat(all_as_pandas, axis=axis)
-    if useNames is False:
+    if (useNames is False) and (x[0].index is not None):
         concat_df.index = x[0].index
-    return concat_df
+    return _remove_duplicate_columns(concat_df)
 
 
 def combine_assays_by_column(

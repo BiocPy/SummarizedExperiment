@@ -105,6 +105,9 @@ def test_SE_subset_with_bools(summarized_experiments):
     assert len(subset_se.rowData) == 2
     assert len(subset_se.colData) == 3
 
+    assert list(subset_se.rowData.columns) == ["seqnames", "start", "end"]
+    assert list(subset_se.colData.columns) == ["sample", "disease"]
+
     assert subset_se.assay("counts").shape == (2, 3)
 
     subset_se = se[[True, False, False], [True, False, False]]

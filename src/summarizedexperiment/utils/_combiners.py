@@ -5,7 +5,7 @@ import pandas as pd
 import scipy.sparse as sp
 from biocframe import BiocFrame
 
-from ._types import ArrayTypes, BiocOrPandasFrame
+from ..types import ArrayTypes, BiocOrPandasFrame
 from ._validators import validate_names, validate_shapes
 
 __author__ = "keviny2, jkanche"

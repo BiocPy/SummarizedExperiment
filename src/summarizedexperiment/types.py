@@ -6,6 +6,8 @@ from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from scipy import sparse as sp
 
+from collections import namedtuple
+
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
@@ -16,3 +18,6 @@ BiocOrPandasFrame = Union[pd.DataFrame, BiocFrame]
 MatrixSlicerTypes = Union[Sequence[int], Sequence[bool], slice]
 SlicerTypes = Union[Sequence[int], Sequence[bool], Sequence[str], slice]
 SlicerArgTypes = Union[Tuple[SlicerTypes], Sequence[SlicerTypes], slice]
+SlicerResult = namedtuple(
+    "SlicerResult", ["rowData", "colData", "assays", "rowIndices", "colIndices"]
+)

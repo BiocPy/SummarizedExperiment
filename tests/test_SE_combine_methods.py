@@ -2,7 +2,6 @@ from typing import Union, MutableMapping, Sequence, Tuple
 import numpy as np
 import pandas as pd
 import pytest
-from itertools import chain
 
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 from biocframe import BiocFrame
@@ -10,50 +9,6 @@ from biocframe import BiocFrame
 __author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"
 __license__ = "MIT"
-
-
-def make_assertions(
-    combined,
-    shape,
-    assay_names,
-    rownames,
-    rowData_cols,
-    colnames,
-    colData_cols,
-):
-    assert combined.shape == shape
-    assert sorted(list(combined.assays)) == sorted(assay_names)
-    assert sorted(combined.rownames) == sorted(rownames)
-    assert sorted(combined.rowData.columns.tolist()) == sorted(rowData_cols)
-    assert sorted(combined.colnames) == sorted(colnames)
-    assert sorted(combined.colData.columns.tolist()) == sorted(colData_cols)
-
-
-def as_pandas(df: Union[BiocFrame, pd.DataFrame]):
-    """Converts a BiocFrame to a pandas DataFrame if necessary.
-
-    Args:
-        df (Union[BiocFrame, pd.DataFrame]): a BiocFrame or pd.DataFrame.
-
-    Returns:
-        pd.DataFrame: a pandas DataFrame.
-    """
-    if isinstance(df, BiocFrame):
-        return df.to_pandas()
-    return df
-
-
-def repeat_range(r: range, n: int):
-    """Repeat the elements in a range multiple times.
-
-    Args:
-        r (range): The range to be repeated.
-        n (int): The number of times to repeat the range.
-
-    Returns:
-        list: A list containing the repeated elements.
-    """
-    return list(chain.from_iterable([r] * n))
 
 
 def checkIdentical(
@@ -94,7 +49,7 @@ def test_SE_combineCols_unnamed(summarized_experiments):
                 "A": np.repeat([1, 2], 10),
                 "B": np.repeat([np.nan, 3], 10),
             },
-            index=repeat_range(range(10), 2),
+            index=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9] * 2
         ),
     )
 

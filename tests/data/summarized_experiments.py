@@ -221,6 +221,20 @@ se_duplicated_row_name = SummarizedExperiment(
     metadata={"seq_type": "paired"},
 )
 
+colData_duplicated_sample_name = pd.DataFrame(
+    {
+        "sample": ["SAM_1", "SAM_1", "SAM_3"],
+        "disease": ["True", "True", "True"],
+    },
+    index=["cell_1", "cell_1", "cell_2"]
+)
+se_duplicated_sample_name = SummarizedExperiment(
+    assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
+    rowData=rowData1,
+    colData=colData_duplicated_sample_name,
+    metadata={"seq_type": "paired"},
+)
+
 rowData_biocframe_1 = BiocFrame(
     {
         "seqnames": ["chr_5", "chr_3", "chr_2"],
@@ -231,7 +245,7 @@ rowData_biocframe_1 = BiocFrame(
 )
 colData_biocframe_1 = BiocFrame(
     {
-        "sample": ["SAM_1", "SAM_3", "SAM_3"],
+        "sample": ["SAM_1", "SAM_2", "SAM_3"],
         "disease": ["True", "True", "True"],
     },
     rowNames=["cell_1", "cell_2", "cell_3"],

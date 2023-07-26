@@ -509,7 +509,7 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         ),
         target_colData=pd.DataFrame(
             data={
-                "sample": ["SAM_1", "SAM_3", "SAM_3", "SAM_4", "SAM_5", "SAM_6"],
+                "sample": ["SAM_1", "SAM_2", "SAM_3", "SAM_4", "SAM_5", "SAM_6"],
                 "disease": ["True", "True", "True", "True", "False", "True"],
                 "doublet_score": [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
             },
@@ -536,7 +536,7 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         ),
         target_colData=pd.DataFrame(
             data={
-                "sample": ["SAM_1", "SAM_3", "SAM_3", "SAM_4", "SAM_5", "SAM_6"],
+                "sample": ["SAM_1", "SAM_2", "SAM_3", "SAM_4", "SAM_5", "SAM_6"],
                 "disease": ["True", "True", "True", "True", "False", "True"],
                 "doublet_score": [np.nan, np.nan, np.nan, 0.05, 0.23, 0.54],
             },
@@ -563,7 +563,7 @@ def test_SE_combineCols_biocframe(summarized_experiments):
         ),
         target_colData=pd.DataFrame(
             data={
-                "sample": ["SAM_1", "SAM_3", "SAM_3", "SAM_7", "SAM_8", "SAM_9"],
+                "sample": ["SAM_1", "SAM_2", "SAM_3", "SAM_7", "SAM_8", "SAM_9"],
                 "disease": ["True", "True", "True", "True", "False", "False"],
                 "doublet_score": [np.nan, np.nan, np.nan, 0.15, 0.62, 0.18],
             },

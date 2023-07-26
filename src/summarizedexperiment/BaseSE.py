@@ -421,7 +421,7 @@ class BaseSE:
         if rowIndices is not None and self.rowData is not None:
             if is_list_of_type(rowIndices, str):
                 rowIndices = get_indexes_from_names(
-                    self.rowData.index, pd.Index(rowIndices)
+                    self.rowData.index, rowIndices
                 )
             elif is_list_of_type(rowIndices, bool):
                 if len(rowIndices) != self.shape[0]:
@@ -442,7 +442,7 @@ class BaseSE:
         if colIndices is not None and self.colData is not None:
             if is_list_of_type(colIndices, str):
                 colIndices = get_indexes_from_names(
-                    self.colData.index, pd.Index(colIndices)
+                    self.colData.index, colIndices
                 )
             elif is_list_of_type(colIndices, bool):
                 if len(colIndices) != self.shape[1]:

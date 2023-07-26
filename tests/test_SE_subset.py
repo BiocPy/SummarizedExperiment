@@ -75,6 +75,22 @@ def test_SE_subset_by_name(summarized_experiments):
 
     assert subset_se.assay("counts").shape == (2, 2)
 
+    # duplicate sample names
+    se = summarized_experiments.se_duplicated_sample_name
+    subset_se = se[:, ["cell_1"]]
+    assert subset_se is not None
+    assert isinstance(subset_se, SummarizedExperiment)
+
+    assert len(subset_se.rowData) == 3
+    assert len(subset_se.colData) == 1
+
+    assert subset_se.assay("counts").shape == (3, 1)
+
+    # subset with non-existent sample name
+    se = summarized_experiments.se1
+    with pytest.raises(ValueError):
+        subset_se = se[["HER2", "BRCA1", "something random"], ["cell_1", "cell_3"]]
+
 
 def test_SE_subset_by_name_fails(summarized_experiments):
     # subset by name with some that do not exist

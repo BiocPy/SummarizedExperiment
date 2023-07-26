@@ -1,42 +1,54 @@
 from typing import Any, Sequence
 
-import numpy as np
 import pandas as pd
 
 __author__ = "keviny2, jkanche"
-__copyright__ = "Genentech"
+__copyright__ = "jkanche"
 __license__ = "MIT"
 
 
 def get_indexes_from_names(
-    _source: Sequence[Any], _target: Sequence[Any]
-) -> np.ndarray:
-    """Get the indexes in source where values in target are found.
+    source: Sequence[Any], target: Sequence[Any], firstMatch: bool = True
+) -> Sequence[int]:
+    """Return the index of the first occurrence of each value in `source`.
 
     Args:
-        _source (Sequence[Any]): the source index names.
-        _target (Sequence[Any]): the target index names.
+        source (Sequence[Any]): list in which to search for the values.
+        target (Sequence[Any]): list of values to find indices for.
+        firstMatch (bool): only return first matches? Defaults to True.
 
     Raises:
-        ValueError: If passed index names do not exist in the samples.
-        ValueError: If passed index names is not a collection.
+        ValueError: if any value in `target` is not found in `source`.
+        ValueError: if target contains duplicates.
 
     Returns:
-        np.ndarray: Integers from 0 to n - 1 indicating that the index at
-            these positions matches the corresponding target values. Missing
-            values in the target are marked by -1.
+        Sequence[int]: the indexes of the first occurrence of each value in
+            `target` within `source`.
     """
-    try:
-        source = pd.Index(_source)
-        target = pd.Index(_target)
-    except TypeError as exception:
-        raise TypeError(f"{_target} is not a collection") from exception
 
-    missing_names = target.difference(source)
-    if not missing_names.empty:
-        raise ValueError("invalid index name(s): " + ", ".join(missing_names))
+    if isinstance(source, pd.Index):
+        source = source.tolist()
 
-    return source.get_indexer(target).tolist()
+    if isinstance(target, pd.Index):
+        target = target.tolist()
+
+    set_target = set(target)
+
+    missing_names = set_target.difference(source)
+    if len(missing_names) > 0:
+        raise ValueError(f"invalid index names(s): {', '.join(missing_names)}")
+
+    if len(set_target) != len(target):
+        raise ValueError("target contains duplicate values.")
+
+    if firstMatch is True:
+        return [source.index(x) for x in target]
+
+    match_indices = []
+    for v in target:
+        match_indices.extend([i for i, x in enumerate(source) if x == v])
+
+    return list(set(match_indices))
 
 
 def get_indexes_from_bools(x: Sequence[bool], match: bool = True) -> Sequence[int]:

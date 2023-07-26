@@ -414,8 +414,8 @@ class BaseSE:
         else:
             raise ValueError(f"slicer {type(args)} is not supported")
 
-        new_rows = None
-        new_cols = None
+        new_rows = self.rowData
+        new_cols = self.colData
         new_assays = None
 
         if rowIndices is not None and self.rowData is not None:
@@ -430,11 +430,12 @@ class BaseSE:
                         f"the shape provided {len(rowIndices)}, must be {self.shape[0]}"
                     )
                 rowIndices = get_indexes_from_bools(rowIndices)
-            elif is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
+
+            if is_list_of_type(rowIndices, int) or isinstance(rowIndices, slice):
                 if isinstance(self.rowData, pd.DataFrame):
-                    new_rows = self.rowData.iloc[rowIndices]
+                    new_rows = new_rows.iloc[rowIndices]
                 else:
-                    new_rows = self.rowData[rowIndices, :]
+                    new_rows = new_rows[rowIndices, :]
             else:
                 raise TypeError("rowIndices not supported!")
 
@@ -450,11 +451,12 @@ class BaseSE:
                         f"the shape provided {len(colIndices)}, must be {self.shape[1]}"
                     )
                 colIndices = get_indexes_from_bools(colIndices)
-            elif is_list_of_type(colIndices, int) or isinstance(colIndices, slice):
+
+            if is_list_of_type(colIndices, int) or isinstance(colIndices, slice):
                 if isinstance(self.colData, pd.DataFrame):
-                    new_cols = self.colData.iloc[colIndices]
+                    new_cols = new_cols.iloc[colIndices]
                 else:
-                    new_cols = self.colData[colIndices, :]
+                    new_cols = new_cols[colIndices, :]
             else:
                 raise TypeError("colIndices not supported!")
 

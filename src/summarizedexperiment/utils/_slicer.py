@@ -24,7 +24,7 @@ def get_indexes_from_names(
         Sequence[int]: the indexes of the first occurrence of each value in
             `target` within `source`.
     """
-    missing_names = [value for value in target if value not in source]
+    missing_names = set(target).difference(source)
     if len(missing_names) > 0:
         raise ValueError("invalid index names(s): " + ", ".join(missing_names))
 

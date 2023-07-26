@@ -86,6 +86,11 @@ def test_SE_subset_by_name(summarized_experiments):
 
     assert subset_se.assay("counts").shape == (3, 1)
 
+    # subset with non-existent sample name
+    se = summarized_experiments.se1
+    with pytest.raises(ValueError):
+        subset_se = se[["HER2", "BRCA1", "something random"], ["cell_1", "cell_3"]]
+
 
 def test_SE_subset_by_name_fails(summarized_experiments):
     # subset by name with some that do not exist

@@ -1,8 +1,8 @@
 from functools import singledispatch
-from typing import Any, Sequence
+from typing import Any, List, Sequence
 
-import pandas as pd
 from biocframe import BiocFrame
+from pandas import DataFrame
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -10,53 +10,68 @@ __license__ = "MIT"
 
 
 @singledispatch
-def get_rownames(x: Any) -> Sequence[str]:
-    """Access row names from various objects.
+def get_rownames(x) -> List[str]:
+    """Access row names from various representations.
 
     Args:
-        x (any): supported object.
+        x: Any object.
+
+        ``x`` may be a :py:class`~pandas.DataFrame`.
+
+        Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
+
+        Alternatively, ``x`` may also contain a property or attribute ``rownames`` for
+        custom representations.
 
     Raises:
-        NotImplementedError: if type is not supported.
+        NotImplementedError: If ``x`` is not a supported type.
 
     Returns:
-        Sequence[str]: column names.
+        List[str]: List of row names.
     """
     if hasattr(x, "rownames"):
         return x.rownames
 
-    raise NotImplementedError(f"rownames do not exist for class: {type(x)}")
+    raise NotImplementedError(f"`rownames` do not exist for class: '{type(x)}'.")
 
 
 @get_rownames.register
-def _(x: pd.DataFrame) -> Sequence[str]:
+def _(x: DataFrame) -> List[str]:
     return x.index.tolist()
 
 
 @get_rownames.register
-def _(x: BiocFrame) -> Sequence[str]:
+def _(x: BiocFrame) -> List[str]:
     return x.rowNames
 
 
 @singledispatch
 def set_rownames(x: Any, names: Sequence[str]):
-    """Set row names for various objects.
+    """Set row names for various representations.
 
     Args:
         x (Any): supported object.
-        names (Sequence[str]): new names.
+
+        ``x`` may be a :py:class`~pandas.DataFrame`.
+
+        Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
+
+        Alternatively, ``x`` may also contain a property or attribute ``rownames`` for
+        custom representations.
+
+        names (Sequence[str]): New names.
 
     Raises:
-        NotImplementedError: if type is not supported.
+        NotImplementedError: If ``x`` is not a supported type.
 
     Returns:
-        Sequence[str]: column names.
+        An object with the same type as ``x``.
     """
     raise NotImplementedError(f"Cannot set rownames for class: {type(x)}")
 
 
 @set_rownames.register
-def _(x: pd.DataFrame, names: Sequence[str]) -> Sequence[str]:
+def _(x: DataFrame, names: Sequence[str]) -> Sequence[str]:
     x.index = names
     return x
 

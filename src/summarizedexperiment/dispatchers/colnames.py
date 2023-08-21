@@ -1,8 +1,8 @@
 from functools import singledispatch
-from typing import Any, Sequence
+from typing import List, Sequence
 
-import pandas as pd
 from biocframe import BiocFrame
+from pandas import DataFrame
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -10,58 +10,75 @@ __license__ = "MIT"
 
 
 @singledispatch
-def get_colnames(x: Any) -> Sequence[str]:
-    """Access column names from various objects.
+def get_colnames(x) -> List[str]:
+    """Access column names from various representations.
 
     Args:
-        x (Any): supported object.
+        x: Any object.
+
+            ``x`` may be a :py:class:`~pandas.DataFrame`.
+
+            Alternatively, ``x`` may be a :py:class:`~biocframe.BiocFrame.BiocFrame` object.
+
+            Alternatively, ``x`` may also contain a property or attribute ``colnames`` for
+            custom representations.
 
     Raises:
-        NotImplementedError: if type is not supported.
+        NotImplementedError: If ``x`` is not a supported type.
 
     Returns:
-        Sequence[str]: column names.
+        List[str]: List of column names.
     """
     if hasattr(x, "colnames"):
         return x.colnames
 
-    raise NotImplementedError(f"colnames do not exist for class: {type(x)}")
+    raise NotImplementedError(f"`colnames` is not supported for class: '{type(x)}'.")
 
 
 @get_colnames.register
-def _(x: pd.DataFrame) -> Sequence[str]:
+def _(x: DataFrame) -> List[str]:
     return x.index.tolist()
 
 
 @get_colnames.register
-def _(x: BiocFrame) -> Sequence[str]:
-    return x.rowNames
+def _(x: BiocFrame) -> List[str]:
+    return x.row_names
 
 
 @singledispatch
-def set_colnames(x: Any, names: Sequence[str]):
-    """Set column names for various objects.
+def set_colnames(x, names: List[str]):
+    """Set column names for various representations.
 
     Args:
-        x (any): supported object.
-        names (Sequence[str]): new names.
+        x: Any object.
+
+            ``x`` may be a :py:class:`~pandas.DataFrame`.
+
+            Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
+
+            Alternatively, ``x`` may also contain a property or attribute ``colnames`` for
+            custom representations.
+
+        names (Sequence[str]): New names.
 
     Raises:
         NotImplementedError: if type is not supported.
 
     Returns:
-        Sequence[str]: column names.
+        An object with the same type as ``x``.
     """
-    raise NotImplementedError(f"Cannot set colnames for class: {type(x)}")
+    raise NotImplementedError(
+        f"`set_colnames` is not supported for class: '{type(x)}'."
+    )
 
 
 @set_colnames.register
-def _(x: pd.DataFrame, names: Sequence[str]) -> Sequence[str]:
+def _(x: DataFrame, names: Sequence[str]) -> DataFrame:
     x.index = names
     return x
 
 
 @set_colnames.register
-def _(x: BiocFrame, names: Sequence[str]) -> Sequence[str]:
-    x.rowNames = names
+def _(x: BiocFrame, names: Sequence[str]) -> BiocFrame:
+    x.row_names = names
     return x

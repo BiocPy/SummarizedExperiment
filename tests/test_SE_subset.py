@@ -36,9 +36,9 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
-colData = pd.DataFrame(
+col_data = pd.DataFrame(
     {
         "treatment": ["ChIP", "Input"] * 3,
     }
@@ -47,7 +47,7 @@ colData = pd.DataFrame(
 
 def test_SE_subset():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, rowData=df_gr, colData=colData
+        assays={"counts": counts}, row_data=df_gr, col_data=col_data
     )
 
     assert tse is not None
@@ -57,8 +57,8 @@ def test_SE_subset():
     assert subset_tse is not None
     assert isinstance(subset_tse, SummarizedExperiment)
 
-    assert len(subset_tse.rowData) == 10
-    assert len(subset_tse.colData) == 3
+    assert len(subset_tse.row_data) == 10
+    assert len(subset_tse.col_data) == 3
 
     assert subset_tse.assay("counts").shape == (10, 3)
 
@@ -70,8 +70,8 @@ def test_SE_subset_by_name(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 2
-    assert len(subset_se.colData) == 2
+    assert len(subset_se.row_data) == 2
+    assert len(subset_se.col_data) == 2
 
     assert subset_se.assay("counts").shape == (2, 2)
 
@@ -81,8 +81,8 @@ def test_SE_subset_by_name(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 3
-    assert len(subset_se.colData) == 1
+    assert len(subset_se.row_data) == 3
+    assert len(subset_se.col_data) == 1
 
     assert subset_se.assay("counts").shape == (3, 1)
 
@@ -96,7 +96,7 @@ def test_SE_subset_by_name_fails(summarized_experiments):
     # subset by name with some that do not exist
     se = summarized_experiments.se1
     with pytest.raises(Exception):
-        subset_se = se[["HER2", "BRCA1", "RAND"], ["cell_1", "cell_3"]]
+        se[["HER2", "BRCA1", "RAND"], ["cell_1", "cell_3"]]
 
 
 def test_SE_subset_with_biocframe(summarized_experiments):
@@ -106,8 +106,8 @@ def test_SE_subset_with_biocframe(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 2
-    assert len(subset_se.colData) == 2
+    assert len(subset_se.row_data) == 2
+    assert len(subset_se.col_data) == 2
 
     assert subset_se.assay("counts").shape == (2, 2)
 
@@ -118,11 +118,11 @@ def test_SE_subset_with_bools(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 2
-    assert len(subset_se.colData) == 3
+    assert len(subset_se.row_data) == 2
+    assert len(subset_se.col_data) == 3
 
-    assert list(subset_se.rowData.columns) == ["seqnames", "start", "end"]
-    assert list(subset_se.colData.columns) == ["sample", "disease"]
+    assert list(subset_se.row_data.columns) == ["seqnames", "start", "end"]
+    assert list(subset_se.col_data.columns) == ["sample", "disease"]
 
     assert subset_se.assay("counts").shape == (2, 3)
 
@@ -130,8 +130,8 @@ def test_SE_subset_with_bools(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 1
-    assert len(subset_se.colData) == 1
+    assert len(subset_se.row_data) == 1
+    assert len(subset_se.col_data) == 1
 
     assert subset_se.assay("counts").shape == (1, 1)
 
@@ -142,8 +142,8 @@ def test_SE_subset_biocframe_with_bools(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 2
-    assert len(subset_se.colData) == 3
+    assert len(subset_se.row_data) == 2
+    assert len(subset_se.col_data) == 3
 
     assert subset_se.assay("counts").shape == (2, 3)
 
@@ -151,8 +151,8 @@ def test_SE_subset_biocframe_with_bools(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 1
-    assert len(subset_se.colData) == 1
+    assert len(subset_se.row_data) == 1
+    assert len(subset_se.col_data) == 1
 
     assert subset_se.assay("counts").shape == (1, 1)
 
@@ -160,25 +160,25 @@ def test_SE_subset_biocframe_with_bools(summarized_experiments):
 def test_SE_subset_biocframe_with_bools_should_fail(summarized_experiments):
     se = summarized_experiments.se_biocframe_1
     with pytest.raises(Exception):
-        subset_se = se[[True, False],]
+        se[[True, False],]
 
 
 def test_SE_subset_fails_with_indexes(summarized_experiments):
     # subset by invalid indexes
     se = summarized_experiments.se1
     with pytest.raises(Exception):
-        subset_se = se["hello world", {"a": [1, 2, 3]}]
+        se["hello world", {"a": [1, 2, 3]}]
 
     # subset by name when index is not available
     tse = SummarizedExperiment(
-        assays={"counts": counts}, rowData=df_gr, colData=colData
+        assays={"counts": counts}, row_data=df_gr, col_data=col_data
     )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
 
     with pytest.raises(ValueError):
-        subset_tse = tse[["0", "1", "2"], ["2", "3"]]
+        tse[["0", "1", "2"], ["2", "3"]]
 
 
 def test_SE_subset_single_indexer_list(summarized_experiments):
@@ -187,8 +187,8 @@ def test_SE_subset_single_indexer_list(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 2
-    assert len(subset_se.colData) == 3
+    assert len(subset_se.row_data) == 2
+    assert len(subset_se.col_data) == 3
 
     assert subset_se.assay("counts").shape == (2, 3)
 
@@ -199,7 +199,7 @@ def test_SE_subset_single_indexer_slicer(summarized_experiments):
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
-    assert len(subset_se.rowData) == 2
-    assert len(subset_se.colData) == 3
+    assert len(subset_se.row_data) == 2
+    assert len(subset_se.col_data) == 3
 
     assert subset_se.assay("counts").shape == (2, 3)

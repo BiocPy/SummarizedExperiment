@@ -18,5 +18,5 @@ MatrixSlicerTypes = Union[Sequence[int], Sequence[bool], slice]
 SlicerTypes = Union[Sequence[int], Sequence[bool], Sequence[str], slice]
 SlicerArgTypes = Union[Tuple[SlicerTypes], Sequence[SlicerTypes], slice]
 SlicerResult = namedtuple(
-    "SlicerResult", ["rowData", "colData", "assays", "rowIndices", "colIndices"]
+    "SlicerResult", ["row_data", "col_data", "assays", "row_indices", "col_indices"]
 )

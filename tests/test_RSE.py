@@ -4,7 +4,7 @@ import genomicranges
 import numpy as np
 import pandas as pd
 import pytest
-from summarizedexperiment.RangeSummarizedExperiment import RangeSummarizedExperiment
+from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -37,9 +37,9 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
-colData = pd.DataFrame(
+col_data = pd.DataFrame(
     {
         "treatment": ["ChIP", "Input"] * 3,
     }
@@ -47,19 +47,19 @@ colData = pd.DataFrame(
 
 
 def test_RSE_creation():
-    trse = RangeSummarizedExperiment(
-        assays={"counts": counts}, rowRanges=gr, colData=colData
+    trse = RangedSummarizedExperiment(
+        assays={"counts": counts}, row_ranges=gr, col_data=col_data
     )
 
     assert trse is not None
-    assert isinstance(trse, RangeSummarizedExperiment)
+    assert isinstance(trse, RangedSummarizedExperiment)
 
 
 def test_RSE_none_should_fail():
     with pytest.raises(Exception):
-        RangeSummarizedExperiment(assays={"counts": counts})
+        RangedSummarizedExperiment(assays={"counts": counts})
 
 
 def test_RSE_should_fail():
     with pytest.raises(Exception):
-        RangeSummarizedExperiment(assays={"counts": counts}, rowRanges=df_gr)
+        RangedSummarizedExperiment(assays={"counts": counts}, row_ranges=df_gr)

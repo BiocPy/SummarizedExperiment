@@ -1,4 +1,4 @@
 # Contributors
 
-* jkanche <jayaram.kancherla@gmail.com>
-* keviny2 <kevinyang10@gmail.com>
+* Jayaram Kancherla <jayaram.kancherla@gmail.com>
+* Kevin Yang <kevinyang10@gmail.com>

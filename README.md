@@ -2,7 +2,6 @@
 
 Container to represent genomic experiments, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html).
 
-
 ## Install
 
 Package is published to [PyPI](https://pypi.org/project/summarizedexperiment/)
@@ -63,7 +62,7 @@ To create a `SummarizedExperiment`,
 from summarizedexperiment import SummarizedExperiment
 
 tse = SummarizedExperiment(
-    assays={"counts": counts}, rowData=df_gr, colData=colData
+    assays={"counts": counts}, row_data=df_gr, col_data=colData
 )
 ```
 
@@ -73,7 +72,7 @@ To create a `RangedSummarizedExperiment`
 from summarizedexperiment import RangedSummarizedExperiment
 
 trse = RangedSummarizedExperiment(
-    assays={"counts": counts}, rowRanges=gr, colData=colData
+    assays={"counts": counts}, row_ranges=gr, col_data=colData
 )
 ```
 

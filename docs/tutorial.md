@@ -4,10 +4,9 @@ This package provides classes to represent genomic experiments, commonly generat
 
 A `SummarizedExperiment` contains three slots,
 
-- `rowData`: feature information e.g. genes, transcripts, exons, etc.
-- `colData`: sample information about the columns of the matrices.
-- `Assays`: a dictionary of matrices with keys specifying the assay name.
-
+- `row_data`: feature information e.g. genes, transcripts, exons, etc.
+- `col_data`: sample information about the columns of the matrices.
+- `assays`: a dictionary of matrices with keys specifying the assay name.
 
 The package currently provides both `SummarizedExperiment` & `RangedSummarizedExperiment` representations, a fundamental difference between these two is the rows of a `RangedSummarizedExperiment` object represent [GenomicRanges](https://github.com/BiocPy/GenomicRanges) of interest.
 
@@ -43,7 +42,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-colData = pd.DataFrame(
+col_data = pd.DataFrame(
     {
         "treatment": ["ChIP", "Input"] * 3,
     }
@@ -54,15 +53,15 @@ Finally, create an appropriate summarized experiment class.
 
 ### `SummarizedExperiment`
 
-A `SummarizedExperiment` is a base class to represent any genomic experiment. This class expects features (`rowData`) to be either a pandas `DataFrame` or any variant of `BiocFrame`.
+A `SummarizedExperiment` is a base class to represent any genomic experiment. This class expects features (`row_data`) to be either a pandas `DataFrame` or any variant of `BiocFrame`.
 
 ```python
 se = SummarizedExperiment(
-    assays={"counts": counts}, rowData=df_gr, colData=colData
+    assays={"counts": counts}, row_data=df_gr, col_data=col_data
 )
 ```
 
-###  `RangedSummarizedExperiment`
+### `RangedSummarizedExperiment`
 
 `RangedSummarizedExperiment` requires features to be a [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges) object.
 
@@ -71,7 +70,7 @@ se = SummarizedExperiment(
 gr = genomicranges.from_pandas(df_gr)
 
 rse = SummarizedExperiment(
-    assays={"counts": counts}, rowRanges=gr, colData=colData
+    assays={"counts": counts}, row_ranges=gr, col_data=col_data
 )
 ```
 
@@ -105,17 +104,16 @@ df_gr = pd.DataFrame(
     }
 )
 
-colData = pd.DataFrame({"treatment": ["ChIP"] * 3005,})
+col_data = pd.DataFrame({"treatment": ["ChIP"] * 3005,})
 
 assay = H5BackedSparseData("tests/data/tenx.sub.h5", "matrix")
 
 tse = SummarizedExperiment(
     assays={"counts_backed": assay},
-    rowData=df_gr,
-    colData=colData,
+    row_data=df_gr,
+    col_data=col_data,
 )
 ```
-
 
 ## Accessors
 
@@ -123,8 +121,8 @@ Many properties can be accessed directly from the class instance.
 
 ```python
 tse.assays
-tse.rowData or # tse.rowRanges
-tse.colData
+tse.row_data or # tse.row_ranges
+tse.col_data
 tse.metadata
 
 # Access the counts assay
@@ -141,7 +139,9 @@ You can subset a `SummarizedExperiment` object using the `[]` slice operator.
 # subset the first 10 rows and the first 3 samples
 subset_tse = tse[0:10, 0:3]
 ```
+
 ### slice by row names or column names
+
 Alternatively, we can use a sequence of row (feature) or column (sample) names to subset a `SummarizedExperiment` . To demonstrate this, we create a `SummarizedExperiment` object with index names.
 
 ```python
@@ -165,8 +165,8 @@ se_with_index_names = SummarizedExperiment(
         "counts": np.random.poisson(lam=5, size=(3, 3)),
         "lognorm": np.random.lognormal(size=(3, 3))
     },
-    rowData=rowData_with_index_names,
-    colData=colData_with_index_names
+    row_data=rowData_with_index_names,
+    col_data=colData_with_index_names
 )
 
 # subset by name
@@ -199,13 +199,12 @@ subset_se_with_bools = se_with_index_names[
 
 `RangedSummarizedExperiment` objects on the other hand supports many interval based operations similar to `GenomicRanges`.
 
-
 ```python
 query = {"seqnames": ["chr2",], "starts": [4], "ends": [6], "strand": ["+"]}
 
 query = GenomicRanges(query)
 
-tse.subsetByOverlaps(query)
+tse.subset_by_overlaps(query)
 ```
 
 Checkout the API docs or GenomicRanges for list of interval based operations.
@@ -235,8 +234,8 @@ se1 = SummarizedExperiment(
         "counts": np.random.poisson(lam=5, size=(3, 3)),
         "lognorm": np.random.lognormal(size=(3, 3))
     },
-    rowData=rowData1,
-    colData=colData1,
+    row_data=rowData1,
+    col_data=colData1,
     metadata={"seq_type": "paired"},
 )
 
@@ -261,8 +260,8 @@ se2 = SummarizedExperiment(
         "counts": np.random.poisson(lam=5, size=(3, 3)),
         "lognorm": np.random.lognormal(size=(3, 3))
     },
-    rowData=rowData2,
-    colData=colData2,
+    row_data=rowData2,
+    col_data=colData2,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -288,20 +287,20 @@ se3 = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3)),
         "beta": np.random.beta(a=1, b=1, size=(3, 3))
     },
-    rowData=rowData3,
-    colData=colData3,
+    row_data=rowData3,
+    col_data=colData3,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 ```
 
-### combineCols()
+### Combine Experiments by column
 
-concatenate columns (samples or cells) of multiple `SummarizedExperiment` objects, returning a `SummarizedExperiment` with columns equal to the concatenation of columns across all inputs. `combineCols()` allows for differences in the number and names of rows, differences in the available `colData` fields, and even differences in the available `assays` among the objects being combined.
+Concatenate columns (samples or cells) of multiple `SummarizedExperiment` objects, returning a `SummarizedExperiment` with columns equal to the concatenation of columns across all inputs. `combineCols()` allows for differences in the number and names of rows, differences in the available `col_data` fields, and even differences in the available `assays` among the objects being combined.
 
 ```python
-se_combined = se1.combineCols(se2, se3) # OR se1.combineCols([se2, se3])
+se_combined = se1.combine_cols(se2, se3) # OR se1.combineCols([se2, se3])
 ```
 
-parameters are available to keep duplicate rows, or perform row-wise concatenation instead of index available on the rows.
+Parameters are available to keep duplicate rows, or perform row-wise concatenation instead of index available on the rows.
 
-***Note: currently does not support range based concatenation.***
+**_Note: currently does not support range based concatenation._**

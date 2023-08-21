@@ -16,9 +16,9 @@ def get_colnames(x) -> List[str]:
     Args:
         x: Any object.
 
-            ``x`` may be a :py:class`~pandas.DataFrame`.
+            ``x`` may be a :py:class:`~pandas.DataFrame`.
 
-            Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
+            Alternatively, ``x`` may be a :py:class:`~biocframe.BiocFrame.BiocFrame` object.
 
             Alternatively, ``x`` may also contain a property or attribute ``colnames`` for
             custom representations.
@@ -52,7 +52,7 @@ def set_colnames(x, names: List[str]):
     Args:
         x: Any object.
 
-            ``x`` may be a :py:class`~pandas.DataFrame`.
+            ``x`` may be a :py:class:`~pandas.DataFrame`.
 
             Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
 

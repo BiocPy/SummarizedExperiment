@@ -16,9 +16,9 @@ def get_rownames(x) -> List[str]:
     Args:
         x: Any object.
 
-        ``x`` may be a :py:class`~pandas.DataFrame`.
+        ``x`` may be a :py:class:`~pandas.DataFrame`.
 
-        Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
+        Alternatively, ``x`` may be a :py:class:`~biocframe.BiocFrame.BiocFrame` object.
 
         Alternatively, ``x`` may also contain a property or attribute ``row_names`` for
         custom representations.
@@ -52,9 +52,9 @@ def set_rownames(x: Any, names: Sequence[str]):
     Args:
         x (Any): supported object.
 
-        ``x`` may be a :py:class`~pandas.DataFrame`.
+        ``x`` may be a :py:class:`~pandas.DataFrame`.
 
-        Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
+        Alternatively, ``x`` may be a :py:class:`~biocframe.BiocFrame.BiocFrame` object.
 
         Alternatively, ``x`` may also contain a property or attribute ``row_names`` for
         custom representations.

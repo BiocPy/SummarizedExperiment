@@ -36,7 +36,7 @@ __license__ = "MIT"
 
 
 class BaseSE:
-    """Base class for `SummarizedExperiment`. Implement common properties and
+    """Base class for `SummarizedExperiment`. Implements common properties and
     methods that can be reused across all derived classes.
 
     Container to represents genomic experiment data (`assays`), features (`row_data`),
@@ -304,7 +304,7 @@ class BaseSE:
     def dims(self) -> Tuple[int, int]:
         """Dimensions of the experiment.
 
-        Alias to :py:attr:`~summarizedexperiment.BaseSE.shape`.
+        Alias to :py:attr:`~summarizedexperiment.BaseSE.BaseSE.shape`.
 
         Returns:
             Tuple[int, int]: A tuple with number of features and samples.
@@ -322,7 +322,7 @@ class BaseSE:
 
     @assay_names.setter
     def assay_names(self, names: Sequence[str]):
-        """Replace all :py:attr:`~summarizedexperiment.BaseSE.assays`'s names.
+        """Replace all :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s names.
 
         Args:
             names (Sequence[str]): New names.
@@ -350,7 +350,8 @@ class BaseSE:
         return pattern
 
     def assay(self, name: str) -> MatrixTypes:
-        """Convenience function to access an :py:attr:`~summarizedexperiment.BaseSE.assays` by name.
+        """Convenience function to access an
+        :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name.
 
         Args:
             name (str): Name of the assay.

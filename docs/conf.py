@@ -167,9 +167,9 @@ pygments_style = "sphinx"
 todo_emit_warnings = True
 
 autodoc_default_options = {
-    'special-members': True,
-    'undoc-members': False,
-    'exclude-members': '__weakref__, __dict__, __str__, __module__, __init__'
+    "special-members": True,
+    "undoc-members": False,
+    "exclude-members": "__weakref__, __dict__, __str__, __module__, __init__",
 }
 
 autosummary_generate = True
@@ -185,10 +185,7 @@ html_theme = "furo"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-    "sidebar_width": "300px",
-    "page_width": "1200px"
-}
+html_theme_options = {"sidebar_width": "300px", "page_width": "1200px"}
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
@@ -273,7 +270,13 @@ latex_elements = {
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-    ("index", "user_guide.tex", "SummarizedExperiment Documentation", "jkanche", "manual")
+    (
+        "index",
+        "user_guide.tex",
+        "SummarizedExperiment Documentation",
+        "jkanche",
+        "manual",
+    )
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

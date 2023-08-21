@@ -19,7 +19,7 @@ convention = "google"
 
 [tool.isort]
 profile = "black"
-known_first_party = "biocframe"
+known_first_party = "summarizedexperiment"
 skip = ["__init__.py"]
 
 [tool.black]

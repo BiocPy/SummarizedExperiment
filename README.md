@@ -4,7 +4,7 @@ Container to represent genomic experiments, follows Bioconductor's [SummarizedEx
 
 ## Install
 
-Package is published to [PyPI](https://pypi.org/project/summarizedexperiment/)
+Package is published to [PyPI](https://pypi.org/project/summarizedexperiment/),
 
 ```shell
 pip install summarizedexperiment
@@ -76,7 +76,7 @@ trse = RangedSummarizedExperiment(
 )
 ```
 
-For more use cases including subset, checkout the [documentation](https://biocpy.github.io/SummarizedExperiment/)
+For more examples, checkout the [documentation](https://biocpy.github.io/SummarizedExperiment/).
 
 <!-- pyscaffold-notes -->
 

@@ -1,15 +1,15 @@
 <!doctype html>
-<html class="no-js" lang="en">
+<html class="no-js" lang="en" data-content_root="./">
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
-    <meta name="color-scheme" content="light dark"><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Tutorial" href="tutorial.html" /><link rel="prev" title="SummarizedExperiment" href="index.html" />
 
-    <!-- Generated with Sphinx 6.2.1 and Furo 2023.07.26 -->
-        <title>SummarizedExperiment - SummarizedExperiment 0.2.14 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?digest=369552022d0b975c8e74270ce6eabe0fb7978f24" />
-    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?digest=30d1aed668e5c3a91c3e3bf6a60b675221979f0e" />
+    <!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
+        <title>SummarizedExperiment - SummarizedExperiment 0.3.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
 
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.2.14 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.3.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.2.14 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.3.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -157,9 +157,6 @@
   <ul class="current">
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
-<li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2 has-children"><a class="reference internal" href="api/summarizedexperiment.html">summarizedexperiment package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of summarizedexperiment package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l3"><a class="reference internal" href="api/summarizedexperiment.dispatchers.html">summarizedexperiment.dispatchers package</a></li>
@@ -168,6 +165,10 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributions &amp; Help</a></li>
+<li class="toctree-l1"><a class="reference internal" href="license.html">License</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Authors</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 </ul>
 
 </div>
@@ -202,19 +203,19 @@
           </label>
         </div>
         <article role="main">
-          <section id="summarizedexperiment">
-<h1>SummarizedExperiment<a class="headerlink" href="#summarizedexperiment" title="Permalink to this heading">#</a></h1>
+          <section class="tex2jax_ignore mathjax_ignore" id="summarizedexperiment">
+<h1>SummarizedExperiment<a class="headerlink" href="#summarizedexperiment" title="Link to this heading">#</a></h1>
 <p>Container to represent genomic experiments, follows Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html">SummarizedExperiment</a>.</p>
 <section id="install">
-<h2>Install<a class="headerlink" href="#install" title="Permalink to this heading">#</a></h2>
+<h2>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h2>
 <p>Package is published to <a class="reference external" href="https://pypi.org/project/summarizedexperiment/">PyPI</a></p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>summarizedexperiment
 </pre></div>
 </div>
 </section>
 <section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading">#</a></h2>
-<p>Currently supports <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code> classes</p>
+<h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">#</a></h2>
+<p>Currently supports <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code> classes</p>
 <p>First create necessary sample data</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -246,7 +247,7 @@
     <span class="p">}</span>
 <span class="p">)</span>
 
-<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">fromPandas</span><span class="p">(</span><span class="n">df_gr</span><span class="p">)</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df_gr</span><span class="p">)</span>
 
 <span class="n">colData</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
     <span class="p">{</span>
@@ -259,24 +260,25 @@
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">summarizedexperiment</span> <span class="kn">import</span> <span class="n">SummarizedExperiment</span>
 
 <span class="n">tse</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
-    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">rowData</span><span class="o">=</span><span class="n">df_gr</span><span class="p">,</span> <span class="n">colData</span><span class="o">=</span><span class="n">colData</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">row_data</span><span class="o">=</span><span class="n">df_gr</span><span class="p">,</span> <span class="n">col_data</span><span class="o">=</span><span class="n">colData</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>To create a <code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">summarizedexperiment</span> <span class="kn">import</span> <span class="n">RangeSummarizedExperiment</span>
+<p>To create a <code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">summarizedexperiment</span> <span class="kn">import</span> <span class="n">RangedSummarizedExperiment</span>
 
-<span class="n">trse</span> <span class="o">=</span> <span class="n">RangeSummarizedExperiment</span><span class="p">(</span>
-    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">rowRanges</span><span class="o">=</span><span class="n">gr</span><span class="p">,</span> <span class="n">colData</span><span class="o">=</span><span class="n">colData</span>
+<span class="n">trse</span> <span class="o">=</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">row_ranges</span><span class="o">=</span><span class="n">gr</span><span class="p">,</span> <span class="n">col_data</span><span class="o">=</span><span class="n">colData</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 <p>For more use cases including subset, checkout the <a class="reference external" href="https://biocpy.github.io/SummarizedExperiment/">documentation</a></p>
-<!-- pyscaffold-notes --></section>
+<!-- pyscaffold-notes -->
+</section>
 <section id="note">
-<h2>Note<a class="headerlink" href="#note" title="Permalink to this heading">#</a></h2>
-<p>This project has been set up using PyScaffold 4.1.1. For details and usage
-information on PyScaffold see https://pyscaffold.org/.</p>
+<h2>Note<a class="headerlink" href="#note" title="Link to this heading">#</a></h2>
+<p>This project has been set up using PyScaffold 4.5. For details and usage
+information on PyScaffold see <a class="reference external" href="https://pyscaffold.org/">https://pyscaffold.org/</a>.</p>
 </section>
 </section>
 
@@ -309,7 +311,7 @@ information on PyScaffold see https://pyscaffold.org/.</p>
         <div class="bottom-of-page">
           <div class="left-details">
             <div class="copyright">
-                Copyright &#169; 2022, jkanche
+                Copyright &#169; 2023, jkanche
             </div>
             Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
@@ -350,9 +352,9 @@ information on PyScaffold see https://pyscaffold.org/.</p>
       
     </aside>
   </div>
-</div><script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script src="_static/sphinx_highlight.js"></script>
-    <script src="_static/scripts/furo.js"></script>
+</div><script src="_static/documentation_options.js?v=e259d695"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=32e29ea5"></script>
     </body>
 </html>

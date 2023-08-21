@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
-        <title>summarizedexperiment.dispatchers.rownames - SummarizedExperiment 0.3.0 documentation</title>
+        <title>summarizedexperiment.utils.validators - SummarizedExperiment 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -201,95 +201,81 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for summarizedexperiment.dispatchers.rownames</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">singledispatch</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span>
+          <h1>Source code for summarizedexperiment.utils.validators</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
-<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
-<span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span>
+<span class="kn">from</span> <span class="nn">..types</span> <span class="kn">import</span> <span class="n">BiocOrPandasFrame</span>
 
-<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;keviny2, jkanche&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;keviny2&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
 
-<div class="viewcode-block" id="get_rownames">
-<a class="viewcode-back" href="../../../api/summarizedexperiment.dispatchers.html#summarizedexperiment.dispatchers.rownames.get_rownames">[docs]</a>
-<span class="nd">@singledispatch</span>
-<span class="k">def</span> <span class="nf">get_rownames</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Access row names from various representations.</span>
+<span class="k">def</span> <span class="nf">_validate_single_frame</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">BiocOrPandasFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate there are no None or duplicated names.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x: Any object.</span>
-
-<span class="sd">        ``x`` may be a :py:class:`~pandas.DataFrame`.</span>
-
-<span class="sd">        Alternatively, ``x`` may be a :py:class:`~biocframe.BiocFrame.BiocFrame` object.</span>
-
-<span class="sd">        Alternatively, ``x`` may also contain a property or attribute ``row_names`` for</span>
-<span class="sd">        custom representations.</span>
-
-<span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: If ``x`` is not a supported type.</span>
+<span class="sd">        df (BiocOrPandasFrame): Object to validate.</span>
+<span class="sd">            ``df`` may be a :py;class:`~biocframe.BiocFrame.BiocFrame` object.</span>
+<span class="sd">            Alternatively, ``df`` may be a :py:class:`~pandas.DataFrame`.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[str]: List of row names.</span>
+<span class="sd">        bool: `True` if ``df`` does not have any `None` or duplicated names.</span>
+<span class="sd">        `False` otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;row_names&quot;</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">row_names</span>
-
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`row_names` do not exist for class: &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span></div>
-
+    <span class="n">any_null</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+    <span class="n">any_duplicates</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">))</span>
+    <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="n">any_null</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">any_duplicates</span><span class="p">)</span>
 
 
-<span class="nd">@get_rownames</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
-
-
-<span class="nd">@get_rownames</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BiocFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">row_names</span>
-
-
-<div class="viewcode-block" id="set_rownames">
-<a class="viewcode-back" href="../../../api/summarizedexperiment.dispatchers.html#summarizedexperiment.dispatchers.rownames.set_rownames">[docs]</a>
-<span class="nd">@singledispatch</span>
-<span class="k">def</span> <span class="nf">set_rownames</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set row names for various representations.</span>
+<div class="viewcode-block" id="validate_names">
+<a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.validators.validate_names">[docs]</a>
+<span class="k">def</span> <span class="nf">validate_names</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate names across experiments.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (Any): supported object.</span>
-
-<span class="sd">        ``x`` may be a :py:class:`~pandas.DataFrame`.</span>
-
-<span class="sd">        Alternatively, ``x`` may be a :py:class:`~biocframe.BiocFrame.BiocFrame` object.</span>
-
-<span class="sd">        Alternatively, ``x`` may also contain a property or attribute ``row_names`` for</span>
-<span class="sd">        custom representations.</span>
-
-<span class="sd">        names (Sequence[str]): New names.</span>
+<span class="sd">        x (Sequence[BiocOrPandasFrame]): Objects to validate.</span>
+<span class="sd">            ``x`` may be a :py;class:`~biocframe.BiocFrame.BiocFrame` object.</span>
+<span class="sd">            Alternatively, ``x`` may be a :py:class:`~pandas.DataFrame`.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        NotImplementedError: If ``x`` is not a supported type.</span>
+<span class="sd">        ValueError: If there are :py:obj:`~pandas.nan`, None or duplicated names.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        An object with the same type as ``x``.</span>
+<span class="sd">        bool: `True` if ``x`` does not have any `None` or duplicated names.</span>
+<span class="sd">        `False` otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot set row_names for class: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+    <span class="n">is_valid_names</span> <span class="o">=</span> <span class="nb">all</span><span class="p">([</span><span class="n">_validate_single_frame</span><span class="p">(</span><span class="n">se</span><span class="p">)</span> <span class="k">for</span> <span class="n">se</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_valid_names</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;At least one input has null or duplicated row names.&quot;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">is_valid_names</span></div>
 
 
 
-<span class="nd">@set_rownames</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="n">x</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">names</span>
-    <span class="k">return</span> <span class="n">x</span>
+<div class="viewcode-block" id="validate_shapes">
+<a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.validators.validate_shapes">[docs]</a>
+<span class="k">def</span> <span class="nf">validate_shapes</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Validate shapes across experiments.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        x (Sequence[BiocOrPandasFrame]): Objects to validate.</span>
+<span class="sd">            ``x`` may be a :py;class:`~biocframe.BiocFrame.BiocFrame` object.</span>
+<span class="sd">            Alternatively, ``x`` may be a :py:class:`~pandas.DataFrame`.</span>
 
-<span class="nd">@set_rownames</span><span class="o">.</span><span class="n">register</span>
-<span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">BiocFrame</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-    <span class="n">x</span><span class="o">.</span><span class="n">row_names</span> <span class="o">=</span> <span class="n">names</span>
-    <span class="k">return</span> <span class="n">x</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if all objects do not have the same shape.</span>
+<span class="sd">            - number of rows for</span>
+<span class="sd">                :py:meth:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.combine_cols`.</span>
+<span class="sd">            - number of columns for</span>
+<span class="sd">                :py:meth:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.combine_rows`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">is_all_same_shape</span> <span class="o">=</span> <span class="n">all_shapes</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">all_shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_shapes</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_all_same_shape</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Not all objects have the same shape.&quot;</span><span class="p">)</span></div>
+
 </pre></div>
         </article>
       </div>

@@ -2,7 +2,6 @@
 
 Container to represent genomic experiments, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html).
 
-
 ## Install
 
 Package is published to [PyPI](https://pypi.org/project/summarizedexperiment/)
@@ -13,9 +12,9 @@ pip install summarizedexperiment
 
 ## Usage
 
-Currently supports `SummarizedExperiment` & `RangeSummarizedExperiment` classes
+Currently supports `SummarizedExperiment` & `RangedSummarizedExperiment` classes
 
-First create necessary sample data 
+First create necessary sample data
 
 ```python
 import pandas as pd
@@ -48,7 +47,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 colData = pd.DataFrame(
     {
@@ -63,17 +62,17 @@ To create a `SummarizedExperiment`,
 from summarizedexperiment import SummarizedExperiment
 
 tse = SummarizedExperiment(
-    assays={"counts": counts}, rowData=df_gr, colData=colData
+    assays={"counts": counts}, row_data=df_gr, col_data=colData
 )
 ```
 
-To create a `RangeSummarizedExperiment`
+To create a `RangedSummarizedExperiment`
 
 ```python
-from summarizedexperiment import RangeSummarizedExperiment
+from summarizedexperiment import RangedSummarizedExperiment
 
-trse = RangeSummarizedExperiment(
-    assays={"counts": counts}, rowRanges=gr, colData=colData
+trse = RangedSummarizedExperiment(
+    assays={"counts": counts}, row_ranges=gr, col_data=colData
 )
 ```
 
@@ -83,5 +82,5 @@ For more use cases including subset, checkout the [documentation](https://biocpy
 
 ## Note
 
-This project has been set up using PyScaffold 4.1.1. For details and usage
+This project has been set up using PyScaffold 4.5. For details and usage
 information on PyScaffold see https://pyscaffold.org/.

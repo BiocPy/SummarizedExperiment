@@ -1,6 +1,33 @@
 summarizedexperiment.utils package
 ==================================
 
+Submodules
+----------
+
+summarizedexperiment.utils.combiners module
+-------------------------------------------
+
+.. automodule:: summarizedexperiment.utils.combiners
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+summarizedexperiment.utils.slicer module
+----------------------------------------
+
+.. automodule:: summarizedexperiment.utils.slicer
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+summarizedexperiment.utils.validators module
+--------------------------------------------
+
+.. automodule:: summarizedexperiment.utils.validators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
-        <title>summarizedexperiment.SummarizedExperiment - SummarizedExperiment 0.3.0 documentation</title>
+        <title>summarizedexperiment.type_checks - SummarizedExperiment 0.3.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -201,104 +201,121 @@
           </label>
         </div>
         <article role="main">
-          <h1>Source code for summarizedexperiment.SummarizedExperiment</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Optional</span>
+          <h1>Source code for summarizedexperiment.type_checks</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Callable</span>
 
-<span class="kn">from</span> <span class="nn">.BaseSE</span> <span class="kn">import</span> <span class="n">BaseSE</span>
-<span class="kn">from</span> <span class="nn">.types</span> <span class="kn">import</span> <span class="n">BiocOrPandasFrame</span><span class="p">,</span> <span class="n">MatrixTypes</span><span class="p">,</span> <span class="n">SlicerArgTypes</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
 
-<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
+<span class="c1"># from .RangedSummarizedExperiment import RangedSummarizedExperiment</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche, keviny2&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;MIT&quot;</span>
 
 
-<div class="viewcode-block" id="SummarizedExperiment">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.SummarizedExperiment.SummarizedExperiment">[docs]</a>
-<span class="k">class</span> <span class="nc">SummarizedExperiment</span><span class="p">(</span><span class="n">BaseSE</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container to represents genomic experiment data (`assays`), features (`row_data`),</span>
-<span class="sd">    sample data (`col_data`) and any other `metadata`.</span>
+<div class="viewcode-block" id="is_bioc_or_pandas_frame">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.type_checks.is_bioc_or_pandas_frame">[docs]</a>
+<span class="k">def</span> <span class="nf">is_bioc_or_pandas_frame</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if ``x`` is either a :py:class:`~pandas.DataFrame` or</span>
+<span class="sd">    :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
 
-<span class="sd">    SummarizedExperiment follows the R/Bioconductor specification; rows are features, columns</span>
-<span class="sd">    are samples.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        x (Any): Any object.</span>
 
-<span class="sd">    Attributes:</span>
-<span class="sd">        assays (MutableMapping[str, MatrixTypes]): Dictionary</span>
-<span class="sd">            of matrices, with assay names as keys and 2-dimensional matrices represented as</span>
-<span class="sd">            :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.</span>
-
-<span class="sd">            Alternatively, you may use any 2-dimensional matrix that contains the property ``shape``</span>
-<span class="sd">            and implements the slice operation using the ``__getitem__`` dunder method.</span>
-
-<span class="sd">            All matrices in ``assays`` must be 2-dimensional and have the same</span>
-<span class="sd">            shape (number of rows, number of columns).</span>
-
-<span class="sd">        row_data (BiocOrPandasFrame, optional): Features, must be the same length as</span>
-<span class="sd">            rows of the matrices in assays.</span>
-
-<span class="sd">            Features may be either a :py:class:`~pandas.DataFrame` or</span>
-<span class="sd">            :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
-
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        col_data (BiocOrPandasFrame, optional): Sample data, must be</span>
-<span class="sd">            the same length as columns of the matrices in assays.</span>
-
-<span class="sd">            Sample Information may be either a :py:class:`~pandas.DataFrame` or</span>
-<span class="sd">            :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
-
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        metadata (MutableMapping, optional): Additional experimental metadata describing the</span>
-<span class="sd">            methods. Defaults to None.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if ``x`` is `DataFrame`-like.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">assays</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatrixTypes</span><span class="p">],</span>
-        <span class="n">row_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">col_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a Summarized Experiment (SE).&quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">col_data</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
-
-<div class="viewcode-block" id="SummarizedExperiment.__getitem__">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.SummarizedExperiment.SummarizedExperiment.__getitem__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">args</span><span class="p">:</span> <span class="n">SlicerArgTypes</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset a `SummarizedExperiment`.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            args (SlicerArgTypes): Indices or names to slice. Tuple contains</span>
-<span class="sd">                slices along dimensions (rows, cols).</span>
-
-<span class="sd">                Each element in the tuple, might be either a integer vector (integer positions),</span>
-<span class="sd">                boolean vector or :py:class:`~slice` object. Defaults to None.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: Too many or few slices.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            SummarizedExperiment: Sliced `SummarizedExperiment` object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sliced_objs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slice</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
-            <span class="n">assays</span><span class="o">=</span><span class="n">sliced_objs</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
-            <span class="n">row_data</span><span class="o">=</span><span class="n">sliced_objs</span><span class="o">.</span><span class="n">row_data</span><span class="p">,</span>
-            <span class="n">col_data</span><span class="o">=</span><span class="n">sliced_objs</span><span class="o">.</span><span class="n">col_data</span><span class="p">,</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-        <span class="p">)</span></div>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">BiocFrame</span><span class="p">)</span></div>
 
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Class SummarizedExperiment with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> features and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="s2">&quot;samples </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  assays: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  features: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">row_data</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">row_data</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  sample data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">pattern</span></div>
+
+<span class="c1"># def is_gr_or_rse(x: Union[GenomicRanges, RangedSummarizedExperiment]):</span>
+<span class="c1">#     &quot;&quot;&quot;Check if the object is either a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
+
+<span class="c1">#     Args:</span>
+<span class="c1">#         x (Union[GenomicRanges, RangedSummarizedExperiment]): object to check.</span>
+
+<span class="c1">#     Raises:</span>
+<span class="c1">#         TypeError: object is not a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
+<span class="c1">#     &quot;&quot;&quot;</span>
+<span class="c1">#     if not (isinstance(x, RangedSummarizedExperiment) or isinstance(x, GenomicRanges)):</span>
+<span class="c1">#         raise TypeError(</span>
+<span class="c1">#             &quot;object is not a `RangedSummarizedExperiment` or `GenomicRanges`&quot;</span>
+<span class="c1">#         )</span>
+
+
+<span class="c1"># def _get_python_minor():</span>
+<span class="c1">#     return version_info[1] &lt; 8</span>
+<span class="c1"># Expectations on Assays, these should be matrices or matrix-like objects</span>
+<span class="c1"># that support slicing and expose a shape parameter.</span>
+<span class="c1"># TODO: this only works for Python 3.8 and above.</span>
+<span class="c1">#</span>
+<span class="c1"># if _get_python_minor() &gt; 8:</span>
+<span class="c1">#     @runtime_checkable</span>
+<span class="c1">#     class MatrixProtocol(Protocol):</span>
+<span class="c1">#         def __getitem__(self, args):</span>
+<span class="c1">#             ...</span>
+
+<span class="c1">#         @property</span>
+<span class="c1">#         def shape(self):</span>
+<span class="c1">#             ...</span>
+
+
+<div class="viewcode-block" id="is_matrix_like">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.type_checks.is_matrix_like">[docs]</a>
+<span class="k">def</span> <span class="nf">is_matrix_like</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if ``x`` is a `matrix`-like object.</span>
+
+<span class="sd">    Matrix must support the matrix protocol, has the `shape` property</span>
+<span class="sd">    and allows slicing by implementing the `__getitem__` dunder method.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (Any): Any object.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if ``x``is matrix-like.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: this only work for python 3.8 and below.</span>
+    <span class="c1"># return isinstance(x, MatrixProtocol)</span>
+    <span class="k">return</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;__getitem__&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s2">&quot;shape&quot;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="is_list_of_type">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.type_checks.is_list_of_type">[docs]</a>
+<span class="k">def</span> <span class="nf">is_list_of_type</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">target_type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if ``x`` is a list or tuple and and whether all elements</span>
+<span class="sd">    are of the same type.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (Any): Any object.</span>
+<span class="sd">        target_type (callable): Type to check for, e.g. ``str``, ``int``.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if ``x`` is :py:class:`~list` and all elements are of the same type.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+        <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">target_type</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">x</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="is_list_of_subclass">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.type_checks.is_list_of_subclass">[docs]</a>
+<span class="k">def</span> <span class="nf">is_list_of_subclass</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">target_type</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if all provided objects subclass of ``target_type``.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x (Any): Any object.</span>
+<span class="sd">        target_type (callable): Type to check objects against.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if ``x`` is :py:class:`~list` and all objects are derivatives of the same class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span>
+        <span class="nb">issubclass</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">target_type</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">x</span>
+    <span class="p">)</span></div>
 
 </pre></div>
         </article>

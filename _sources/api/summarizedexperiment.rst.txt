@@ -21,14 +21,6 @@ summarizedexperiment.BaseSE module
    :undoc-members:
    :show-inheritance:
 
-summarizedexperiment.RangeSummarizedExperiment module
------------------------------------------------------
-
-.. automodule:: summarizedexperiment.RangeSummarizedExperiment
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 summarizedexperiment.RangedSummarizedExperiment module
 ------------------------------------------------------
 
@@ -41,6 +33,14 @@ summarizedexperiment.SummarizedExperiment module
 ------------------------------------------------
 
 .. automodule:: summarizedexperiment.SummarizedExperiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+summarizedexperiment.type\_checks module
+----------------------------------------
+
+.. automodule:: summarizedexperiment.type_checks
    :members:
    :undoc-members:
    :show-inheritance:

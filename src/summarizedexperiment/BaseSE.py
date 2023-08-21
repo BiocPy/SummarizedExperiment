@@ -23,12 +23,12 @@ from .types import (
     SlicerArgTypes,
     SlicerResult,
 )
-from .utils._combiners import (
+from .utils.combiners import (
     combine_assays,
     combine_frames,
     combine_metadata,
 )
-from .utils._slicer import get_indexes_from_bools, get_indexes_from_names
+from .utils.slicer import get_indexes_from_bools, get_indexes_from_names
 
 __author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
@@ -69,7 +69,7 @@ class BaseSE:
         if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
             raise Exception(
                 f"{assays} must be a dictionary and contain "
-                "atleast one matrix (either sparse or dense)"
+                "at least one matrix (either sparse or dense)"
             )
 
         self._validate_assays(assays)
@@ -420,9 +420,7 @@ class BaseSE:
 
         if rowIndices is not None and self.rowData is not None:
             if is_list_of_type(rowIndices, str):
-                rowIndices = get_indexes_from_names(
-                    self.rowData.index, rowIndices
-                )
+                rowIndices = get_indexes_from_names(self.rowData.index, rowIndices)
             elif is_list_of_type(rowIndices, bool):
                 if len(rowIndices) != self.shape[0]:
                     raise ValueError(
@@ -441,9 +439,7 @@ class BaseSE:
 
         if colIndices is not None and self.colData is not None:
             if is_list_of_type(colIndices, str):
-                colIndices = get_indexes_from_names(
-                    self.colData.index, colIndices
-                )
+                colIndices = get_indexes_from_names(self.colData.index, colIndices)
             elif is_list_of_type(colIndices, bool):
                 if len(colIndices) != self.shape[1]:
                     raise ValueError(

@@ -98,7 +98,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         col_data: Optional[BiocOrPandasFrame] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
-        """Initialize a `RangeSummarizedExperiment` (RSE) object."""
+        """Initialize a `RangedSummarizedExperiment` (RSE) object."""
         super().__init__(assays, row_data, col_data, metadata)
         self._validate_row_ranges(row_ranges)
         self._row_ranges = row_ranges
@@ -192,13 +192,13 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         return self.row_ranges.width
 
     @property
-    def seqInfo(self) -> Optional[SeqInfo]:
+    def seq_info(self) -> Optional[SeqInfo]:
         """Get sequence information object (if available).
 
         Returns:
             (SeqInfo, optional): Sequence information.
         """
-        return self.row_ranges.seqInfo
+        return self.row_ranges.seq_info
 
     def __getitem__(
         self,
@@ -222,8 +222,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         sliced_objs = self._slice(args)
 
         new_row_ranges = None
-        if sliced_objs.rowIndices is not None and self.row_ranges is not None:
-            new_row_ranges = self.row_ranges[sliced_objs.rowIndices, :]
+        if sliced_objs.row_indices is not None and self.row_ranges is not None:
+            new_row_ranges = self.row_ranges[sliced_objs.row_indices, :]
 
         return RangedSummarizedExperiment(
             assays=sliced_objs.assays,

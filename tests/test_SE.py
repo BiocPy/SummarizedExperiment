@@ -36,9 +36,9 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
-colData = pd.DataFrame(
+col_data = pd.DataFrame(
     {
         "treatment": ["ChIP", "Input"] * 3,
     }
@@ -46,7 +46,9 @@ colData = pd.DataFrame(
 
 
 def test_SE_creation():
-    tse = SummarizedExperiment(assays={"counts": counts}, rowData=gr, colData=colData)
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=gr, col_data=col_data
+    )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
@@ -55,7 +57,7 @@ def test_SE_creation():
 
 def test_SE_df():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, rowData=df_gr, colData=colData
+        assays={"counts": counts}, row_data=df_gr, col_data=col_data
     )
 
     assert tse is not None
@@ -70,25 +72,27 @@ def test_SE_none():
     assert isinstance(tse, SummarizedExperiment)
     assert tse.shape == (200, 6)
 
-    tse.rownames = [f"row_{i}" for i in range(200)]
-    assert tse.rownames is not None
-    assert len(tse.rownames) == 200
-    assert tse.rowData.shape[0] == 200
+    tse.row_names = [f"row_{i}" for i in range(200)]
+    assert tse.row_names is not None
+    assert len(tse.row_names) == 200
+    assert tse.row_data.shape[0] == 200
 
     tse.colnames = [f"col_{i}" for i in range(6)]
     assert tse.colnames is not None
     assert len(tse.colnames) == 6
-    assert tse.colData.shape[0] == 6
+    assert tse.col_data.shape[0] == 6
 
 
 def test_SE_export():
-    tse = SummarizedExperiment(assays={"counts": counts}, rowData=gr, colData=colData)
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=gr, col_data=col_data
+    )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
     assert tse.shape == (200, 6)
 
-    adata = tse.toAnnData()
+    adata = tse.to_anndata()
 
     assert adata is not None
     assert adata.shape == (6, 200)

@@ -3,7 +3,7 @@ from typing import Any, Callable
 import pandas as pd
 from biocframe import BiocFrame
 
-# from .RangeSummarizedExperiment import RangeSummarizedExperiment
+# from .RangedSummarizedExperiment import RangedSummarizedExperiment
 
 __author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
@@ -23,18 +23,18 @@ def is_bioc_or_pandas_frame(x: Any) -> bool:
     return isinstance(x, pd.DataFrame) or isinstance(x, BiocFrame)
 
 
-# def is_gr_or_rse(x: Union[GenomicRanges, RangeSummarizedExperiment]):
-#     """Check if the object is either a `RangeSummarizedExperiment` or `GenomicRanges`.
+# def is_gr_or_rse(x: Union[GenomicRanges, RangedSummarizedExperiment]):
+#     """Check if the object is either a `RangedSummarizedExperiment` or `GenomicRanges`.
 
 #     Args:
-#         x (Union[GenomicRanges, RangeSummarizedExperiment]): object to check.
+#         x (Union[GenomicRanges, RangedSummarizedExperiment]): object to check.
 
 #     Raises:
-#         TypeError: object is not a `RangeSummarizedExperiment` or `GenomicRanges`.
+#         TypeError: object is not a `RangedSummarizedExperiment` or `GenomicRanges`.
 #     """
-#     if not (isinstance(x, RangeSummarizedExperiment) or isinstance(x, GenomicRanges)):
+#     if not (isinstance(x, RangedSummarizedExperiment) or isinstance(x, GenomicRanges)):
 #         raise TypeError(
-#             "object is not a `RangeSummarizedExperiment` or `GenomicRanges`"
+#             "object is not a `RangedSummarizedExperiment` or `GenomicRanges`"
 #         )
 
 

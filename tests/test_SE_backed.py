@@ -37,7 +37,7 @@ def test_SE_backed():
         }
     )
 
-    colData = pd.DataFrame(
+    col_data = pd.DataFrame(
         {
             "treatment": ["ChIP"] * 3005,
         }
@@ -47,8 +47,8 @@ def test_SE_backed():
 
     tse = SummarizedExperiment(
         assays={"counts_backed": assay},
-        rowData=df_gr,
-        colData=colData,
+        row_data=df_gr,
+        col_data=col_data,
     )
 
     assert tse is not None
@@ -86,7 +86,7 @@ def test_SE_backed_should_fail():
             }
         )
 
-        colData = pd.DataFrame(
+        col_data = pd.DataFrame(
             {
                 "treatment": ["ChIP", "Input"] * 3,
             }
@@ -96,8 +96,8 @@ def test_SE_backed_should_fail():
 
         tse = SummarizedExperiment(
             assays={"counts_backed": assay, "counts": counts},
-            rowData=df_gr,
-            colData=colData,
+            row_data=df_gr,
+            col_data=col_data,
         )
 
         assert tse is not None

@@ -36,9 +36,9 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
-colData = pd.DataFrame(
+col_data = pd.DataFrame(
     {
         "treatment": ["ChIP", "Input"] * 3,
     }
@@ -47,17 +47,17 @@ colData = pd.DataFrame(
 
 def test_SE_props():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, rowData=df_gr, colData=colData
+        assays={"counts": counts}, row_data=df_gr, col_data=col_data
     )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
 
-    assert tse.assayNames is not None
-    assert len(tse.assayNames) == 1
+    assert tse.assay_names is not None
+    assert len(tse.assay_names) == 1
 
-    assert tse.colData is not None
-    assert tse.rowData is not None
+    assert tse.col_data is not None
+    assert tse.row_data is not None
 
     assert tse.dims == tse.shape
 
@@ -66,23 +66,23 @@ def test_SE_props():
 
 def test_SE_set_props():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, rowData=df_gr, colData=colData
+        assays={"counts": counts}, row_data=df_gr, col_data=col_data
     )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
 
-    assert tse.assayNames is not None
+    assert tse.assay_names is not None
 
-    tse.assayNames = ["normalized"]
+    tse.assay_names = ["normalized"]
 
-    assert len(tse.assayNames) == 1
+    assert len(tse.assay_names) == 1
 
-    tse.colData = None
-    assert tse.colData is not None
+    tse.col_data = None
+    assert tse.col_data is not None
 
-    tse.rowData = None
-    assert tse.rowData is not None
+    tse.row_data = None
+    assert tse.row_data is not None
 
     assert tse.dims == tse.shape
 
@@ -90,15 +90,15 @@ def test_SE_set_props():
     assert tse.metadata is not None
 
 
-def test_SE_subsetAssays():
+def test_SE_subset_assays():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, rowData=df_gr, colData=colData
+        assays={"counts": counts}, row_data=df_gr, col_data=col_data
     )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
 
-    subset_asys = tse.subsetAssays(rowIndices=slice(1, 10), colIndices=[0, 1, 2])
+    subset_asys = tse.subset_assays(row_indices=slice(1, 10), col_indices=[0, 1, 2])
     assert subset_asys is not None
     assert isinstance(subset_asys, type(tse.assays))
 

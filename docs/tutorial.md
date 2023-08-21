@@ -6,10 +6,10 @@ A `SummarizedExperiment` contains three slots,
 
 - `rowData`: feature information e.g. genes, transcripts, exons, etc.
 - `colData`: sample information about the columns of the matrices.
-- `Assays`: a dictionary of matrices with keys specifying the assay name. 
+- `Assays`: a dictionary of matrices with keys specifying the assay name.
 
 
-The package currently provides both `SummarizedExperiment` & `RangeSummarizedExperiment` representations, a fundamental difference between these two is the rows of a `RangedSummarizedExperiment` object represent [GenomicRanges](https://github.com/BiocPy/GenomicRanges) of interest.
+The package currently provides both `SummarizedExperiment` & `RangedSummarizedExperiment` representations, a fundamental difference between these two is the rows of a `RangedSummarizedExperiment` object represent [GenomicRanges](https://github.com/BiocPy/GenomicRanges) of interest.
 
 ## Construct a `SummarizedExperiment` object
 
@@ -50,7 +50,7 @@ colData = pd.DataFrame(
 )
 ```
 
-Finally, create an appropriate summarized experiment class. 
+Finally, create an appropriate summarized experiment class.
 
 ### `SummarizedExperiment`
 
@@ -62,13 +62,13 @@ se = SummarizedExperiment(
 )
 ```
 
-###  `RangeSummarizedExperiment`
+###  `RangedSummarizedExperiment`
 
-`RangeSummarizedExperiment` requires features to be a [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges) object.
+`RangedSummarizedExperiment` requires features to be a [`GenomicRanges`](https://github.com/BiocPy/GenomicRanges) object.
 
 ```python
 # convert our pandas dataframe to genomic ranges.
-gr = GenomicRanges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 rse = SummarizedExperiment(
     assays={"counts": counts}, rowRanges=gr, colData=colData
@@ -197,7 +197,7 @@ subset_se_with_bools = se_with_index_names[
 
 ## Range based operations
 
-`RangeSummarizedExperiment` objects on the other hand supports many interval based operations similar to `GenomicRanges`.
+`RangedSummarizedExperiment` objects on the other hand supports many interval based operations similar to `GenomicRanges`.
 
 
 ```python
@@ -296,7 +296,7 @@ se3 = SummarizedExperiment(
 
 ### combineCols()
 
-concatenate columns (samples or cells) of multiple `SummarizedExperiment` objects, returning a `SummarizedExperiment` with columns equal to the concatenation of columns across all inputs. `combineCols()` allows for differences in the number and names of rows, differences in the available `colData` fields, and even differences in the available `assays` among the objects being combined. 
+concatenate columns (samples or cells) of multiple `SummarizedExperiment` objects, returning a `SummarizedExperiment` with columns equal to the concatenation of columns across all inputs. `combineCols()` allows for differences in the number and names of rows, differences in the available `colData` fields, and even differences in the available `assays` among the objects being combined.
 
 ```python
 se_combined = se1.combineCols(se2, se3) # OR se1.combineCols([se2, se3])

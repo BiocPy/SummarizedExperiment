@@ -47,12 +47,12 @@ class SummarizedExperiment(BaseSE):
     def __init__(
         self,
         assays: MutableMapping[str, MatrixTypes],
-        rowData: Optional[BiocOrPandasFrame] = None,
-        colData: Optional[BiocOrPandasFrame] = None,
+        row_data: Optional[BiocOrPandasFrame] = None,
+        col_data: Optional[BiocOrPandasFrame] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
         """Initialize a Summarized Experiment (SE)."""
-        super().__init__(assays, rowData, colData, metadata)
+        super().__init__(assays, row_data, col_data, metadata)
 
     def __getitem__(
         self,
@@ -76,8 +76,8 @@ class SummarizedExperiment(BaseSE):
         sliced_objs = self._slice(args)
         return SummarizedExperiment(
             assays=sliced_objs.assays,
-            rowData=sliced_objs.rowData,
-            colData=sliced_objs.colData,
+            row_data=sliced_objs.row_data,
+            col_data=sliced_objs.col_data,
             metadata=self.metadata,
         )
 
@@ -86,7 +86,7 @@ class SummarizedExperiment(BaseSE):
             f"Class SummarizedExperiment with {self.shape[0]} features and {self.shape[1]} "
             "samples \n"
             f"  assays: {list(self.assays.keys())} \n"
-            f"  features: {self.rowData.columns if self.rowData is not None else None} \n"
-            f"  sample data: {self.colData.columns if self.colData is not None else None}"
+            f"  features: {self.row_data.columns if self.row_data is not None else None} \n"
+            f"  sample data: {self.col_data.columns if self.col_data is not None else None}"
         )
         return pattern

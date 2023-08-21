@@ -20,7 +20,7 @@ def get_rownames(x) -> List[str]:
 
         Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
 
-        Alternatively, ``x`` may also contain a property or attribute ``rownames`` for
+        Alternatively, ``x`` may also contain a property or attribute ``row_names`` for
         custom representations.
 
     Raises:
@@ -29,10 +29,10 @@ def get_rownames(x) -> List[str]:
     Returns:
         List[str]: List of row names.
     """
-    if hasattr(x, "rownames"):
-        return x.rownames
+    if hasattr(x, "row_names"):
+        return x.row_names
 
-    raise NotImplementedError(f"`rownames` do not exist for class: '{type(x)}'.")
+    raise NotImplementedError(f"`row_names` do not exist for class: '{type(x)}'.")
 
 
 @get_rownames.register
@@ -42,7 +42,7 @@ def _(x: DataFrame) -> List[str]:
 
 @get_rownames.register
 def _(x: BiocFrame) -> List[str]:
-    return x.rowNames
+    return x.row_names
 
 
 @singledispatch
@@ -56,7 +56,7 @@ def set_rownames(x: Any, names: Sequence[str]):
 
         Alternatively, ``x`` may be a :py:class:`biocframe.BiocFrame.BiocFrame` object.
 
-        Alternatively, ``x`` may also contain a property or attribute ``rownames`` for
+        Alternatively, ``x`` may also contain a property or attribute ``row_names`` for
         custom representations.
 
         names (Sequence[str]): New names.
@@ -67,7 +67,7 @@ def set_rownames(x: Any, names: Sequence[str]):
     Returns:
         An object with the same type as ``x``.
     """
-    raise NotImplementedError(f"Cannot set rownames for class: {type(x)}")
+    raise NotImplementedError(f"Cannot set row_names for class: {type(x)}")
 
 
 @set_rownames.register
@@ -78,5 +78,5 @@ def _(x: DataFrame, names: Sequence[str]) -> Sequence[str]:
 
 @set_rownames.register
 def _(x: BiocFrame, names: Sequence[str]) -> Sequence[str]:
-    x.rowNames = names
+    x.row_names = names
     return x

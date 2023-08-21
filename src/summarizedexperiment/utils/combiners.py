@@ -1,13 +1,15 @@
-from typing import List, Literal, Sequence, Tuple, Dict
+from typing import Dict, List, Literal, Sequence, Tuple
 
 from biocframe import BiocFrame
-from numpy import find_common_type, ndarray, argwhere
+from numpy import argwhere, find_common_type, ndarray
 from pandas import DataFrame, Index, concat
 from scipy.sparse import lil_matrix
 
 from ..types import ArrayTypes, BiocOrPandasFrame
 from .validators import validate_names, validate_shapes
-from ..SummarizedExperiment import SummarizedExperiment
+from ..dispatchers import get_rownames
+
+# from ..SummarizedExperiment import SummarizedExperiment
 
 __author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"
@@ -42,7 +44,7 @@ def _remove_duplicate_columns(df: DataFrame) -> DataFrame:
     return df.loc[:, ~df.columns.duplicated()]
 
 
-def combine_metadata(experiments: Sequence[SummarizedExperiment]) -> Dict:
+def combine_metadata(experiments: Sequence["SummarizedExperiment"]) -> Dict:
     """Combine metadata across experiments.
 
     Args:
@@ -95,8 +97,8 @@ def combine_frames(
 
     concat_df = concat(all_as_pandas, axis=axis)
 
-    if (use_names is False) and (x[0].index is not None):
-        concat_df.index = x[0].index
+    if (use_names is False) and (get_rownames(x[0]) is not None):
+        concat_df.index = get_rownames(x[0])
 
     if remove_duplicate_columns:
         return _remove_duplicate_columns(concat_df)
@@ -106,7 +108,7 @@ def combine_frames(
 
 def combine_assays_by_column(
     assay_name: str,
-    experiments: Sequence[SummarizedExperiment],
+    experiments: Sequence["SummarizedExperiment"],
     names: Index,
     shape: Tuple[int, int],
     use_names: bool,
@@ -140,7 +142,7 @@ def combine_assays_by_column(
             curr_assay = se.assays[assay_name]
             impose_common_precision(merged_assays, curr_assay)
             if use_names:
-                shared_idxs = argwhere(names.isin(se.rownames)).squeeze()
+                shared_idxs = argwhere(names.isin(se.row_names)).squeeze()
                 merged_assays[shared_idxs, col_idx : col_idx + offset] = curr_assay
             else:
                 merged_assays[:, col_idx : col_idx + offset] = curr_assay
@@ -152,7 +154,7 @@ def combine_assays_by_column(
 
 def combine_assays_by_row(
     assay_name: str,
-    experiments: Sequence[SummarizedExperiment],
+    experiments: Sequence["SummarizedExperiment"],
     names: Index,
     shape: Tuple[int, int],
     use_names: bool,
@@ -175,7 +177,7 @@ def combine_assays_by_row(
 
 def combine_assays(
     assay_name: str,
-    experiments: Sequence[SummarizedExperiment],
+    experiments: Sequence["SummarizedExperiment"],
     names: Index,
     by: Literal["row", "column"],
     shape: Tuple[int, int],

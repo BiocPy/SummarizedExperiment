@@ -13,9 +13,9 @@ pip install summarizedexperiment
 
 ## Usage
 
-Currently supports `SummarizedExperiment` & `RangeSummarizedExperiment` classes
+Currently supports `SummarizedExperiment` & `RangedSummarizedExperiment` classes
 
-First create necessary sample data 
+First create necessary sample data
 
 ```python
 import pandas as pd
@@ -48,7 +48,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = GenomicRanges.fromPandas(df_gr)
+gr = genomicranges.from_pandas(df_gr)
 
 colData = pd.DataFrame(
     {
@@ -67,12 +67,12 @@ tse = SummarizedExperiment(
 )
 ```
 
-To create a `RangeSummarizedExperiment`
+To create a `RangedSummarizedExperiment`
 
 ```python
-from summarizedexperiment import RangeSummarizedExperiment
+from summarizedexperiment import RangedSummarizedExperiment
 
-trse = RangeSummarizedExperiment(
+trse = RangedSummarizedExperiment(
     assays={"counts": counts}, rowRanges=gr, colData=colData
 )
 ```

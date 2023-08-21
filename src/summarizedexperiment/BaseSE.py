@@ -467,7 +467,9 @@ class BaseSE:
 
         if row_indices is not None and self.row_data is not None:
             if is_list_of_type(row_indices, str):
-                row_indices = get_indexes_from_names(self.row_data.index, row_indices)
+                row_indices = get_indexes_from_names(
+                    get_rownames(self.row_data), row_indices
+                )
             elif is_list_of_type(row_indices, bool):
                 if len(row_indices) != self.shape[0]:
                     raise ValueError(
@@ -486,7 +488,9 @@ class BaseSE:
 
         if col_indices is not None and self.col_data is not None:
             if is_list_of_type(col_indices, str):
-                col_indices = get_indexes_from_names(self.col_data.index, col_indices)
+                col_indices = get_indexes_from_names(
+                    get_rownames(self.col_data), col_indices
+                )
             elif is_list_of_type(col_indices, bool):
                 if len(col_indices) != self.shape[1]:
                     raise ValueError(
@@ -510,7 +514,7 @@ class BaseSE:
         return SlicerResult(new_rows, new_cols, new_assays, row_indices, col_indices)
 
     @property
-    def rownames(self) -> List[str]:
+    def row_names(self) -> List[str]:
         """Get row/feature index.
 
         Returns:
@@ -518,8 +522,8 @@ class BaseSE:
         """
         return get_rownames(self.row_data)
 
-    @rownames.setter
-    def rownames(self, names: Sequence[str]):
+    @row_names.setter
+    def row_names(self, names: Sequence[str]):
         """Set row/feature names for the experiment.
 
         Args:
@@ -580,7 +584,7 @@ class BaseSE:
 
         trows = self.row_data
         if isinstance(self.row_data, GenomicRanges):
-            trows = self.row_data.toPandas()
+            trows = self.row_data.to_pandas()
 
         obj = AnnData(
             obs=self.col_data,

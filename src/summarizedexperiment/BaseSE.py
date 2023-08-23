@@ -36,8 +36,8 @@ __license__ = "MIT"
 
 
 class BaseSE:
-    """Base class for `SummarizedExperiment`. Implements common properties and
-    methods that can be reused across all derived classes.
+    """Base class for `SummarizedExperiment`. Implements common properties and methods
+    that can be reused across all derived classes.
 
     Container to represents genomic experiment data (`assays`), features (`row_data`),
     sample data (`col_data`) and any other `metadata`.
@@ -565,8 +565,8 @@ class BaseSE:
     def to_anndata(
         self,
     ) -> AnnData:
-        """Transform :py:class:`summarizedexperiment.BaseSE`-like to :py:class:`~anndata.AnnData`
-        representation.
+        """Transform :py:class:`summarizedexperiment.BaseSE`-like to
+        :py:class:`~anndata.AnnData` representation.
 
         Returns:
             AnnData: An `AnnData` representation of the experiment..
@@ -602,12 +602,12 @@ class BaseSE:
         use_names: bool = True,
         remove_duplicate_columns: bool = True,
     ) -> "BaseSE":
-        """A more flexible version of ``cbind``. Permits differences in the number
-        and identity of rows, differences in
-        :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.col_data`
-        fields, and even differences in the available `assays` among
-        :py:class:`~summarizedexperiment.SummarizedExperiment.BaseSE`-derived objects being
-        combined.
+        """A more flexible version of ``cbind``. Permits differences in the number and
+        identity of rows, differences in :py:attr:`~summarizedexperiment.SummarizedExper
+        iment.SummarizedExperiment.col_data` fields, and even differences in the
+        available `assays` among
+        :py:class:`~summarizedexperiment.SummarizedExperiment.BaseSE`-derived objects
+        being combined.
 
         Currently does not support range based merging of feature information when
         performing this operation.

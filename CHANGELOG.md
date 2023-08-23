@@ -28,12 +28,12 @@ Finally, pyscaffold has been updated to use "myst-parser" as the markdown compil
 - row/col data can be empty/None
 - update tests and documentation
 
-## Version 0.1.1 
+## Version 0.1.1
 - Add subset, shape and custom print for the class
 - Tests for subset
 - Documentation update
 
-## Version 0.1 
+## Version 0.1
 
 - Initial creation of SE and RSE classes
 - Tests

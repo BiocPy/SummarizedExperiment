@@ -11,6 +11,7 @@ version_scheme = "no-guess-dev"
 line-length = 120
 src = ["src"]
 exclude = ["tests"]
+extend-ignore = ["F821"]
 
 [tool.ruff.pydocstyle]
 convention = "google"

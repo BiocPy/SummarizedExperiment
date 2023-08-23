@@ -54,8 +54,7 @@ def test_SE_combine_cols_unnamed(summarized_experiments):
 
 
 def test_SE_combine_cols_use_names_false(summarized_experiments):
-    """
-    Test case to verify combine_cols(..., use_names=False).
+    """Test case to verify combine_cols(..., use_names=False).
 
     Test Scenarios:
     1. Test with same number of rows and same row names.
@@ -181,8 +180,7 @@ def test_SE_combine_cols_use_names_false(summarized_experiments):
 
 
 def test_SE_combine_cols_use_names_true(summarized_experiments):
-    """
-    Test case to verify combine_cols(..., use_names=True).
+    """Test case to verify combine_cols(..., use_names=True).
 
     This test case covers functionality of combine_cols(..., use_names=True) by
     testing with "SummarizedExperiment" objects of varying shapes and properties.
@@ -386,8 +384,7 @@ def test_SE_combine_cols_use_names_true(summarized_experiments):
 
 
 def test_SE_combine_cols_mix_sparse_and_dense(summarized_experiments):
-    """
-    Test case to verify combine_cols() when assays differ in dtype.
+    """Test case to verify combine_cols() when assays differ in dtype.
 
     Test Steps:
     1. Set up the "SummarizedExperiment" inputs.
@@ -457,9 +454,7 @@ def test_SE_combine_cols_mix_sparse_and_dense(summarized_experiments):
 
 
 def test_SE_combine_cols_not_all_SE(summarized_experiments):
-    """
-    Test case to verify combine_cols() throws an error if not all inputs are
-    "SummarizedExperiment" objects.
+    """Test case to verify combine_cols() throws an error if not all inputs are "SummarizedExperiment" objects.
 
     Test Steps:
     1. Set up the "SummarizedExperiment" inputs.
@@ -476,8 +471,7 @@ def test_SE_combine_cols_not_all_SE(summarized_experiments):
 
 
 def test_SE_combine_cols_biocframe(summarized_experiments):
-    """
-    Test case to verify combine_cols() correctly handles BiocFrames.
+    """Test case to verify combine_cols() correctly handles BiocFrames.
 
     Test Steps:
     1. Set up the "SummarizedExperiment" inputs.

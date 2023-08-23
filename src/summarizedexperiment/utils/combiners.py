@@ -113,9 +113,8 @@ def combine_assays_by_column(
     shape: Tuple[int, int],
     use_names: bool,
 ) -> lil_matrix:
-    """Combine :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.assays`
-    across all :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects
-    by **column**.
+    """Combine :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.assays` across all
+    :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects by **column**.
 
     Args:
         assay_name (str): Name of the assay.
@@ -159,8 +158,8 @@ def combine_assays_by_row(
     shape: Tuple[int, int],
     use_names: bool,
 ) -> ndarray:
-    """Combine assays across all
-    :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects by **row**.
+    """Combine assays across all :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects by
+    **row**.
 
     Args:
         assay_name (str): Name of the assay.
@@ -183,8 +182,7 @@ def combine_assays(
     shape: Tuple[int, int],
     use_names: bool,
 ) -> lil_matrix:
-    """Combine assays across all
-    :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects.
+    """Combine assays across all :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects.
 
     Args:
         assay_name (str): Name of the assay.

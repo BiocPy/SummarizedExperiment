@@ -73,8 +73,8 @@ def is_matrix_like(x: Any) -> bool:
 
 
 def is_list_of_type(x: Any, target_type: Callable) -> bool:
-    """Checks if ``x`` is a list or tuple and and whether all elements
-    are of the same type.
+    """Checks if ``x`` is a list or tuple and and whether all elements are of the same
+    type.
 
     Args:
         x (Any): Any object.

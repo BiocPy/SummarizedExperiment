@@ -46,8 +46,8 @@ def _access_granges(x: GRangesOrRangeSE) -> GenomicRanges:
 
 
 class RangedSummarizedExperiment(SummarizedExperiment):
-    """RangedSummarizedExperiment class to represent genomic experiment data,
-    genomic features as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`, sample data and
+    """RangedSummarizedExperiment class to represent genomic experiment data, genomic
+    features as :py:class:`~genomicranges.GenomicRanges.GenomicRanges`, sample data and
     any additional experimental metadata.
 
     The key difference between this and `SummarizedExperiment` is enforcing type for
@@ -146,8 +146,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     @property
     def end(self) -> List[int]:
-        """Get genomic end positions for each feature or row in
-        experimental data.
+        """Get genomic end positions for each feature or row in experimental data.
 
         Returns:
             List[int]: List of end positions.
@@ -156,8 +155,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     @property
     def start(self) -> List[int]:
-        """Get genomic start positions for each feature or row in
-        experimental data.
+        """Get genomic start positions for each feature or row in experimental data.
 
         Returns:
             List[int]: List of start positions.
@@ -266,8 +264,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
-        """Search nearest positions, both upstream and downstream that overlap with
-        each range in ``query``.
+        """Search nearest positions, both upstream and downstream that overlap with each
+        range in ``query``.
 
         Args:
             query (GRangesOrRangeSE): Query intervals to find nearest positions.
@@ -299,8 +297,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
-        """Search nearest positions, only downstream that overlap with
-        each range in ``query``.
+        """Search nearest positions, only downstream that overlap with each range in
+        ``query``.
 
         Args:
             query (GRangesOrRangeSE): Query intervals to find nearest positions.
@@ -330,8 +328,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
-        """Search nearest positions, only upstream that overlap with the
-        each range in ``query``.
+        """Search nearest positions, only upstream that overlap with the each range in
+        ``query``.
 
         Args:
             query (GRangesOrRangeSE): Query intervals to find nearest positions.
@@ -360,8 +358,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
     ) -> Optional[Sequence[Optional[int]]]:
-        """Search nearest positions only downstream that overlap with the
-        each genomics interval in ``query``.
+        """Search nearest positions only downstream that overlap with the each genomics
+        interval in ``query``.
 
         Technically same as
         :py:meth:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.nearest`
@@ -397,8 +395,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         both: bool = False,
         ignore_strand: bool = False,
     ) -> "RangedSummarizedExperiment":
-        """Generates flanking ranges for each range in
-        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`.
+        """Generates flanking ranges for each range in :py:attr:`~summarizedexperiment.R
+        angedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`.
 
         Refer to either :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.flank` or the
         Bioconductor documentation for what it this method does.
@@ -431,10 +429,9 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         fix: Literal["start", "end", "center"] = "start",
         ignore_strand: bool = False,
     ) -> "RangedSummarizedExperiment":
-        """Resize
-        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`
-        to the specified ``width`` where either the ``start``,
-        ``end``, or ``center`` is used as an anchor.
+        """Resize :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSumma
+        rizedExperiment.row_ranges` to the specified ``width`` where either the
+        ``start``, ``end``, or ``center`` is used as an anchor.
 
         Args:
             width (int): Width to resize by.
@@ -461,9 +458,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         )
 
     def shift(self, shift: int = 0) -> "RangedSummarizedExperiment":
-        """Shift all ranges in
-        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`
-        by the specified ``shift`` parameter.
+        """Shift all ranges in :py:attr:`~summarizedexperiment.RangedSummarizedExperimen
+        t.RangedSummarizedExperiment.row_ranges` by the specified ``shift`` parameter.
 
         ``shift`` may be be negative.
 
@@ -486,9 +482,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     def promoters(
         self, upstream: int = 2000, downstream: int = 200
     ) -> "RangedSummarizedExperiment":
-        """Extend
-        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`
-        to promoter regions.
+        """Extend :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSumma
+        rizedExperiment.row_ranges` to promoter regions.
 
         Args:
             upstream (int, optional): Number of positions to extend in the 5' direction.
@@ -515,9 +510,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         end: Optional[int] = None,
         keep_all_ranges: bool = False,
     ) -> "RangedSummarizedExperiment":
-        """Restrict
-        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`
-        to a given start and end positions.
+        """Restrict :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSum
+        marizedExperiment.row_ranges` to a given start and end positions.
 
         Args:
             start (int, optional): Start position. Defaults to None.
@@ -546,8 +540,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         width: Optional[int] = None,
         end: Optional[int] = None,
     ) -> "RangedSummarizedExperiment":
-        """Narrow
-        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`.
+        """Narrow :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSumma
+        rizedExperiment.row_ranges`.
 
         Important: these parameters are relative shift in positions for each range.
 
@@ -692,8 +686,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     def sort(
         self, decreasing: bool = False, ignore_strand: bool = False
     ) -> "RangedSummarizedExperiment":
-        """Sort `RangedSummarizedExperiment` by
-        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`.
+        """Sort `RangedSummarizedExperiment` by :py:attr:`~summarizedexperiment.RangedSu
+        mmarizedExperiment.RangedSummarizedExperiment.row_ranges`.
 
         Args:
             decreasing (bool, optional): Whether to sort in decreasing order. Defaults to False.

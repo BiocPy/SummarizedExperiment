@@ -9,8 +9,8 @@ __license__ = "MIT"
 
 
 class SummarizedExperiment(BaseSE):
-    """Container to represents genomic experiment data (`assays`), features (`row_data`),
-    sample data (`col_data`) and any other `metadata`.
+    """Container to represents genomic experiment data (`assays`), features
+    (`row_data`), sample data (`col_data`) and any other `metadata`.
 
     SummarizedExperiment follows the R/Bioconductor specification; rows are features, columns
     are samples.

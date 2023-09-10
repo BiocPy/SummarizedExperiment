@@ -235,8 +235,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             f"Class RangedSummarizedExperiment with {self.shape[0]} features and {self.shape[1]} "
             "samples \n"
             f"  assays: {list(self.assays.keys())} \n"
-            f"  features: {self.row_data.columns if self.row_data is not None else None} \n"
-            f"  sample data: {self.col_data.columns if self.col_data is not None else None}"
+            f"  row_data: {self.row_data.columns if self.row_data is not None else None} \n"
+            f"  column_data: {self.col_data.columns if self.col_data is not None else None}"
         )
         return pattern
 

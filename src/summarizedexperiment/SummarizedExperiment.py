@@ -90,7 +90,7 @@ class SummarizedExperiment(BaseSE):
             metadata=self.metadata,
         )
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         pattern = (
             f"Class SummarizedExperiment with {self.shape[0]} features and {self.shape[1]} "
             "samples \n"

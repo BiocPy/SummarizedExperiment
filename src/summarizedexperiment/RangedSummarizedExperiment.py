@@ -230,13 +230,13 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             metadata=self.metadata,
         )
 
-    def __str__(self) -> str:
+    def __repr__(self) -> str:
         pattern = (
             f"Class RangedSummarizedExperiment with {self.shape[0]} features and {self.shape[1]} "
             "samples \n"
             f"  assays: {list(self.assays.keys())} \n"
             f"  row_data: {self.row_data.columns if self.row_data is not None else None} \n"
-            f"  column_data: {self.col_data.columns if self.col_data is not None else None}"
+            f"  col_data: {self.col_data.columns if self.col_data is not None else None}"
         )
         return pattern
 

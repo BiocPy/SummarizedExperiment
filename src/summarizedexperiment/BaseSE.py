@@ -2,7 +2,6 @@ import warnings
 from collections import OrderedDict
 from typing import Dict, List, MutableMapping, Optional, Sequence, Tuple
 
-from anndata import AnnData
 from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
@@ -563,12 +562,13 @@ class BaseSE:
 
     def to_anndata(
         self,
-    ) -> AnnData:
+    ) -> "AnnData":
         """Transform :py:class:`summarizedexperiment.BaseSE`-like to :py:class:`~anndata.AnnData` representation.
 
         Returns:
             AnnData: An `AnnData` representation of the experiment..
         """
+        from anndata import AnnData
 
         layers = OrderedDict()
         for asy, mat in self.assays.items():

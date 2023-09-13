@@ -1,7 +1,7 @@
 from typing import Dict, List, Literal, MutableMapping, Optional, Sequence, Union
 
 import numpy as np
-from genomicranges import GenomicRanges, SeqInfo
+from genomicranges import GenomicRanges, GenomicRangesList, SeqInfo
 
 from .SummarizedExperiment import SummarizedExperiment
 from .types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
@@ -10,7 +10,8 @@ __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-GRangesOrRangeSE = Union[GenomicRanges, "RangedSummarizedExperiment"]
+GRangesOrGRangesList = Union[GenomicRanges, GenomicRangesList]
+GRangesOrRangeSE = Union[GRangesOrGRangesList, "RangedSummarizedExperiment"]
 
 
 # TODO: technically should be in _type_checks but fails due to circular imports.
@@ -23,9 +24,13 @@ def _check_gr_or_rse(x: GRangesOrRangeSE):
     Raises:
         TypeError: Object is not a `RangedSummarizedExperiment` or `GenomicRanges`.
     """
-    if not (isinstance(x, RangedSummarizedExperiment) or isinstance(x, GenomicRanges)):
+    if not (
+        isinstance(x, RangedSummarizedExperiment)
+        or isinstance(x, GenomicRanges)
+        or isinstance(x, GenomicRangesList)
+    ):
         raise TypeError(
-            "object is not a `RangedSummarizedExperiment` or `GenomicRanges`"
+            "object is not a `RangedSummarizedExperiment`, `GenomicRanges` or `GenomicRangesList`."
         )
 
 
@@ -47,7 +52,8 @@ def _access_granges(x: GRangesOrRangeSE) -> GenomicRanges:
 
 class RangedSummarizedExperiment(SummarizedExperiment):
     """RangedSummarizedExperiment class to represent genomic experiment data, genomic features as
-    :py:class:`~genomicranges.GenomicRanges.GenomicRanges`, sample data and any additional experimental metadata.
+    :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or
+    :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList` sample data and any additional experimental metadata.
 
     The key difference between this and `SummarizedExperiment` is enforcing type for
     feature information (`row_ranges`), must be a `GenomicRanges` object. This allows us to
@@ -68,7 +74,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             All matrices in ``assays`` must be 2-dimensional and have the same
             shape (number of rows, number of columns).
 
-        row_ranges (GenomicRanges): Genomic features, must be the same length as
+        row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as
             rows of the matrices in assays.
 
         row_data (BiocOrPandasFrame, optional): Features, must be the same length as
@@ -92,7 +98,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     def __init__(
         self,
         assays: MutableMapping[str, MatrixTypes],
-        row_ranges: Optional[GenomicRanges],
+        row_ranges: Optional[GRangesOrGRangesList] = None,
         row_data: Optional[BiocOrPandasFrame] = None,
         col_data: Optional[BiocOrPandasFrame] = None,
         metadata: Optional[MutableMapping] = None,
@@ -102,43 +108,46 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         self._validate_row_ranges(row_ranges)
         self._row_ranges = row_ranges
 
-    def _validate_row_ranges(self, row_ranges: GenomicRanges):
+    def _validate_row_ranges(self, row_ranges: GRangesOrGRangesList):
         """Internal method to validate feature information (``row_ranges``).
 
         Args:
-            rows (GenomicRanges): Genomic features.
+            rows (GRangesOrGRangesList): Genomic features.
 
         Raises:
             ValueError: When number of rows does not match between `row_ranges` &
                 `assays`.
-            TypeError: When `row_ranges` is not a `GenomicRanges` object.
+            TypeError: When `row_ranges` is not a `GenomicRanges` or `GenomicRangesList`.
         """
-        if not (isinstance(row_ranges, GenomicRanges)):
+        if not (
+            isinstance(row_ranges, GenomicRanges)
+            or isinstance(row_ranges, GenomicRangesList)
+        ):
             raise TypeError(
-                "`row_ranges` must be a `GenomicRanges`"
-                f" object, provided {type(row_ranges)}"
+                "`row_ranges` must be a `GenomicRanges` or `GenomicRangesList`"
+                f" , provided {type(row_ranges)}."
             )
 
-        if row_ranges.shape[0] != self._shape[0]:
+        if len(row_ranges) != self._shape[0]:
             raise ValueError(
                 "Number of features and number of rows in assays do not match."
             )
 
     @property
-    def row_ranges(self) -> GenomicRanges:
+    def row_ranges(self) -> GRangesOrGRangesList:
         """Get features.
 
         Returns:
-            GenomicRanges: Genomic features.
+            GRangesOrGRangesList: Genomic features.
         """
         return self._row_ranges
 
     @row_ranges.setter
-    def row_ranges(self, ranges: GenomicRanges) -> None:
+    def row_ranges(self, ranges: GRangesOrGRangesList) -> None:
         """Set features.
 
         Args:
-            ranges (GenomicRanges): Features to update.
+            ranges (GRangesOrGRangesList): Features to update.
         """
         self._validate_row_ranges(ranges)
         self._row_ranges = ranges

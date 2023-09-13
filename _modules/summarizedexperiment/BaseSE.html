@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.2.2 and Furo 2023.08.19 -->
-        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.3.0 documentation</title>
+    <!-- Generated with Sphinx 7.2.5 and Furo 2023.09.10 -->
+        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.3.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.3.0 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.3.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.3.0 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.3.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -206,7 +206,6 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
 
-<span class="kn">from</span> <span class="nn">anndata</span> <span class="kn">import</span> <span class="n">AnnData</span>
 <span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
 <span class="kn">from</span> <span class="nn">filebackedarray</span> <span class="kn">import</span> <span class="n">H5BackedDenseData</span><span class="p">,</span> <span class="n">H5BackedSparseData</span>
 <span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
@@ -242,8 +241,8 @@
 <div class="viewcode-block" id="BaseSE">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE">[docs]</a>
 <span class="k">class</span> <span class="nc">BaseSE</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for `SummarizedExperiment`. Implements common properties and</span>
-<span class="sd">    methods that can be reused across all derived classes.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for `SummarizedExperiment`. Implements common properties and methods that can be reused across all</span>
+<span class="sd">    derived classes.</span>
 
 <span class="sd">    Container to represents genomic experiment data (`assays`), features (`row_data`),</span>
 <span class="sd">    sample data (`col_data`) and any other `metadata`.</span>
@@ -546,20 +545,22 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span> <span class="o">=</span> <span class="n">new_assays</span>
 
-    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<div class="viewcode-block" id="BaseSE.__repr__">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
             <span class="sa">f</span><span class="s2">&quot;Class BaseSE with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> features and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> samples </span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;  assays: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;  features: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">row_data</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">row_data</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="sa">f</span><span class="s2">&quot;  sample data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">pattern</span>
+        <span class="k">return</span> <span class="n">pattern</span></div>
+
 
 <div class="viewcode-block" id="BaseSE.assay">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.assay">[docs]</a>
     <span class="k">def</span> <span class="nf">assay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MatrixTypes</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience function to access an</span>
-<span class="sd">        :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convenience function to access an :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name (str): Name of the assay.</span>
@@ -778,13 +779,13 @@
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.to_anndata">[docs]</a>
     <span class="k">def</span> <span class="nf">to_anndata</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnnData</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform :py:class:`summarizedexperiment.BaseSE`-like to :py:class:`~anndata.AnnData`</span>
-<span class="sd">        representation.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;AnnData&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Transform :py:class:`summarizedexperiment.BaseSE`-like to :py:class:`~anndata.AnnData` representation.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            AnnData: An `AnnData` representation of the experiment..</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">anndata</span> <span class="kn">import</span> <span class="n">AnnData</span>
 
         <span class="n">layers</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">asy</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -819,12 +820,10 @@
         <span class="n">use_names</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">remove_duplicate_columns</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;A more flexible version of ``cbind``. Permits differences in the number</span>
-<span class="sd">        and identity of rows, differences in</span>
-<span class="sd">        :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.col_data`</span>
-<span class="sd">        fields, and even differences in the available `assays` among</span>
-<span class="sd">        :py:class:`~summarizedexperiment.SummarizedExperiment.BaseSE`-derived objects being</span>
-<span class="sd">        combined.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A more flexible version of ``cbind``. Permits differences in the number and identity of rows, differences in</span>
+<span class="sd">        :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.col_data` fields, and even differences</span>
+<span class="sd">        in the available `assays` among :py:class:`~summarizedexperiment.SummarizedExperiment.BaseSE`-derived objects</span>
+<span class="sd">        being combined.</span>
 
 <span class="sd">        Currently does not support range based merging of feature information when</span>
 <span class="sd">        performing this operation.</span>
@@ -938,7 +937,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=e259d695"></script>
+</div><script src="../../_static/documentation_options.js?v=4621528c"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>

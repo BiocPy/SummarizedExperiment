@@ -1,10 +1,14 @@
+[![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)
+[![PyPI-Server](https://img.shields.io/pypi/v/SummarizedExperiment.svg)](https://pypi.org/project/SummarizedExperiment/)
+![Unit tests](https://github.com/BiocPy/SummarizedExperiment/actions/workflows/pypi-test.yml/badge.svg)
+
 # SummarizedExperiment
 
 Container to represent genomic experiments, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html).
 
 ## Install
 
-Package is published to [PyPI](https://pypi.org/project/summarizedexperiment/)
+Package is published to [PyPI](https://pypi.org/project/summarizedexperiment/),
 
 ```shell
 pip install summarizedexperiment
@@ -76,7 +80,7 @@ trse = RangedSummarizedExperiment(
 )
 ```
 
-For more use cases including subset, checkout the [documentation](https://biocpy.github.io/SummarizedExperiment/)
+For more examples, checkout the [documentation](https://biocpy.github.io/SummarizedExperiment/).
 
 <!-- pyscaffold-notes -->
 

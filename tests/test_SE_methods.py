@@ -104,3 +104,18 @@ def test_SE_subset_assays():
 
     assert len(subset_asys.keys()) == 1
     assert subset_asys["counts"].shape == (9, 3)
+
+
+def test_SE_assay():
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=df_gr, col_data=col_data
+    )
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+
+    assert tse.assay_names is not None
+    assert len(tse.assay_names) == 1
+
+    assert tse.assay("counts") is not None
+    assert tse.assay(0) is not None

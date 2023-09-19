@@ -1,6 +1,6 @@
 import warnings
 from collections import OrderedDict
-from typing import Dict, List, MutableMapping, Optional, Sequence, Tuple
+from typing import Dict, List, MutableMapping, Optional, Sequence, Tuple, Union
 
 from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
@@ -348,22 +348,35 @@ class BaseSE:
         )
         return pattern
 
-    def assay(self, name: str) -> MatrixTypes:
+    def assay(self, index_or_name: Union[int, str]) -> MatrixTypes:
         """Convenience function to access an :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name.
 
+        Alternatively, you may also provide an index position of the assay.
+
         Args:
-            name (str): Name of the assay.
+            name (Union[int, str]): Name or index position of the assay.
 
         Raises:
-            ValueError: If assay name does not exist.
+            AttributeError: If assay name does not exist.
+            IndexError: If index is greater than the number of assays.
 
         Returns:
             MatrixTypes: Experiment data.
         """
-        if name not in self.assays:
-            raise ValueError(f"Assay: {name} does not exist.")
+        if isinstance(index_or_name, int):
+            if index_or_name < 0 or index_or_name > len(self.assay_names):
+                raise IndexError("Index greater than the number of assays.")
 
-        return self.assays[name]
+            return self.assays[self.assay_names[index_or_name]]
+        elif isinstance(index_or_name, str):
+            if index_or_name not in self.assays:
+                raise AttributeError(f"Assay: {index_or_name} does not exist.")
+
+            return self.assays[index_or_name]
+
+        raise TypeError(
+            f"`index_or_name` must be a string or integer, provided {type(index_or_name)}."
+        )
 
     def subset_assays(
         self,

@@ -105,6 +105,7 @@ def test_SE_subset_assays():
     assert len(subset_asys.keys()) == 1
     assert subset_asys["counts"].shape == (9, 3)
 
+
 def test_SE_assay():
     tse = SummarizedExperiment(
         assays={"counts": counts}, row_data=df_gr, col_data=col_data

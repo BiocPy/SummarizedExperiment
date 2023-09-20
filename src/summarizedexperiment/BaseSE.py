@@ -2,7 +2,7 @@ import warnings
 from collections import OrderedDict
 from typing import Dict, List, Optional, Tuple, Union
 
-from biocframe import BiocFrame, from_pandas
+from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 from pandas import DataFrame
@@ -14,7 +14,6 @@ from .type_checks import (
     is_list_of_subclass,
     is_list_of_type,
     is_matrix_like,
-    is_pandas,
 )
 from .types import (
     BiocOrPandasFrame,

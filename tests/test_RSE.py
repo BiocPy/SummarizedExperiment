@@ -65,7 +65,7 @@ b = genomicranges.GenomicRanges(
     }
 )
 
-grl = genomicranges.GenomicRangesList(a=a, b=b)
+grl = genomicranges.GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
 
 def test_RSE_creation():

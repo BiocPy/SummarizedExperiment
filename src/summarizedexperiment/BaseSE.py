@@ -127,7 +127,7 @@ class BaseSE:
                 data.
 
         Raises:
-            ValueError: 
+            ValueError:
                 If ``assays`` contain more than 2 dimensions.
                 If all ``assays`` do not have the same dimensions.
             TypeError: If ``assays`` includes a unsupported matrix representation.

@@ -64,35 +64,28 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` instead.
 
     Attributes:
-        assays (Dict[str, MatrixTypes]): Dictionary
-            of matrices, with assay names as keys and 2-dimensional matrices represented as
-            :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
+        assays (Dict[str, MatrixTypes]): A dictionary containing matrices, with assay names as keys
+            and 2-dimensional matrices represented as either
+            :py:class:`~numpy.ndarray` or :py:class:`~scipy.sparse.spmatrix`.
 
-            Alternatively, you may use any 2-dimensional matrix that contains the property ``shape``
-            and implements the slice operation using the ``__getitem__`` dunder method.
+            Alternatively, you may use any 2-dimensional matrix that has the ``shape`` property and
+            implements the slice operation using the ``__getitem__`` dunder method.
 
-            All matrices in ``assays`` must be 2-dimensional and have the same
-            shape (number of rows, number of columns).
+            All matrices in assays must be 2-dimensional and have the same shape
+            (number of rows, number of columns).
 
         row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as
             rows of the matrices in assays.
 
-        row_data (BiocOrPandasFrame, optional): Features, must be the same length as
-            rows of the matrices in assays.
+        row_data (BiocOrPandasFrame, optional): Features, which must be of the same length as the rows of
+            the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
+            :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-            Features may be either a :py:class:`~pandas.DataFrame` or
-            :py:class:`~biocframe.BiocFrame.BiocFrame`.
+        col_data (BiocOrPandasFrame, optional): Sample data, which must be of the same length as the
+            columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
+            or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-            Defaults to None.
-        col_data (BiocOrPandasFrame, optional): Sample data, must be
-            the same length as columns of the matrices in assays.
-
-            Sample Information may be either a :py:class:`~pandas.DataFrame` or
-            :py:class:`~biocframe.BiocFrame.BiocFrame`.
-
-            Defaults to None.
-        metadata (Dict, optional): Additional experimental metadata describing the
-            methods. Defaults to None.
+        metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.
     """
 
     def __init__(
@@ -151,9 +144,9 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             rows (GRangesOrGRangesList): Genomic features.
 
         Raises:
-            ValueError: When number of rows does not match between `row_ranges` &
-                `assays`.
-            TypeError: When `row_ranges` is not a `GenomicRanges` or `GenomicRangesList`.
+            ValueError: If number of rows does not match the number of features in
+            `row_ranges` & `assays`.
+            TypeError: If `row_ranges` is not a `GenomicRanges` or `GenomicRangesList`.
         """
         if not (
             isinstance(row_ranges, GenomicRanges)
@@ -208,7 +201,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     @property
     def seqnames(self) -> List[str]:
-        """Get List or chromosome names.
+        """Get sequence or chromosome names.
 
         Returns:
             List[str]: List of all chromosome names.
@@ -235,10 +228,10 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     @property
     def seq_info(self) -> Optional[SeqInfo]:
-        """Get List information object (if available).
+        """Get sequence information object (if available).
 
         Returns:
-            (SeqInfo, optional): List information.
+            (SeqInfo, optional): Sequence information if available, otherwise None.
         """
         return self.row_ranges.seq_info
 
@@ -249,14 +242,16 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         """Subset a `RangedSummarizedExperiment`.
 
         Args:
-            args (SlicerArgTypes): Indices or names to slice. Tuple contains
+            args (SlicerArgTypes): Indices or names to slice. The tuple contains
                 slices along dimensions (rows, cols).
 
                 Each element in the tuple, might be either a integer vector (integer positions),
-                boolean vector or :py:class:`~slice` object. Defaults to None.
+                boolean vector or :py:class:`~slice` object.
+
+                Defaults to None.
 
         Raises:
-            ValueError: Too many or few slices.
+            ValueError: If too many or too few slices are provided.
 
         Returns:
             RangedSummarizedExperiment: Sliced `RangedSummarizedExperiment` object.
@@ -299,7 +294,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         Returns:
             Dict[str, np.ndarray]: A dictionary containing chromosome names
-            as keys and the coverage vector as values.
+            as keys and the coverage vector as value.
         """
         return self.row_ranges.coverage(shift=shift, width=width, weight=weight)
 
@@ -308,7 +303,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
     ) -> Optional[List[Optional[int]]]:
-        """Search nearest positions, both upstream and downstream that overlap with each range in ``query``.
+        """Search nearest positions, both upstream and downstream that overlap with each genomic interval in ``query``.
 
         Args:
             query (GRangesOrRangeSE): Query intervals to find nearest positions.
@@ -325,7 +320,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         Returns:
             (List[Optional[int]], optional): List of possible `hit` indices
-            for each interval in `query`. If there are no hits, returns None.
+            for each interval in `query`, Otherwise returns None.
         """
 
         _check_gr_or_rse(query)

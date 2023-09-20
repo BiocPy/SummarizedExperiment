@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>summarizedexperiment.RangedSummarizedExperiment - SummarizedExperiment 0.3.3 documentation</title>
+        <title>summarizedexperiment.RangedSummarizedExperiment - SummarizedExperiment 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.3.3 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.3.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.3.3 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.3.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,7 +202,7 @@
         </div>
         <article role="main">
           <h1>Source code for summarizedexperiment.RangedSummarizedExperiment</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">MutableMapping</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">,</span> <span class="n">SeqInfo</span>
@@ -270,47 +270,76 @@
 <span class="sd">    :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` instead.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        assays (MutableMapping[str, MatrixTypes]): Dictionary</span>
-<span class="sd">            of matrices, with assay names as keys and 2-dimensional matrices represented as</span>
-<span class="sd">            :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.</span>
+<span class="sd">        assays (Dict[str, MatrixTypes]): A dictionary containing matrices, with assay names as keys</span>
+<span class="sd">            and 2-dimensional matrices represented as either</span>
+<span class="sd">            :py:class:`~numpy.ndarray` or :py:class:`~scipy.sparse.spmatrix`.</span>
 
-<span class="sd">            Alternatively, you may use any 2-dimensional matrix that contains the property ``shape``</span>
-<span class="sd">            and implements the slice operation using the ``__getitem__`` dunder method.</span>
+<span class="sd">            Alternatively, you may use any 2-dimensional matrix that has the ``shape`` property and</span>
+<span class="sd">            implements the slice operation using the ``__getitem__`` dunder method.</span>
 
-<span class="sd">            All matrices in ``assays`` must be 2-dimensional and have the same</span>
-<span class="sd">            shape (number of rows, number of columns).</span>
+<span class="sd">            All matrices in assays must be 2-dimensional and have the same shape</span>
+<span class="sd">            (number of rows, number of columns).</span>
 
 <span class="sd">        row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as</span>
 <span class="sd">            rows of the matrices in assays.</span>
 
-<span class="sd">        row_data (BiocOrPandasFrame, optional): Features, must be the same length as</span>
-<span class="sd">            rows of the matrices in assays.</span>
+<span class="sd">        row_data (BiocOrPandasFrame, optional): Features, which must be of the same length as the rows of</span>
+<span class="sd">            the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or</span>
+<span class="sd">            :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.</span>
 
-<span class="sd">            Features may be either a :py:class:`~pandas.DataFrame` or</span>
-<span class="sd">            :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
+<span class="sd">        col_data (BiocOrPandasFrame, optional): Sample data, which must be of the same length as the</span>
+<span class="sd">            columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`</span>
+<span class="sd">            or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.</span>
 
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        col_data (BiocOrPandasFrame, optional): Sample data, must be</span>
-<span class="sd">            the same length as columns of the matrices in assays.</span>
-
-<span class="sd">            Sample Information may be either a :py:class:`~pandas.DataFrame` or</span>
-<span class="sd">            :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
-
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        metadata (MutableMapping, optional): Additional experimental metadata describing the</span>
-<span class="sd">            methods. Defaults to None.</span>
+<span class="sd">        metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">assays</span><span class="p">:</span> <span class="n">MutableMapping</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatrixTypes</span><span class="p">],</span>
+        <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatrixTypes</span><span class="p">],</span>
         <span class="n">row_ranges</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GRangesOrGRangesList</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">row_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">col_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">MutableMapping</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a `RangedSummarizedExperiment` (RSE) object.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a `RangedSummarizedExperiment` (RSE) object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            assays (Dict[str, MatrixTypes]): Dictionary</span>
+<span class="sd">                of matrices, with assay names as keys and 2-dimensional matrices represented as</span>
+<span class="sd">                :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.</span>
+
+<span class="sd">                Alternatively, you may use any 2-dimensional matrix that contains the property ``shape``</span>
+<span class="sd">                and implements the slice operation using the ``__getitem__`` dunder method.</span>
+
+<span class="sd">                All matrices in ``assays`` must be 2-dimensional and have the same</span>
+<span class="sd">                shape (number of rows, number of columns).</span>
+
+<span class="sd">            row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as</span>
+<span class="sd">                rows of the matrices in assays.</span>
+
+<span class="sd">            row_data (BiocOrPandasFrame, optional): Features, must be the same length as</span>
+<span class="sd">                rows of the matrices in assays.</span>
+
+<span class="sd">                Features may be either a :py:class:`~pandas.DataFrame` or</span>
+<span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
+
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            col_data (BiocOrPandasFrame, optional): Sample data, must be</span>
+<span class="sd">                the same length as columns of the matrices in assays.</span>
+
+<span class="sd">                Sample Information may be either a :py:class:`~pandas.DataFrame` or</span>
+<span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
+
+<span class="sd">                Defaults to None.</span>
+<span class="sd">            metadata (Dict, optional): Additional experimental metadata describing the</span>
+<span class="sd">                methods. Defaults to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">col_data</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">row_ranges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">row_ranges</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_validate_row_ranges</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">row_ranges</span>
 
@@ -321,9 +350,9 @@
 <span class="sd">            rows (GRangesOrGRangesList): Genomic features.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: When number of rows does not match between `row_ranges` &amp;</span>
-<span class="sd">                `assays`.</span>
-<span class="sd">            TypeError: When `row_ranges` is not a `GenomicRanges` or `GenomicRangesList`.</span>
+<span class="sd">            ValueError: If number of rows does not match the number of features in</span>
+<span class="sd">            `row_ranges` &amp; `assays`.</span>
+<span class="sd">            TypeError: If `row_ranges` is not a `GenomicRanges` or `GenomicRangesList`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
             <span class="nb">isinstance</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span>
@@ -408,7 +437,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence information object (if available).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (SeqInfo, optional): Sequence information.</span>
+<span class="sd">            (SeqInfo, optional): Sequence information if available, otherwise None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">seq_info</span>
 
@@ -421,14 +450,16 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset a `RangedSummarizedExperiment`.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            args (SlicerArgTypes): Indices or names to slice. Tuple contains</span>
+<span class="sd">            args (SlicerArgTypes): Indices or names to slice. The tuple contains</span>
 <span class="sd">                slices along dimensions (rows, cols).</span>
 
 <span class="sd">                Each element in the tuple, might be either a integer vector (integer positions),</span>
-<span class="sd">                boolean vector or :py:class:`~slice` object. Defaults to None.</span>
+<span class="sd">                boolean vector or :py:class:`~slice` object.</span>
+
+<span class="sd">                Defaults to None.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: Too many or few slices.</span>
+<span class="sd">            ValueError: If too many or too few slices are provided.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            RangedSummarizedExperiment: Sliced `RangedSummarizedExperiment` object.</span>
@@ -477,7 +508,7 @@
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Dict[str, np.ndarray]: A dictionary containing chromosome names</span>
-<span class="sd">            as keys and the coverage vector as values.</span>
+<span class="sd">            as keys and the coverage vector as value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">)</span></div>
 
@@ -488,8 +519,8 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, both upstream and downstream that overlap with each range in ``query``.</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, both upstream and downstream that overlap with each genomic interval in ``query``.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            query (GRangesOrRangeSE): Query intervals to find nearest positions.</span>
@@ -505,8 +536,8 @@
 <span class="sd">                or ``GenomicRanges``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (Sequence[Optional[int]], optional): List of possible `hit` indices</span>
-<span class="sd">            for each interval in `query`. If there are no hits, returns None.</span>
+<span class="sd">            (List[Optional[int]], optional): List of possible `hit` indices</span>
+<span class="sd">            for each interval in `query`, Otherwise returns None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -523,7 +554,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, only downstream that overlap with each range in ``query``.</span>
 
 <span class="sd">        Args:</span>
@@ -538,7 +569,7 @@
 <span class="sd">            ``GenomicRanges``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (Sequence[Optional[int]], optional): List of possible hit indices</span>
+<span class="sd">            (List[Optional[int]], optional): List of possible hit indices</span>
 <span class="sd">            for each interval in ``query``. If there are no hits, returns None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -556,7 +587,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, only upstream that overlap with the each range in ``query``.</span>
 
 <span class="sd">        Args:</span>
@@ -571,7 +602,7 @@
 <span class="sd">            ``GenomicRanges``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (Sequence[Optional[int]], optional): List of possible hit indices</span>
+<span class="sd">            (List[Optional[int]], optional): List of possible hit indices</span>
 <span class="sd">            for each interval in ``query``. If there are no hits, returns None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -588,7 +619,7 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with the each genomics interval in ``query``.</span>
 
 <span class="sd">        Technically same as</span>
@@ -606,7 +637,7 @@
 <span class="sd">            TypeError: If ``query`` is not a ``RangedSummarizedExperiment`` or ``GenomicRanges``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (Sequence[Optional[int]], optional): List of possible hit indices</span>
+<span class="sd">            (List[Optional[int]], optional): List of possible hit indices</span>
 <span class="sd">            for each interval in ``query``. If there are no hits, returns None.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -928,7 +959,7 @@
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.order">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.order">[docs]</a>
-    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the order of indices to sort.</span>
 
 <span class="sd">        Args:</span>
@@ -997,7 +1028,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=d5a15cff"></script>
+</div><script src="../../_static/documentation_options.js?v=1e28cc32"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>

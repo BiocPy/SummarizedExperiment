@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>summarizedexperiment.utils.combiners - SummarizedExperiment 0.3.3 documentation</title>
+        <title>summarizedexperiment.utils.combiners - SummarizedExperiment 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">SummarizedExperiment 0.3.3 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">SummarizedExperiment 0.3.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.3.3 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.3.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,16 +202,16 @@
         </div>
         <article role="main">
           <h1>Source code for summarizedexperiment.utils.combiners</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Tuple</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Tuple</span>
 
 <span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">argwhere</span><span class="p">,</span> <span class="n">find_common_type</span><span class="p">,</span> <span class="n">ndarray</span>
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">DataFrame</span><span class="p">,</span> <span class="n">Index</span><span class="p">,</span> <span class="n">concat</span>
 <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
 
+<span class="kn">from</span> <span class="nn">..dispatchers</span> <span class="kn">import</span> <span class="n">get_rownames</span>
 <span class="kn">from</span> <span class="nn">..types</span> <span class="kn">import</span> <span class="n">ArrayTypes</span><span class="p">,</span> <span class="n">BiocOrPandasFrame</span>
 <span class="kn">from</span> <span class="nn">.validators</span> <span class="kn">import</span> <span class="n">validate_names</span><span class="p">,</span> <span class="n">validate_shapes</span>
-<span class="kn">from</span> <span class="nn">..dispatchers</span> <span class="kn">import</span> <span class="n">get_rownames</span>
 
 <span class="c1"># from ..SummarizedExperiment import SummarizedExperiment</span>
 
@@ -253,11 +253,11 @@
 
 <div class="viewcode-block" id="combine_metadata">
 <a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.combiners.combine_metadata">[docs]</a>
-<span class="k">def</span> <span class="nf">combine_metadata</span><span class="p">(</span><span class="n">experiments</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
+<span class="k">def</span> <span class="nf">combine_metadata</span><span class="p">(</span><span class="n">experiments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine metadata across experiments.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        experiments (Sequence[SummarizedExperiment]): `SummarizedExperiment`-like objects.</span>
+<span class="sd">        experiments (List[SummarizedExperiment]): `SummarizedExperiment`-like objects.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Dict: A dictionary with combined metadata across all input ``experiments``.</span>
@@ -274,7 +274,7 @@
 <div class="viewcode-block" id="combine_frames">
 <a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.combiners.combine_frames">[docs]</a>
 <span class="k">def</span> <span class="nf">combine_frames</span><span class="p">(</span>
-    <span class="n">x</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">],</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">],</span>
     <span class="n">use_names</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">remove_duplicate_columns</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
@@ -282,7 +282,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine a series of `DataFrame`-like objects.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (Sequence[BiocOrPandasFrame]): Input frames.</span>
+<span class="sd">        x (List[BiocOrPandasFrame]): Input frames.</span>
 <span class="sd">            May be either a :py:class:`~biocframe.BiocFrame.BiocFrame` or</span>
 <span class="sd">            :py:class:`~pandas.DataFrame`.</span>
 
@@ -323,7 +323,7 @@
 <a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.combiners.combine_assays_by_column">[docs]</a>
 <span class="k">def</span> <span class="nf">combine_assays_by_column</span><span class="p">(</span>
     <span class="n">assay_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">experiments</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">],</span>
+    <span class="n">experiments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">],</span>
     <span class="n">names</span><span class="p">:</span> <span class="n">Index</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
     <span class="n">use_names</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
@@ -333,7 +333,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        assay_name (str): Name of the assay.</span>
-<span class="sd">        experiments (Sequence[SummarizedExperiment]):</span>
+<span class="sd">        experiments (List[SummarizedExperiment]):</span>
 <span class="sd">            :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects to</span>
 <span class="sd">            combine.</span>
 <span class="sd">        names (Index): Names of the metadata from the non-concatenation axis.</span>
@@ -371,7 +371,7 @@
 <a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.combiners.combine_assays_by_row">[docs]</a>
 <span class="k">def</span> <span class="nf">combine_assays_by_row</span><span class="p">(</span>
     <span class="n">assay_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">experiments</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">],</span>
+    <span class="n">experiments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">],</span>
     <span class="n">names</span><span class="p">:</span> <span class="n">Index</span><span class="p">,</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
     <span class="n">use_names</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
@@ -381,7 +381,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        assay_name (str): Name of the assay.</span>
-<span class="sd">        experiments (Sequence[SummarizedExperiment]):</span>
+<span class="sd">        experiments (List[SummarizedExperiment]):</span>
 <span class="sd">            :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects.</span>
 <span class="sd">            to combine.</span>
 <span class="sd">        names (Index): Names of the metadata from the non-concatenation axis.</span>
@@ -397,7 +397,7 @@
 <a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.combiners.combine_assays">[docs]</a>
 <span class="k">def</span> <span class="nf">combine_assays</span><span class="p">(</span>
     <span class="n">assay_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-    <span class="n">experiments</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">],</span>
+    <span class="n">experiments</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="s2">&quot;SummarizedExperiment&quot;</span><span class="p">],</span>
     <span class="n">names</span><span class="p">:</span> <span class="n">Index</span><span class="p">,</span>
     <span class="n">by</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;row&quot;</span><span class="p">,</span> <span class="s2">&quot;column&quot;</span><span class="p">],</span>
     <span class="n">shape</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span>
@@ -407,7 +407,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        assay_name (str): Name of the assay.</span>
-<span class="sd">        experiments (Sequence[BaseSE]):</span>
+<span class="sd">        experiments (List[BaseSE]):</span>
 <span class="sd">            :py:class:`summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects.</span>
 <span class="sd">        names (Index): Names of the metadata from the non-concatenation axis.</span>
 <span class="sd">        by (Literal[&quot;row&quot;, &quot;column&quot;]): Concatenation axis.</span>
@@ -471,7 +471,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+</div><script src="../../../_static/documentation_options.js?v=1e28cc32"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>

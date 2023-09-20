@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>summarizedexperiment.utils.slicer - SummarizedExperiment 0.3.3 documentation</title>
+        <title>summarizedexperiment.utils.slicer - SummarizedExperiment 0.3.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../../index.html"><div class="brand">SummarizedExperiment 0.3.3 documentation</div></a>
+      <a href="../../../index.html"><div class="brand">SummarizedExperiment 0.3.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.3.3 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.3.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -202,7 +202,7 @@
         </div>
         <article role="main">
           <h1>Source code for summarizedexperiment.utils.slicer</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Union</span>
 
 <span class="kn">from</span> <span class="nn">pandas</span> <span class="kn">import</span> <span class="n">Index</span>
 
@@ -214,8 +214,8 @@
 <div class="viewcode-block" id="get_indexes_from_names">
 <a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.slicer.get_indexes_from_names">[docs]</a>
 <span class="k">def</span> <span class="nf">get_indexes_from_names</span><span class="p">(</span>
-    <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Index</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
-    <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Index</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
+    <span class="n">source</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Index</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
+    <span class="n">target</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Index</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]],</span>
     <span class="n">first_match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the index of the first occurrence of each value in ``source``.</span>
@@ -223,9 +223,9 @@
 <span class="sd">    Elements in ``source`` and ``target`` must be comparable.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        source (Union[Index, Sequence[Any]]): List in which to search for the values.</span>
+<span class="sd">        source (Union[Index, List[Any]]): List in which to search for the values.</span>
 <span class="sd">            Alternatively, ``source`` may be a :py:class:`~pandas.Index` object.</span>
-<span class="sd">        target (Union[Index, Sequence[Any]]): List of values to find indices for.</span>
+<span class="sd">        target (Union[Index, List[Any]]): List of values to find indices for.</span>
 <span class="sd">            Alternatively, ``target`` may be a :py:class:`~pandas.Index` object.</span>
 <span class="sd">        first_match (bool): Whether to only return first matches. Defaults to True.</span>
 
@@ -272,13 +272,13 @@
 
 <div class="viewcode-block" id="get_indexes_from_bools">
 <a class="viewcode-back" href="../../../api/summarizedexperiment.utils.html#summarizedexperiment.utils.slicer.get_indexes_from_bools">[docs]</a>
-<span class="k">def</span> <span class="nf">get_indexes_from_bools</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+<span class="k">def</span> <span class="nf">get_indexes_from_bools</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">match</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get positional indices where values in ``x`` are equal to ``match``.</span>
 
 <span class="sd">    If ``match`` is `True`, returns indices in ``x`` whose value is `True`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (Sequence[bool]): Boolean vector.</span>
+<span class="sd">        x (List[bool]): Boolean vector.</span>
 <span class="sd">        match (bool, optional): Value to find indices for. Defaults to ``True``.</span>
 
 <span class="sd">    Returns:</span>
@@ -318,7 +318,7 @@
       
     </aside>
   </div>
-</div><script src="../../../_static/documentation_options.js?v=d5a15cff"></script>
+</div><script src="../../../_static/documentation_options.js?v=1e28cc32"></script>
     <script src="../../../_static/doctools.js?v=888ff710"></script>
     <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../../_static/scripts/furo.js?v=32e29ea5"></script>

@@ -42,8 +42,8 @@ __license__ = "MIT"
 
 
 class BaseSE:
-    """Base class for `SummarizedExperiment`. This class provides common properties and methods
-    that can be utilized across all derived classes.
+    """Base class for `SummarizedExperiment`. This class provides common properties and methods that can be utilized
+    across all derived classes.
 
     This container represents genomic experiment data in the form of ``assays``,
     features in ``row_data``, sample data in ``col_data``, and any other relevant ``metadata``.
@@ -381,8 +381,7 @@ class BaseSE:
         return pattern
 
     def assay(self, index_or_name: Union[int, str]) -> MatrixTypes:
-        """Convenience function to access an :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`
-        by name or index.
+        """Convenience function to access an :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name or index.
 
         Args:
             name (Union[int, str]): Name or index position of the assay.

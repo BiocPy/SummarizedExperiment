@@ -1,6 +1,5 @@
 from typing import Any, Callable
 
-import pandas as pd
 from biocframe import BiocFrame
 
 # from .RangedSummarizedExperiment import RangedSummarizedExperiment

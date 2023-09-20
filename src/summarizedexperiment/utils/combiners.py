@@ -1,13 +1,13 @@
-from typing import Dict, List, Literal, Sequence, Tuple
+from typing import Dict, List, Literal, Tuple
 
 from biocframe import BiocFrame
 from numpy import argwhere, find_common_type, ndarray
 from pandas import DataFrame, Index, concat
 from scipy.sparse import lil_matrix
 
+from ..dispatchers import get_rownames
 from ..types import ArrayTypes, BiocOrPandasFrame
 from .validators import validate_names, validate_shapes
-from ..dispatchers import get_rownames
 
 # from ..SummarizedExperiment import SummarizedExperiment
 
@@ -44,11 +44,11 @@ def _remove_duplicate_columns(df: DataFrame) -> DataFrame:
     return df.loc[:, ~df.columns.duplicated()]
 
 
-def combine_metadata(experiments: Sequence["SummarizedExperiment"]) -> Dict:
+def combine_metadata(experiments: List["SummarizedExperiment"]) -> Dict:
     """Combine metadata across experiments.
 
     Args:
-        experiments (Sequence[SummarizedExperiment]): `SummarizedExperiment`-like objects.
+        experiments (List[SummarizedExperiment]): `SummarizedExperiment`-like objects.
 
     Returns:
         Dict: A dictionary with combined metadata across all input ``experiments``.
@@ -62,7 +62,7 @@ def combine_metadata(experiments: Sequence["SummarizedExperiment"]) -> Dict:
 
 
 def combine_frames(
-    x: Sequence[BiocOrPandasFrame],
+    x: List[BiocOrPandasFrame],
     use_names: bool,
     axis: int,
     remove_duplicate_columns: bool,
@@ -70,7 +70,7 @@ def combine_frames(
     """Combine a series of `DataFrame`-like objects.
 
     Args:
-        x (Sequence[BiocOrPandasFrame]): Input frames.
+        x (List[BiocOrPandasFrame]): Input frames.
             May be either a :py:class:`~biocframe.BiocFrame.BiocFrame` or
             :py:class:`~pandas.DataFrame`.
 
@@ -108,7 +108,7 @@ def combine_frames(
 
 def combine_assays_by_column(
     assay_name: str,
-    experiments: Sequence["SummarizedExperiment"],
+    experiments: List["SummarizedExperiment"],
     names: Index,
     shape: Tuple[int, int],
     use_names: bool,
@@ -118,7 +118,7 @@ def combine_assays_by_column(
 
     Args:
         assay_name (str): Name of the assay.
-        experiments (Sequence[SummarizedExperiment]):
+        experiments (List[SummarizedExperiment]):
             :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects to
             combine.
         names (Index): Names of the metadata from the non-concatenation axis.
@@ -153,7 +153,7 @@ def combine_assays_by_column(
 
 def combine_assays_by_row(
     assay_name: str,
-    experiments: Sequence["SummarizedExperiment"],
+    experiments: List["SummarizedExperiment"],
     names: Index,
     shape: Tuple[int, int],
     use_names: bool,
@@ -163,7 +163,7 @@ def combine_assays_by_row(
 
     Args:
         assay_name (str): Name of the assay.
-        experiments (Sequence[SummarizedExperiment]):
+        experiments (List[SummarizedExperiment]):
             :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects.
             to combine.
         names (Index): Names of the metadata from the non-concatenation axis.
@@ -176,7 +176,7 @@ def combine_assays_by_row(
 
 def combine_assays(
     assay_name: str,
-    experiments: Sequence["SummarizedExperiment"],
+    experiments: List["SummarizedExperiment"],
     names: Index,
     by: Literal["row", "column"],
     shape: Tuple[int, int],
@@ -186,7 +186,7 @@ def combine_assays(
 
     Args:
         assay_name (str): Name of the assay.
-        experiments (Sequence[BaseSE]):
+        experiments (List[BaseSE]):
             :py:class:`summarizedexperiment.SummarizedExperiment.SummarizedExperiment` objects.
         names (Index): Names of the metadata from the non-concatenation axis.
         by (Literal["row", "column"]): Concatenation axis.

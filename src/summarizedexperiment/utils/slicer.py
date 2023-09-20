@@ -1,4 +1,4 @@
-from typing import Any, List, Sequence, Union
+from typing import Any, List, Union
 
 from pandas import Index
 
@@ -8,8 +8,8 @@ __license__ = "MIT"
 
 
 def get_indexes_from_names(
-    source: Union[Index, Sequence[Any]],
-    target: Union[Index, Sequence[Any]],
+    source: Union[Index, List[Any]],
+    target: Union[Index, List[Any]],
     first_match: bool = True,
 ) -> List[Union[int, List[int]]]:
     """Return the index of the first occurrence of each value in ``source``.
@@ -17,9 +17,9 @@ def get_indexes_from_names(
     Elements in ``source`` and ``target`` must be comparable.
 
     Args:
-        source (Union[Index, Sequence[Any]]): List in which to search for the values.
+        source (Union[Index, List[Any]]): List in which to search for the values.
             Alternatively, ``source`` may be a :py:class:`~pandas.Index` object.
-        target (Union[Index, Sequence[Any]]): List of values to find indices for.
+        target (Union[Index, List[Any]]): List of values to find indices for.
             Alternatively, ``target`` may be a :py:class:`~pandas.Index` object.
         first_match (bool): Whether to only return first matches. Defaults to True.
 
@@ -63,13 +63,13 @@ def get_indexes_from_names(
     return list(set(match_indices))
 
 
-def get_indexes_from_bools(x: Sequence[bool], match: bool = True) -> List[int]:
+def get_indexes_from_bools(x: List[bool], match: bool = True) -> List[int]:
     """Get positional indices where values in ``x`` are equal to ``match``.
 
     If ``match`` is `True`, returns indices in ``x`` whose value is `True`.
 
     Args:
-        x (Sequence[bool]): Boolean vector.
+        x (List[bool]): Boolean vector.
         match (bool, optional): Value to find indices for. Defaults to ``True``.
 
     Returns:

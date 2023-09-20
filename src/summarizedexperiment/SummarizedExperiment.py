@@ -1,4 +1,4 @@
-from typing import MutableMapping, Optional
+from typing import Dict, Optional
 from warnings import warn
 
 from genomicranges import GenomicRanges
@@ -19,7 +19,7 @@ class SummarizedExperiment(BaseSE):
     are samples.
 
     Attributes:
-        assays (MutableMapping[str, MatrixTypes]): Dictionary
+        assays (Dict[str, MatrixTypes]): Dictionary
             of matrices, with assay names as keys and 2-dimensional matrices represented as
             :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
 
@@ -43,21 +43,21 @@ class SummarizedExperiment(BaseSE):
             :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
             Defaults to None.
-        metadata (MutableMapping, optional): Additional experimental metadata describing the
+        metadata (Dict, optional): Additional experimental metadata describing the
             methods. Defaults to None.
     """
 
     def __init__(
         self,
-        assays: MutableMapping[str, MatrixTypes],
+        assays: Dict[str, MatrixTypes],
         row_data: Optional[BiocOrPandasFrame] = None,
         col_data: Optional[BiocOrPandasFrame] = None,
-        metadata: Optional[MutableMapping] = None,
+        metadata: Optional[Dict] = None,
     ) -> None:
         """Initialize a Summarized Experiment (SE).
 
         Args:
-            assays (MutableMapping[str, MatrixTypes]): Dictionary
+            assays (Dict[str, MatrixTypes]): Dictionary
                 of matrices, with assay names as keys and 2-dimensional matrices represented as
                 :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
 
@@ -81,7 +81,7 @@ class SummarizedExperiment(BaseSE):
                 :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
                 Defaults to None.
-            metadata (MutableMapping, optional): Additional experimental metadata describing the
+            metadata (Dict, optional): Additional experimental metadata describing the
                 methods. Defaults to None.
         """
 

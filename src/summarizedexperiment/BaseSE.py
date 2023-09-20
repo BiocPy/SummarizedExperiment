@@ -1,6 +1,6 @@
 import warnings
 from collections import OrderedDict
-from typing import Dict, List, MutableMapping, Optional, Sequence, Tuple, Union
+from typing import Dict, List, Optional, Tuple, Union
 
 from biocframe import BiocFrame
 from filebackedarray import H5BackedDenseData, H5BackedSparseData
@@ -42,7 +42,7 @@ class BaseSE:
     sample data (`col_data`) and any other `metadata`.
 
     Attributes:
-        assays (MutableMapping[str, MatrixTypes]): Dictionary
+        assays (Dict[str, MatrixTypes]): Dictionary
             of matrices, with assay names as keys and 2-dimensional matrices represented as
             :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
 
@@ -68,21 +68,21 @@ class BaseSE:
 
             Defaults to None.
 
-        metadata (MutableMapping, optional): Additional experimental metadata describing the
+        metadata (Dict, optional): Additional experimental metadata describing the
             methods. Defaults to None.
     """
 
     def __init__(
         self,
-        assays: MutableMapping[str, MatrixTypes],
+        assays: Dict[str, MatrixTypes],
         rows: Optional[BiocOrPandasFrame] = None,
         cols: Optional[BiocOrPandasFrame] = None,
-        metadata: Optional[MutableMapping] = None,
+        metadata: Optional[Dict] = None,
     ) -> None:
         """Initialize an instance of `BaseSE`.
 
         Args:
-            assays (MutableMapping[str, MatrixTypes]): Dictionary
+            assays (Dict[str, MatrixTypes]): Dictionary
                 of matrices, with assay names as keys and 2-dimensional matrices represented as
                 :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
 
@@ -108,7 +108,7 @@ class BaseSE:
 
                 Defaults to None.
 
-            metadata (MutableMapping, optional): Additional experimental metadata describing the
+            metadata (Dict, optional): Additional experimental metadata describing the
                 methods. Defaults to None.
         """
 
@@ -149,12 +149,12 @@ class BaseSE:
 
     def _validate_assays(
         self,
-        assays: MutableMapping[str, MatrixTypes],
+        assays: Dict[str, MatrixTypes],
     ):
         """Internal method to validate experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, MatrixTypes]): Experiment
+            assays (Dict[str, MatrixTypes]): Experiment
                 data.
 
         Raises:
@@ -251,12 +251,12 @@ class BaseSE:
     @assays.setter
     def assays(
         self,
-        assays: MutableMapping[str, MatrixTypes],
+        assays: Dict[str, MatrixTypes],
     ):
         """Set new experiment data (assays).
 
         Args:
-            assays (MutableMapping[str, MatrixTypes]): New assays.
+            assays (Dict[str, MatrixTypes]): New assays.
         """
         self._validate_assays(assays)
         self._assays = assays
@@ -307,20 +307,20 @@ class BaseSE:
         self._cols = cols
 
     @property
-    def metadata(self) -> Optional[MutableMapping]:
+    def metadata(self) -> Optional[Dict]:
         """Get metadata.
 
         Returns:
-            Optional[MutableMapping]: Metadata object, usually a dictionary.
+            Optional[Dict]: Metadata object, usually a dictionary.
         """
         return self._metadata
 
     @metadata.setter
-    def metadata(self, metadata: Optional[MutableMapping]):
+    def metadata(self, metadata: Optional[Dict]):
         """Set metadata.
 
         Args:
-            metadata (Optional[MutableMapping]): new metadata object.
+            metadata (Optional[Dict]): new metadata object.
         """
         self._metadata = metadata
 
@@ -354,11 +354,11 @@ class BaseSE:
         return list(self.assays.keys())
 
     @assay_names.setter
-    def assay_names(self, names: Sequence[str]):
+    def assay_names(self, names: List[str]):
         """Replace all :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s names.
 
         Args:
-            names (Sequence[str]): New names.
+            names (List[str]): New names.
 
         Raises:
             ValueError: If length of names does not match the number of assays.
@@ -569,11 +569,11 @@ class BaseSE:
         return get_rownames(self.row_data)
 
     @row_names.setter
-    def row_names(self, names: Sequence[str]):
+    def row_names(self, names: List[str]):
         """Set row/feature names for the experiment.
 
         Args:
-            names (Sequence[str]): New feature names.
+            names (List[str]): New feature names.
 
         Raises:
             ValueError: Length of ``names`` must be the same as number of rows.
@@ -593,11 +593,11 @@ class BaseSE:
         return get_colnames(self.col_data)
 
     @colnames.setter
-    def colnames(self, names: Sequence[str]):
+    def colnames(self, names: List[str]):
         """Set column/sample names for the experiment.
 
         Args:
-            names (Sequence[str]): New samples names.
+            names (List[str]): New samples names.
 
         Raises:
             ValueError: Length of ``names`` must be the same as number of columns.

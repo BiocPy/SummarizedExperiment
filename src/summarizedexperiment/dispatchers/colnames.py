@@ -1,5 +1,5 @@
 from functools import singledispatch
-from typing import List, Sequence
+from typing import List
 
 from biocframe import BiocFrame
 from pandas import DataFrame
@@ -59,7 +59,7 @@ def set_colnames(x, names: List[str]):
             Alternatively, ``x`` may also contain a property or attribute ``colnames`` for
             custom representations.
 
-        names (Sequence[str]): New names.
+        names (List[str]): New names.
 
     Raises:
         NotImplementedError: if type is not supported.
@@ -73,12 +73,12 @@ def set_colnames(x, names: List[str]):
 
 
 @set_colnames.register
-def _(x: DataFrame, names: Sequence[str]) -> DataFrame:
+def _(x: DataFrame, names: List[str]) -> DataFrame:
     x.index = names
     return x
 
 
 @set_colnames.register
-def _(x: BiocFrame, names: Sequence[str]) -> BiocFrame:
+def _(x: BiocFrame, names: List[str]) -> BiocFrame:
     x.row_names = names
     return x

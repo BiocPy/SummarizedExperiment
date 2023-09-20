@@ -1,5 +1,5 @@
 from functools import singledispatch
-from typing import Any, List, Sequence
+from typing import Any, List
 
 from biocframe import BiocFrame
 from pandas import DataFrame
@@ -46,7 +46,7 @@ def _(x: BiocFrame) -> List[str]:
 
 
 @singledispatch
-def set_rownames(x: Any, names: Sequence[str]):
+def set_rownames(x: Any, names: List[str]):
     """Set row names for various representations.
 
     Args:
@@ -59,7 +59,7 @@ def set_rownames(x: Any, names: Sequence[str]):
         Alternatively, ``x`` may also contain a property or attribute ``row_names`` for
         custom representations.
 
-        names (Sequence[str]): New names.
+        names (List[str]): New names.
 
     Raises:
         NotImplementedError: If ``x`` is not a supported type.
@@ -71,12 +71,12 @@ def set_rownames(x: Any, names: Sequence[str]):
 
 
 @set_rownames.register
-def _(x: DataFrame, names: Sequence[str]) -> Sequence[str]:
+def _(x: DataFrame, names: List[str]) -> List[str]:
     x.index = names
     return x
 
 
 @set_rownames.register
-def _(x: BiocFrame, names: Sequence[str]) -> Sequence[str]:
+def _(x: BiocFrame, names: List[str]) -> List[str]:
     x.row_names = names
     return x

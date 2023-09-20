@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, MutableMapping, Optional, Sequence, Union
+from typing import Dict, List, Literal, Optional, Union
 
 import numpy as np
 from genomicranges import GenomicRanges, GenomicRangesList, SeqInfo
@@ -64,7 +64,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` instead.
 
     Attributes:
-        assays (MutableMapping[str, MatrixTypes]): Dictionary
+        assays (Dict[str, MatrixTypes]): Dictionary
             of matrices, with assay names as keys and 2-dimensional matrices represented as
             :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
 
@@ -91,22 +91,22 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
             Defaults to None.
-        metadata (MutableMapping, optional): Additional experimental metadata describing the
+        metadata (Dict, optional): Additional experimental metadata describing the
             methods. Defaults to None.
     """
 
     def __init__(
         self,
-        assays: MutableMapping[str, MatrixTypes],
+        assays: Dict[str, MatrixTypes],
         row_ranges: Optional[GRangesOrGRangesList] = None,
         row_data: Optional[BiocOrPandasFrame] = None,
         col_data: Optional[BiocOrPandasFrame] = None,
-        metadata: Optional[MutableMapping] = None,
+        metadata: Optional[Dict] = None,
     ) -> None:
         """Initialize a `RangedSummarizedExperiment` (RSE) object.
 
         Args:
-            assays (MutableMapping[str, MatrixTypes]): Dictionary
+            assays (Dict[str, MatrixTypes]): Dictionary
                 of matrices, with assay names as keys and 2-dimensional matrices represented as
                 :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
 
@@ -133,10 +133,14 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
                 Defaults to None.
-            metadata (MutableMapping, optional): Additional experimental metadata describing the
+            metadata (Dict, optional): Additional experimental metadata describing the
                 methods. Defaults to None.
         """
         super().__init__(assays, row_data, col_data, metadata)
+
+        if row_ranges is None:
+            row_ranges = GenomicRangesList.empty(n=self._shape[0])
+
         self._validate_row_ranges(row_ranges)
         self._row_ranges = row_ranges
 
@@ -204,7 +208,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     @property
     def seqnames(self) -> List[str]:
-        """Get sequence or chromosome names.
+        """Get List or chromosome names.
 
         Returns:
             List[str]: List of all chromosome names.
@@ -231,10 +235,10 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     @property
     def seq_info(self) -> Optional[SeqInfo]:
-        """Get sequence information object (if available).
+        """Get List information object (if available).
 
         Returns:
-            (SeqInfo, optional): Sequence information.
+            (SeqInfo, optional): List information.
         """
         return self.row_ranges.seq_info
 
@@ -303,7 +307,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         self,
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
-    ) -> Optional[Sequence[Optional[int]]]:
+    ) -> Optional[List[Optional[int]]]:
         """Search nearest positions, both upstream and downstream that overlap with each range in ``query``.
 
         Args:
@@ -320,7 +324,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 or ``GenomicRanges``.
 
         Returns:
-            (Sequence[Optional[int]], optional): List of possible `hit` indices
+            (List[Optional[int]], optional): List of possible `hit` indices
             for each interval in `query`. If there are no hits, returns None.
         """
 
@@ -335,7 +339,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         self,
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
-    ) -> Optional[Sequence[Optional[int]]]:
+    ) -> Optional[List[Optional[int]]]:
         """Search nearest positions, only downstream that overlap with each range in ``query``.
 
         Args:
@@ -350,7 +354,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             ``GenomicRanges``.
 
         Returns:
-            (Sequence[Optional[int]], optional): List of possible hit indices
+            (List[Optional[int]], optional): List of possible hit indices
             for each interval in ``query``. If there are no hits, returns None.
         """
 
@@ -365,7 +369,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         self,
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
-    ) -> Optional[Sequence[Optional[int]]]:
+    ) -> Optional[List[Optional[int]]]:
         """Search nearest positions, only upstream that overlap with the each range in ``query``.
 
         Args:
@@ -380,7 +384,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             ``GenomicRanges``.
 
         Returns:
-            (Sequence[Optional[int]], optional): List of possible hit indices
+            (List[Optional[int]], optional): List of possible hit indices
             for each interval in ``query``. If there are no hits, returns None.
         """
         _check_gr_or_rse(query)
@@ -394,7 +398,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         self,
         query: GRangesOrRangeSE,
         ignore_strand: bool = False,
-    ) -> Optional[Sequence[Optional[int]]]:
+    ) -> Optional[List[Optional[int]]]:
         """Search nearest positions only downstream that overlap with the each genomics interval in ``query``.
 
         Technically same as
@@ -412,7 +416,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             TypeError: If ``query`` is not a ``RangedSummarizedExperiment`` or ``GenomicRanges``.
 
         Returns:
-            (Sequence[Optional[int]], optional): List of possible hit indices
+            (List[Optional[int]], optional): List of possible hit indices
             for each interval in ``query``. If there are no hits, returns None.
         """
         _check_gr_or_rse(query)
@@ -707,7 +711,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         return self[indices, :]
 
-    def order(self, decreasing=False) -> List[int]:
+    def order(self, decreasing: bool = False) -> List[int]:
         """Get the order of indices to sort.
 
         Args:

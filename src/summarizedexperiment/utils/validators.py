@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import List
 
 from ..types import BiocOrPandasFrame
 
@@ -24,11 +24,11 @@ def _validate_single_frame(df: BiocOrPandasFrame) -> bool:
     return (not any_null) and (not any_duplicates)
 
 
-def validate_names(x: Sequence[BiocOrPandasFrame]) -> bool:
+def validate_names(x: List[BiocOrPandasFrame]) -> bool:
     """Validate names across experiments.
 
     Args:
-        x (Sequence[BiocOrPandasFrame]): Objects to validate.
+        x (List[BiocOrPandasFrame]): Objects to validate.
             ``x`` may be a :py;class:`~biocframe.BiocFrame.BiocFrame` object.
             Alternatively, ``x`` may be a :py:class:`~pandas.DataFrame`.
 
@@ -47,11 +47,11 @@ def validate_names(x: Sequence[BiocOrPandasFrame]) -> bool:
     return is_valid_names
 
 
-def validate_shapes(x: Sequence[BiocOrPandasFrame]):
+def validate_shapes(x: List[BiocOrPandasFrame]):
     """Validate shapes across experiments.
 
     Args:
-        x (Sequence[BiocOrPandasFrame]): Objects to validate.
+        x (List[BiocOrPandasFrame]): Objects to validate.
             ``x`` may be a :py;class:`~biocframe.BiocFrame.BiocFrame` object.
             Alternatively, ``x`` may be a :py:class:`~pandas.DataFrame`.
 

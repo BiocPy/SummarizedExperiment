@@ -125,8 +125,8 @@ class BaseSE:
             rows if rows is not None else BiocFrame({}, number_of_rows=self._shape[0])
         )
 
-        if is_pandas(rows):
-            rows = from_pandas(rows)
+        # if is_pandas(rows):
+        #     rows = from_pandas(rows)
 
         self._validate_rows(rows)
         self._rows = rows
@@ -136,8 +136,8 @@ class BaseSE:
             cols if cols is not None else BiocFrame({}, number_of_rows=self._shape[1])
         )
 
-        if is_pandas(cols):
-            cols = from_pandas(cols)
+        # if is_pandas(cols):
+        #     cols = from_pandas(cols)
 
         self._validate_cols(cols)
         self._cols = cols

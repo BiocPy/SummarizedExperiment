@@ -1,5 +1,5 @@
 from collections import namedtuple
-from typing import Sequence, Tuple, Union
+from typing import List, Tuple, Union
 
 import numpy as np
 import pandas as pd
@@ -14,9 +14,9 @@ __license__ = "MIT"
 MatrixTypes = Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
 ArrayTypes = Union[np.ndarray, sp.lil_matrix]
 BiocOrPandasFrame = Union[pd.DataFrame, BiocFrame]
-MatrixSlicerTypes = Union[Sequence[int], Sequence[bool], slice]
-SlicerTypes = Union[Sequence[int], Sequence[bool], Sequence[str], slice]
-SlicerArgTypes = Union[Tuple[SlicerTypes], Sequence[SlicerTypes], slice]
+MatrixSlicerTypes = Union[List[int], List[bool], slice]
+SlicerTypes = Union[List[int], List[bool], List[str], slice]
+SlicerArgTypes = Union[Tuple[SlicerTypes], List[SlicerTypes], slice]
 SlicerResult = namedtuple(
     "SlicerResult", ["row_data", "col_data", "assays", "row_indices", "col_indices"]
 )

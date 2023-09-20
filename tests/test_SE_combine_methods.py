@@ -1,4 +1,4 @@
-from typing import Sequence, Tuple
+from typing import List, Tuple
 
 import numpy as np
 import pandas as pd
@@ -13,7 +13,7 @@ __license__ = "MIT"
 def checkIdentical(
     se: SummarizedExperiment,
     target_shape: Tuple[int, int],
-    target_assay_names: Sequence[str],
+    target_assay_names: List[str],
     target_row_data: pd.DataFrame,
     target_col_data: pd.DataFrame,
 ):
@@ -22,7 +22,7 @@ def checkIdentical(
     Args:
         se (SummarizedExperiment): the SummarizedExperiment object to be checked.
         target_shape (Tuple[int, int]): the expected shape of the SummarizedExperiment.
-        target_assay_names (Sequence[str]): the expected assay names of the SummarizedExperiment.
+        target_assay_names (List[str]): the expected assay names of the SummarizedExperiment.
         target_row_data pd.DataFrame: the expected row_data of the SummarizedExperiment.
         target_col_data pd.DataFrame: the expected col_data of the SummarizedExperiment.
     """

@@ -77,9 +77,10 @@ def test_RSE_creation():
     assert isinstance(trse, RangedSummarizedExperiment)
 
 
-def test_RSE_none_should_fail():
-    with pytest.raises(Exception):
-        RangedSummarizedExperiment(assays={"counts": counts})
+def test_RSE_no_ranges():
+    rse = RangedSummarizedExperiment(assays={"counts": counts})
+    assert rse is not None
+    assert isinstance(rse, RangedSummarizedExperiment)
 
 
 def test_RSE_should_fail():

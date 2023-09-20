@@ -1,6 +1,5 @@
 from typing import Any, Callable
 
-import pandas as pd
 from biocframe import BiocFrame
 
 # from .RangedSummarizedExperiment import RangedSummarizedExperiment
@@ -19,7 +18,7 @@ def is_bioc_or_pandas_frame(x: Any) -> bool:
     Returns:
         bool: True if ``x`` is `DataFrame`-like.
     """
-    return isinstance(x, pd.DataFrame) or isinstance(x, BiocFrame)
+    return is_pandas(x) or isinstance(x, BiocFrame)
 
 
 # def is_gr_or_rse(x: Union[GenomicRanges, RangedSummarizedExperiment]):
@@ -99,3 +98,18 @@ def is_list_of_subclass(x: Any, target_type: Callable) -> bool:
     return (isinstance(x, list) or isinstance(x, tuple)) and all(
         issubclass(type(item), target_type) for item in x
     )
+
+
+def is_pandas(x: Any) -> bool:
+    """Check if ``x`` is a :py:class:`~pandas.DataFrame`.
+
+    Args:
+        x (Any): Any object.
+
+    Returns:
+        bool: True if ``x`` is a :py:class:`~pandas.DataFrame`.
+    """
+    if hasattr(x, "dtypes"):
+        return True
+
+    return False

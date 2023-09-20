@@ -103,7 +103,39 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         col_data: Optional[BiocOrPandasFrame] = None,
         metadata: Optional[MutableMapping] = None,
     ) -> None:
-        """Initialize a `RangedSummarizedExperiment` (RSE) object."""
+        """Initialize a `RangedSummarizedExperiment` (RSE) object.
+
+        Args:
+            assays (MutableMapping[str, MatrixTypes]): Dictionary
+                of matrices, with assay names as keys and 2-dimensional matrices represented as
+                :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
+
+                Alternatively, you may use any 2-dimensional matrix that contains the property ``shape``
+                and implements the slice operation using the ``__getitem__`` dunder method.
+
+                All matrices in ``assays`` must be 2-dimensional and have the same
+                shape (number of rows, number of columns).
+
+            row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as
+                rows of the matrices in assays.
+
+            row_data (BiocOrPandasFrame, optional): Features, must be the same length as
+                rows of the matrices in assays.
+
+                Features may be either a :py:class:`~pandas.DataFrame` or
+                :py:class:`~biocframe.BiocFrame.BiocFrame`.
+
+                Defaults to None.
+            col_data (BiocOrPandasFrame, optional): Sample data, must be
+                the same length as columns of the matrices in assays.
+
+                Sample Information may be either a :py:class:`~pandas.DataFrame` or
+                :py:class:`~biocframe.BiocFrame.BiocFrame`.
+
+                Defaults to None.
+            metadata (MutableMapping, optional): Additional experimental metadata describing the
+                methods. Defaults to None.
+        """
         super().__init__(assays, row_data, col_data, metadata)
         self._validate_row_ranges(row_ranges)
         self._row_ranges = row_ranges

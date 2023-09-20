@@ -59,6 +59,7 @@ class BaseSE:
             :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
             Defaults to None.
+
         col_data (BiocOrPandasFrame, optional): Sample data, must be
             the same length as columns of the matrices in assays.
 
@@ -66,6 +67,7 @@ class BaseSE:
             :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
             Defaults to None.
+
         metadata (MutableMapping, optional): Additional experimental metadata describing the
             methods. Defaults to None.
     """
@@ -125,8 +127,9 @@ class BaseSE:
                 data.
 
         Raises:
-            ValueError: When ``assays`` contain more than 2 dimensions.
-            ValueError: If all ``assays`` do not have the same dimensions.
+            ValueError: 
+                If ``assays`` contain more than 2 dimensions.
+                If all ``assays`` do not have the same dimensions.
             TypeError: If ``assays`` includes a unsupported matrix representation.
         """
 

@@ -260,7 +260,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         new_row_ranges = None
         if sliced_objs.row_indices is not None and self.row_ranges is not None:
-            new_row_ranges = self.row_ranges[sliced_objs.row_indices, :]
+            new_row_ranges = self.row_ranges[sliced_objs.row_indices]
 
         return RangedSummarizedExperiment(
             assays=sliced_objs.assays,

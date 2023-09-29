@@ -29,11 +29,6 @@ from .utils.combiners import (
 from .utils.slicer import get_indexes_from_bools, get_indexes_from_names
 
 
-try:
-    from anndata import AnnData
-except ImportError:
-    pass
-
 __author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
 __license__ = "MIT"
@@ -603,9 +598,7 @@ class BaseSE:
 
         self._cols = set_colnames(self.col_data, names)
 
-    def to_anndata(
-        self,
-    ) -> AnnData:
+    def to_anndata(self):
         """Transform :py:class:`summarizedexperiment.BaseSE`-like into a :py:class:`~anndata.AnnData` representation.
 
         Returns:

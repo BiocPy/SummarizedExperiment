@@ -598,7 +598,7 @@ class BaseSE:
 
         self._cols = set_colnames(self.col_data, names)
 
-    def to_anndata(self): 
+    def to_anndata(self):
         """Transform :py:class:`summarizedexperiment.BaseSE`-like into a :py:class:`~anndata.AnnData` representation.
 
         Returns:

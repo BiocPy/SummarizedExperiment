@@ -10,7 +10,7 @@ __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-MatrixTypes = Union[np.ndarray, sp.spmatrix, H5BackedSparseData, H5BackedDenseData]
+MatrixTypes = Union[np.ndarray, sp.spmatrix]
 ArrayTypes = Union[np.ndarray, sp.lil_matrix]
 BiocOrPandasFrame = Union[pd.DataFrame, BiocFrame]
 MatrixSlicerTypes = Union[List[int], List[bool], slice]

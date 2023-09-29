@@ -3,7 +3,6 @@ from collections import OrderedDict
 from typing import Dict, List, Optional, Tuple, Union
 
 from biocframe import BiocFrame
-from filebackedarray import H5BackedDenseData, H5BackedSparseData
 from genomicranges import GenomicRanges
 from pandas import DataFrame
 
@@ -616,13 +615,6 @@ class BaseSE:
 
         layers = OrderedDict()
         for asy, mat in self.assays.items():
-            if isinstance(mat, H5BackedDenseData) or isinstance(
-                mat, H5BackedSparseData
-            ):
-                raise ValueError(
-                    f"Assay: '{asy}' is not supported. Uses a file backed representation."
-                )
-
             layers[asy] = mat.transpose()
 
         trows = self.row_data

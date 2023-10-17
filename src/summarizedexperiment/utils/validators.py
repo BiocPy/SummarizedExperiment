@@ -1,17 +1,17 @@
 from typing import List
 
-from ..types import BiocOrPandasFrame
+from biocframe import BiocFrame
 
 __author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"
 __license__ = "MIT"
 
 
-def _validate_single_frame(df: BiocOrPandasFrame) -> bool:
+def _validate_single_frame(df: BiocFrame) -> bool:
     """Validate there are no None or duplicated names.
 
     Args:
-        df (BiocOrPandasFrame): Object to validate.
+        df (BiocFrame): Object to validate.
             ``df`` may be a :py;class:`~biocframe.BiocFrame.BiocFrame` object.
             Alternatively, ``df`` may be a :py:class:`~pandas.DataFrame`.
 
@@ -24,11 +24,11 @@ def _validate_single_frame(df: BiocOrPandasFrame) -> bool:
     return (not any_null) and (not any_duplicates)
 
 
-def validate_names(x: List[BiocOrPandasFrame]) -> bool:
+def validate_names(x: List[BiocFrame]) -> bool:
     """Validate names across experiments.
 
     Args:
-        x (List[BiocOrPandasFrame]): Objects to validate.
+        x (List[BiocFrame]): Objects to validate.
             ``x`` may be a :py;class:`~biocframe.BiocFrame.BiocFrame` object.
             Alternatively, ``x`` may be a :py:class:`~pandas.DataFrame`.
 
@@ -47,11 +47,11 @@ def validate_names(x: List[BiocOrPandasFrame]) -> bool:
     return is_valid_names
 
 
-def validate_shapes(x: List[BiocOrPandasFrame]):
+def validate_shapes(x: List[BiocFrame]):
     """Validate shapes across experiments.
 
     Args:
-        x (List[BiocOrPandasFrame]): Objects to validate.
+        x (List[BiocFrame]): Objects to validate.
             ``x`` may be a :py;class:`~biocframe.BiocFrame.BiocFrame` object.
             Alternatively, ``x`` may be a :py:class:`~pandas.DataFrame`.
 

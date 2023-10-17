@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, Tuple
+from typing import Any, Dict, List, Literal, Tuple
 
 from biocframe import BiocFrame
 from biocgenerics import rownames
@@ -6,7 +6,6 @@ from numpy import argwhere, find_common_type, ndarray
 from pandas import DataFrame, Index, concat
 from scipy.sparse import lil_matrix
 
-from ..types import ArrayTypes, BiocOrPandasFrame
 from .validators import validate_names, validate_shapes
 
 # from ..SummarizedExperiment import SummarizedExperiment
@@ -16,17 +15,17 @@ __copyright__ = "keviny2"
 __license__ = "MIT"
 
 
-def impose_common_precision(*x: ArrayTypes) -> List[ArrayTypes]:
+def impose_common_precision(*x: Any) -> List[Any]:
     """Check and transform input arrays into common dtypes.
 
     Args:
-        *x (ArrayTypes): Array like objects.
+        *x (Any): Array like objects.
 
             ``x`` may be either a :py:class:`~scipy.sparse.lil_matrix` or
             a :py:class:`~numpy.ndarray`.
 
     Returns:
-        List[ArrayTypes]: All transformed matrices.
+        List[Any]: All transformed matrices.
     """
     common_dtype = find_common_type([m.dtype for m in x], [])
     return [(m.astype(common_dtype) if m.dtype != common_dtype else m) for m in x]
@@ -62,7 +61,7 @@ def combine_metadata(experiments: List["SummarizedExperiment"]) -> Dict:
 
 
 def combine_frames(
-    x: List[BiocOrPandasFrame],
+    x: List[BiocFrame],
     use_names: bool,
     axis: int,
     remove_duplicate_columns: bool,
@@ -70,7 +69,7 @@ def combine_frames(
     """Combine a series of `DataFrame`-like objects.
 
     Args:
-        x (List[BiocOrPandasFrame]): Input frames.
+        x (List[BiocFrame]): Input frames.
             May be either a :py:class:`~biocframe.BiocFrame.BiocFrame` or
             :py:class:`~pandas.DataFrame`.
 

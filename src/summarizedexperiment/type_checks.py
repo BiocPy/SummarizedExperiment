@@ -21,21 +21,6 @@ def is_bioc_or_pandas_frame(x: Any) -> bool:
     return is_pandas(x) or isinstance(x, BiocFrame)
 
 
-# def is_gr_or_rse(x: Union[GenomicRanges, RangedSummarizedExperiment]):
-#     """Check if the object is either a `RangedSummarizedExperiment` or `GenomicRanges`.
-
-#     Args:
-#         x (Union[GenomicRanges, RangedSummarizedExperiment]): object to check.
-
-#     Raises:
-#         TypeError: object is not a `RangedSummarizedExperiment` or `GenomicRanges`.
-#     """
-#     if not (isinstance(x, RangedSummarizedExperiment) or isinstance(x, GenomicRanges)):
-#         raise TypeError(
-#             "object is not a `RangedSummarizedExperiment` or `GenomicRanges`"
-#         )
-
-
 # def _get_python_minor():
 #     return version_info[1] < 8
 # Expectations on Assays, these should be matrices or matrix-like objects
@@ -70,21 +55,6 @@ def is_matrix_like(x: Any) -> bool:
     return hasattr(x, "__getitem__") and hasattr(x, "shape")
 
 
-def is_list_of_type(x: Any, target_type: Callable) -> bool:
-    """Checks if ``x`` is a list or tuple and and whether all elements are of the same type.
-
-    Args:
-        x (Any): Any object.
-        target_type (callable): Type to check for, e.g. ``str``, ``int``.
-
-    Returns:
-        bool: True if ``x`` is :py:class:`~list` and all elements are of the same type.
-    """
-    return (isinstance(x, list) or isinstance(x, tuple)) and all(
-        isinstance(item, target_type) for item in x
-    )
-
-
 def is_list_of_subclass(x: Any, target_type: Callable) -> bool:
     """Checks if all provided objects subclass of ``target_type``.
 
@@ -95,7 +65,7 @@ def is_list_of_subclass(x: Any, target_type: Callable) -> bool:
     Returns:
         bool: True if ``x`` is :py:class:`~list` and all objects are derivatives of the same class.
     """
-    return (isinstance(x, list) or isinstance(x, tuple)) and all(
+    return (isinstance(x, (list, tuple))) and all(
         issubclass(type(item), target_type) for item in x
     )
 

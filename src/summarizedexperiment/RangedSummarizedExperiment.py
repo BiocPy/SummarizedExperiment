@@ -1,10 +1,11 @@
-from typing import Dict, List, Literal, Optional, Union
+from typing import Any, Dict, List, Literal, Optional, Union
 
 import numpy as np
+from biocframe import BiocFrame
 from genomicranges import GenomicRanges, GenomicRangesList, SeqInfo
 
 from .SummarizedExperiment import SummarizedExperiment
-from .types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
+from .types import SlicerArgTypes
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -57,14 +58,14 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     The key difference between this and `SummarizedExperiment` is enforcing type for
     feature information (`row_ranges`), must be a `GenomicRanges` object. This allows us to
-    provides new methods, to perform genomic range based operations over experimental data.
+    implement methods to perform genomic range based operations over experimental data.
 
     Note: If ``row_ranges`` is empty, None or not a
     :py:class:`genomicranges.GenomicRanges.GenomicRanges` object, use a
     :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` instead.
 
     Attributes:
-        assays (Dict[str, MatrixTypes]): A dictionary containing matrices, with assay names as keys
+        assays (Dict[str, Any]): A dictionary containing matrices, with assay names as keys
             and 2-dimensional matrices represented as either
             :py:class:`~numpy.ndarray` or :py:class:`~scipy.sparse.spmatrix`.
 
@@ -77,11 +78,11 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as
             rows of the matrices in assays.
 
-        row_data (BiocOrPandasFrame, optional): Features, which must be of the same length as the rows of
+        row_data (BiocFrame, optional): Features, which must be of the same length as the rows of
             the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
             :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-        col_data (BiocOrPandasFrame, optional): Sample data, which must be of the same length as the
+        col_data (BiocFrame, optional): Sample data, which must be of the same length as the
             columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
             or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
@@ -90,16 +91,16 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     def __init__(
         self,
-        assays: Dict[str, MatrixTypes],
+        assays: Dict[str, Any],
         row_ranges: Optional[GRangesOrGRangesList] = None,
-        row_data: Optional[BiocOrPandasFrame] = None,
-        col_data: Optional[BiocOrPandasFrame] = None,
+        row_data: Optional[BiocFrame] = None,
+        col_data: Optional[BiocFrame] = None,
         metadata: Optional[Dict] = None,
     ) -> None:
         """Initialize a `RangedSummarizedExperiment` (RSE) object.
 
         Args:
-            assays (Dict[str, MatrixTypes]): Dictionary
+            assays (Dict[str, Any]): Dictionary
                 of matrices, with assay names as keys and 2-dimensional matrices represented as
                 :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.
 
@@ -112,14 +113,14 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as
                 rows of the matrices in assays.
 
-            row_data (BiocOrPandasFrame, optional): Features, must be the same length as
+            row_data (BiocFrame, optional): Features, must be the same length as
                 rows of the matrices in assays.
 
                 Features may be either a :py:class:`~pandas.DataFrame` or
                 :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
                 Defaults to None.
-            col_data (BiocOrPandasFrame, optional): Sample data, must be
+            col_data (BiocFrame, optional): Sample data, must be
                 the same length as columns of the matrices in assays.
 
                 Sample Information may be either a :py:class:`~pandas.DataFrame` or
@@ -148,10 +149,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             `row_ranges` & `assays`.
             TypeError: If `row_ranges` is not a `GenomicRanges` or `GenomicRangesList`.
         """
-        if not (
-            isinstance(row_ranges, GenomicRanges)
-            or isinstance(row_ranges, GenomicRangesList)
-        ):
+        if not isinstance(row_ranges, (GenomicRanges, GenomicRangesList)):
             raise TypeError(
                 "`row_ranges` must be a `GenomicRanges` or `GenomicRangesList`"
                 f" , provided {type(row_ranges)}."
@@ -245,10 +243,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             args (SlicerArgTypes): Indices or names to slice. The tuple contains
                 slices along dimensions (rows, cols).
 
-                Each element in the tuple, might be either a integer vector (integer positions),
+                Each element in the tuple may be either an list of indices,
                 boolean vector or :py:class:`~slice` object.
-
-                Defaults to None.
 
         Raises:
             ValueError: If too many or too few slices are provided.
@@ -262,7 +258,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         if sliced_objs.row_indices is not None and self.row_ranges is not None:
             new_row_ranges = self.row_ranges[sliced_objs.row_indices]
 
-        return RangedSummarizedExperiment(
+        current_class_const = type(self)
+        return current_class_const(
             assays=sliced_objs.assays,
             row_ranges=new_row_ranges,
             row_data=sliced_objs.row_data,
@@ -271,11 +268,13 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         )
 
     def __repr__(self) -> str:
+        current_class_const = type(self)
         pattern = (
-            f"Class RangedSummarizedExperiment with {self.shape[0]} features and {self.shape[1]} "
+            f"Class {current_class_const.__name__} with {self.shape[0]} features and {self.shape[1]} "
             "samples \n"
             f"  assays: {list(self.assays.keys())} \n"
             f"  row_data: {self.row_data.columns if self.row_data is not None else None} \n"
+            f"  row_ranges: {self.row_ranges.columns if self.row_ranges is not None else None} \n"
             f"  col_data: {self.col_data.columns if self.col_data is not None else None}"
         )
         return pattern
@@ -315,8 +314,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 Defaults to False.
 
         Raises:
-            TypeError: If ``query`` is not a ``RangedSummarizedExperiment``
-                or ``GenomicRanges``.
+            TypeError: If query is neither `RangedSummarizedExperiment` nor `GenomicRanges`.
 
         Returns:
             (List[Optional[int]], optional): List of possible `hit` indices
@@ -345,8 +343,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             ignore_strand (bool, optional): Whether to ignore strand. Defaults to False.
 
         Raises:
-            TypeError: If ``query`` is not a ``RangedSummarizedExperiment`` or
-            ``GenomicRanges``.
+            TypeError: If query is neither `RangedSummarizedExperiment` nor `GenomicRanges`.
 
         Returns:
             (List[Optional[int]], optional): List of possible hit indices
@@ -629,7 +626,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             ignore_strand (bool, optional): Whether to ignore strand.. Defaults to False.
 
         Raises:
-            TypeError: If query is not a `RangedSummarizedExperiment` or `GenomicRanges`.
+            TypeError: If query is neither `RangedSummarizedExperiment` nor `GenomicRanges`.
 
         Returns:
             ("RangedSummarizedExperiment", optional): A `RangedSummarizedExperiment` object
@@ -676,7 +673,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             ignore_strand (bool, optional): Whether to ignore strand.. Defaults to False.
 
         Raises:
-            TypeError: If query is not a `RangedSummarizedExperiment` or `GenomicRanges`.
+            TypeError: If query is neither `RangedSummarizedExperiment` nor `GenomicRanges`.
 
         Returns:
             Optional["RangedSummarizedExperiment"]: A new `RangedSummarizedExperiment`
@@ -733,7 +730,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         """
         order = self.row_ranges._generic_order(ignore_strand=ignore_strand)
 
-        if decreasing:
+        if decreasing is True:
             order = order[::-1]
 
         new_order = order.to_list()

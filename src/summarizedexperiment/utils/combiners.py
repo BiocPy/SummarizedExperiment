@@ -1,11 +1,11 @@
 from typing import Dict, List, Literal, Tuple
 
 from biocframe import BiocFrame
+from biocgenerics import rownames
 from numpy import argwhere, find_common_type, ndarray
 from pandas import DataFrame, Index, concat
 from scipy.sparse import lil_matrix
 
-from ..dispatchers import get_rownames
 from ..types import ArrayTypes, BiocOrPandasFrame
 from .validators import validate_names, validate_shapes
 
@@ -97,8 +97,8 @@ def combine_frames(
 
     concat_df = concat(all_as_pandas, axis=axis)
 
-    if (use_names is False) and (get_rownames(x[0]) is not None):
-        concat_df.index = get_rownames(x[0])
+    if (use_names is False) and (rownames(x[0]) is not None):
+        concat_df.index = rownames(x[0])
 
     if remove_duplicate_columns:
         return _remove_duplicate_columns(concat_df)

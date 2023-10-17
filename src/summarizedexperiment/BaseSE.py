@@ -711,3 +711,13 @@ class BaseSE:
 
         current_class_const = type(self)
         return current_class_const(new_assays, new_row_data, new_col_data, new_metadata)
+
+
+@rownames.register(BaseSE)
+def _rownames_se(x: BaseSE):
+    return x.row_names
+
+
+@set_rownames.register(BaseSE)
+def _set_rownames_se(x: Any, names: List[str]):
+    x.row_data.row_names = names

@@ -1,10 +1,11 @@
-from typing import Dict, Optional
+from typing import Any, Dict, Optional
 from warnings import warn
 
+from biocframe import BiocFrame
 from genomicranges import GenomicRanges
 
 from .BaseSE import BaseSE
-from .types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
+from .types import SlicerArgTypes
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -42,9 +43,9 @@ class SummarizedExperiment(BaseSE):
 
     def __init__(
         self,
-        assays: Dict[str, MatrixTypes],
-        row_data: Optional[BiocOrPandasFrame] = None,
-        col_data: Optional[BiocOrPandasFrame] = None,
+        assays: Dict[str, Any],
+        row_data: Optional[BiocFrame] = None,
+        col_data: Optional[BiocFrame] = None,
         metadata: Optional[Dict] = None,
     ) -> None:
         """Initialize a Summarized Experiment (SE).

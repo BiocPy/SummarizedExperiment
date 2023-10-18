@@ -6,7 +6,6 @@ from biocframe import BiocFrame
 from biocgenerics import colnames, rownames, set_colnames, set_rownames
 from biocutils import is_list_of_type
 from genomicranges import GenomicRanges
-from pandas import DataFrame
 
 from ._frameutils import _sanitize_frame
 from .type_checks import (

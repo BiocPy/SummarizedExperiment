@@ -1,7 +1,8 @@
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 from warnings import warn
 
 from biocframe import BiocFrame
+from biocgenerics import colnames, rownames, set_colnames, set_rownames
 from genomicranges import GenomicRanges
 
 from .BaseSE import BaseSE
@@ -30,13 +31,13 @@ class SummarizedExperiment(BaseSE):
             All matrices in assays must be 2-dimensional and have the same shape
             (number of rows, number of columns).
 
-        row_data (BiocFrame, optional): Features, must be the same length as the numner of rows of
-            the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
+        row_data (BiocFrame, optional): Features, must be the same length as the number of rows of
+            the matrices in assays. Feature information is coerced to a
             :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-        col_data (BiocFrame, optional): Sample data, which be the same length as the number of
-            columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
-            or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
+        col_data (BiocFrame, optional): Sample data, must be the same length as the number of
+            columns of the matrices in assays. Sample information is coerced to a
+            :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
         metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.
     """
@@ -61,13 +62,13 @@ class SummarizedExperiment(BaseSE):
                 All matrices in assays must be 2-dimensional and have the same shape
                 (number of rows, number of columns).
 
-            row_data (BiocFrame, optional): Features, must be the same length as the numner of rows of
-                the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
+            row_data (BiocFrame, optional): Features, must be the same length as the number of rows of
+                the matrices in assays. Feature information is coerced to a
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-            col_data (BiocFrame, optional): Sample data, which be the same length as the number of
-                columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
-                or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
+            col_data (BiocFrame, optional): Sample data, must be the same length as the number of
+                columns of the matrices in assays. Sample information is coerced to a
+                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
             metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.
         """
@@ -118,3 +119,23 @@ class SummarizedExperiment(BaseSE):
             f"  col_data: {self.col_data.columns if self.col_data is not None else None}"
         )
         return pattern
+
+
+@rownames.register(SummarizedExperiment)
+def _rownames_se(x: SummarizedExperiment):
+    return rownames(x.row_data)
+
+
+@set_rownames.register(SummarizedExperiment)
+def _set_rownames_se(x: Any, names: List[str]):
+    set_rownames(x.row_data, names)
+
+
+@colnames.register(SummarizedExperiment)
+def _colnames_se(x: SummarizedExperiment):
+    return rownames(x.col_data)
+
+
+@set_colnames.register(SummarizedExperiment)
+def _set_colnames_se(x: Any, names: List[str]):
+    set_colnames(x.col_data, names)

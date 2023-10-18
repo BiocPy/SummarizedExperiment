@@ -78,13 +78,13 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as
             rows of the matrices in assays.
 
-        row_data (BiocFrame, optional): Features, which must be of the same length as the rows of
-            the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
+        row_data (BiocFrame, optional): Features, must be the same length as the number of rows of
+            the matrices in assays. Feature information is coerced to a
             :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-        col_data (BiocFrame, optional): Sample data, which must be of the same length as the
-            columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
-            or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
+        col_data (BiocFrame, optional): Sample data, must be the same length as the number of
+            columns of the matrices in assays. Sample information is coerced to a
+            :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
         metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.
     """
@@ -113,20 +113,16 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as
                 rows of the matrices in assays.
 
-            row_data (BiocFrame, optional): Features, must be the same length as
-                rows of the matrices in assays.
+            row_data (BiocFrame, optional): Features, must be the same length as the number of rows of
+                the matrices in assays. Feature information is coerced to a
+                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-                Features may be either a :py:class:`~pandas.DataFrame` or
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
-
-                Defaults to None.
-            col_data (BiocFrame, optional): Sample data, must be
-                the same length as columns of the matrices in assays.
-
-                Sample Information may be either a :py:class:`~pandas.DataFrame` or
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
+            col_data (BiocFrame, optional): Sample data, must be the same length as the number of
+                columns of the matrices in assays. Sample information is coerced to a
+                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
                 Defaults to None.
+
             metadata (Dict, optional): Additional experimental metadata describing the
                 methods. Defaults to None.
         """

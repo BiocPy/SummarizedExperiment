@@ -72,6 +72,7 @@ def test_SE_none():
     assert isinstance(tse, SummarizedExperiment)
     assert tse.shape == (200, 6)
 
+    assert tse.row_data is not None
     tse.row_names = [f"row_{i}" for i in range(200)]
     assert tse.row_names is not None
     assert len(tse.row_names) == 200

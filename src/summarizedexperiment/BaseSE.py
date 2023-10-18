@@ -2,17 +2,17 @@ from collections import OrderedDict
 from typing import Any, Dict, List, Optional, Tuple, Union
 from warnings import warn
 
-from biocframe import BiocFrame, from_pandas
+from biocframe import BiocFrame
 from biocgenerics import colnames, rownames, set_colnames, set_rownames
 from biocutils import is_list_of_type
 from genomicranges import GenomicRanges
 from pandas import DataFrame
 
+from ._frameutils import _sanitize_frame
 from .type_checks import (
     is_bioc_or_pandas_frame,
     is_list_of_subclass,
     is_matrix_like,
-    is_pandas,
 )
 from .types import (
     MatrixSlicerTypes,
@@ -49,13 +49,13 @@ class BaseSE:
             All matrices in assays must be 2-dimensional and have the same shape
             (number of rows, number of columns).
 
-        row_data (BiocFrame, optional): Features, must be the same length as the numner of rows of
-            the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
+        row_data (BiocFrame, optional): Features, must be the same length as the number of rows of
+            the matrices in assays. Feature information is coerced to a
             :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-        col_data (BiocFrame, optional): Sample data, which be the same length as the number of
-            columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
-            or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
+        col_data (BiocFrame, optional): Sample data, must be the same length as the number of
+            columns of the matrices in assays. Sample information is coerced to a
+            :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
         metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.
     """
@@ -80,13 +80,13 @@ class BaseSE:
                 All matrices in assays must be 2-dimensional and have the same shape
                 (number of rows, number of columns).
 
-            row_data (BiocFrame, optional): Features, must be the same length as the numner of rows of
-                the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
+            row_data (BiocFrame, optional): Features, must be the same length as the number of rows of
+                the matrices in assays. Feature information is coerced to a
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-            col_data (BiocFrame, optional): Sample data, which be the same length as the number of
-                columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
-                or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
+            col_data (BiocFrame, optional): Sample data, must be the same length as the number of
+                columns of the matrices in assays. Sample information is coerced to a
+                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
             metadata (dict, optional): Additional experimental metadata describing the methods. Defaults to None.
         """
@@ -111,24 +111,12 @@ class BaseSE:
         self._metadata = metadata
 
     def _set_rows(self, rows: Optional[BiocFrame]):
-        rows = (
-            rows if rows is not None else BiocFrame({}, number_of_rows=self._shape[0])
-        )
-
-        if is_pandas(rows):
-            rows = from_pandas(rows)
-
+        rows = _sanitize_frame(rows, self._shape[0])
         self._validate_rows(rows)
         self._rows = rows
 
     def _set_cols(self, cols: Optional[BiocFrame]):
-        cols = (
-            cols if cols is not None else BiocFrame({}, number_of_rows=self._shape[1])
-        )
-
-        if is_pandas(cols):
-            cols = from_pandas(cols)
-
+        cols = _sanitize_frame(cols, self._shape[1])
         self._validate_cols(cols)
         self._cols = cols
 
@@ -180,13 +168,10 @@ class BaseSE:
 
         Args:
             rows (BiocFrame): Features to validate.
-                Features may be either a :py:class:`~pandas.DataFrame` or
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
         Raises:
-            ValueError: When the number of rows in ``rows`` does not match the number of rows in the assays.
-            TypeError: When ``rows`` is neither a :py:class:`~pandas.DataFrame` nor a
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
+            ValueError: When the number of rows in ``rows`` does not match the number of rows across assays.
+            TypeError: When ``rows`` is not a :py:class:`~biocframe.BiocFrame.BiocFrame`.
         """
         if not is_bioc_or_pandas_frame(rows):
             raise TypeError(
@@ -205,13 +190,10 @@ class BaseSE:
 
         Args:
             cols (BiocFrame): Sample information (col_data).
-                Sample may be either a :py:class:`~pandas.DataFrame` or
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
 
         Raises:
-            ValueError: When the number of columns in ``cols`` do not match between columns in the assays.
-            TypeError: When ``cols`` is neither a :py:class:`~pandas.DataFrame` nor a
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
+            ValueError: When the number of columns in ``cols`` does not match the number of columns across assays.
+            TypeError: When ``cols`` is not a :py:class:`~biocframe.BiocFrame.BiocFrame`.
         """
         if not is_bioc_or_pandas_frame(cols):
             raise TypeError(
@@ -556,6 +538,8 @@ class BaseSE:
         Returns:
             List[str]: List of row names.
         """
+        print(self.row_data)
+        print(type(self.row_data))
         return rownames(self.row_data)
 
     @row_names.setter
@@ -571,7 +555,7 @@ class BaseSE:
         if len(names) != self.shape[0]:
             raise ValueError("Length of `names` must be the same as number of rows.")
 
-        self._rows = set_rownames(self.row_data, names)
+        set_rownames(self.row_data, names)
 
     @property
     def colnames(self) -> List[str]:
@@ -580,7 +564,7 @@ class BaseSE:
         Returns:
             List[str]: List of sample names.
         """
-        return colnames(self.col_data)
+        return rownames(self.col_data)
 
     @colnames.setter
     def colnames(self, names: List[str]):
@@ -595,7 +579,7 @@ class BaseSE:
         if len(names) != self.shape[1]:
             raise ValueError("Length of `names` must be the same as number of columns.")
 
-        self._cols = set_colnames(self.col_data, names)
+        set_rownames(self.col_data, names)
 
     def to_anndata(self):
         """Coerce :py:class:`summarizedexperiment.BaseSE`-like into an :py:class:`~anndata.AnnData` representation.
@@ -715,9 +699,20 @@ class BaseSE:
 
 @rownames.register(BaseSE)
 def _rownames_se(x: BaseSE):
-    return x.row_names
+    print("in BaseSE", x.row_data)
+    return rownames(x.row_data)
 
 
 @set_rownames.register(BaseSE)
 def _set_rownames_se(x: Any, names: List[str]):
-    x.row_data.row_names = names
+    set_rownames(x.row_data, names)
+
+
+@colnames.register(BaseSE)
+def _colnames_se(x: BaseSE):
+    return colnames(x.col_data)
+
+
+@set_colnames.register(BaseSE)
+def _set_colnames_se(x: Any, names: List[str]):
+    set_colnames(x.col_data, names)

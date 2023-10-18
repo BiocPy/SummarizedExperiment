@@ -6,7 +6,7 @@ from numpy import argwhere, find_common_type, ndarray
 from pandas import DataFrame, Index, concat
 from scipy.sparse import lil_matrix
 
-from .validators import validate_names, validate_shapes
+from ._validators import validate_names, validate_shapes
 
 # from ..SummarizedExperiment import SummarizedExperiment
 

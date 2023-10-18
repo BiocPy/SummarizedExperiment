@@ -464,7 +464,7 @@ class BaseSE:
 
         if isinstance(args, tuple):
             if len(args) == 0:
-                raise ValueError("`args` must contain at least one slice.")
+                raise ValueError("Must contain atleast one slice.")
 
             row_indices = args[0]
             col_indices = None
@@ -472,12 +472,12 @@ class BaseSE:
             if len(args) > 1:
                 col_indices = args[1]
             elif len(args) > 2:
-                raise ValueError("`args` contains too many slices.")
+                raise ValueError("Arguments contain too many slices.")
         elif isinstance(args, list) or isinstance(args, slice):
             row_indices = args
             col_indices = None
         else:
-            raise ValueError("`args` contains unsupported type.")
+            raise ValueError("Arguments are not supported.")
 
         new_rows = self.row_data
         new_cols = self.col_data
@@ -491,18 +491,15 @@ class BaseSE:
             elif is_list_of_type(row_indices, bool):
                 if len(row_indices) != self.shape[0]:
                     raise ValueError(
-                        "`row_indices` is a boolean vector, length of vector must match the",
+                        "`row_indices` is a boolean vector, length of vector must match the ",
                         "number of rows.",
                     )
                 row_indices = get_indexes_from_bools(row_indices)
 
             if is_list_of_type(row_indices, int) or isinstance(row_indices, slice):
-                if isinstance(self.row_data, DataFrame):
-                    new_rows = new_rows.iloc[row_indices]
-                else:
-                    new_rows = new_rows[row_indices, :]
+                new_rows = new_rows[row_indices, :]
             else:
-                raise TypeError("`row_indices` is not a supported type!")
+                raise TypeError("Arguments to slice rows is not supported!")
 
         if col_indices is not None and self.col_data is not None:
             if is_list_of_type(col_indices, str):
@@ -512,18 +509,15 @@ class BaseSE:
             elif is_list_of_type(col_indices, bool):
                 if len(col_indices) != self.shape[1]:
                     raise ValueError(
-                        "`col_indices` is a boolean vector, length of vector must match the",
+                        "`col_indices` is a boolean vector, length of vector must match the ",
                         "number of columns.",
                     )
                 col_indices = get_indexes_from_bools(col_indices)
 
             if is_list_of_type(col_indices, int) or isinstance(col_indices, slice):
-                if isinstance(self.col_data, DataFrame):
-                    new_cols = new_cols.iloc[col_indices]
-                else:
-                    new_cols = new_cols[col_indices, :]
+                new_cols = new_cols[col_indices, :]
             else:
-                raise TypeError("`col_indices` not a supported type!")
+                raise TypeError("Arguments to slice column is not supported!")
 
         new_assays = self.subset_assays(
             row_indices=row_indices, col_indices=col_indices

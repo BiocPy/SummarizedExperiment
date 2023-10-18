@@ -1,15 +1,13 @@
 from typing import Any, List, Union
 
-from pandas import Index
-
 __author__ = "keviny2, jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
 def get_indexes_from_names(
-    source: Union[Index, List[Any]],
-    target: Union[Index, List[Any]],
+    source: List[Any],
+    target: List[Any],
     first_match: bool = True,
 ) -> List[Union[int, List[int]]]:
     """Return the index of the first occurrence of each value in ``source``.
@@ -34,12 +32,6 @@ def get_indexes_from_names(
 
         If ``first_match`` is False, the list might contain be a list of indices.
     """
-
-    if isinstance(source, Index):
-        source = source.tolist()
-
-    if isinstance(target, Index):
-        target = target.tolist()
 
     set_target = set(target)
 

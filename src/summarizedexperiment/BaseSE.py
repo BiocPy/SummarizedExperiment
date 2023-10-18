@@ -538,8 +538,6 @@ class BaseSE:
         Returns:
             List[str]: List of row names.
         """
-        print(self.row_data)
-        print(type(self.row_data))
         return rownames(self.row_data)
 
     @row_names.setter
@@ -699,7 +697,6 @@ class BaseSE:
 
 @rownames.register(BaseSE)
 def _rownames_se(x: BaseSE):
-    print("in BaseSE", x.row_data)
     return rownames(x.row_data)
 
 
@@ -710,9 +707,9 @@ def _set_rownames_se(x: Any, names: List[str]):
 
 @colnames.register(BaseSE)
 def _colnames_se(x: BaseSE):
-    return colnames(x.col_data)
+    return rownames(x.col_data)
 
 
 @set_colnames.register(BaseSE)
 def _set_colnames_se(x: Any, names: List[str]):
-    set_colnames(x.col_data, names)
+    set_rownames(x.col_data, names)

@@ -2,6 +2,7 @@ from typing import Any, Dict, List, Literal, Optional, Union
 
 import numpy as np
 from biocframe import BiocFrame
+from biocgenerics import colnames, rownames, set_colnames, set_rownames
 from genomicranges import GenomicRanges, GenomicRangesList, SeqInfo
 
 from .SummarizedExperiment import SummarizedExperiment
@@ -731,3 +732,23 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         new_order = order.to_list()
         return self[new_order, :]
+
+
+@rownames.register(SummarizedExperiment)
+def _rownames_se(x: SummarizedExperiment):
+    return rownames(x.row_data)
+
+
+@set_rownames.register(SummarizedExperiment)
+def _set_rownames_se(x: Any, names: List[str]):
+    set_rownames(x.row_data, names)
+
+
+@colnames.register(SummarizedExperiment)
+def _colnames_se(x: SummarizedExperiment):
+    return rownames(x.col_data)
+
+
+@set_colnames.register(SummarizedExperiment)
+def _set_colnames_se(x: Any, names: List[str]):
+    set_rownames(x.col_data, names)

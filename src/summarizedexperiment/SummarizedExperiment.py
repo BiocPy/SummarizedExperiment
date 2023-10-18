@@ -138,4 +138,4 @@ def _colnames_se(x: SummarizedExperiment):
 
 @set_colnames.register(SummarizedExperiment)
 def _set_colnames_se(x: Any, names: List[str]):
-    set_colnames(x.col_data, names)
+    set_rownames(x.col_data, names)

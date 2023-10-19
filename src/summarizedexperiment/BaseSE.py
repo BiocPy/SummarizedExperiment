@@ -3,9 +3,17 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 from warnings import warn
 
 from biocframe import BiocFrame
-from biocgenerics import colnames, rownames, set_colnames, set_rownames
+from biocgenerics import (
+    colnames,
+    combine_cols,
+    rownames,
+    set_colnames,
+    set_rownames,
+)
+from biocgenerics.combine import combine
 from biocutils import is_list_of_type
 from genomicranges import GenomicRanges
+from numpy import empty
 
 from ._frameutils import _sanitize_frame
 from .type_checks import (
@@ -19,8 +27,6 @@ from .types import (
     SlicerResult,
 )
 from .utils.combiners import (
-    combine_assays,
-    combine_frames,
     combine_metadata,
 )
 from .utils.slicer import get_indexes_from_bools, get_indexes_from_names
@@ -90,7 +96,9 @@ class BaseSE:
             metadata (dict, optional): Additional experimental metadata describing the methods. Defaults to None.
         """
 
-        self._shape: Optional[Tuple] = None
+        self._shape = None
+        self._rows = None
+        self._cols = None
 
         if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
             raise Exception(
@@ -180,7 +188,7 @@ class BaseSE:
 
         if rows.shape[0] != self._shape[0]:
             raise ValueError(
-                f"`Features` and `assays` mismatch. Must be '{self._shape[0]}'"
+                f"Number of features mismatch with number of rows in assays. Must be '{self._shape[0]}'"
                 f" but provided '{rows.shape[0]}'."
             )
 
@@ -202,7 +210,7 @@ class BaseSE:
 
         if cols.shape[0] != self._shape[1]:
             raise ValueError(
-                f"`Sample` data and `assays` mismatch. Must be '{self._shape[1]}'"
+                f"Number of samples mismatch with number of columns in assays. Must be '{self._shape[1]}'"
                 f" but provided '{cols.shape[0]}'."
             )
 
@@ -598,49 +606,23 @@ class BaseSE:
         return obj
 
     def combine_cols(
-        self,
-        *experiments: "BaseSE",
-        use_names: bool = True,
-        remove_duplicate_columns: bool = True,
+        self, *experiments: "BaseSE", fill_missing_assay: bool = False
     ) -> "BaseSE":
-        """A more flexible version of ``cbind``. Permits differences in the number and identity of rows, differences in
+        """A more flexible version of ``cbind``.
+
+        Permits differences in the number and identity of rows, differences in
         :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.col_data` fields, and even differences
-        in the available `assays` among :py:class:`~summarizedexperiment.SummarizedExperiment.BaseSE`-derived objects
+        in the available `assays` among :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment`-derived objects
         being combined.
 
-        Currently does not support range based merging of feature information when
-        performing this operation.
-
-        The row names of the resultant `SummarizedExperiment` object will
-        simply be the row names of the first `SummarizedExperiment`.
-
-        Note: if `remove_duplicate_columns` is True, we only keep the columns from this
-        object (self). you can always do this operation later, but its useful when you
-        are merging multiple summarized experiments and need to track metadata across
-        objects.
-
         Args:
-            experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.
+            *experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.
 
-            use_names (bool):
-
-                - If `True`, then each input `SummarizedExperiment` must have non-null,
-                non-duplicated row names. The row names of the resultant
-                `SummarizedExperiment` object will be the union of the row names
-                across all input objects.
-                - If `False`, then each input `SummarizedExperiment` object must
-                have the same number of rows.
-
-            remove_duplicate_columns (bool): If `True`, remove any duplicate columns in
-                `row_data` or `col_data` of the resultant `SummarizedExperiment`. Defaults
-                to `True`.
+            fill_missing_assay (bool): Fills missing assays across experiments with an empty sparse matrix.
 
         Raises:
             TypeError:
-                If any of the provided objects are not "SummarizedExperiment"-like.
-            ValueError:
-                - If there are null or duplicated row names (use_names=True)
-                - If all objects do not have the same number of rows (use_names=False)
+                If any of the provided objects are not "SummarizedExperiment"-like objects.
 
         Returns:
             Same type as the caller with the combined experiments.
@@ -652,40 +634,50 @@ class BaseSE:
             )
 
         ses = [self] + list(experiments)
+        new_metadata = combine_metadata(ses)
 
-        new_metadata = combine_metadata(experiments)
+        _all_col_data = [getattr(e, "col_data") for e in ses]
+        print("_all_col_data", _all_col_data)
+        new_coldata = combine(*_all_col_data)
 
-        all_col_data = [getattr(e, "col_data") for e in ses]
-        new_col_data = combine_frames(
-            all_col_data,
-            axis=0,
-            use_names=True,
-            remove_duplicate_columns=remove_duplicate_columns,
-        )
+        # _all_row_data = [getattr(e, "row_data") for e in ses]
+        # new_rowdata = combine(*_all_row_data)
+        new_rowdata = self.row_data
 
-        all_row_data = [getattr(e, "row_data") for e in ses]
-        new_row_data = combine_frames(
-            all_row_data,
-            axis=1,
-            use_names=use_names,
-            remove_duplicate_columns=remove_duplicate_columns,
-        )
-
-        new_assays = {}
+        new_assays = self.assays.copy()
         unique_assay_names = {assay_name for se in ses for assay_name in se.assay_names}
-        for assay_name in unique_assay_names:
-            merged_assays = combine_assays(
-                assay_name=assay_name,
-                experiments=ses,
-                names=new_row_data.index,
-                by="column",
-                shape=(len(new_row_data), len(new_col_data)),
-                use_names=use_names,
-            )
-            new_assays[assay_name] = merged_assays
+
+        print("unique_assay_names", unique_assay_names)
+
+        for aname in unique_assay_names:
+            if aname not in self.assays:
+                if fill_missing_assay is True:
+                    new_assays[aname] = empty(shape=self.shape)
+                else:
+                    raise AttributeError(
+                        f"Assay: `{aname}` does not exist in all experiments."
+                    )
+
+        for obj in experiments:
+            for aname in unique_assay_names:
+                if aname not in obj.assays:
+                    if fill_missing_assay is True:
+                        new_assays[aname] = combine_cols(
+                            new_assays[aname], empty(shape=obj.shape)
+                        )
+                    else:
+                        raise AttributeError(
+                            f"Assay: `{aname}` does not exist in all experiments."
+                        )
+                else:
+                    new_assays[aname] = combine_cols(
+                        new_assays[aname], obj.assays[aname]
+                    )
+
+        print(new_assays, new_rowdata, new_coldata, new_metadata)
 
         current_class_const = type(self)
-        return current_class_const(new_assays, new_row_data, new_col_data, new_metadata)
+        return current_class_const(new_assays, new_rowdata, new_coldata, new_metadata)
 
 
 @rownames.register(BaseSE)

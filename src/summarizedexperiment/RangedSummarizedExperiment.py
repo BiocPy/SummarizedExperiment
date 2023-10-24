@@ -2,7 +2,15 @@ from typing import Any, Dict, List, Literal, Optional, Union
 
 import numpy as np
 from biocframe import BiocFrame
-from biocgenerics import colnames, rownames, set_colnames, set_rownames
+from biocgenerics import (
+    colnames,
+    combine_cols,
+    combine_rows,
+    rownames,
+    set_colnames,
+    set_rownames,
+)
+from biocgenerics.combine import combine
 from genomicranges import GenomicRanges, GenomicRangesList, SeqInfo
 
 from .SummarizedExperiment import SummarizedExperiment
@@ -734,21 +742,45 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         return self[new_order, :]
 
 
-@rownames.register(SummarizedExperiment)
-def _rownames_se(x: SummarizedExperiment):
+@rownames.register(RangedSummarizedExperiment)
+def _rownames_rse(x: RangedSummarizedExperiment):
     return rownames(x.row_data)
 
 
-@set_rownames.register(SummarizedExperiment)
-def _set_rownames_se(x: Any, names: List[str]):
+@set_rownames.register(RangedSummarizedExperiment)
+def _set_rownames_rse(x: Any, names: List[str]):
     set_rownames(x.row_data, names)
 
 
-@colnames.register(SummarizedExperiment)
-def _colnames_se(x: SummarizedExperiment):
+@colnames.register(RangedSummarizedExperiment)
+def _colnames_rse(x: RangedSummarizedExperiment):
     return rownames(x.col_data)
 
 
-@set_colnames.register(SummarizedExperiment)
-def _set_colnames_se(x: Any, names: List[str]):
+@set_colnames.register(RangedSummarizedExperiment)
+def _set_colnames_rse(x: Any, names: List[str]):
     set_rownames(x.col_data, names)
+
+
+@combine.register(RangedSummarizedExperiment)
+def _combine_rse(x: Any):
+    if not isinstance(x[0], RangedSummarizedExperiment):
+        raise TypeError("First element is not a summarized experiment!")
+
+    return x[0].combine_rows(x[1])
+
+
+@combine_rows.register(RangedSummarizedExperiment)
+def _combine_rows_rse(x: Any):
+    if not isinstance(x[0], RangedSummarizedExperiment):
+        raise TypeError("First element is not a ranged summarized experiment!")
+
+    return x[0].combine_rows(x[1])
+
+
+@combine_cols.register(RangedSummarizedExperiment)
+def _combine_cols_rse(x: Any):
+    if not isinstance(x[0], RangedSummarizedExperiment):
+        raise TypeError("First element is not a ranged summarized experiment!")
+
+    return x[0].combine_cols(x[1])

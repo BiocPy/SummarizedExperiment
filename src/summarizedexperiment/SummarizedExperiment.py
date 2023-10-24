@@ -2,11 +2,24 @@ from typing import Any, Dict, List, Optional
 from warnings import warn
 
 from biocframe import BiocFrame
-from biocgenerics import colnames, rownames, set_colnames, set_rownames
+from biocgenerics import (
+    colnames,
+    combine_cols,
+    combine_rows,
+    rownames,
+    set_colnames,
+    set_rownames,
+)
+from biocgenerics.combine import combine
 from genomicranges import GenomicRanges
+from numpy import empty
 
 from .BaseSE import BaseSE
+from .type_checks import is_list_of_subclass
 from .types import SlicerArgTypes
+from .utils.combiners import (
+    combine_metadata,
+)
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -120,6 +133,148 @@ class SummarizedExperiment(BaseSE):
         )
         return pattern
 
+    def combine_cols(
+        self, *experiments: "BaseSE", fill_missing_assay: bool = False
+    ) -> "BaseSE":
+        """A more flexible version of ``cbind``.
+
+        Permits differences in the number and identity of rows, differences in
+        :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.col_data` fields, and even differences
+        in the available `assays` among :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment`-derived objects
+        being combined.
+
+        Args:
+            *experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.
+
+            fill_missing_assay (bool): Fills missing assays across experiments with an empty sparse matrix.
+
+        Raises:
+            TypeError:
+                If any of the provided objects are not "SummarizedExperiment"-like objects.
+                The resulting object will contain the same
+                :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.row_data` as the object its combined with.
+
+        Returns:
+            Same type as the caller with the combined experiments.
+        """
+
+        if not is_list_of_subclass(experiments, BaseSE):
+            raise TypeError(
+                "Not all provided objects are `SummarizedExperiment`-like objects."
+            )
+
+        ses = [self] + list(experiments)
+        new_metadata = combine_metadata(ses)
+
+        _all_col_data = [getattr(e, "col_data") for e in ses]
+        new_coldata = combine_rows(*_all_col_data)
+
+        # _all_row_data = [getattr(e, "row_data") for e in ses]
+        # new_rowdata = combine(*_all_row_data)
+        new_rowdata = self.row_data
+
+        new_assays = self.assays.copy()
+        unique_assay_names = {assay_name for se in ses for assay_name in se.assay_names}
+
+        for aname in unique_assay_names:
+            if aname not in self.assays:
+                if fill_missing_assay is True:
+                    new_assays[aname] = empty(shape=self.shape)
+                else:
+                    raise AttributeError(
+                        f"Assay: `{aname}` does not exist in all experiments."
+                    )
+
+        for obj in experiments:
+            for aname in unique_assay_names:
+                if aname not in obj.assays:
+                    if fill_missing_assay is True:
+                        new_assays[aname] = combine_cols(
+                            new_assays[aname], empty(shape=obj.shape)
+                        )
+                    else:
+                        raise AttributeError(
+                            f"Assay: `{aname}` does not exist in all experiments."
+                        )
+                else:
+                    new_assays[aname] = combine_cols(
+                        new_assays[aname], obj.assays[aname]
+                    )
+
+        current_class_const = type(self)
+        return current_class_const(new_assays, new_rowdata, new_coldata, new_metadata)
+
+    def combine_rows(
+        self, *experiments: "BaseSE", fill_missing_assay: bool = False
+    ) -> "BaseSE":
+        """A more flexible version of ``rbind``.
+
+        Permits differences in the number and identity of columns, differences in
+        :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.row_data` fields, and even differences
+        in the available `assays` among :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment`-derived objects
+        being combined.
+
+        Args:
+            *experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.
+
+            fill_missing_assay (bool): Fills missing assays across experiments with an empty sparse matrix.
+
+        Raises:
+            TypeError:
+                If any of the provided objects are not "SummarizedExperiment"-like objects.
+
+        Returns:
+            Same type as the caller with the combined experiments.
+            The resulting object will contain the same
+            :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.col_data` as the object its combined with.
+        """
+
+        if not is_list_of_subclass(experiments, BaseSE):
+            raise TypeError(
+                "Not all provided objects are `SummarizedExperiment`-like objects."
+            )
+
+        ses = [self] + list(experiments)
+        new_metadata = combine_metadata(ses)
+
+        _all_row_data = [getattr(e, "row_data") for e in ses]
+        new_coldata = combine_rows(*_all_row_data)
+
+        # _all_row_data = [getattr(e, "row_data") for e in ses]
+        # new_rowdata = combine(*_all_row_data)
+        new_rowdata = self.col_data
+
+        new_assays = self.assays.copy()
+        unique_assay_names = {assay_name for se in ses for assay_name in se.assay_names}
+
+        for aname in unique_assay_names:
+            if aname not in self.assays:
+                if fill_missing_assay is True:
+                    new_assays[aname] = empty(shape=self.shape)
+                else:
+                    raise AttributeError(
+                        f"Assay: `{aname}` does not exist in all experiments."
+                    )
+
+        for obj in experiments:
+            for aname in unique_assay_names:
+                if aname not in obj.assays:
+                    if fill_missing_assay is True:
+                        new_assays[aname] = combine_rows(
+                            new_assays[aname], empty(shape=obj.shape)
+                        )
+                    else:
+                        raise AttributeError(
+                            f"Assay: `{aname}` does not exist in all experiments."
+                        )
+                else:
+                    new_assays[aname] = combine_rows(
+                        new_assays[aname], obj.assays[aname]
+                    )
+
+        current_class_const = type(self)
+        return current_class_const(new_assays, new_rowdata, new_coldata, new_metadata)
+
 
 @rownames.register(SummarizedExperiment)
 def _rownames_se(x: SummarizedExperiment):
@@ -139,3 +294,27 @@ def _colnames_se(x: SummarizedExperiment):
 @set_colnames.register(SummarizedExperiment)
 def _set_colnames_se(x: Any, names: List[str]):
     set_rownames(x.col_data, names)
+
+
+@combine.register(SummarizedExperiment)
+def _combine_se(x: Any):
+    if not isinstance(x[0], SummarizedExperiment):
+        raise TypeError("First element is not a summarized experiment!")
+
+    return x[0].combine_rows(x[1])
+
+
+@combine_rows.register(SummarizedExperiment)
+def _combine_rows_se(x: Any):
+    if not isinstance(x[0], SummarizedExperiment):
+        raise TypeError("First element is not a summarized experiment!")
+
+    return x[0].combine_rows(x[1])
+
+
+@combine_cols.register(SummarizedExperiment)
+def _combine_cols_se(x: Any):
+    if not isinstance(x[0], SummarizedExperiment):
+        raise TypeError("First element is not a summarized experiment!")
+
+    return x[0].combine_cols(x[1])

@@ -10,7 +10,6 @@ from biocgenerics import (
     set_colnames,
     set_rownames,
 )
-from biocgenerics.combine import combine
 from biocgenerics import combine_rows
 from biocutils import is_list_of_type
 from genomicranges import GenomicRanges

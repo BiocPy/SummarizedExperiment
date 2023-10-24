@@ -11,6 +11,7 @@ from biocgenerics import (
     set_rownames,
 )
 from biocgenerics.combine import combine
+from biocgenerics import combine_rows
 from biocutils import is_list_of_type
 from genomicranges import GenomicRanges
 from numpy import empty
@@ -637,8 +638,7 @@ class BaseSE:
         new_metadata = combine_metadata(ses)
 
         _all_col_data = [getattr(e, "col_data") for e in ses]
-        print("_all_col_data", _all_col_data)
-        new_coldata = combine(*_all_col_data)
+        new_coldata = combine_rows(*_all_col_data)
 
         # _all_row_data = [getattr(e, "row_data") for e in ses]
         # new_rowdata = combine(*_all_row_data)
@@ -646,8 +646,6 @@ class BaseSE:
 
         new_assays = self.assays.copy()
         unique_assay_names = {assay_name for se in ses for assay_name in se.assay_names}
-
-        print("unique_assay_names", unique_assay_names)
 
         for aname in unique_assay_names:
             if aname not in self.assays:
@@ -673,8 +671,6 @@ class BaseSE:
                     new_assays[aname] = combine_cols(
                         new_assays[aname], obj.assays[aname]
                     )
-
-        print(new_assays, new_rowdata, new_coldata, new_metadata)
 
         current_class_const = type(self)
         return current_class_const(new_assays, new_rowdata, new_coldata, new_metadata)

@@ -1,24 +1,10 @@
 from typing import Any, Callable
 
-from biocframe import BiocFrame
-
 # from .RangedSummarizedExperiment import RangedSummarizedExperiment
 
 __author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
 __license__ = "MIT"
-
-
-def is_bioc_or_pandas_frame(x: Any) -> bool:
-    """Checks if ``x`` is either a :py:class:`~pandas.DataFrame` or :py:class:`~biocframe.BiocFrame.BiocFrame`.
-
-    Args:
-        x (Any): Any object.
-
-    Returns:
-        bool: True if ``x`` is `DataFrame`-like.
-    """
-    return is_pandas(x) or isinstance(x, BiocFrame)
 
 
 # def is_gr_or_rse(x: Union[GenomicRanges, RangedSummarizedExperiment]):
@@ -60,10 +46,11 @@ def is_matrix_like(x: Any) -> bool:
     and allows slicing by implementing the `__getitem__` dunder method.
 
     Args:
-        x (Any): Any object.
+        x:
+            Any object.
 
     Returns:
-        bool: True if ``x``is matrix-like.
+        True if ``x``is matrix-like.
     """
     # TODO: this only work for python 3.8 and below.
     # return isinstance(x, MatrixProtocol)
@@ -74,29 +61,18 @@ def is_list_of_type(x: Any, target_type: Callable) -> bool:
     """Checks if ``x`` is a list or tuple and and whether all elements are of the same type.
 
     Args:
-        x (Any): Any object.
-        target_type (callable): Type to check for, e.g. ``str``, ``int``.
+        x:
+            Any object.
+
+        target_type:
+            Type to check for, e.g. ``str``, ``int``.
 
     Returns:
-        bool: True if ``x`` is :py:class:`~list` and all elements are of the same type.
+        True if ``x`` is :py:class:`~list` and all
+        elements are of the same type.
     """
     return (isinstance(x, list) or isinstance(x, tuple)) and all(
         isinstance(item, target_type) for item in x
-    )
-
-
-def is_list_of_subclass(x: Any, target_type: Callable) -> bool:
-    """Checks if all provided objects subclass of ``target_type``.
-
-    Args:
-        x (Any): Any object.
-        target_type (callable): Type to check objects against.
-
-    Returns:
-        bool: True if ``x`` is :py:class:`~list` and all objects are derivatives of the same class.
-    """
-    return (isinstance(x, list) or isinstance(x, tuple)) and all(
-        issubclass(type(item), target_type) for item in x
     )
 
 
@@ -104,10 +80,11 @@ def is_pandas(x: Any) -> bool:
     """Check if ``x`` is a :py:class:`~pandas.DataFrame`.
 
     Args:
-        x (Any): Any object.
+        x:
+            Any object.
 
     Returns:
-        bool: True if ``x`` is a :py:class:`~pandas.DataFrame`.
+        True if ``x`` is a :py:class:`~pandas.DataFrame`.
     """
     if hasattr(x, "dtypes"):
         return True

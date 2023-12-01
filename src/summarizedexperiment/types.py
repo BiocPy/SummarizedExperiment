@@ -12,7 +12,6 @@ __license__ = "MIT"
 
 MatrixTypes = Union[np.ndarray, sp.spmatrix]
 ArrayTypes = Union[np.ndarray, sp.lil_matrix]
-BiocOrPandasFrame = Union[pd.DataFrame, BiocFrame]
 MatrixSlicerTypes = Union[List[int], List[bool], slice]
 SlicerTypes = Union[List[int], List[bool], List[str], slice]
 SlicerArgTypes = Union[Tuple[SlicerTypes], List[SlicerTypes], slice]

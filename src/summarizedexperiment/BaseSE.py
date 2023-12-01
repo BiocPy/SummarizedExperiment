@@ -1,317 +1,203 @@
 import warnings
 from collections import OrderedDict
-from typing import Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from warnings import warn
 
 from biocframe import BiocFrame
 from genomicranges import GenomicRanges
-from pandas import DataFrame
 
-from .dispatchers.colnames import get_colnames, set_colnames
-from .dispatchers.rownames import get_rownames, set_rownames
-from .type_checks import (
-    is_bioc_or_pandas_frame,
-    is_list_of_subclass,
-    is_list_of_type,
-    is_matrix_like,
-)
-from .types import (
-    BiocOrPandasFrame,
-    MatrixSlicerTypes,
-    MatrixTypes,
-    SlicerArgTypes,
-    SlicerResult,
-)
-from .utils.combiners import (
-    combine_assays,
-    combine_frames,
-    combine_metadata,
-)
-from .utils.slicer import get_indexes_from_bools, get_indexes_from_names
-
+from ._frameutils import _sanitize_frame
+from .type_checks import is_matrix_like
 
 __author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
+def _validate_assays(assays: dict, shape):
+    if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
+        raise Exception(
+            "`assays` must be a dictionary and contain atleast one 2-dimensional matrix."
+        )
+
+    for asy, mat in assays.items():
+        if not is_matrix_like(mat):
+            raise TypeError(f"Assay: '{asy}' is not a supported matrix representation.")
+
+        if len(mat.shape) > 2:
+            raise ValueError(
+                "Only 2-dimensional matrices are accepted, "
+                f"provided {len(mat.shape)} dimensions for `assay`: '{asy}'."
+            )
+
+        if shape is None:
+            shape = mat.shape
+            continue
+
+        if mat.shape != shape:
+            raise ValueError(
+                f"Assay: '{asy}' must be of shape '{shape}'"
+                f" but provided '{mat.shape}'."
+            )
+
+    return shape
+
+
+def _validate_rows(self, rows, shape):
+    if not isinstance(rows, BiocFrame):
+        raise TypeError("'row_data' is not a `BiocFrame` object.")
+
+    if rows.shape[0] != shape[0]:
+        raise ValueError(
+            f"Number of features mismatch with number of rows in assays. Must be '{self._shape[0]}'"
+            f" but provided '{rows.shape[0]}'."
+        )
+
+
+def _validate_cols(self, cols, shape):
+    if not isinstance(cols, BiocFrame):
+        raise TypeError("'col_data' is not a `BiocFrame` object.")
+
+    if cols.shape[0] != self._shape[1]:
+        raise ValueError(
+            f"Number of samples mismatch with number of columns in assays. Must be '{self._shape[1]}'"
+            f" but provided '{cols.shape[0]}'."
+        )
+
+
+def _validate_metadata(metadata):
+    if not isinstance(metadata, dict):
+        raise TypeError("'metadata' should be a dictionary")
+
+
 class BaseSE:
-    """Base class for `SummarizedExperiment`. This class provides common properties and methods that can be utilized
-    across all derived classes.
+    """Base class for ``SummarizedExperiment``. This class provides common
+    properties and methods that can be utilized across all derived classes.
 
-    This container represents genomic experiment data in the form of ``assays``,
-    features in ``row_data``, sample data in ``col_data``, and any other relevant ``metadata``.
-
-    Attributes:
-        assays (Dict[str, MatrixTypes]): A dictionary containing matrices, with assay names as keys
-            and 2-dimensional matrices represented as either
-            :py:class:`~numpy.ndarray` or :py:class:`~scipy.sparse.spmatrix`.
-
-            Alternatively, you may use any 2-dimensional matrix that has the ``shape`` property and
-            implements the slice operation using the ``__getitem__`` dunder method.
-
-            All matrices in assays must be 2-dimensional and have the same shape
-            (number of rows, number of columns).
-
-        row_data (BiocOrPandasFrame, optional): Features, which must be of the same length as the rows of
-            the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
-            :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
-
-        col_data (BiocOrPandasFrame, optional): Sample data, which must be of the same length as the
-            columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
-            or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
-
-        metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.
+    This container represents genomic experiment data in the form of
+    ``assays``, features in ``row_data``, sample data in ``col_data``,
+    and any other relevant ``metadata``.
     """
 
     def __init__(
         self,
-        assays: Dict[str, MatrixTypes],
-        rows: Optional[BiocOrPandasFrame] = None,
-        cols: Optional[BiocOrPandasFrame] = None,
+        assays: Dict[str, Any],
+        rows: Optional[BiocFrame] = None,
+        cols: Optional[BiocFrame] = None,
         metadata: Optional[Dict] = None,
+        validate: bool = True,
     ) -> None:
-        """Initialize an instance of `BaseSE`.
+        """Initialize an instance of ``BaseSE``.
 
         Args:
-            assays (Dict[str, MatrixTypes]): A dictionary containing matrices, with assay names as keys
+            assays:
+                A dictionary containing matrices, with assay names as keys
                 and 2-dimensional matrices represented as either
                 :py:class:`~numpy.ndarray` or :py:class:`~scipy.sparse.spmatrix`.
 
-                Alternatively, you may use any 2-dimensional matrix that has the ``shape`` property and
-                implements the slice operation using the ``__getitem__`` dunder method.
+                Alternatively, you may use any 2-dimensional matrix that has
+                the ``shape`` property and implements the slice operation
+                using the ``__getitem__`` dunder method.
 
-                All matrices in assays must be 2-dimensional and have the same shape
-                (number of rows, number of columns).
+                All matrices in assays must be 2-dimensional and have the
+                same shape (number of rows, number of columns).
 
-            row_data (BiocOrPandasFrame, optional): Features, which must be of the same length as the rows of
-                the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
+            rows:
+                Features, must be the same length as the number of rows of
+                the matrices in assays.
+
+                Feature information is coerced to a
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-            col_data (BiocOrPandasFrame, optional): Sample data, which must be of the same length as the
-                columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
-                or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
+            cols:
+                Sample data, must be the same length as the number of
+                columns of the matrices in assays.
 
-            metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.
+                Sample information is coerced to a
+                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
+
+            metadata:
+                Additional experimental metadata describing the methods.
+                Defaults to None.
+
+            validate:
+                Internal use only.
         """
 
-        self._shape: Optional[Tuple] = None
+        self._shape = None
 
-        if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
-            raise Exception(
-                "`assays` must be a dictionary and contain at least one matrix."
-            )
-
-        self._validate_assays(assays)
         self._assays = assays
+        self._rows = _sanitize_frame(rows, self._shape[0])
+        self._cols = _sanitize_frame(cols, self._shape[1])
+        self._metadata = metadata if metadata is not None else {}
 
-        # should have _shape by now
-        if self._shape is None:
-            raise TypeError("This should not happen! `assays` is not consistent.")
-
-        self._set_rows(rows)
-        self._set_cols(cols)
-
-        self._metadata = metadata
-
-    def _set_rows(self, rows: Optional[BiocOrPandasFrame]):
-        rows = (
-            rows if rows is not None else BiocFrame({}, number_of_rows=self._shape[0])
-        )
-
-        # if is_pandas(rows):
-        #     rows = from_pandas(rows)
-
-        self._validate_rows(rows)
-        self._rows = rows
-
-    def _set_cols(self, cols: Optional[BiocOrPandasFrame]):
-        cols = (
-            cols if cols is not None else BiocFrame({}, number_of_rows=self._shape[1])
-        )
-
-        # if is_pandas(cols):
-        #     cols = from_pandas(cols)
-
-        self._validate_cols(cols)
-        self._cols = cols
-
-    def _validate(self):
-        """Internal wrapper method to validate the object."""
-        # validate assays to make sure they are have same dimensions
-        self._validate_assays(self._assays)
-        self._validate_rows(self._rows)
-        self._validate_cols(self._cols)
-
-    def _validate_assays(
-        self,
-        assays: Dict[str, MatrixTypes],
-    ):
-        """Internal method to validate experiment data (assays).
-
-        Args:
-            assays (Dict[str, MatrixTypes]): Experiment data.
-
-        Raises:
-            ValueError:
-                If ``assays`` contain more than 2 dimensions.
-                If all ``assays`` do not have the same dimensions.
-            TypeError: If ``assays`` includes an unsupported matrix representation.
-        """
-
-        for asy, mat in assays.items():
-            if not is_matrix_like(mat):
-                raise TypeError(
-                    f"Assay: '{asy}' is not a supported matrix representation."
-                )
-
-            if len(mat.shape) > 2:
-                raise ValueError(
-                    "Only 2-dimensional matrices are accepted, "
-                    f"provided {len(mat.shape)} dimensions for `assay`: '{asy}'."
-                )
+        if validate:
+            self._shape = _validate_assays(self._assays, self._shape)
 
             if self._shape is None:
-                self._shape = mat.shape
-                continue
+                raise RuntimeError("Cannot extract shape from assays!")
 
-            if mat.shape != self._shape:
-                raise ValueError(
-                    f"Assay: '{asy}' must be of shape '{self._shape}'"
-                    f" but provided '{mat.shape}'."
-                )
+            _validate_rows(self._rows, self._shape)
+            _validate_cols(self._cols, self._shape)
+            _validate_metadata(self._metadata)
 
-    def _validate_rows(self, rows: BiocOrPandasFrame):
-        """Internal method to validate feature information (row_data).
+    def _define_output(self, in_place: bool = False) -> "BaseSE":
+        if in_place is True:
+            return self
+        else:
+            return self.__copy__()
 
-        Args:
-            rows (BiocOrPandasFrame): Feature data frame to validate.
-                Features may be either a :py:class:`~pandas.DataFrame` or
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
+    #########################
+    ######>> Copying <<######
+    #########################
 
-        Raises:
-            ValueError: When the number of rows in ``rows`` does not match the number of rows in the assays.
-            TypeError: When ``rows`` is neither a :py:class:`~pandas.DataFrame` nor a
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
+    def __deepcopy__(self, memo=None, _nil=[]):
         """
-        if not is_bioc_or_pandas_frame(rows):
-            raise TypeError(
-                "`row_data` must be either a pandas `DataFrame` or a `BiocFrame`"
-                f" object, provided {type(rows)}."
-            )
-
-        if rows.shape[0] != self._shape[0]:
-            raise ValueError(
-                f"`Features` and `assays` do not match. must be '{self._shape[0]}'"
-                f" but provided '{rows.shape[0]}'."
-            )
-
-    def _validate_cols(self, cols: BiocOrPandasFrame):
-        """Internal method to validate sample information (col_data).
-
-        Args:
-            cols (BiocOrPandasFrame): Sample information (col_data).
-                Sample may be either a :py:class:`~pandas.DataFrame` or
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
-
-        Raises:
-            ValueError: When the number of columns in ``cols`` do not match between columns in the assays.
-            TypeError: When ``cols`` is neither a :py:class:`~pandas.DataFrame` nor a
-                :py:class:`~biocframe.BiocFrame.BiocFrame`.
-        """
-        if not is_bioc_or_pandas_frame(cols):
-            raise TypeError(
-                "`col_data` must be either a pandas `DataFrame` or a `BiocFrame`"
-                f" object, provided {type(cols)}."
-            )
-
-        if cols.shape[0] != self._shape[1]:
-            raise ValueError(
-                f"`Sample` data and `assays` do not match. must be '{self._shape[1]}'"
-                f" but provided '{cols.shape[0]}'."
-            )
-
-    @property
-    def assays(
-        self,
-    ) -> Dict[str, MatrixTypes]:
-        """Retrieve all assays.
-
         Returns:
-            Dict[str, MatrixTypes]: A dictionary where experiment names serve as keys,
-            and matrices as corresponding values.
+            A deep copy of the current ``BaseSE``.
         """
-        return self._assays
+        from copy import deepcopy
 
-    @assays.setter
-    def assays(
-        self,
-        assays: Dict[str, MatrixTypes],
-    ):
-        """Set new experiment data (assays).
+        _assays_copy = deepcopy(self._assays)
+        _rows_copy = deepcopy(self._rows)
+        _cols_copy = deepcopy(self._cols)
+        _metadata_copy = deepcopy(self.metadata)
 
-        Args:
-            assays (Dict[str, MatrixTypes]): New assays.
+        current_class_const = type(self)
+        return current_class_const(
+            assays=_assays_copy,
+            rows=_rows_copy,
+            cols=_cols_copy,
+            metadata=_metadata_copy,
+        )
+
+    def __copy__(self):
         """
-        self._validate_assays(assays)
-        self._assays = assays
-
-    @property
-    def row_data(self) -> BiocFrame:
-        """Get features.
-
         Returns:
-            BiocFrame: Feature information.
+            A shallow copy of the current ``BaseSE``.
         """
-        return self._rows
+        current_class_const = type(self)
+        return current_class_const(
+            assays=self._assays,
+            rows=self._rows,
+            cols=self._cols,
+            metadata=self._metadata,
+        )
 
-    @row_data.setter
-    def row_data(self, rows: Optional[BiocOrPandasFrame]):
-        """Set features.
+    def copy(self):
+        """Alias for :py:meth:`~__copy__`."""
+        return self.__copy__()
 
-        Args:
-            rows (BiocOrPandasFrame, optional): New feature information.
-                If ``rows`` is None, an empty :py:class:`~biocframe.BiocFrame.BiocFrame`
-                object is created.
+    ######################################
+    ######>> length and iterators <<######
+    ######################################
+
+    def __len__(self) -> int:
         """
-        self._set_rows(rows)
-
-    @property
-    def col_data(self) -> BiocOrPandasFrame:
-        """Get sample data.
-
         Returns:
-            BiocOrPandasFrame: Sample information.
+            Number of rows.
         """
-        return self._cols
-
-    @col_data.setter
-    def col_data(self, cols: Optional[BiocOrPandasFrame]):
-        """Set sample data.
-
-        Args:
-            cols (BiocOrPandasFrame, optional): New sample data.
-                If ``cols`` is None, an empty :py:class:`~biocframe.BiocFrame.BiocFrame`
-                object is created.
-        """
-        self._set_cols(cols)
-
-    @property
-    def metadata(self) -> Optional[Dict]:
-        """Retrieve metadata.
-
-        Returns:
-            Optional[Dict]: A metadata object, typically in the form of a dictionary.
-        """
-        return self._metadata
-
-    @metadata.setter
-    def metadata(self, metadata: Optional[Dict]):
-        """Set metadata.
-
-        Args:
-            metadata (Optional[Dict]): New metadata object.
-        """
-        self._metadata = metadata
+        return self.shape[0]
 
     @property
     def shape(self) -> Tuple[int, int]:
@@ -319,128 +205,364 @@ class BaseSE:
 
         Returns:
             Tuple[int, int]: A tuple (m,n),
-            where `m` is the number of features/rows, and `n` is the number of samples/columns.
+            where `m` is the number of features/rows, and
+            `n` is the number of samples/columns.
         """
         return self._shape
 
     @property
     def dims(self) -> Tuple[int, int]:
-        """Dimensions of the experiment.
-
-        Alias to :py:attr:`~summarizedexperiment.BaseSE.BaseSE.shape`.
+        """Alias to
+        :py:attr:`~summarizedexperiment.BaseSE.BaseSE.shape`.
 
         Returns:
             Tuple[int, int]: A tuple (m,n),
-            where `m` is the number of features/rows, and `n` is the number of samples/columns.
+            where `m` is the number of features/rows, and
+            `n` is the number of samples/columns.
         """
         return self.shape
 
-    @property
-    def assay_names(self) -> List[str]:
-        """Get assay names.
-
-        Returns:
-            List[str]: List of assay names.
-        """
-        return list(self.assays.keys())
-
-    @assay_names.setter
-    def assay_names(self, names: List[str]):
-        """Replace all :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s names.
-
-        Args:
-            names (List[str]): New names.
-
-        Raises:
-            ValueError: If length of ``names`` does not match the number of assays.
-        """
-        current_names = self.assay_names
-        if len(names) != len(current_names):
-            raise ValueError("Length of `names` do not match the number of `assays`.")
-
-        new_assays = OrderedDict()
-        for idx in range(len(names)):
-            new_assays[names[idx]] = self._assays.pop(current_names[idx])
-
-        self._assays = new_assays
+    ##########################
+    ######>> Printing <<######
+    ##########################
 
     def __repr__(self) -> str:
         pattern = (
             f"Class BaseSE with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {', '.join(list(self.assays.keys()))} \n"
-            f"  features: {self.row_data.columns if self.row_data is not None else None} \n"
-            f"  sample data: {self.col_data.columns if self.col_data is not None else None}"
+            f"  features: {self.rowdata.columns if self.rowdata is not None else None} \n"
+            f"  sample data: {self.coldata.columns if self.coldata is not None else None}"
         )
         return pattern
 
-    def assay(self, index_or_name: Union[int, str]) -> MatrixTypes:
-        """Convenience function to access an :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name or index.
+    ########################
+    ######>> assays <<######
+    ########################
 
-        Args:
-            name (Union[int, str]): Name or index position of the assay.
-
-        Raises:
-            AttributeError: If the assay name does not exist.
-            IndexError: If index is greater than the number of assays.
+    def get_assays(self) -> Dict[str, Any]:
+        """Access assays/experimental data.
 
         Returns:
-            MatrixTypes: Experiment data.
+            A dictionary with keys as assay names and value
+            the experimental data.
         """
-        if isinstance(index_or_name, int):
-            if index_or_name < 0 or index_or_name > len(self.assay_names):
+        return self._assays
+
+    def set_assays(self, assays: Dict[str, Any], in_place: bool = False):
+        """Set new experiment data (assays).
+
+        Args:
+            assays:
+                New assays.
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+
+        _validate_assays(assays, self._shape)
+        output = self._define_output(in_place)
+        output._assays = assays
+        return output
+
+    @property
+    def assays(self) -> Dict[str, Any]:
+        """Alias for :py:meth:`~get_assays`."""
+        return self.get_assays()
+
+    @assays.setter
+    def assays(self, assays: Dict[str, Any]):
+        """Alias for :py:meth:`~set_assays` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'assays' is an in-place operation, use 'set_assays' instead",
+            UserWarning,
+        )
+        self.set_assays(assays, in_place=True)
+
+    ##########################
+    ######>> row_data <<######
+    ##########################
+
+    def get_rowdata(self) -> BiocFrame:
+        """Get features.
+
+        Returns:
+            Feature information.
+        """
+        return self._rows
+
+    def set_rowdata(self, rows: Optional[BiocFrame], in_place: bool = False):
+        """Set new feature information.
+
+        Args:
+            rows:
+                New feature information.
+
+                If ``rows`` is None, an empty
+                :py:class:`~biocframe.BiocFrame.BiocFrame`
+                object is created.
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        rows = _sanitize_frame(rows, self._shape[0])
+        _validate_rows(rows, self._shape)
+
+        output = self._define_output(in_place)
+        output._rows = rows
+        return output
+
+    @property
+    def rowdata(self) -> Dict[str, Any]:
+        """Alias for :py:meth:`~get_rowdata`."""
+        return self.get_rowdata()
+
+    @rowdata.setter
+    def rowdata(self, rows: Optional[BiocFrame]):
+        """Alias for :py:meth:`~set_rowdata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'rowdata' is an in-place operation, use 'set_rowdata' instead",
+            UserWarning,
+        )
+        self.set_rowdata(rows, in_place=True)
+
+    ##########################
+    ######>> col_data <<######
+    ##########################
+
+    def get_coldata(self) -> BiocFrame:
+        """Get sample data.
+
+        Returns:
+            Sample information.
+        """
+        return self._cols
+
+    def set_coldata(self, cols: Optional[BiocFrame], in_place: bool = False):
+        """Set sample data.
+
+        Args:
+            cols:
+                New sample data.
+
+                If ``cols`` is None, an empty
+                :py:class:`~biocframe.BiocFrame.BiocFrame`
+                object is created.
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        cols = _sanitize_frame(cols, self._shape[1])
+        _validate_cols(cols, self._shape)
+
+        output = self._define_output(in_place)
+        output._cols = cols
+        return output
+
+    @property
+    def coldata(self) -> Dict[str, Any]:
+        """Alias for :py:meth:`~get_coldata`."""
+        return self.get_coldata()
+
+    @coldata.setter
+    def coldata(self, rows: Optional[BiocFrame]):
+        """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'coldata' is an in-place operation, use 'set_coldata' instead",
+            UserWarning,
+        )
+        self.set_coldata(rows, in_place=True)
+
+    ###########################
+    ######>> metadata <<#######
+    ###########################
+
+    def get_metadata(self) -> dict:
+        """
+        Returns:
+            Dictionary of metadata for this object.
+        """
+        return self._metadata
+
+    def set_metadata(self, metadata: dict, in_place: bool = False) -> "GenomicRanges":
+        """Set additional metadata.
+
+        Args:
+            metadata:
+                New metadata for this object.
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        if not isinstance(metadata, dict):
+            raise TypeError(
+                f"`metadata` must be a dictionary, provided {type(metadata)}."
+            )
+        output = self._define_output(in_place)
+        output._metadata = metadata
+        return output
+
+    @property
+    def metadata(self) -> dict:
+        """Alias for :py:attr:`~get_metadata`."""
+        return self.get_metadata()
+
+    @metadata.setter
+    def metadata(self, metadata: dict):
+        """Alias for :py:attr:`~set_metadata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'metadata' is an in-place operation, use 'set_metadata' instead",
+            UserWarning,
+        )
+        self.set_metadata(metadata, in_place=True)
+
+    #############################
+    ######>> assay names <<######
+    #############################
+
+    def get_assay_names(self) -> List[str]:
+        """Get assay names.
+
+        Returns:
+            List of assay names.
+        """
+        return list(self.assays.keys())
+
+    def set_assay_names(self, names: List[str], in_place: bool = False):
+        """Replace :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s names.
+
+        Args:
+            names:
+                New names.
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        current_names = self.assay_names
+        if len(names) != len(current_names):
+            raise ValueError("Length of 'names' does not match the number of `assays`.")
+
+        new_assays = OrderedDict()
+        for idx in range(len(names)):
+            new_assays[names[idx]] = self._assays.pop(current_names[idx])
+
+        output = self._define_output(in_place)
+        output._assays = new_assays
+        return output
+
+    @property
+    def assay_names(self) -> List[str]:
+        """Alias for :py:attr:`~get_assay_names`."""
+        return self.get_assay_names()
+
+    @assay_names.setter
+    def assay_names(self, names: List[str]):
+        """Alias for :py:attr:`~set_assay_names` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'assay_names' is an in-place operation, use 'set_assay_names' instead",
+            UserWarning,
+        )
+        self.set_assay_names(names, in_place=True)
+
+    ################################
+    ######>> assay getters <<#######
+    ################################
+
+    def assay(self, assay: Union[int, str]) -> Any:
+        """Convenience method to access an
+        :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name or index.
+
+        Args:
+            assay:
+                Name or index position of the assay.
+
+        Raises:
+            AttributeError:
+                If the assay name does not exist.
+            IndexError:
+                If index is greater than the number of assays.
+
+        Returns:
+            Experiment data.
+        """
+        if isinstance(assay, int):
+            if assay < 0 or assay > len(self.assay_names):
                 raise IndexError("Index greater than the number of assays.")
 
-            return self.assays[self.assay_names[index_or_name]]
-        elif isinstance(index_or_name, str):
-            if index_or_name not in self.assays:
-                raise AttributeError(f"Assay: {index_or_name} does not exist.")
+            return self.assays[self.assay_names[assay]]
+        elif isinstance(assay, str):
+            if assay not in self.assays:
+                raise AttributeError(f"Assay: {assay} does not exist.")
 
-            return self.assays[index_or_name]
+            return self.assays[assay]
 
-        raise TypeError(
-            f"`index_or_name` must be a string or integer, provided {type(index_or_name)}."
-        )
+        raise TypeError(f"'assay' must be a string or integer, provided {type(assay)}.")
+
+    ##########################
+    ######>> slicers <<#######
+    ##########################
 
     def subset_assays(
         self,
-        row_indices: Optional[MatrixSlicerTypes] = None,
-        col_indices: Optional[MatrixSlicerTypes] = None,
-    ) -> Dict[str, MatrixTypes]:
+        row_indices: Optional[Union[Sequence, int, str, bool, slice, range]] = None,
+        col_indices: Optional[Union[Sequence, int, str, bool, slice, range]] = None,
+    ) -> Dict[str, Any]:
         """Subset all assays using a slice defined by rows and columns.
 
         If both ``row_indices`` and ``col_indices`` are None, a copy of the
         current assays is returned.
 
         Args:
-            row_indices (MatrixSlicerTypes, optional): Row indices to subset.
+            row_indices:
+                Row indices to subset.
 
-                ``row_indices`` may be a list of integer indices to subset.
+                Integer indices, a boolean filter, or (if the current object is
+                named) names specifying the ranges to be extracted, see
+                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
 
-                Alternatively ``row_indices`` may be a boolean vector specifying
-                `True` to keep the index or `False` to remove. The length of the boolean
-                vector must match the number of rows in the experiment.
+            col_indices:
+                Column indices to subset.
 
-                Alternatively, ``row_indices`` may be a :py:class:`~slice` object.
-
-                Defaults to None.
-
-            col_indices (MatrixSlicerTypes, optional): Column indices to subset.
-
-                ``col_indices`` may be a list of integer indices to subset.
-
-                Alternatively ``col_indices`` may be a boolean vector specifying
-                `True` to keep the index or `False` to remove. The length of the boolean
-                vector must match the number of columns in the experiment.
-
-                Alternatively, ``col_indices`` may be a :py:class:`~slice` object.
-
-                Defaults to None.
-
-        Raises:
-            warning: If ``row_indices`` and ``col_indices`` are both None.
+                Integer indices, a boolean filter, or (if the current object is
+                named) names specifying the ranges to be extracted, see
+                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
 
         Returns:
-            Dict[str, MatrixTypes]: Sliced experiment data.
+            Sliced experiment data.
         """
 
         if row_indices is None and col_indices is None:

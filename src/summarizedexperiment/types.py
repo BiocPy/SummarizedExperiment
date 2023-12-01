@@ -2,8 +2,6 @@ from collections import namedtuple
 from typing import List, Tuple, Union
 
 import numpy as np
-import pandas as pd
-from biocframe import BiocFrame
 from scipy import sparse as sp
 
 __author__ = "jkanche"

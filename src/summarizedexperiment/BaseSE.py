@@ -71,8 +71,8 @@ def _validate_metadata(metadata):
 
 
 class BaseSE:
-    """Base class for ``SummarizedExperiment``. This class provides common
-    properties and methods that can be utilized across all derived classes.
+    """Base class for ``SummarizedExperiment``. This class provides common properties and methods that can be utilized
+    across all derived classes.
 
     This container represents genomic experiment data in the form of
     ``assays``, features in ``row_data``, sample data in ``col_data``,
@@ -212,8 +212,7 @@ class BaseSE:
 
     @property
     def dims(self) -> Tuple[int, int]:
-        """Alias to
-        :py:attr:`~summarizedexperiment.BaseSE.BaseSE.shape`.
+        """Alias to :py:attr:`~summarizedexperiment.BaseSE.BaseSE.shape`.
 
         Returns:
             Tuple[int, int]: A tuple (m,n),
@@ -503,8 +502,7 @@ class BaseSE:
     ################################
 
     def assay(self, assay: Union[int, str]) -> Any:
-        """Convenience method to access an
-        :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name or index.
+        """Convenience method to access an :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays` by name or index.
 
         Args:
             assay:

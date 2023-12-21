@@ -4,7 +4,7 @@ import numpy as np
 from genomicranges import GenomicRanges, GenomicRangesList, SeqInfo
 
 from .SummarizedExperiment import SummarizedExperiment
-from .types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
+from .types import MatrixTypes, SlicerArgTypes
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -129,7 +129,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             metadata (Dict, optional): Additional experimental metadata describing the
                 methods. Defaults to None.
         """
-        super().__init__(assays, rows=row_data, cols=col_data, metadata=metadata)
+        super().__init__(assays, row_data=row_data, col_data=col_data, metadata=metadata)
 
         if row_ranges is None:
             row_ranges = GenomicRangesList.empty(n=self._shape[0])

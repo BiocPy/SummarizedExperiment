@@ -99,8 +99,8 @@ class BaseSE:
     def __init__(
         self,
         assays: Dict[str, Any],
-        rows: Optional[BiocFrame] = None,
-        cols: Optional[BiocFrame] = None,
+        row_data: Optional[BiocFrame] = None,
+        col_data: Optional[BiocFrame] = None,
         metadata: Optional[Dict] = None,
         validate: bool = True,
     ) -> None:
@@ -142,9 +142,9 @@ class BaseSE:
         """
         self._assays = assays
 
-        self._shape = _guess_assay_shape(assays, rows, cols)
-        self._rows = _sanitize_frame(rows, self._shape[0])
-        self._cols = _sanitize_frame(cols, self._shape[1])
+        self._shape = _guess_assay_shape(assays, row_data, col_data)
+        self._rows = _sanitize_frame(row_data, self._shape[0])
+        self._cols = _sanitize_frame(col_data, self._shape[1])
         self._metadata = metadata if metadata is not None else {}
 
         if validate:
@@ -182,8 +182,8 @@ class BaseSE:
         current_class_const = type(self)
         return current_class_const(
             assays=_assays_copy,
-            rows=_rows_copy,
-            cols=_cols_copy,
+            row_data=_rows_copy,
+            col_data=_cols_copy,
             metadata=_metadata_copy,
         )
 
@@ -195,8 +195,8 @@ class BaseSE:
         current_class_const = type(self)
         return current_class_const(
             assays=self._assays,
-            rows=self._rows,
-            cols=self._cols,
+            row_data=self._rows,
+            col_data=self._cols,
             metadata=self._metadata,
         )
 
@@ -245,8 +245,8 @@ class BaseSE:
         pattern = (
             f"Class BaseSE with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {', '.join(list(self.assays.keys()))} \n"
-            f"  features: {self.rowdata.columns if self.rowdata is not None else None} \n"
-            f"  sample data: {self.coldata.columns if self.coldata is not None else None}"
+            f"  row_data: {self._rows.names if self._rows is not None else None} \n"
+            f"  col_data: {self._cols.names if self._cols is not None else None}"
         )
         return pattern
 
@@ -716,8 +716,8 @@ class BaseSE:
 
         return current_class_const(
             assays=slicer.assays,
-            rows=slicer.rows,
-            columns=slicer.columns,
+            row_data=slicer.rows,
+            col_data=slicer.columns,
             metadata=self._metadata,
         )
 
@@ -801,7 +801,7 @@ class BaseSE:
         """Transform :py:class:`summarizedexperiment.BaseSE`-like into a :py:class:`~anndata.AnnData` representation.
 
         Returns:
-            AnnData: An `AnnData` representation of the experiment.
+            An `AnnData` representation of the experiment.
         """
         from anndata import AnnData
 
@@ -809,12 +809,10 @@ class BaseSE:
         for asy, mat in self.assays.items():
             layers[asy] = mat.transpose()
 
-        trows = self.row_data
-        if isinstance(self.row_data, GenomicRanges):
-            trows = self.row_data.to_pandas()
+        trows = self._rows.to_pandas()
 
         obj = AnnData(
-            obs=self.col_data,
+            obs=self._cols.to_pandas(),
             var=trows,
             uns=self.metadata,
             layers=layers,

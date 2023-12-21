@@ -16,4 +16,4 @@ finally:
     del version, PackageNotFoundError
 
 from .SummarizedExperiment import SummarizedExperiment
-from .RangedSummarizedExperiment import RangedSummarizedExperiment
+# from .RangedSummarizedExperiment import RangedSummarizedExperiment

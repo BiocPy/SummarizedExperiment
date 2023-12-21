@@ -13,6 +13,7 @@ ArrayTypes = Union[np.ndarray, sp.lil_matrix]
 MatrixSlicerTypes = Union[List[int], List[bool], slice]
 SlicerTypes = Union[List[int], List[bool], List[str], slice]
 SlicerArgTypes = Union[Tuple[SlicerTypes], List[SlicerTypes], slice]
-SlicerResult = namedtuple(
-    "SlicerResult", ["row_data", "col_data", "assays", "row_indices", "col_indices"]
+
+SliceResult = namedtuple(
+    "SlicerResult", ["rows", "columns", "assays", "row_indices", "col_indices"]
 )

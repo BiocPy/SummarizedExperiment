@@ -2,9 +2,10 @@ from typing import Dict, Optional
 from warnings import warn
 
 from genomicranges import GenomicRanges
+from biocframe import BiocFrame
 
 from .BaseSE import BaseSE
-from .types import BiocOrPandasFrame, MatrixTypes, SlicerArgTypes
+from .types import MatrixTypes, SlicerArgTypes
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -29,11 +30,11 @@ class SummarizedExperiment(BaseSE):
             All matrices in assays must be 2-dimensional and have the same shape
             (number of rows, number of columns).
 
-        row_data (BiocOrPandasFrame, optional): Features, which must be of the same length as the rows of
+        row_data (BiocFrame, optional): Features, which must be of the same length as the rows of
             the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
             :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-        col_data (BiocOrPandasFrame, optional): Sample data, which must be of the same length as the
+        col_data (BiocFrame, optional): Sample data, which must be of the same length as the
             columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
             or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
@@ -43,8 +44,8 @@ class SummarizedExperiment(BaseSE):
     def __init__(
         self,
         assays: Dict[str, MatrixTypes],
-        row_data: Optional[BiocOrPandasFrame] = None,
-        col_data: Optional[BiocOrPandasFrame] = None,
+        row_data: Optional[BiocFrame] = None,
+        col_data: Optional[BiocFrame] = None,
         metadata: Optional[Dict] = None,
     ) -> None:
         """Initialize a Summarized Experiment (SE).
@@ -60,11 +61,11 @@ class SummarizedExperiment(BaseSE):
                 All matrices in assays must be 2-dimensional and have the same shape
                 (number of rows, number of columns).
 
-            row_data (BiocOrPandasFrame, optional): Features, which must be of the same length as the rows of
+            row_data (BiocFrame, optional): Features, which must be of the same length as the rows of
                 the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-            col_data (BiocOrPandasFrame, optional): Sample data, which must be of the same length as the
+            col_data (BiocFrame, optional): Sample data, which must be of the same length as the
                 columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`
                 or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
@@ -76,7 +77,7 @@ class SummarizedExperiment(BaseSE):
                 "`row_data` is `GenomicRanges`, consider using `RangeSummarizedExperiment`."
             )
 
-        super().__init__(assays, row_data, col_data, metadata)
+        super().__init__(assays, rows=row_data, cols=col_data, metadata=metadata)
 
     def __getitem__(
         self,

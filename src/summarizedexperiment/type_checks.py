@@ -74,19 +74,3 @@ def is_list_of_type(x: Any, target_type: Callable) -> bool:
     return (isinstance(x, list) or isinstance(x, tuple)) and all(
         isinstance(item, target_type) for item in x
     )
-
-
-def is_pandas(x: Any) -> bool:
-    """Check if ``x`` is a :py:class:`~pandas.DataFrame`.
-
-    Args:
-        x:
-            Any object.
-
-    Returns:
-        True if ``x`` is a :py:class:`~pandas.DataFrame`.
-    """
-    if hasattr(x, "dtypes"):
-        return True
-
-    return False

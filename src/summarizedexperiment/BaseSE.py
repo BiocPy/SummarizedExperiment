@@ -3,18 +3,37 @@ from collections import OrderedDict
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 from warnings import warn
 
+import biocutils as ut
 from biocframe import BiocFrame
 from genomicranges import GenomicRanges
 
 from ._frameutils import _sanitize_frame
 from .type_checks import is_matrix_like
+from .types import SliceResult
 
 __author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
 
-def _validate_assays(assays: dict, shape):
+def _guess_assay_shape(assays, rows, cols) -> tuple:
+    _keys = list(assays.keys())
+    if len(_keys) > 0:
+        _first = _keys[0]
+        return assays[_first].shape
+
+    _r = 0
+    if rows is not None:
+        _r = rows.shape[0]
+
+    _c = 0
+    if cols is not None:
+        _c = cols.shape[0]
+
+    return (_r, _c)
+
+
+def _validate_assays(assays, shape) -> tuple:
     if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
         raise Exception(
             "`assays` must be a dictionary and contain atleast one 2-dimensional matrix."
@@ -40,27 +59,25 @@ def _validate_assays(assays: dict, shape):
                 f" but provided '{mat.shape}'."
             )
 
-    return shape
 
-
-def _validate_rows(self, rows, shape):
+def _validate_rows(rows, shape):
     if not isinstance(rows, BiocFrame):
         raise TypeError("'row_data' is not a `BiocFrame` object.")
 
     if rows.shape[0] != shape[0]:
         raise ValueError(
-            f"Number of features mismatch with number of rows in assays. Must be '{self._shape[0]}'"
+            f"Number of features mismatch with number of rows in assays. Must be '{shape[0]}'"
             f" but provided '{rows.shape[0]}'."
         )
 
 
-def _validate_cols(self, cols, shape):
+def _validate_cols(cols, shape):
     if not isinstance(cols, BiocFrame):
         raise TypeError("'col_data' is not a `BiocFrame` object.")
 
-    if cols.shape[0] != self._shape[1]:
+    if cols.shape[0] != shape[1]:
         raise ValueError(
-            f"Number of samples mismatch with number of columns in assays. Must be '{self._shape[1]}'"
+            f"Number of samples mismatch with number of columns in assays. Must be '{shape[1]}'"
             f" but provided '{cols.shape[0]}'."
         )
 
@@ -123,19 +140,18 @@ class BaseSE:
             validate:
                 Internal use only.
         """
-
-        self._shape = None
-
         self._assays = assays
+
+        self._shape = _guess_assay_shape(assays, rows, cols)
         self._rows = _sanitize_frame(rows, self._shape[0])
         self._cols = _sanitize_frame(cols, self._shape[1])
         self._metadata = metadata if metadata is not None else {}
 
         if validate:
-            self._shape = _validate_assays(self._assays, self._shape)
+            _validate_assays(self._assays, self._shape)
 
             if self._shape is None:
-                raise RuntimeError("Cannot extract shape from assays!")
+                raise RuntimeError("Cannot extract 'shape' from assays!")
 
             _validate_rows(self._rows, self._shape)
             _validate_cols(self._cols, self._shape)
@@ -338,6 +354,23 @@ class BaseSE:
         )
         self.set_rowdata(rows, in_place=True)
 
+    @property
+    def row_data(self) -> Dict[str, Any]:
+        """Alias for :py:meth:`~get_rowdata`."""
+        return self.get_rowdata()
+
+    @row_data.setter
+    def row_data(self, rows: Optional[BiocFrame]):
+        """Alias for :py:meth:`~set_rowdata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'rowdata' is an in-place operation, use 'set_rowdata' instead",
+            UserWarning,
+        )
+        self.set_rowdata(rows, in_place=True)
+
     ##########################
     ######>> col_data <<######
     ##########################
@@ -382,6 +415,23 @@ class BaseSE:
 
     @coldata.setter
     def coldata(self, rows: Optional[BiocFrame]):
+        """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'coldata' is an in-place operation, use 'set_coldata' instead",
+            UserWarning,
+        )
+        self.set_coldata(rows, in_place=True)
+
+    @property
+    def col_data(self) -> Dict[str, Any]:
+        """Alias for :py:meth:`~get_coldata`."""
+        return self.get_coldata()
+
+    @col_data.setter
+    def col_data(self, rows: Optional[BiocFrame]):
         """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -534,25 +584,43 @@ class BaseSE:
     ######>> slicers <<#######
     ##########################
 
+    def _normalize_row_slice(self, rows: Union[str, int, bool, Sequence]):
+        _scalar = None
+        if rows != slice(None):
+            rows, _scalar = ut.normalize_subscript(
+                rows, len(self._rows), self._rows.row_names
+            )
+
+        return rows, _scalar
+
+    def _normalize_column_slice(self, columns: Union[str, int, bool, Sequence]):
+        _scalar = None
+        if columns != slice(None):
+            columns, _scalar = ut.normalize_subscript(
+                columns, len(self._cols), self._cols.row_names
+            )
+
+        return columns, _scalar
+
     def subset_assays(
         self,
-        row_indices: Optional[Union[Sequence, int, str, bool, slice, range]] = None,
-        col_indices: Optional[Union[Sequence, int, str, bool, slice, range]] = None,
+        rows: Optional[Union[str, int, bool, Sequence]],
+        columns: Optional[Union[str, int, bool, Sequence]],
     ) -> Dict[str, Any]:
-        """Subset all assays using a slice defined by rows and columns.
+        """Subset all assays by the slice defined by rows and columns.
 
-        If both ``row_indices`` and ``col_indices`` are None, a copy of the
+        If both ``row_indices`` and ``col_indices`` are None, a shallow copy of the
         current assays is returned.
 
         Args:
-            row_indices:
+            rows:
                 Row indices to subset.
 
                 Integer indices, a boolean filter, or (if the current object is
                 named) names specifying the ranges to be extracted, see
                 :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
 
-            col_indices:
+            columns:
                 Column indices to subset.
 
                 Integer indices, a boolean filter, or (if the current object is
@@ -563,160 +631,171 @@ class BaseSE:
             Sliced experiment data.
         """
 
-        if row_indices is None and col_indices is None:
+        if rows is None and columns is None:
             warnings.warn("No slice is provided, this returns a copy of all assays!")
             return self.assays.copy()
 
+        if rows is None:
+            rows = slice(None)
+
+        if columns is None:
+            columns = slice(None)
+
+        rows, _ = self._normalize_row_slice(rows)
+        columns, _ = self._normalize_column_slice(columns)
+
         new_assays = OrderedDict()
         for asy, mat in self.assays.items():
-            if row_indices is not None:
-                mat = mat[row_indices, :]
+            if rows != slice(None):
+                mat = mat[rows, :]
 
-            if col_indices is not None:
-                mat = mat[:, col_indices]
+            if columns != slice(None):
+                mat = mat[:, columns]
 
             new_assays[asy] = mat
 
         return new_assays
 
-    def _slice(
+    def _generic_slice(
         self,
-        args: SlicerArgTypes,
-    ) -> SlicerResult:
-        """Internal method to perform slicing.
+        rows: Optional[Union[str, int, bool, Sequence]],
+        columns: Optional[Union[str, int, bool, Sequence]],
+    ) -> SliceResult:
+        """Slice ``SummarizedExperiment`` along the rows and/or columns, based on their indices or names.
 
         Args:
-            args (SlicerArgTypes): Indices or names to slice. The tuple contains
-                slices along dimensions (rows, cols).
+            rows:
+                Rows to be extracted.
 
-                Each element in the tuple may be either a integer vector (integer positions),
-                boolean vector or :py:class:`~slice` object.
+                Integer indices, a boolean filter, or (if the current object is
+                named) names specifying the ranges to be extracted, see
+                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
 
-                Defaults to None.
+            columns:
+                Columns to be extracted.
+
+                Integer indices, a boolean filter, or (if the current object is
+                named) names specifying the ranges to be extracted, see
+                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
+
+        Returns:
+            The sliced tuple containing the new rows, columns, assays and realized indices
+            for use in downstream methods.
+        """
+
+        new_rows = self.row_data
+        new_cols = self.col_data
+        new_assays = {}
+
+        if rows is None:
+            rows = slice(None)
+
+        if columns is None:
+            columns = slice(None)
+
+        if rows is not None:
+            rows, _ = self._normalize_row_slice(rows=rows)
+            new_rows = new_rows[rows, :]
+
+        if columns is not None and self.col_data is not None:
+            columns, _ = self._normalize_column_slice(columns=columns)
+            new_cols = new_cols[columns, :]
+
+        new_assays = self.subset_assays(rows=rows, columns=columns)
+
+        return SliceResult(new_rows, new_cols, new_assays, rows, columns)
+
+    def get_slice(
+        self,
+        rows: Optional[Union[str, int, bool, Sequence]],
+        columns: Optional[Union[str, int, bool, Sequence]],
+    ) -> "BaseSE":
+        """Alias for :py:attr:`~__getitem__`, for back-compatibility."""
+        current_class_const = type(self)
+        slicer = self._generic_slice(rows=rows, columns=columns)
+
+        return current_class_const(
+            assays=slicer.assays,
+            rows=slicer.rows,
+            columns=slicer.columns,
+            metadata=self._metadata,
+        )
+
+    def __getitem__(
+        self,
+        args: Union[int, str, Sequence, tuple],
+    ) -> "BaseSE":
+        """Subset a `SummarizedExperiment`.
+
+        Args:
+            args:
+                A sequence or a scalar integer or string, specifying the
+                columns to retain based on their names or indices.
+
+                Alternatively a tuple of length 1. The first entry specifies
+                the rows to retain based on their names or indices.
+
+                Alternatively a tuple of length 2. The first entry specifies
+                the rows to retain, while the second entry specifies the
+                columns to retain, based on their names or indices.
 
         Raises:
             ValueError: If too many or too few slices provided.
 
         Returns:
-            SlicerResult: The sliced tuple.
+            Same type as caller with the sliced rows and columns.
         """
+        if isinstance(args, (str, int)):
+            return self.get_slice(args, slice(None))
 
         if isinstance(args, tuple):
             if len(args) == 0:
-                raise ValueError("`args` must contain at least one slice.")
+                raise ValueError("At least one slicing argument must be provided.")
 
-            row_indices = args[0]
-            col_indices = None
-
-            if len(args) > 1:
-                col_indices = args[1]
-            elif len(args) > 2:
-                raise ValueError("`args` contains too many slices.")
-        elif isinstance(args, list) or isinstance(args, slice):
-            row_indices = args
-            col_indices = None
-        else:
-            raise ValueError("`args` contains unsupported type.")
-
-        new_rows = self.row_data
-        new_cols = self.col_data
-        new_assays = None
-
-        if row_indices is not None and self.row_data is not None:
-            if is_list_of_type(row_indices, str):
-                row_indices = get_indexes_from_names(
-                    get_rownames(self.row_data), row_indices
-                )
-            elif is_list_of_type(row_indices, bool):
-                if len(row_indices) != self.shape[0]:
-                    raise ValueError(
-                        "`row_indices` is a boolean vector, length of vector must match the",
-                        "number of rows.",
-                    )
-                row_indices = get_indexes_from_bools(row_indices)
-
-            if is_list_of_type(row_indices, int) or isinstance(row_indices, slice):
-                if isinstance(self.row_data, DataFrame):
-                    new_rows = new_rows.iloc[row_indices]
-                else:
-                    new_rows = new_rows[row_indices, :]
+            if len(args) == 1:
+                return self.get_slice(args[0], slice(None))
+            elif len(args) == 2:
+                return self.get_slice(args[0], args[1])
             else:
-                raise TypeError("`row_indices` is not supported!")
-
-        if col_indices is not None and self.col_data is not None:
-            if is_list_of_type(col_indices, str):
-                col_indices = get_indexes_from_names(
-                    get_rownames(self.col_data), col_indices
+                raise ValueError(
+                    f"`{type(self).__name__}` only supports 2-dimensional slicing."
                 )
-            elif is_list_of_type(col_indices, bool):
-                if len(col_indices) != self.shape[1]:
-                    raise ValueError(
-                        "`col_indices` is a boolean vector, length of vector must match the",
-                        "number of columns.",
-                    )
-                col_indices = get_indexes_from_bools(col_indices)
 
-            if is_list_of_type(col_indices, int) or isinstance(col_indices, slice):
-                if isinstance(self.col_data, DataFrame):
-                    new_cols = new_cols.iloc[col_indices]
-                else:
-                    new_cols = new_cols[col_indices, :]
-            else:
-                raise TypeError("`col_indices` not supported!")
-
-        new_assays = self.subset_assays(
-            row_indices=row_indices, col_indices=col_indices
+        raise TypeError(
+            "args must be a sequence or a scalar integer or string or a tuple of atmost 2 values."
         )
 
-        return SlicerResult(new_rows, new_cols, new_assays, row_indices, col_indices)
+    ###############################
+    ######>> names accessor <<#####
+    ###############################
+
+    def get_row_names(self) -> Optional[ut.Names]:
+        """
+        Returns:
+            List of row names, or None if no row names are available.
+        """
+        return self._rows.get_row_names()
 
     @property
-    def row_names(self) -> List[str]:
-        """Get row/feature index.
+    def rownames(self) -> List[str]:
+        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
+        return self.get_row_names()
 
+    def get_column_names(self) -> Optional[ut.Names]:
+        """
         Returns:
-            List[str]: List of row names.
+            List of column names, or None if no column names are available.
         """
-        return get_rownames(self.row_data)
-
-    @row_names.setter
-    def row_names(self, names: List[str]):
-        """Set row/feature names for the experiment.
-
-        Args:
-            names (List[str]): New feature names.
-
-        Raises:
-            ValueError: If length of ``names`` is not same as the number of rows.
-        """
-        if len(names) != self.shape[0]:
-            raise ValueError("Length of `names` must be the same as number of rows.")
-
-        self._rows = set_rownames(self.row_data, names)
+        return self._cols.get_row_names()
 
     @property
     def colnames(self) -> List[str]:
-        """Get column/sample names.
+        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
+        return self.get_column_names()
 
-        Returns:
-            List[str]: List of sample names.
-        """
-        return get_colnames(self.col_data)
-
-    @colnames.setter
-    def colnames(self, names: List[str]):
-        """Set column/sample names for the experiment.
-
-        Args:
-            names (List[str]): New samples names.
-
-        Raises:
-            ValueError: If length of ``names`` is not same as the number of rows.
-        """
-        if len(names) != self.shape[1]:
-            raise ValueError("Length of `names` must be the same as number of columns.")
-
-        self._cols = set_colnames(self.col_data, names)
+    ################################
+    ######>> AnnData interop <<#####
+    ################################
 
     def to_anndata(self):
         """Transform :py:class:`summarizedexperiment.BaseSE`-like into a :py:class:`~anndata.AnnData` representation.

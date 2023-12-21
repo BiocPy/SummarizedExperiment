@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Union, Sequence
+from typing import Dict, Optional
 from warnings import warn
 
 from genomicranges import GenomicRanges
@@ -13,11 +13,10 @@ __license__ = "MIT"
 
 
 class SummarizedExperiment(BaseSE):
-    """Container to represents genomic experiment data (`assays`), 
-    features (`row_data`), sample data (`col_data`) and any other `metadata`.
+    """Container to represents genomic experiment data (`assays`), features (`row_data`), sample data (`col_data`) and
+    any other `metadata`.
 
-    SummarizedExperiment follows the R/Bioconductor specification; 
-    rows are features, columns are samples.
+    SummarizedExperiment follows the R/Bioconductor specification; rows are features, columns are samples.
     """
 
     def __init__(
@@ -71,7 +70,11 @@ class SummarizedExperiment(BaseSE):
             )
 
         super().__init__(
-            assays, row_data=row_data, col_data=col_data, metadata=metadata, validate=validate
+            assays,
+            row_data=row_data,
+            col_data=col_data,
+            metadata=metadata,
+            validate=validate,
         )
 
     # def __getitem__(
@@ -81,7 +84,7 @@ class SummarizedExperiment(BaseSE):
     #     """Subset a `SummarizedExperiment`.
 
     #     Args:
-    #         args: 
+    #         args:
     #             Indices or names to slice. The tuple contains
     #             slices along dimensions (rows, cols).
 
@@ -89,7 +92,7 @@ class SummarizedExperiment(BaseSE):
     #             boolean vector or :py:class:`~slice` object. Defaults to None.
 
     #     Raises:
-    #         ValueError: 
+    #         ValueError:
     #             If too many or too few slices provided.
 
     #     Returns:

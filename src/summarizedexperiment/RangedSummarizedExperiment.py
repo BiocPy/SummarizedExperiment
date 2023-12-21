@@ -129,7 +129,9 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             metadata (Dict, optional): Additional experimental metadata describing the
                 methods. Defaults to None.
         """
-        super().__init__(assays, row_data=row_data, col_data=col_data, metadata=metadata)
+        super().__init__(
+            assays, row_data=row_data, col_data=col_data, metadata=metadata
+        )
 
         if row_ranges is None:
             row_ranges = GenomicRangesList.empty(n=self._shape[0])

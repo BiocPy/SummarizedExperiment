@@ -105,6 +105,7 @@ def test_SE_subset_by_name(summarized_experiments):
     with pytest.raises(Exception):
         subset_se = se[["HER2", "BRCA1", "something random"], ["cell_1", "cell_3"]]
 
+
 def test_scalar_arg(summarized_experiments):
     # subset with scalar
     se = summarized_experiments.se1
@@ -116,6 +117,7 @@ def test_scalar_arg(summarized_experiments):
     assert len(subset_se.col_data) == 2
 
     assert subset_se.assay("counts").shape == (1, 2)
+
 
 def test_SE_subset_by_name_fails(summarized_experiments):
     # subset by name with some that do not exist

@@ -90,7 +90,9 @@ def test_RSE_no_ranges():
 
 def test_RSE_should_fail():
     with pytest.raises(Exception):
-        RangedSummarizedExperiment(assays={"counts": counts}, row_data=BiocFrame(number_of_rows=10))
+        RangedSummarizedExperiment(
+            assays={"counts": counts}, row_data=BiocFrame(number_of_rows=10)
+        )
 
 
 def test_RSE_grl():

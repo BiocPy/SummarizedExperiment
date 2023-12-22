@@ -101,7 +101,7 @@ class BaseSE:
         assays: Dict[str, Any],
         row_data: Optional[BiocFrame] = None,
         col_data: Optional[BiocFrame] = None,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[dict] = None,
         validate: bool = True,
     ) -> None:
         """Initialize an instance of ``BaseSE``.
@@ -243,7 +243,7 @@ class BaseSE:
 
     def __repr__(self) -> str:
         pattern = (
-            f"Class BaseSE with {self.shape[0]} features and {self.shape[1]} samples \n"
+            f"Class {type(self).__name__} with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {', '.join(list(self.assays.keys()))} \n"
             f"  row_data: {self._rows.names if self._rows is not None else None} \n"
             f"  col_data: {self._cols.names if self._cols is not None else None}"
@@ -711,9 +711,10 @@ class BaseSE:
         columns: Optional[Union[str, int, bool, Sequence]],
     ) -> "BaseSE":
         """Alias for :py:attr:`~__getitem__`, for back-compatibility."""
-        current_class_const = type(self)
+
         slicer = self._generic_slice(rows=rows, columns=columns)
 
+        current_class_const = type(self)
         return current_class_const(
             assays=slicer.assays,
             row_data=slicer.rows,
@@ -729,8 +730,9 @@ class BaseSE:
 
         Args:
             args:
-                A sequence or a scalar integer or string, specifying the
-                columns to retain based on their names or indices.
+                Integer indices, a boolean filter, or (if the current object is
+                named) names specifying the ranges to be extracted, see
+                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
 
                 Alternatively a tuple of length 1. The first entry specifies
                 the rows to retain based on their names or indices.

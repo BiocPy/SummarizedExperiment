@@ -24,7 +24,7 @@ class SummarizedExperiment(BaseSE):
         assays: Dict[str, MatrixTypes],
         row_data: Optional[BiocFrame] = None,
         col_data: Optional[BiocFrame] = None,
-        metadata: Optional[Dict] = None,
+        metadata: Optional[dict] = None,
         validate: bool = True,
     ) -> None:
         """Initialize a Summarized Experiment (SE).
@@ -76,42 +76,3 @@ class SummarizedExperiment(BaseSE):
             metadata=metadata,
             validate=validate,
         )
-
-    # def __getitem__(
-    #     self,
-    #     args: Union[int, str, Sequence, tuple],
-    # ) -> "SummarizedExperiment":
-    #     """Subset a `SummarizedExperiment`.
-
-    #     Args:
-    #         args:
-    #             Indices or names to slice. The tuple contains
-    #             slices along dimensions (rows, cols).
-
-    #             Each element in the tuple, might be either a integer vector (integer positions),
-    #             boolean vector or :py:class:`~slice` object. Defaults to None.
-
-    #     Raises:
-    #         ValueError:
-    #             If too many or too few slices provided.
-
-    #     Returns:
-    #         Sliced `SummarizedExperiment` object.
-    #     """
-    #     sliced_objs = self._generic_slice(args)
-    #     return SummarizedExperiment(
-    #         assays=sliced_objs.assays,
-    #         row_data=sliced_objs.rows,
-    #         col_data=sliced_objs.cols,
-    #         metadata=self.metadata,
-    #     )
-
-    def __repr__(self) -> str:
-        pattern = (
-            f"Class SummarizedExperiment with {self.shape[0]} features and {self.shape[1]} "
-            "samples \n"
-            f"  assays: {list(self.assays.keys())} \n"
-            f"  row_data: {self.row_data.columns if self.row_data is not None else None} \n"
-            f"  col_data: {self.col_data.columns if self.col_data is not None else None}"
-        )
-        return pattern

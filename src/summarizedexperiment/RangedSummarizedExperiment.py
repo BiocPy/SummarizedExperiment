@@ -311,51 +311,32 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         Returns:
             Sequence information.
         """
-        return self.row_ranges.seq_info
+        return self.row_ranges.seqinfo
 
     ##########################
     ######>> slicers <<#######
     ##########################
 
-    def __getitem__(
+    def get_slice(
         self,
-        args: Union[int, str, Sequence, tuple],
+        rows: Optional[Union[str, int, bool, Sequence]],
+        columns: Optional[Union[str, int, bool, Sequence]],
     ) -> "RangedSummarizedExperiment":
-        """Subset a `RangedSummarizedExperiment`.
+        """Alias for :py:attr:`~__getitem__`, for back-compatibility."""
 
-        Args:
-            args:
-                Integer indices, a boolean filter, or (if the current object is
-                named) names specifying the ranges to be extracted, see
-                :py:meth:`~biocutils.normalize_subscript.normalize_subscript`.
-
-                Alternatively a tuple of length 1. The first entry specifies
-                the rows to retain based on their names or indices.
-
-                Alternatively a tuple of length 2. The first entry specifies
-                the rows to retain, while the second entry specifies the
-                columns to retain, based on their names or indices.
-
-        Raises:
-            ValueError:
-                If too many or too few slices are provided.
-
-        Returns:
-            Sliced `RangedSummarizedExperiment` object.
-        """
-        sliced_objs = self._generic_slice(args)
+        slicer = self._generic_slice(rows=rows, columns=columns)
 
         new_row_ranges = None
-        if sliced_objs.row_indices != slice(None):
-            new_row_ranges = self.row_ranges[sliced_objs.row_indices]
+        if slicer.row_indices != slice(None):
+            new_row_ranges = self.row_ranges[slicer.row_indices]
 
         current_class_const = type(self)
         return current_class_const(
-            assays=sliced_objs.assays,
+            assays=slicer.assays,
             row_ranges=new_row_ranges,
-            row_data=sliced_objs.row_data,
-            col_data=sliced_objs.col_data,
-            metadata=self.metadata,
+            row_data=slicer.rows,
+            col_data=slicer.columns,
+            metadata=self._metadata,
         )
 
     ############################
@@ -883,4 +864,4 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         _order = self.row_ranges.order(decreasing=decreasing)
 
         output = self._define_output(in_place=in_place)
-        return output[_order,]
+        return output[list(_order),]

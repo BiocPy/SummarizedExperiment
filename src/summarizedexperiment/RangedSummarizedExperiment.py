@@ -222,7 +222,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     def set_rowranges(
         self, row_ranges: Optional[GRangesOrGRangesList], in_place: bool = False
     ):
-        """Set new genomic features
+        """Set new genomic features.
 
         Args:
             row_ranges:
@@ -263,8 +263,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     @property
     def end(self) -> np.ndarray:
-        """Get genomic end positions for each feature
-        or row in experimental data.
+        """Get genomic end positions for each feature or row in experimental data.
 
         Returns:
             A :py:class:`numpy.ndarray` of end positions.
@@ -273,8 +272,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     @property
     def start(self) -> np.ndarray:
-        """Get genomic start positions for each feature
-        or row in experimental data.
+        """Get genomic start positions for each feature or row in experimental data.
 
         Returns:
             A :py:class:`numpy.ndarray` of start positions.

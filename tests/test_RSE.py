@@ -1,6 +1,7 @@
 from random import random
 
 import genomicranges
+from biocframe import BiocFrame
 import numpy as np
 import pandas as pd
 import pytest
@@ -89,7 +90,7 @@ def test_RSE_no_ranges():
 
 def test_RSE_should_fail():
     with pytest.raises(Exception):
-        RangedSummarizedExperiment(assays={"counts": counts}, row_ranges=df_gr)
+        RangedSummarizedExperiment(assays={"counts": counts}, row_data=BiocFrame(number_of_rows=10))
 
 
 def test_RSE_grl():

@@ -67,8 +67,8 @@ def _validate_rowranges(row_ranges, shape):
         )
 
 
-def _sanitize_frame(frame, num_rows: int):
-    frame = frame if frame is not None else GenomicRanges.empty(num_rows)
+def _sanitize_ranges_frame(frame, num_rows: int):
+    frame = frame if frame is not None else GenomicRangesList.empty(n=num_rows)
 
     if is_pandas(frame):
         frame = GenomicRanges.from_pandas(frame)
@@ -143,11 +143,9 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             validate=validate,
         )
 
-        self._row_ranges = _sanitize_frame(row_ranges, self._shape[0])
-        self._row_ranges = row_ranges
-
+        self._row_ranges = _sanitize_ranges_frame(row_ranges, self._shape[0])
         if validate:
-            _validate_rowranges(row_ranges, self._shape)
+            _validate_rowranges(self._row_ranges, self._shape)
 
     #########################
     ######>> Copying <<######
@@ -236,7 +234,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             A modified ``RangeSummarizedExperiment`` object, either as a copy of the original
             or as a reference to the (in-place-modified) original.
         """
-        rows = _sanitize_frame(row_ranges, self._shape[0])
+        rows = _sanitize_ranges_frame(row_ranges, self._shape[0])
         _validate_rowranges(rows, self._shape)
 
         output = self._define_output(in_place)

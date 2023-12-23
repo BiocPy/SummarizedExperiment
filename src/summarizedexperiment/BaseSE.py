@@ -826,18 +826,18 @@ class BaseSE:
     def combine_rows(self, *experiments: "BaseSE"):
         all_objects = [self] + experiments
 
-        _new_assays = merge_assays([x.assays] for x in all_objects);
+        _new_assays = merge_assays([x.assays] for x in all_objects)
 
-        let all_dfs = objects.map(x => x._rowData);
-        output._rowData = generics.COMBINE(all_dfs);
+        let all_dfs = objects.map(x => x._rowData)
+        output._rowData = generics.COMBINE(all_dfs)
 
-        let all_n = objects.map(x => x._rowNames);
-        let all_l = objects.map(x => x.numberOfRows());
-        output._rowNames = utils.combineNames(all_n, all_l);
+        let all_n = objects.map(x => x._rowNames)
+        let all_l = objects.map(x => x.numberOfRows())
+        output._rowNames = utils.combineNames(all_n, all_l)
 
-        output._columnData = this._columnData;
-        output._columnNames = this._columnNames;
-        output._metadata = this._metadata;
+        output._columnData = this._columnData
+        output._columnNames = this._columnNames
+        output._metadata = this._metadata
 
     def combine_cols(self, *experiments: "BaseSE"):
         pass

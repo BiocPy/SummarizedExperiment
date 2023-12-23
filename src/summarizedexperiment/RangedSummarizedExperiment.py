@@ -317,6 +317,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     ######>> slicers <<#######
     ##########################
 
+    # rest of them are inherited from BaseSE.
+
     def get_slice(
         self,
         rows: Optional[Union[str, int, bool, Sequence]],

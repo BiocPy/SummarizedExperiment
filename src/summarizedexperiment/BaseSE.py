@@ -7,6 +7,7 @@ import biocutils as ut
 from biocframe import BiocFrame
 from genomicranges import GenomicRanges
 
+from ._assayutils import merge_assays
 from ._frameutils import _sanitize_frame
 from .type_checks import is_matrix_like
 from .types import SliceResult
@@ -822,92 +823,21 @@ class BaseSE:
 
         return obj
 
-    def combine_cols(
-        self,
-        *experiments: "BaseSE",
-        use_names: bool = True,
-        remove_duplicate_columns: bool = True,
-    ) -> "BaseSE":
-        """A more flexible version of ``cbind``. Permits differences in the number and identity of rows, differences in
-        :py:attr:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment.col_data` fields, and even differences
-        in the available `assays` among :py:class:`~summarizedexperiment.SummarizedExperiment.BaseSE`-derived objects
-        being combined.
+    def combine_rows(self, *experiments: "BaseSE"):
+        all_objects = [self] + experiments
 
-        Currently does not support range based merging of feature information when
-        performing this operation.
+        _new_assays = merge_assays([x.assays] for x in all_objects);
 
-        The row names of the resultant `SummarizedExperiment` object will
-        simply be the row names of the first `SummarizedExperiment`.
+        let all_dfs = objects.map(x => x._rowData);
+        output._rowData = generics.COMBINE(all_dfs);
 
-        Note: if `remove_duplicate_columns` is True, we only keep the columns from this
-        object (self). you can always do this operation later, but its useful when you
-        are merging multiple summarized experiments and need to track metadata across
-        objects.
+        let all_n = objects.map(x => x._rowNames);
+        let all_l = objects.map(x => x.numberOfRows());
+        output._rowNames = utils.combineNames(all_n, all_l);
 
-        Args:
-            experiments (BaseSE): `SummarizedExperiment`-like objects to concatenate.
+        output._columnData = this._columnData;
+        output._columnNames = this._columnNames;
+        output._metadata = this._metadata;
 
-            use_names (bool):
-
-                - If `True`, then each input `SummarizedExperiment` must have non-null,
-                non-duplicated row names. The row names of the resultant
-                `SummarizedExperiment` object will be the union of the row names
-                across all input objects.
-                - If `False`, then each input `SummarizedExperiment` object must
-                have the same number of rows.
-
-            remove_duplicate_columns (bool): If `True`, remove any duplicate columns in
-                `row_data` or `col_data` of the resultant `SummarizedExperiment`. Defaults
-                to `True`.
-
-        Raises:
-            TypeError:
-                If any of the provided objects are not "SummarizedExperiment"-like.
-            ValueError:
-                - If there are null or duplicated row names (use_names=True)
-                - If all objects do not have the same number of rows (use_names=False)
-
-        Returns:
-            Same type as the caller with the combined experiments.
-        """
-
-        if not is_list_of_subclass(experiments, BaseSE):
-            raise TypeError(
-                "Not all provided objects are `SummarizedExperiment`-like objects."
-            )
-
-        ses = [self] + list(experiments)
-
-        new_metadata = combine_metadata(experiments)
-
-        all_col_data = [getattr(e, "col_data") for e in ses]
-        new_col_data = combine_frames(
-            all_col_data,
-            axis=0,
-            use_names=True,
-            remove_duplicate_columns=remove_duplicate_columns,
-        )
-
-        all_row_data = [getattr(e, "row_data") for e in ses]
-        new_row_data = combine_frames(
-            all_row_data,
-            axis=1,
-            use_names=use_names,
-            remove_duplicate_columns=remove_duplicate_columns,
-        )
-
-        new_assays = {}
-        unique_assay_names = {assay_name for se in ses for assay_name in se.assay_names}
-        for assay_name in unique_assay_names:
-            merged_assays = combine_assays(
-                assay_name=assay_name,
-                experiments=ses,
-                names=new_row_data.index,
-                by="column",
-                shape=(len(new_row_data), len(new_col_data)),
-                use_names=use_names,
-            )
-            new_assays[assay_name] = merged_assays
-
-        current_class_const = type(self)
-        return current_class_const(new_assays, new_row_data, new_col_data, new_metadata)
+    def combine_cols(self, *experiments: "BaseSE"):
+        pass

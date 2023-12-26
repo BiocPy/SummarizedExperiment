@@ -1046,7 +1046,7 @@ class BaseSE:
     ############################
 
     def combine_rows(self, *experiments: "BaseSE"):
-        _all_objects = [self] + experiments
+        _all_objects = [self] + list(experiments)
 
         _all_assays = [x.assays for x in _all_objects]
         check_assays_are_equal(_all_assays)
@@ -1067,7 +1067,7 @@ class BaseSE:
         )
 
     def combine_cols(self, *experiments: "BaseSE"):
-        _all_objects = [self] + experiments
+        _all_objects = [self] + list(experiments)
 
         _all_assays = [x.assays for x in _all_objects]
         check_assays_are_equal(_all_assays)

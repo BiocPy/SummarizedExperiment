@@ -6,6 +6,7 @@ from warnings import warn
 import biocframe
 import biocutils as ut
 
+from ._assayutils import check_assays_are_equal, merge_assays
 from ._frameutils import _sanitize_frame
 from .type_checks import is_matrix_like
 from .types import SliceResult
@@ -275,8 +276,8 @@ class BaseSE:
         pattern = (
             f"Class {type(self).__name__} with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {', '.join(list(self.assays.keys()))} \n"
-            f"  row_data: {self._rows.names if self._rows is not None else None} \n"
-            f"  column_data: {self._cols.names if self._cols is not None else None}"
+            f"  row_data: {self._rows.row_names if self._rows is not None else None} \n"
+            f"  column_data: {self._cols.column_names if self._cols is not None else None}"
         )
         return pattern
 
@@ -591,7 +592,7 @@ class BaseSE:
         Returns:
             List of column names, or None if no column names are available.
         """
-        return self._cols.get_rownames()
+        return self._column_names
 
     def set_columnnames(
         self, names: Optional[List[str]], in_place: bool = False
@@ -614,7 +615,7 @@ class BaseSE:
         if names is not None and not isinstance(names, ut.Names):
             names = ut.Names(names)
 
-        _validate_rows(self._cols, names, self.shape)
+        _validate_cols(self._cols, names, self.shape)
 
         output = self._define_output(in_place)
         output._column_names = names
@@ -640,7 +641,7 @@ class BaseSE:
     @property
     def colnames(self) -> Optional[ut.Names]:
         """Alias for :py:attr:`~get_columnnames`, provided for back-compatibility."""
-        return self.get_colnames()
+        return self.get_columnnames()
 
     @colnames.setter
     def colnames(self, names: Optional[List[str]]):
@@ -657,7 +658,7 @@ class BaseSE:
     @property
     def col_names(self) -> Optional[ut.Names]:
         """Alias for :py:attr:`~get_columnnames`, provided for back-compatibility."""
-        return self.get_colnames()
+        return self.get_columnnames()
 
     @col_names.setter
     def col_names(self, names: Optional[List[str]]):
@@ -1044,40 +1045,44 @@ class BaseSE:
     ######>> combine ops <<#####
     ############################
 
-    # def combine_rows(self, *experiments: "BaseSE"):
-    #     _all_objects = [self] + experiments
+    def combine_rows(self, *experiments: "BaseSE"):
+        _all_objects = [self] + experiments
 
-    #     _new_assays = merge_assays([x.assays for x in _all_objects])
+        _all_assays = [x.assays for x in _all_objects]
+        check_assays_are_equal(_all_assays)
+        _new_assays = merge_assays(_all_assays, by="row")
 
-    #     _all_rows = [x._rows for x in _all_objects]
-    #     _new_rows = ut.combine_rows(_all_rows)
+        _all_rows = [x._rows for x in _all_objects]
+        _new_rows = ut.combine_rows(_all_rows)
 
-    #     _all_cols = [x._cols for x in _all_objects]
-    #     _new_cols = ut.combine_columns(_all_cols)
+        _all_cols = [x._cols for x in _all_objects]
+        _new_cols = ut.combine_columns(_all_cols)
 
-    #     current_class_const = type(self)
-    #     return current_class_const(
-    #         assays=_new_assays,
-    #         row_data=_new_rows,
-    #         column_data=_new_cols,
-    #         metadata=self._metadata,
-    #     )
+        current_class_const = type(self)
+        return current_class_const(
+            assays=_new_assays,
+            row_data=_new_rows,
+            column_data=_new_cols,
+            metadata=self._metadata,
+        )
 
-    # def combine_cols(self, *experiments: "BaseSE"):
-    #     _all_objects = [self] + experiments
+    def combine_cols(self, *experiments: "BaseSE"):
+        _all_objects = [self] + experiments
 
-    #     _new_assays = merge_assays([x.assays for x in _all_objects])
+        _all_assays = [x.assays for x in _all_objects]
+        check_assays_are_equal(_all_assays)
+        _new_assays = merge_assays(_all_assays, by="column")
 
-    #     _all_rows = [x._rows for x in _all_objects]
-    #     _new_rows = ut.combine_columns(_all_rows)
+        _all_rows = [x._rows for x in _all_objects]
+        _new_rows = ut.combine_columns(_all_rows)
 
-    #     _all_cols = [x._cols for x in _all_objects]
-    #     _new_cols = ut.combine_rows(_all_cols)
+        _all_cols = [x._cols for x in _all_objects]
+        _new_cols = ut.combine_rows(_all_cols)
 
-    #     current_class_const = type(self)
-    #     return current_class_const(
-    #         assays=_new_assays,
-    #         row_data=_new_rows,
-    #         column_data=_new_cols,
-    #         metadata=self._metadata,
-    #     )
+        current_class_const = type(self)
+        return current_class_const(
+            assays=_new_assays,
+            row_data=_new_rows,
+            column_data=_new_cols,
+            metadata=self._metadata,
+        )

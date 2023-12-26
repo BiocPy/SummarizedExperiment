@@ -83,7 +83,7 @@ def test_SE_no_row_or_col_data():
     assert tse.col_data is not None
     assert isinstance(tse.col_data, BiocFrame)
 
-    tse.row_data = tse.row_data.set_row_names([f"row_{i}" for i in range(200)])
+    tse.row_names = [f"row_{i}" for i in range(200)]
     assert tse.rownames is not None
     assert len(tse.rownames) == 200
     assert tse.row_data.shape[0] == 200
@@ -92,7 +92,7 @@ def test_SE_no_row_or_col_data():
     assert tse.col_data is not None
     assert isinstance(tse.col_data, BiocFrame)
 
-    tse.col_data = tse.coldata.set_row_names([f"col_{i}" for i in range(6)])
+    tse.col_names = [f"col_{i}" for i in range(6)]
     assert tse.colnames is not None
     assert len(tse.colnames) == 6
     assert tse.col_data.shape[0] == 6

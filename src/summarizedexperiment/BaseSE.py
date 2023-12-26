@@ -5,9 +5,7 @@ from warnings import warn
 
 import biocframe
 import biocutils as ut
-from genomicranges import GenomicRanges
 
-from ._assayutils import merge_assays
 from ._frameutils import _sanitize_frame
 from .type_checks import is_matrix_like
 from .types import SliceResult

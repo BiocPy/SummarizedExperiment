@@ -46,7 +46,7 @@ col_data = pd.DataFrame(
 
 def test_SE_init():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None
@@ -60,7 +60,7 @@ def test_SE_init():
 
 def test_SE_with_df():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data.to_pandas(), col_data=col_data
+        assays={"counts": counts}, row_data=row_data.to_pandas(), column_data=col_data
     )
 
     assert tse is not None
@@ -104,7 +104,7 @@ def test_SE_no_row_or_col_data():
 
 def test_SE_export():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None

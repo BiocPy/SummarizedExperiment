@@ -75,7 +75,7 @@ grl = genomicranges.GenomicRangesList(ranges=[a, b], names=["a", "b"])
 
 def test_RSE_creation():
     trse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert trse is not None
@@ -99,7 +99,7 @@ def test_RSE_grl():
     counts = np.random.rand(2, ncols)
 
     trse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=grl, col_data=col_data
+        assays={"counts": counts}, row_ranges=grl, column_data=col_data
     )
 
     assert trse is not None

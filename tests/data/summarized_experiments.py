@@ -44,7 +44,7 @@ se1 = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3)),
     },
     row_data=rowdata1,
-    col_data=coldata1,
+    column_data=coldata1,
     metadata={"seq_type": "paired"},
 )
 
@@ -70,7 +70,7 @@ se2 = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3)),
     },
     row_data=rowdata2,
-    col_data=coldata2,
+    column_data=coldata2,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -96,7 +96,7 @@ se3 = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3)),
     },
     row_data=rowdata3,
-    col_data=coldata3,
+    column_data=coldata3,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -123,7 +123,7 @@ se4 = SummarizedExperiment(
         "beta": np.random.beta(a=1, b=1, size=(5, 3)),
     },
     row_data=rowdata4,
-    col_data=coldata4,
+    column_data=coldata4,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -150,7 +150,7 @@ se_sparse = SummarizedExperiment(
         "beta": sp.lil_matrix(np.random.beta(a=2, b=1, size=(5, 3))),
     },
     row_data=rowdata5,
-    col_data=coldata5,
+    column_data=coldata5,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -169,7 +169,7 @@ se6 = SummarizedExperiment(
         "beta": np.random.beta(a=1, b=1, size=(5, 3)),
     },
     row_data=rowdata4,
-    col_data=coldata6,
+    column_data=coldata6,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -187,7 +187,7 @@ se_nonames = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3)),
     },
     row_data=rowdata_nonames,
-    col_data=coldata_nonames,
+    column_data=coldata_nonames,
     metadata={},
 )
 
@@ -202,7 +202,7 @@ rowdata_null_row_name = pd.DataFrame(
 se_null_row_name = SummarizedExperiment(
     assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
     row_data=rowdata_null_row_name,
-    col_data=coldata1,
+    column_data=coldata1,
     metadata={"seq_type": "paired"},
 )
 
@@ -217,7 +217,7 @@ rowdata_duplicated_row_name = pd.DataFrame(
 se_duplicated_row_name = SummarizedExperiment(
     assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
     row_data=rowdata_duplicated_row_name,
-    col_data=coldata1,
+    column_data=coldata1,
     metadata={"seq_type": "paired"},
 )
 
@@ -231,7 +231,7 @@ coldata_duplicated_sample_name = pd.DataFrame(
 se_duplicated_sample_name = SummarizedExperiment(
     assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
     row_data=rowdata1,
-    col_data=coldata_duplicated_sample_name,
+    column_data=coldata_duplicated_sample_name,
     metadata={"seq_type": "paired"},
 )
 
@@ -256,7 +256,7 @@ se_biocframe_1 = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3)),
     },
     row_data=rowdata_biocframe_1,
-    col_data=coldata_biocframe_1,
+    column_data=coldata_biocframe_1,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -282,6 +282,6 @@ se_biocframe_2 = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3)),
     },
     row_data=rowdata_biocframe_2,
-    col_data=coldata_biocframe_2,
+    column_data=coldata_biocframe_2,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )

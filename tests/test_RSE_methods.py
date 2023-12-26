@@ -48,7 +48,7 @@ col_data = pd.DataFrame(
 
 def test_RSE_props():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -78,7 +78,7 @@ def test_RSE_props():
 
 def test_RSE_subset():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -96,7 +96,7 @@ def test_RSE_subset():
 
 def test_RSE_subset_assays():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -112,7 +112,7 @@ def test_RSE_subset_assays():
 
 def test_RSE_coverage():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -125,7 +125,7 @@ def test_RSE_coverage():
 
 def test_RSE_distance_methods():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -143,7 +143,7 @@ def test_RSE_distance_methods():
 
 def test_RSE_range_methods():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -170,7 +170,7 @@ def test_RSE_range_methods():
 
 def test_RSE_search():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -185,7 +185,7 @@ def test_RSE_search():
 
 def test_RSE_sort_order():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None

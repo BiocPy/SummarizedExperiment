@@ -3,8 +3,8 @@ from collections import OrderedDict
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 from warnings import warn
 
+import biocframe
 import biocutils as ut
-from biocframe import BiocFrame
 from genomicranges import GenomicRanges
 
 from ._assayutils import merge_assays
@@ -61,26 +61,40 @@ def _validate_assays(assays, shape) -> tuple:
             )
 
 
-def _validate_rows(rows, shape):
-    if not isinstance(rows, BiocFrame):
+def _validate_rows(rows, names, shape):
+    if not isinstance(rows, biocframe.BiocFrame):
         raise TypeError("'row_data' is not a `BiocFrame` object.")
 
     if rows.shape[0] != shape[0]:
         raise ValueError(
-            f"Number of features mismatch with number of rows in assays. Must be '{shape[0]}'"
+            f"Number of features ('row_data') mismatch with number of rows in assays. Must be '{shape[0]}'"
             f" but provided '{rows.shape[0]}'."
         )
 
+    if names is not None:
+        if len(names) != shape[0]:
+            raise ValueError(
+                f"Length of 'row_names' mismatch with number of rows. Must be '{shape[0]}'"
+                f" but provided '{len(names)}'."
+            )
 
-def _validate_cols(cols, shape):
-    if not isinstance(cols, BiocFrame):
-        raise TypeError("'col_data' is not a `BiocFrame` object.")
+
+def _validate_cols(cols, names, shape):
+    if not isinstance(cols, biocframe.BiocFrame):
+        raise TypeError("'column_data' is not a `BiocFrame` object.")
 
     if cols.shape[0] != shape[1]:
         raise ValueError(
-            f"Number of samples mismatch with number of columns in assays. Must be '{shape[1]}'"
+            f"Number of samples ('column_data') mismatch with number of columns in assays. Must be '{shape[1]}'"
             f" but provided '{cols.shape[0]}'."
         )
+
+    if names is not None:
+        if len(names) != shape[1]:
+            raise ValueError(
+                f"Length of 'column_names' mismatch with number of columns. Must be '{shape[1]}'"
+                f" but provided '{len(names)}'."
+            )
 
 
 def _validate_metadata(metadata):
@@ -93,15 +107,17 @@ class BaseSE:
     across all derived classes.
 
     This container represents genomic experiment data in the form of
-    ``assays``, features in ``row_data``, sample data in ``col_data``,
+    ``assays``, features in ``row_data``, sample data in ``column_data``,
     and any other relevant ``metadata``.
     """
 
     def __init__(
         self,
         assays: Dict[str, Any],
-        row_data: Optional[BiocFrame] = None,
-        col_data: Optional[BiocFrame] = None,
+        row_data: Optional[biocframe.BiocFrame] = None,
+        column_data: Optional[biocframe.BiocFrame] = None,
+        row_names: Optional[List[str]] = None,
+        column_names: Optional[List[str]] = None,
         metadata: Optional[dict] = None,
         validate: bool = True,
     ) -> None:
@@ -134,6 +150,12 @@ class BaseSE:
                 Sample information is coerced to a
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
+            row_names:
+                A list of strings, same as the number of rows.Defaults to None.
+
+            column_names:
+                A list of string, same as the number of columns. Defaults to None.
+
             metadata:
                 Additional experimental metadata describing the methods.
                 Defaults to None.
@@ -143,9 +165,18 @@ class BaseSE:
         """
         self._assays = assays
 
-        self._shape = _guess_assay_shape(assays, row_data, col_data)
+        self._shape = _guess_assay_shape(assays, row_data, column_data)
         self._rows = _sanitize_frame(row_data, self._shape[0])
-        self._cols = _sanitize_frame(col_data, self._shape[1])
+        self._cols = _sanitize_frame(column_data, self._shape[1])
+
+        if row_names is not None and not isinstance(row_names, ut.Names):
+            row_names = ut.Names(row_names)
+        self._row_names = row_names
+
+        if column_names is not None and not isinstance(column_names, ut.Names):
+            column_names = ut.Names(column_names)
+        self._column_names = column_names
+
         self._metadata = metadata if metadata is not None else {}
 
         if validate:
@@ -154,8 +185,8 @@ class BaseSE:
             if self._shape is None:
                 raise RuntimeError("Cannot extract 'shape' from assays!")
 
-            _validate_rows(self._rows, self._shape)
-            _validate_cols(self._cols, self._shape)
+            _validate_rows(self._rows, self._row_names, self._shape)
+            _validate_cols(self._cols, self._column_names, self._shape)
             _validate_metadata(self._metadata)
 
     def _define_output(self, in_place: bool = False) -> "BaseSE":
@@ -184,7 +215,7 @@ class BaseSE:
         return current_class_const(
             assays=_assays_copy,
             row_data=_rows_copy,
-            col_data=_cols_copy,
+            column_data=_cols_copy,
             metadata=_metadata_copy,
         )
 
@@ -197,7 +228,7 @@ class BaseSE:
         return current_class_const(
             assays=self._assays,
             row_data=self._rows,
-            col_data=self._cols,
+            column_data=self._cols,
             metadata=self._metadata,
         )
 
@@ -247,7 +278,7 @@ class BaseSE:
             f"Class {type(self).__name__} with {self.shape[0]} features and {self.shape[1]} samples \n"
             f"  assays: {', '.join(list(self.assays.keys()))} \n"
             f"  row_data: {self._rows.names if self._rows is not None else None} \n"
-            f"  col_data: {self._cols.names if self._cols is not None else None}"
+            f"  column_data: {self._cols.names if self._cols is not None else None}"
         )
         return pattern
 
@@ -264,7 +295,7 @@ class BaseSE:
         """
         return self._assays
 
-    def set_assays(self, assays: Dict[str, Any], in_place: bool = False):
+    def set_assays(self, assays: Dict[str, Any], in_place: bool = False) -> "BaseSE":
         """Set new experiment data (assays).
 
         Args:
@@ -305,7 +336,7 @@ class BaseSE:
     ######>> row_data <<######
     ##########################
 
-    def get_rowdata(self) -> BiocFrame:
+    def get_rowdata(self) -> biocframe.BiocFrame:
         """Get features.
 
         Returns:
@@ -313,7 +344,9 @@ class BaseSE:
         """
         return self._rows
 
-    def set_rowdata(self, rows: Optional[BiocFrame], in_place: bool = False):
+    def set_rowdata(
+        self, rows: Optional[biocframe.BiocFrame], in_place: bool = False
+    ) -> "BaseSE":
         """Set new feature information.
 
         Args:
@@ -332,7 +365,7 @@ class BaseSE:
             or as a reference to the (in-place-modified) original.
         """
         rows = _sanitize_frame(rows, self._shape[0])
-        _validate_rows(rows, self._shape)
+        _validate_rows(rows, self._row_names, self._shape)
 
         output = self._define_output(in_place)
         output._rows = rows
@@ -344,7 +377,7 @@ class BaseSE:
         return self.get_rowdata()
 
     @rowdata.setter
-    def rowdata(self, rows: Optional[BiocFrame]):
+    def rowdata(self, rows: Optional[biocframe.BiocFrame]):
         """Alias for :py:meth:`~set_rowdata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -361,7 +394,7 @@ class BaseSE:
         return self.get_rowdata()
 
     @row_data.setter
-    def row_data(self, rows: Optional[BiocFrame]):
+    def row_data(self, rows: Optional[biocframe.BiocFrame]):
         """Alias for :py:meth:`~set_rowdata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -376,7 +409,7 @@ class BaseSE:
     ######>> col_data <<######
     ##########################
 
-    def get_coldata(self) -> BiocFrame:
+    def get_columndata(self) -> biocframe.BiocFrame:
         """Get sample data.
 
         Returns:
@@ -384,7 +417,9 @@ class BaseSE:
         """
         return self._cols
 
-    def set_coldata(self, cols: Optional[BiocFrame], in_place: bool = False):
+    def set_columndata(
+        self, cols: Optional[biocframe.BiocFrame], in_place: bool = False
+    ) -> "BaseSE":
         """Set sample data.
 
         Args:
@@ -403,19 +438,53 @@ class BaseSE:
             or as a reference to the (in-place-modified) original.
         """
         cols = _sanitize_frame(cols, self._shape[1])
-        _validate_cols(cols, self._shape)
+        _validate_cols(cols, self._column_names, self._shape)
 
         output = self._define_output(in_place)
         output._cols = cols
         return output
 
     @property
+    def columndata(self) -> Dict[str, Any]:
+        """Alias for :py:meth:`~get_coldata`."""
+        return self.get_columndata()
+
+    @columndata.setter
+    def columndata(self, rows: Optional[biocframe.BiocFrame]):
+        """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'coldata' is an in-place operation, use 'set_columndata' instead",
+            UserWarning,
+        )
+        self.set_columndata(rows, in_place=True)
+
+    @property
     def coldata(self) -> Dict[str, Any]:
         """Alias for :py:meth:`~get_coldata`."""
-        return self.get_coldata()
+        return self.get_columndata()
 
     @coldata.setter
-    def coldata(self, rows: Optional[BiocFrame]):
+    def coldata(self, rows: Optional[biocframe.BiocFrame]):
+        """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'coldata' is an in-place operation, use 'set_columndata' instead",
+            UserWarning,
+        )
+        self.set_columndata(rows, in_place=True)
+
+    @property
+    def column_data(self) -> Dict[str, Any]:
+        """Alias for :py:meth:`~get_coldata`."""
+        return self.get_columndata()
+
+    @column_data.setter
+    def column_data(self, rows: Optional[biocframe.BiocFrame]):
         """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -424,24 +493,202 @@ class BaseSE:
             "Setting property 'coldata' is an in-place operation, use 'set_coldata' instead",
             UserWarning,
         )
-        self.set_coldata(rows, in_place=True)
+        self.set_columndata(rows, in_place=True)
 
     @property
     def col_data(self) -> Dict[str, Any]:
         """Alias for :py:meth:`~get_coldata`."""
-        return self.get_coldata()
+        return self.get_columndata()
 
     @col_data.setter
-    def col_data(self, rows: Optional[BiocFrame]):
+    def col_data(self, rows: Optional[biocframe.BiocFrame]):
         """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
         """
         warn(
-            "Setting property 'coldata' is an in-place operation, use 'set_coldata' instead",
+            "Setting property 'coldata' is an in-place operation, use 'set_columndata' instead",
             UserWarning,
         )
-        self.set_coldata(rows, in_place=True)
+        self.set_columndata(rows, in_place=True)
+
+    ##########################
+    ######>> row names <<#####
+    ##########################
+
+    def get_rownames(self) -> Optional[ut.Names]:
+        """
+        Returns:
+            List of row names, or None if no row names are available.
+        """
+        return self._row_names
+
+    def set_rownames(
+        self, names: Optional[List[str]], in_place: bool = False
+    ) -> "BaseSE":
+        """Set new row names.
+
+        Args:
+            names:
+                New names, same as the number of rows.
+
+                May be `None` to remove row names.
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        if names is not None and not isinstance(names, ut.Names):
+            names = ut.Names(names)
+
+        _validate_rows(self._rows, names, self.shape)
+
+        output = self._define_output(in_place)
+        output._row_names = names
+        return output
+
+    @property
+    def rownames(self) -> Optional[ut.Names]:
+        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
+        return self.get_rownames()
+
+    @rownames.setter
+    def rownames(self, names: Optional[List[str]]):
+        """Alias for :py:meth:`~set_rownames` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'row_names' is an in-place operation, use 'set_rownames' instead",
+            UserWarning,
+        )
+        self.set_rownames(names, in_place=True)
+
+    @property
+    def row_names(self) -> Optional[ut.Names]:
+        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
+        return self.get_rownames()
+
+    @row_names.setter
+    def row_names(self, names: Optional[List[str]]):
+        """Alias for :py:meth:`~set_rownames` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'row_names' is an in-place operation, use 'set_rownames' instead",
+            UserWarning,
+        )
+        self.set_rownames(names, in_place=True)
+
+    #############################
+    ######>> column names <<#####
+    #############################
+
+    def get_columnnames(self) -> Optional[ut.Names]:
+        """
+        Returns:
+            List of column names, or None if no column names are available.
+        """
+        return self._cols.get_rownames()
+
+    def set_columnnames(
+        self, names: Optional[List[str]], in_place: bool = False
+    ) -> "BaseSE":
+        """Set new column names.
+
+        Args:
+            names:
+                New names, same as the number of columns.
+
+                May be `None` to remove column names.
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        if names is not None and not isinstance(names, ut.Names):
+            names = ut.Names(names)
+
+        _validate_rows(self._cols, names, self.shape)
+
+        output = self._define_output(in_place)
+        output._column_names = names
+        return output
+
+    @property
+    def columnnames(self) -> Optional[ut.Names]:
+        """Alias for :py:attr:`~get_columnnames`, provided for back-compatibility."""
+        return self.get_columnnames()
+
+    @columnnames.setter
+    def columnnames(self, names: Optional[List[str]]):
+        """Alias for :py:meth:`~set_columnnames` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'column_names' is an in-place operation, use 'set_columnnames' instead",
+            UserWarning,
+        )
+        self.set_columnnames(names, in_place=True)
+
+    @property
+    def colnames(self) -> Optional[ut.Names]:
+        """Alias for :py:attr:`~get_columnnames`, provided for back-compatibility."""
+        return self.get_colnames()
+
+    @colnames.setter
+    def colnames(self, names: Optional[List[str]]):
+        """Alias for :py:meth:`~set_columnnames` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'column_names' is an in-place operation, use 'set_columnnames' instead",
+            UserWarning,
+        )
+        self.set_columnnames(names, in_place=True)
+
+    @property
+    def col_names(self) -> Optional[ut.Names]:
+        """Alias for :py:attr:`~get_columnnames`, provided for back-compatibility."""
+        return self.get_colnames()
+
+    @col_names.setter
+    def col_names(self, names: Optional[List[str]]):
+        """Alias for :py:meth:`~set_columnnames` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'column_names' is an in-place operation, use 'set_columnnames' instead",
+            UserWarning,
+        )
+        self.set_columnnames(names, in_place=True)
+
+    @property
+    def column_names(self) -> Optional[ut.Names]:
+        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
+        return self.get_columnnames()
+
+    @column_names.setter
+    def column_names(self, names: Optional[List[str]]):
+        """Alias for :py:meth:`~set_columnnames` with ``in_place = True``.
+
+        As this mutates the original object, a warning is raised.
+        """
+        warn(
+            "Setting property 'column_names' is an in-place operation, use 'set_columnnames' instead",
+            UserWarning,
+        )
+        self.set_columnnames(names, in_place=True)
 
     ###########################
     ######>> metadata <<#######
@@ -454,7 +701,7 @@ class BaseSE:
         """
         return self._metadata
 
-    def set_metadata(self, metadata: dict, in_place: bool = False) -> "GenomicRanges":
+    def set_metadata(self, metadata: dict, in_place: bool = False) -> "BaseSE":
         """Set additional metadata.
 
         Args:
@@ -505,7 +752,7 @@ class BaseSE:
         """
         return list(self.assays.keys())
 
-    def set_assay_names(self, names: List[str], in_place: bool = False):
+    def set_assay_names(self, names: List[str], in_place: bool = False) -> "BaseSE":
         """Replace :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s names.
 
         Args:
@@ -685,7 +932,7 @@ class BaseSE:
         """
 
         new_rows = self.row_data
-        new_cols = self.col_data
+        new_cols = self.column_data
         new_assays = {}
 
         if rows is None:
@@ -698,7 +945,7 @@ class BaseSE:
             rows, _ = self._normalize_row_slice(rows=rows)
             new_rows = new_rows[rows, :]
 
-        if columns is not None and self.col_data is not None:
+        if columns is not None and self.column_data is not None:
             columns, _ = self._normalize_column_slice(columns=columns)
             new_cols = new_cols[columns, :]
 
@@ -719,7 +966,7 @@ class BaseSE:
         return current_class_const(
             assays=slicer.assays,
             row_data=slicer.rows,
-            col_data=slicer.columns,
+            column_data=slicer.columns,
             metadata=self._metadata,
         )
 
@@ -768,34 +1015,6 @@ class BaseSE:
             "args must be a sequence or a scalar integer or string or a tuple of atmost 2 values."
         )
 
-    ###############################
-    ######>> names accessor <<#####
-    ###############################
-
-    def get_row_names(self) -> Optional[ut.Names]:
-        """
-        Returns:
-            List of row names, or None if no row names are available.
-        """
-        return self._rows.get_row_names()
-
-    @property
-    def rownames(self) -> List[str]:
-        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
-        return self.get_row_names()
-
-    def get_column_names(self) -> Optional[ut.Names]:
-        """
-        Returns:
-            List of column names, or None if no column names are available.
-        """
-        return self._cols.get_row_names()
-
-    @property
-    def colnames(self) -> List[str]:
-        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
-        return self.get_column_names()
-
     ################################
     ######>> AnnData interop <<#####
     ################################
@@ -823,21 +1042,44 @@ class BaseSE:
 
         return obj
 
-    def combine_rows(self, *experiments: "BaseSE"):
-        all_objects = [self] + experiments
+    ############################
+    ######>> combine ops <<#####
+    ############################
 
-        _new_assays = merge_assays([x.assays] for x in all_objects)
+    # def combine_rows(self, *experiments: "BaseSE"):
+    #     _all_objects = [self] + experiments
 
-        let all_dfs = objects.map(x => x._rowData)
-        output._rowData = generics.COMBINE(all_dfs)
+    #     _new_assays = merge_assays([x.assays for x in _all_objects])
 
-        let all_n = objects.map(x => x._rowNames)
-        let all_l = objects.map(x => x.numberOfRows())
-        output._rowNames = utils.combineNames(all_n, all_l)
+    #     _all_rows = [x._rows for x in _all_objects]
+    #     _new_rows = ut.combine_rows(_all_rows)
 
-        output._columnData = this._columnData
-        output._columnNames = this._columnNames
-        output._metadata = this._metadata
+    #     _all_cols = [x._cols for x in _all_objects]
+    #     _new_cols = ut.combine_columns(_all_cols)
 
-    def combine_cols(self, *experiments: "BaseSE"):
-        pass
+    #     current_class_const = type(self)
+    #     return current_class_const(
+    #         assays=_new_assays,
+    #         row_data=_new_rows,
+    #         column_data=_new_cols,
+    #         metadata=self._metadata,
+    #     )
+
+    # def combine_cols(self, *experiments: "BaseSE"):
+    #     _all_objects = [self] + experiments
+
+    #     _new_assays = merge_assays([x.assays for x in _all_objects])
+
+    #     _all_rows = [x._rows for x in _all_objects]
+    #     _new_rows = ut.combine_columns(_all_rows)
+
+    #     _all_cols = [x._cols for x in _all_objects]
+    #     _new_cols = ut.combine_rows(_all_cols)
+
+    #     current_class_const = type(self)
+    #     return current_class_const(
+    #         assays=_new_assays,
+    #         row_data=_new_rows,
+    #         column_data=_new_cols,
+    #         metadata=self._metadata,
+    #     )

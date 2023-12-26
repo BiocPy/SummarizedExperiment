@@ -91,7 +91,9 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         assays: Dict[str, MatrixTypes],
         row_ranges: Optional[GRangesOrGRangesList] = None,
         row_data: Optional[BiocFrame] = None,
-        col_data: Optional[BiocFrame] = None,
+        column_data: Optional[BiocFrame] = None,
+        row_names: Optional[List[str]] = None,
+        column_names: Optional[List[str]] = None,
         metadata: Optional[dict] = None,
         validate: bool = True,
     ) -> None:
@@ -121,12 +123,18 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 Feature information is coerced to a
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-            col_data:
+            column_data:
                 Sample data, must be the same length as the number of
                 columns of the matrices in assays.
 
                 Sample information is coerced to a
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
+
+            row_names:
+                A list of strings, same as the number of rows.Defaults to None.
+
+            column_names:
+                A list of string, same as the number of columns. Defaults to None.
 
             metadata:
                 Additional experimental metadata describing the methods.
@@ -138,7 +146,9 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         super().__init__(
             assays,
             row_data=row_data,
-            col_data=col_data,
+            column_data=column_data,
+            row_names=row_names,
+            column_names=column_names,
             metadata=metadata,
             validate=validate,
         )
@@ -169,7 +179,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             assays=_assays_copy,
             row_ranges=_rowranges_copy,
             row_data=_rows_copy,
-            col_data=_cols_copy,
+            column_data=_cols_copy,
             metadata=_metadata_copy,
         )
 
@@ -183,7 +193,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             assays=self._assays,
             row_ranges=self._row_ranges,
             row_data=self._rows,
-            col_data=self._cols,
+            column_data=self._cols,
             metadata=self._metadata,
         )
 
@@ -201,7 +211,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             "samples \n"
             f"  assays: {list(self.assays.keys())} \n"
             f"  row_data: {self._rows.columns if self._rows is not None else None} \n"
-            f"  col_data: {self._cols.columns if self._cols is not None else None}"
+            f"  column_data: {self._cols.columns if self._cols is not None else None}"
         )
         return pattern
 
@@ -219,7 +229,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     def set_rowranges(
         self, row_ranges: Optional[GRangesOrGRangesList], in_place: bool = False
-    ):
+    ) -> "RangedSummarizedExperiment":
         """Set new genomic features.
 
         Args:
@@ -337,7 +347,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             assays=slicer.assays,
             row_ranges=new_row_ranges,
             row_data=slicer.rows,
-            col_data=slicer.columns,
+            column_data=slicer.columns,
             metadata=self._metadata,
         )
 

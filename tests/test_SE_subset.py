@@ -45,7 +45,7 @@ col_data = pd.DataFrame(
 
 def test_SE_subset_assays():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None
@@ -61,7 +61,7 @@ def test_SE_subset_assays():
 
 def test_SE_subset():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None
@@ -198,7 +198,7 @@ def test_SE_subset_fails_with_indexes(summarized_experiments):
 
     # subset by name when index is not available
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None

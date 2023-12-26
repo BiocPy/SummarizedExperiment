@@ -44,7 +44,7 @@ col_data = BiocFrame(
 
 def test_SE_props():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None
@@ -64,7 +64,7 @@ def test_SE_props():
 
 def test_SE_set_props():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None
@@ -92,7 +92,7 @@ def test_SE_set_props():
 
 def test_SE_assay():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=row_data, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None

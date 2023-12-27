@@ -220,14 +220,51 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     ##########################
 
     def __repr__(self) -> str:
-        pattern = (
-            f"Class  {type(self).__name__} with {self.shape[0]} features and {self.shape[1]} "
-            "samples \n"
-            f"  assays: {list(self.assays.keys())} \n"
-            f"  row_data: {self._rows.columns if self._rows is not None else None} \n"
-            f"  column_data: {self._cols.columns if self._cols is not None else None}"
-        )
-        return pattern
+        """
+        Returns:
+            A string representation.
+        """
+        output = f"{type(self).__name__}(number_of_rows={self.shape[0]}"
+        output += f", number_of_columns={self.shape[1]}"
+        output += ", assays=" + ut.print_truncated_list(self.assay_names)
+        
+        output += ", row_data=" + self._rows.__repr__()
+        if self._row_names is not None:
+            output += ", row_names=" + ut.print_truncated_list(self._row_names)
+
+        output += ", column_data=" + self._cols.__repr__()
+        if self._column_names is not None:
+            output += ", column_names=" + ut.print_truncated_list(self._column_names)
+
+        if self._row_ranges is not None:
+            output += "row_ranges=" + self._row_ranges.__repr__()
+
+        if len(self._metadata) > 0:
+            output += ", metadata=" + ut.print_truncated_dict(self._metadata)
+
+        output += ")"
+        return output
+
+    def __str__(self) -> str:
+        """
+        Returns:
+            A pretty-printed string containing the contents of this object.
+        """
+        output = f"class: {type(self).__name__}\n"
+
+        output += f"dimensions: ({self.shape[0]}, {self.shape[1]})\n"
+
+        output += f"assays({len(self.assay_names)}): {ut.print_truncated_list(self.assay_names)}\n"
+
+        output += f"row_data columns({len(self._rows.column_names)}): {ut.print_truncated_list(self._rows.column_names)}\n"
+        output += f"row_names({0 if self._row_names is None else len(self._row_names)}): {' ' if self._row_names is None else ut.print_truncated_list(self._row_names)}\n"
+
+        output += f"column_data columns({len(self._cols.column_names)}): {ut.print_truncated_list(self._cols.column_names)}\n"
+        output += f"column_names({0 if self._column_names is None else len(self._column_names)}): {' ' if self._column_names is None else ut.print_truncated_list(self._column_names)}\n"
+
+        output += f"metadata({str(len(self.metadata))}): {ut.print_truncated_list(list(self.metadata.keys()), sep=' ', include_brackets=False, transform=lambda y: y)}\n"
+
+        return output
 
     ############################
     ######>> row_ranges <<######

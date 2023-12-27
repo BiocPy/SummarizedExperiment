@@ -15,5 +15,14 @@ SlicerTypes = Union[List[int], List[bool], List[str], slice]
 SlicerArgTypes = Union[Tuple[SlicerTypes], List[SlicerTypes], slice]
 
 SliceResult = namedtuple(
-    "SlicerResult", ["rows", "columns", "assays", "row_names", "column_names", "row_indices", "col_indices"]
+    "SlicerResult",
+    [
+        "rows",
+        "columns",
+        "assays",
+        "row_names",
+        "column_names",
+        "row_indices",
+        "col_indices",
+    ],
 )

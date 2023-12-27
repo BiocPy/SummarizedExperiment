@@ -9,7 +9,6 @@ import biocutils as ut
 from ._combineutils import (
     check_assays_are_equal,
     merge_assays,
-    merge_se_colnames,
     merge_se_rownames,
 )
 from ._frameutils import _sanitize_frame

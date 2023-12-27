@@ -1041,6 +1041,7 @@ def relaxed_combine_columns(
         metadata=first._metadata,
     )
 
+
 @ut.extract_row_names.register(RangedSummarizedExperiment)
 def _rownames_rse(x: RangedSummarizedExperiment):
     return x.get_row_names()

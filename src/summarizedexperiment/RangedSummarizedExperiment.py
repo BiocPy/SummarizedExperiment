@@ -1,4 +1,4 @@
-from typing import Dict, List, Literal, Optional, Sequence, Union
+from typing import Any, Dict, List, Literal, Optional, Sequence, Union
 from warnings import warn
 
 import biocframe
@@ -15,7 +15,6 @@ from ._combineutils import (
 )
 from ._frameutils import is_pandas
 from .SummarizedExperiment import SummarizedExperiment
-from .types import MatrixTypes
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -96,7 +95,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     def __init__(
         self,
-        assays: Dict[str, MatrixTypes],
+        assays: Dict[str, Any],
         row_ranges: Optional[GRangesOrGRangesList] = None,
         row_data: Optional[biocframe.BiocFrame] = None,
         column_data: Optional[biocframe.BiocFrame] = None,

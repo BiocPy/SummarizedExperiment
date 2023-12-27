@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 from warnings import warn
 
 import biocframe
@@ -13,7 +13,6 @@ from ._combineutils import (
     relaxed_merge_assays,
 )
 from .BaseSE import BaseSE
-from .types import MatrixTypes
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -29,7 +28,7 @@ class SummarizedExperiment(BaseSE):
 
     def __init__(
         self,
-        assays: Dict[str, MatrixTypes],
+        assays: Dict[str, Any],
         row_data: Optional[biocframe.BiocFrame] = None,
         column_data: Optional[biocframe.BiocFrame] = None,
         row_names: Optional[List[str]] = None,

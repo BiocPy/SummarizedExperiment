@@ -257,9 +257,9 @@ se3 = SummarizedExperiment(
 
 ```python
 from biocutils import relaxed_combine_columns, combine_columns
-se_combined = combine_columns(se2, se1) 
+se_combined = combine_columns(se2, se1)
 
 se_relaxed_combine = relaxed_combine_columns(se1, se2, se3)
 ```
 
-Similarly one can perform `combine_rows` and `relaxed_combine_rows` operations. 
+Similarly one can perform `combine_rows` and `relaxed_combine_rows` operations.

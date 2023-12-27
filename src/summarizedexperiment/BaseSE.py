@@ -6,7 +6,12 @@ from warnings import warn
 import biocframe
 import biocutils as ut
 
-from ._assayutils import check_assays_are_equal, merge_assays
+from ._combineutils import (
+    check_assays_are_equal,
+    merge_assays,
+    merge_se_colnames,
+    merge_se_rownames,
+)
 from ._frameutils import _sanitize_frame
 from .type_checks import is_matrix_like
 from .types import SliceResult
@@ -209,12 +214,16 @@ class BaseSE:
         _rows_copy = deepcopy(self._rows)
         _cols_copy = deepcopy(self._cols)
         _metadata_copy = deepcopy(self.metadata)
+        _row_names_copy = deepcopy(self._row_names)
+        _col_names_copy = deepcopy(self._column_names)
 
         current_class_const = type(self)
         return current_class_const(
             assays=_assays_copy,
             row_data=_rows_copy,
             column_data=_cols_copy,
+            row_names=_row_names_copy,
+            column_names=_col_names_copy,
             metadata=_metadata_copy,
         )
 
@@ -228,6 +237,8 @@ class BaseSE:
             assays=self._assays,
             row_data=self._rows,
             column_data=self._cols,
+            row_names=self._row_names,
+            column_names=self._column_names,
             metadata=self._metadata,
         )
 
@@ -835,7 +846,7 @@ class BaseSE:
         _scalar = None
         if rows != slice(None):
             rows, _scalar = ut.normalize_subscript(
-                rows, len(self._rows), self._rows.row_names
+                rows, len(self._rows), self._row_names
             )
 
         return rows, _scalar
@@ -844,7 +855,7 @@ class BaseSE:
         _scalar = None
         if columns != slice(None):
             columns, _scalar = ut.normalize_subscript(
-                columns, len(self._cols), self._cols.row_names
+                columns, len(self._cols), self._column_names
             )
 
         return columns, _scalar
@@ -932,6 +943,8 @@ class BaseSE:
 
         new_rows = self.row_data
         new_cols = self.column_data
+        new_row_names = self._row_names
+        new_col_names = self._column_names
         new_assays = {}
 
         if rows is None:
@@ -944,13 +957,21 @@ class BaseSE:
             rows, _ = self._normalize_row_slice(rows=rows)
             new_rows = new_rows[rows, :]
 
+            if new_row_names is not None:
+                new_row_names = new_row_names[rows]
+
         if columns is not None and self.column_data is not None:
             columns, _ = self._normalize_column_slice(columns=columns)
             new_cols = new_cols[columns, :]
 
+            if new_col_names is not None:
+                new_col_names = new_col_names[columns]
+
         new_assays = self.subset_assays(rows=rows, columns=columns)
 
-        return SliceResult(new_rows, new_cols, new_assays, rows, columns)
+        return SliceResult(
+            new_rows, new_cols, new_assays, new_row_names, new_col_names, rows, columns
+        )
 
     def get_slice(
         self,
@@ -966,6 +987,8 @@ class BaseSE:
             assays=slicer.assays,
             row_data=slicer.rows,
             column_data=slicer.columns,
+            row_names=slicer.row_names,
+            column_names=slicer.column_names,
             metadata=self._metadata,
         )
 
@@ -1031,9 +1054,15 @@ class BaseSE:
             layers[asy] = mat.transpose()
 
         trows = self._rows.to_pandas()
+        if self._row_names is not None:
+            trows.index = self._row_names
+
+        tcols = self._cols.to_pandas()
+        if self._column_names is not None:
+            tcols.index = self._column_names
 
         obj = AnnData(
-            obs=self._cols.to_pandas(),
+            obs=tcols,
             var=trows,
             uns=self.metadata,
             layers=layers,
@@ -1054,15 +1083,18 @@ class BaseSE:
 
         _all_rows = [x._rows for x in _all_objects]
         _new_rows = ut.combine_rows(_all_rows)
+        _new_row_names = merge_se_rownames(_all_objects)
 
-        _all_cols = [x._cols for x in _all_objects]
-        _new_cols = ut.combine_columns(_all_cols)
+        # _all_cols = [x._cols for x in _all_objects]
+        # _new_cols = ut.combine_columns(_all_cols)
 
         current_class_const = type(self)
         return current_class_const(
             assays=_new_assays,
             row_data=_new_rows,
-            column_data=_new_cols,
+            column_data=self._cols,
+            row_names=_new_row_names,
+            column_names=self._column_names,
             metadata=self._metadata,
         )
 
@@ -1073,11 +1105,53 @@ class BaseSE:
         check_assays_are_equal(_all_assays)
         _new_assays = merge_assays(_all_assays, by="column")
 
+        # _all_rows = [x._rows for x in _all_objects]
+        # _new_rows = ut.combine_columns(_all_rows)
+
+        _all_cols = [x._cols for x in _all_objects]
+        _new_cols = ut.combine_rows(_all_cols)
+
+        current_class_const = type(self)
+        return current_class_const(
+            assays=_new_assays,
+            row_data=self._rows,
+            column_data=_new_cols,
+            metadata=self._metadata,
+        )
+
+    def relaxed_combine_rows(self, *experiments: "BaseSE"):
+        _all_objects = [self] + list(experiments)
+
+        _all_assays = [x.assays for x in _all_objects]
+        check_assays_are_equal(_all_assays)
+        _new_assays = merge_assays(_all_assays, by="row")
+
+        _all_rows = [x._rows for x in _all_objects]
+        _new_rows = ut.combine_rows(_all_rows)
+
+        _all_cols = [x._cols for x in _all_objects]
+        _new_cols = biocframe.relaxed_combine_columns(_all_cols)
+
+        current_class_const = type(self)
+        return current_class_const(
+            assays=_new_assays,
+            row_data=_new_rows,
+            column_data=_new_cols,
+            metadata=self._metadata,
+        )
+
+    def relaxed_combine_cols(self, *experiments: "BaseSE"):
+        _all_objects = [self] + list(experiments)
+
+        _all_assays = [x.assays for x in _all_objects]
+        check_assays_are_equal(_all_assays)
+        _new_assays = merge_assays(_all_assays, by="column")
+
         _all_rows = [x._rows for x in _all_objects]
         _new_rows = ut.combine_columns(_all_rows)
 
         _all_cols = [x._cols for x in _all_objects]
-        _new_cols = ut.combine_rows(_all_cols)
+        _new_cols = biocframe.relaxed_combine_rows(_all_cols)
 
         current_class_const = type(self)
         return current_class_const(

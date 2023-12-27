@@ -45,6 +45,8 @@ se1 = SummarizedExperiment(
     },
     row_data=rowdata1,
     column_data=coldata1,
+    row_names=["HER2", "BRCA1", "TPFK"],
+    column_names=["cell_1", "cell_2", "cell_3"],
     metadata={"seq_type": "paired"},
 )
 
@@ -218,6 +220,8 @@ se_duplicated_row_name = SummarizedExperiment(
     assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
     row_data=rowdata_duplicated_row_name,
     column_data=coldata1,
+    row_names=["HER2", "HER2", "TPFK"],
+    column_names=["cell_1", "cell_2", "cell_3"],
     metadata={"seq_type": "paired"},
 )
 
@@ -232,6 +236,8 @@ se_duplicated_sample_name = SummarizedExperiment(
     assays={"counts": np.random.poisson(lam=5, size=(3, 3))},
     row_data=rowdata1,
     column_data=coldata_duplicated_sample_name,
+    row_names=["HER2", "HER2", "TPFK"],
+    column_names=["cell_1", "cell_1", "cell_2"],
     metadata={"seq_type": "paired"},
 )
 
@@ -257,6 +263,8 @@ se_biocframe_1 = SummarizedExperiment(
     },
     row_data=rowdata_biocframe_1,
     column_data=coldata_biocframe_1,
+    column_names=["cell_1", "cell_2", "cell_3"],
+    row_names=["HER2", "BRCA1", "TPFK"],
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 

@@ -56,6 +56,8 @@ def test_SE_init():
     assert isinstance(tse.row_data, BiocFrame)
     assert tse.col_data is not None
     assert isinstance(tse.col_data, BiocFrame)
+    assert tse.row_names is None
+    assert tse.col_names is None
 
 
 def test_SE_with_df():

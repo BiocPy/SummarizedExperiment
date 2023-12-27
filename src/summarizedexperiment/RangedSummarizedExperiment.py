@@ -172,6 +172,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         _rows_copy = deepcopy(self._rows)
         _rowranges_copy = deepcopy(self._row_ranges)
         _cols_copy = deepcopy(self._cols)
+        _row_names_copy = deepcopy(self._row_names)
+        _col_names_copy = deepcopy(self._column_names)
         _metadata_copy = deepcopy(self.metadata)
 
         current_class_const = type(self)
@@ -180,6 +182,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             row_ranges=_rowranges_copy,
             row_data=_rows_copy,
             column_data=_cols_copy,
+            row_names=_row_names_copy,
+            column_names=_col_names_copy,
             metadata=_metadata_copy,
         )
 
@@ -194,6 +198,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             row_ranges=self._row_ranges,
             row_data=self._rows,
             column_data=self._cols,
+            row_names=self._row_names,
+            column_names=self._column_names,
             metadata=self._metadata,
         )
 
@@ -348,6 +354,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             row_ranges=new_row_ranges,
             row_data=slicer.rows,
             column_data=slicer.columns,
+            row_names=slicer.row_names,
+            column_names=slicer.column_names,
             metadata=self._metadata,
         )
 

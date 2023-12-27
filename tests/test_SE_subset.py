@@ -117,6 +117,8 @@ def test_scalar_arg(summarized_experiments):
     assert len(subset_se.col_data) == 2
 
     assert subset_se.assay("counts").shape == (1, 2)
+    assert list(subset_se.row_names) == ["HER2"]
+    assert len(subset_se.col_names) == 2
 
 
 def test_SE_subset_by_name_fails(summarized_experiments):

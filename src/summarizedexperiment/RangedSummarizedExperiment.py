@@ -967,10 +967,10 @@ def combine_columns(*x: RangedSummarizedExperiment) -> RangedSummarizedExperimen
 
 @ut.relaxed_combine_rows.register(RangedSummarizedExperiment)
 def relaxed_combine_rows(*x: RangedSummarizedExperiment) -> RangedSummarizedExperiment:
-    """A relaxed version of the :py:func:`~biocutils.combine_rows.combine_rows` method for :py:class:`~RangedSummarizedExperiment`
-    objects.  Whereas ``combine_rows`` expects that all objects have the same columns, ``relaxed_combine_rows`` allows
-    for different columns. Absent columns in any object are filled in with appropriate placeholder values before
-    combining.
+    """A relaxed version of the :py:func:`~biocutils.combine_rows.combine_rows` method for
+    :py:class:`~RangedSummarizedExperiment` objects.  Whereas ``combine_rows`` expects that all objects have the same
+    columns, ``relaxed_combine_rows`` allows for different columns. Absent columns in any object are filled in with
+    appropriate placeholder values before combining.
 
     Args:
         x:
@@ -1008,10 +1008,10 @@ def relaxed_combine_rows(*x: RangedSummarizedExperiment) -> RangedSummarizedExpe
 def relaxed_combine_columns(
     *x: RangedSummarizedExperiment,
 ) -> RangedSummarizedExperiment:
-    """A relaxed version of the :py:func:`~biocutils.combine_rows.combine_columns` method for :py:class:`~RangedSummarizedExperiment`
-    objects.  Whereas ``combine_columns`` expects that all objects have the same rows, ``relaxed_combine_columns`` allows
-    for different rows. Absent columns in any object are filled in with appropriate placeholder values before
-    combining.
+    """A relaxed version of the :py:func:`~biocutils.combine_rows.combine_columns` method for
+    :py:class:`~RangedSummarizedExperiment` objects.  Whereas ``combine_columns`` expects that all objects have the same
+    rows, ``relaxed_combine_columns`` allows for different rows. Absent columns in any object are filled in with
+    appropriate placeholder values before combining.
 
     Args:
         x:

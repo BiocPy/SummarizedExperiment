@@ -43,7 +43,11 @@ def test_SE_combine_cols_with_names_mixed(summarized_experiments):
     assert combined.shape == (3, 6)
     assert set(combined.assay_names).issubset(["counts", "lognorm"])
     assert list(combined.row_data.column_names) == ["seqnames", "start", "end"]
-    assert list(combined.column_data.column_names) == ['sample', 'disease', 'doublet_score']
+    assert list(combined.column_data.column_names) == [
+        "sample",
+        "disease",
+        "doublet_score",
+    ]
     assert combined.row_names is not None
     assert len(combined.row_names) == 3
     assert combined.column_names is not None
@@ -58,7 +62,11 @@ def test_SE_combine_cols_with_names_mixed(summarized_experiments):
     assert combined.shape == (3, 6)
     assert set(combined.assay_names).issubset(["counts", "lognorm"])
     assert list(combined.row_data.column_names) == ["seqnames", "start", "end"]
-    assert list(combined.column_data.column_names) == ['sample', 'disease', 'doublet_score']
+    assert list(combined.column_data.column_names) == [
+        "sample",
+        "disease",
+        "doublet_score",
+    ]
     assert combined.row_names is not None
     assert len(combined.row_names) == 3
     assert combined.column_names is not None
@@ -77,7 +85,11 @@ def test_SE_both_combine_cols_with_names(summarized_experiments):
     assert combined.shape == (3, 6)
     assert set(combined.assay_names).issubset(["counts", "lognorm"])
     assert list(combined.row_data.column_names) == ["seqnames", "start", "end"]
-    assert list(combined.column_data.column_names) == ['sample', 'disease', 'doublet_score']
+    assert list(combined.column_data.column_names) == [
+        "sample",
+        "disease",
+        "doublet_score",
+    ]
     assert combined.row_names is not None
     assert len(combined.row_names) == 3
     assert combined.column_names is not None
@@ -95,4 +107,3 @@ def test_SE_both_combine_cols_with_names(summarized_experiments):
     assert len(combined.column_data.column_names) > 2
     assert combined.row_names is not None
     assert combined.column_names is not None
-

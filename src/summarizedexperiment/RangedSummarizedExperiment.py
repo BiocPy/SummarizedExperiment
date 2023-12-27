@@ -1040,3 +1040,12 @@ def relaxed_combine_columns(
         column_names=_new_col_names,
         metadata=first._metadata,
     )
+
+@ut.extract_row_names.register(RangedSummarizedExperiment)
+def _rownames_rse(x: RangedSummarizedExperiment):
+    return x.get_row_names()
+
+
+@ut.extract_column_names.register(RangedSummarizedExperiment)
+def _colnames_rse(x: RangedSummarizedExperiment):
+    return x.get_column_names()

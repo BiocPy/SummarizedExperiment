@@ -229,3 +229,13 @@ def relaxed_combine_columns(*x: SummarizedExperiment) -> SummarizedExperiment:
         column_names=_new_col_names,
         metadata=first._metadata,
     )
+
+
+@ut.extract_row_names.register(SummarizedExperiment)
+def _rownames_se(x: SummarizedExperiment):
+    return x.get_row_names()
+
+
+@ut.extract_column_names.register(SummarizedExperiment)
+def _colnames_se(x: SummarizedExperiment):
+    return x.get_column_names()

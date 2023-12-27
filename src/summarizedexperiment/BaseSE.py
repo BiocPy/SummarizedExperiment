@@ -520,14 +520,14 @@ class BaseSE:
     ######>> row names <<#####
     ##########################
 
-    def get_rownames(self) -> Optional[ut.Names]:
+    def get_row_names(self) -> Optional[ut.Names]:
         """
         Returns:
             List of row names, or None if no row names are available.
         """
         return self._row_names
 
-    def set_rownames(
+    def set_row_names(
         self, names: Optional[List[str]], in_place: bool = False
     ) -> "BaseSE":
         """Set new row names.
@@ -556,50 +556,50 @@ class BaseSE:
 
     @property
     def rownames(self) -> Optional[ut.Names]:
-        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
-        return self.get_rownames()
+        """Alias for :py:attr:`~get_row_names`, provided for back-compatibility."""
+        return self.get_row_names()
 
     @rownames.setter
     def rownames(self, names: Optional[List[str]]):
-        """Alias for :py:meth:`~set_rownames` with ``in_place = True``.
+        """Alias for :py:meth:`~set_row_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
         """
         warn(
-            "Setting property 'row_names' is an in-place operation, use 'set_rownames' instead",
+            "Setting property 'row_names' is an in-place operation, use 'set_row_names' instead",
             UserWarning,
         )
-        self.set_rownames(names, in_place=True)
+        self.set_row_names(names, in_place=True)
 
     @property
     def row_names(self) -> Optional[ut.Names]:
-        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
-        return self.get_rownames()
+        """Alias for :py:attr:`~get_row_names`, provided for back-compatibility."""
+        return self.get_row_names()
 
     @row_names.setter
     def row_names(self, names: Optional[List[str]]):
-        """Alias for :py:meth:`~set_rownames` with ``in_place = True``.
+        """Alias for :py:meth:`~set_row_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
         """
         warn(
-            "Setting property 'row_names' is an in-place operation, use 'set_rownames' instead",
+            "Setting property 'row_names' is an in-place operation, use 'set_row_names' instead",
             UserWarning,
         )
-        self.set_rownames(names, in_place=True)
+        self.set_row_names(names, in_place=True)
 
     #############################
     ######>> column names <<#####
     #############################
 
-    def get_columnnames(self) -> Optional[ut.Names]:
+    def get_column_names(self) -> Optional[ut.Names]:
         """
         Returns:
             List of column names, or None if no column names are available.
         """
         return self._column_names
 
-    def set_columnnames(
+    def set_column_names(
         self, names: Optional[List[str]], in_place: bool = False
     ) -> "BaseSE":
         """Set new column names.
@@ -628,71 +628,71 @@ class BaseSE:
 
     @property
     def columnnames(self) -> Optional[ut.Names]:
-        """Alias for :py:attr:`~get_columnnames`, provided for back-compatibility."""
-        return self.get_columnnames()
+        """Alias for :py:attr:`~get_column_names`, provided for back-compatibility."""
+        return self.get_column_names()
 
     @columnnames.setter
     def columnnames(self, names: Optional[List[str]]):
-        """Alias for :py:meth:`~set_columnnames` with ``in_place = True``.
+        """Alias for :py:meth:`~set_column_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
         """
         warn(
-            "Setting property 'column_names' is an in-place operation, use 'set_columnnames' instead",
+            "Setting property 'column_names' is an in-place operation, use 'set_column_names' instead",
             UserWarning,
         )
-        self.set_columnnames(names, in_place=True)
+        self.set_column_names(names, in_place=True)
 
     @property
     def colnames(self) -> Optional[ut.Names]:
-        """Alias for :py:attr:`~get_columnnames`, provided for back-compatibility."""
-        return self.get_columnnames()
+        """Alias for :py:attr:`~get_column_names`, provided for back-compatibility."""
+        return self.get_column_names()
 
     @colnames.setter
     def colnames(self, names: Optional[List[str]]):
-        """Alias for :py:meth:`~set_columnnames` with ``in_place = True``.
+        """Alias for :py:meth:`~set_column_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
         """
         warn(
-            "Setting property 'column_names' is an in-place operation, use 'set_columnnames' instead",
+            "Setting property 'column_names' is an in-place operation, use 'set_column_names' instead",
             UserWarning,
         )
-        self.set_columnnames(names, in_place=True)
+        self.set_column_names(names, in_place=True)
 
     @property
     def col_names(self) -> Optional[ut.Names]:
-        """Alias for :py:attr:`~get_columnnames`, provided for back-compatibility."""
-        return self.get_columnnames()
+        """Alias for :py:attr:`~get_column_names`, provided for back-compatibility."""
+        return self.get_column_names()
 
     @col_names.setter
     def col_names(self, names: Optional[List[str]]):
-        """Alias for :py:meth:`~set_columnnames` with ``in_place = True``.
+        """Alias for :py:meth:`~set_column_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
         """
         warn(
-            "Setting property 'column_names' is an in-place operation, use 'set_columnnames' instead",
+            "Setting property 'column_names' is an in-place operation, use 'set_column_names' instead",
             UserWarning,
         )
-        self.set_columnnames(names, in_place=True)
+        self.set_column_names(names, in_place=True)
 
     @property
     def column_names(self) -> Optional[ut.Names]:
-        """Alias for :py:attr:`~get_rownames`, provided for back-compatibility."""
-        return self.get_columnnames()
+        """Alias for :py:attr:`~get_column_names`, provided for back-compatibility."""
+        return self.get_column_names()
 
     @column_names.setter
     def column_names(self, names: Optional[List[str]]):
-        """Alias for :py:meth:`~set_columnnames` with ``in_place = True``.
+        """Alias for :py:meth:`~set_column_names` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
         """
         warn(
-            "Setting property 'column_names' is an in-place operation, use 'set_columnnames' instead",
+            "Setting property 'column_names' is an in-place operation, use 'set_column_names' instead",
             UserWarning,
         )
-        self.set_columnnames(names, in_place=True)
+        self.set_column_names(names, in_place=True)
 
     ###########################
     ######>> metadata <<#######

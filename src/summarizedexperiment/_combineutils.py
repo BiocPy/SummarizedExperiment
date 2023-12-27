@@ -1,6 +1,7 @@
 import itertools
 
 import biocutils as ut
+import numpy as np
 from biocframe import BiocFrame
 
 __author__ = "jkanche"
@@ -27,6 +28,36 @@ def merge_assays(assays, by):
     return _all_assays
 
 
+def relaxed_merge_assays(se, by):
+    if by not in ["row", "column"]:
+        raise ValueError("'by' must be either 'row' or 'column'.")
+
+    _all_keys = [x.assay_names for x in se]
+    _all_keys = list(set(itertools.chain.from_iterable(_all_keys)))
+
+    _all_assays = {}
+    for k in _all_keys:
+        _all_mats = []
+        for x in se:
+            _txmat = None
+            if k not in x.assay_names:
+                _txmat = np.ma.array(
+                    np.zeros(shape=x.shape),
+                    mask=True,
+                )
+            else:
+                _txmat = x.assays[k]
+
+            _all_mats.append(_txmat)
+
+        if by == "row":
+            _all_assays[k] = ut.combine_rows(*_all_mats)
+        else:
+            _all_assays[k] = ut.combine_columns(*_all_mats)
+
+    return _all_assays
+
+
 def check_assays_are_equal(assays):
     _first = assays[0]
     _first_keys = set(list(_first.keys()))
@@ -36,7 +67,9 @@ def check_assays_are_equal(assays):
             len(list(_first_keys - set(x.keys()))) != 0
             or len(list(set(x.keys()) - _first_keys)) != 0
         ):
-            raise ValueError("Not all experiments contain the same assays.")
+            raise ValueError(
+                "Not all experiments contain all the assays, try 'relaxed_combine_*' methods."
+            )
 
 
 def merge_frame_names(frames: BiocFrame):

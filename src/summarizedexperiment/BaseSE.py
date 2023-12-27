@@ -6,11 +6,6 @@ from warnings import warn
 import biocframe
 import biocutils as ut
 
-from ._combineutils import (
-    check_assays_are_equal,
-    merge_assays,
-    merge_se_rownames,
-)
 from ._frameutils import _sanitize_frame
 from .type_checks import is_matrix_like
 from .types import SliceResult
@@ -1041,7 +1036,7 @@ class BaseSE:
     ################################
 
     def to_anndata(self):
-        """Transform :py:class:`summarizedexperiment.BaseSE`-like into a :py:class:`~anndata.AnnData` representation.
+        """Transform :py:class:`~BaseSE`-like into a :py:class:`~anndata.AnnData` representation.
 
         Returns:
             An `AnnData` representation of the experiment.
@@ -1068,94 +1063,3 @@ class BaseSE:
         )
 
         return obj
-
-    ############################
-    ######>> combine ops <<#####
-    ############################
-
-    def combine_rows(self, *experiments: "BaseSE"):
-        _all_objects = [self] + list(experiments)
-
-        _all_assays = [x.assays for x in _all_objects]
-        check_assays_are_equal(_all_assays)
-        _new_assays = merge_assays(_all_assays, by="row")
-
-        _all_rows = [x._rows for x in _all_objects]
-        _new_rows = ut.combine_rows(_all_rows)
-        _new_row_names = merge_se_rownames(_all_objects)
-
-        # _all_cols = [x._cols for x in _all_objects]
-        # _new_cols = ut.combine_columns(_all_cols)
-
-        current_class_const = type(self)
-        return current_class_const(
-            assays=_new_assays,
-            row_data=_new_rows,
-            column_data=self._cols,
-            row_names=_new_row_names,
-            column_names=self._column_names,
-            metadata=self._metadata,
-        )
-
-    def combine_cols(self, *experiments: "BaseSE"):
-        _all_objects = [self] + list(experiments)
-
-        _all_assays = [x.assays for x in _all_objects]
-        check_assays_are_equal(_all_assays)
-        _new_assays = merge_assays(_all_assays, by="column")
-
-        # _all_rows = [x._rows for x in _all_objects]
-        # _new_rows = ut.combine_columns(_all_rows)
-
-        _all_cols = [x._cols for x in _all_objects]
-        _new_cols = ut.combine_rows(_all_cols)
-
-        current_class_const = type(self)
-        return current_class_const(
-            assays=_new_assays,
-            row_data=self._rows,
-            column_data=_new_cols,
-            metadata=self._metadata,
-        )
-
-    def relaxed_combine_rows(self, *experiments: "BaseSE"):
-        _all_objects = [self] + list(experiments)
-
-        _all_assays = [x.assays for x in _all_objects]
-        check_assays_are_equal(_all_assays)
-        _new_assays = merge_assays(_all_assays, by="row")
-
-        _all_rows = [x._rows for x in _all_objects]
-        _new_rows = ut.combine_rows(_all_rows)
-
-        _all_cols = [x._cols for x in _all_objects]
-        _new_cols = biocframe.relaxed_combine_columns(_all_cols)
-
-        current_class_const = type(self)
-        return current_class_const(
-            assays=_new_assays,
-            row_data=_new_rows,
-            column_data=_new_cols,
-            metadata=self._metadata,
-        )
-
-    def relaxed_combine_cols(self, *experiments: "BaseSE"):
-        _all_objects = [self] + list(experiments)
-
-        _all_assays = [x.assays for x in _all_objects]
-        check_assays_are_equal(_all_assays)
-        _new_assays = merge_assays(_all_assays, by="column")
-
-        _all_rows = [x._rows for x in _all_objects]
-        _new_rows = ut.combine_columns(_all_rows)
-
-        _all_cols = [x._cols for x in _all_objects]
-        _new_cols = biocframe.relaxed_combine_rows(_all_cols)
-
-        current_class_const = type(self)
-        return current_class_const(
-            assays=_new_assays,
-            row_data=_new_rows,
-            column_data=_new_cols,
-            metadata=self._metadata,
-        )

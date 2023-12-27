@@ -35,6 +35,7 @@ coldata1 = pd.DataFrame(
     {
         "sample": ["SAM_1", "SAM_2", "SAM_3"],
         "disease": ["True", "True", "True"],
+        "doublet_score": [0.15, 0.62, 0.18],
     },
     index=["cell_1", "cell_2", "cell_3"],
 )
@@ -99,6 +100,8 @@ se3 = SummarizedExperiment(
     },
     row_data=rowdata3,
     column_data=coldata3,
+    row_names=["MYC", "BRCA2", "TPFK"],
+    column_names=["cell_7", "cell_8", "cell_9"],
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 

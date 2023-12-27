@@ -1,9 +1,17 @@
 from typing import Dict, List, Optional
 from warnings import warn
 
-from biocframe import BiocFrame
+import biocframe
+import biocutils as ut
 from genomicranges import GenomicRanges
 
+from ._combineutils import (
+    check_assays_are_equal,
+    merge_assays,
+    merge_se_colnames,
+    merge_se_rownames,
+    relaxed_merge_assays,
+)
 from .BaseSE import BaseSE
 from .types import MatrixTypes
 
@@ -22,8 +30,8 @@ class SummarizedExperiment(BaseSE):
     def __init__(
         self,
         assays: Dict[str, MatrixTypes],
-        row_data: Optional[BiocFrame] = None,
-        column_data: Optional[BiocFrame] = None,
+        row_data: Optional[biocframe.BiocFrame] = None,
+        column_data: Optional[biocframe.BiocFrame] = None,
         row_names: Optional[List[str]] = None,
         column_names: Optional[List[str]] = None,
         metadata: Optional[dict] = None,
@@ -86,3 +94,138 @@ class SummarizedExperiment(BaseSE):
             metadata=metadata,
             validate=validate,
         )
+
+
+############################
+######>> combine ops <<#####
+############################
+
+
+@ut.combine_rows.register(SummarizedExperiment)
+def combine_rows(*x: SummarizedExperiment) -> SummarizedExperiment:
+    """Combine multiple ``SummarizedExperiment`` objects by row.
+
+    All assays must contain the same assay names. If you need a
+    flexible combine operation, checkout :py:func:`~relaxed_combine_rows`.
+
+    Returns:
+        A combined ``SummarizedExperiment``.
+    """
+    first = x[0]
+    _all_assays = [y.assays for y in x]
+    check_assays_are_equal(_all_assays)
+    _new_assays = merge_assays(_all_assays, by="row")
+
+    _all_rows = [y._rows for y in x]
+    _new_rows = ut.combine_rows(*_all_rows)
+    _new_row_names = merge_se_rownames(x)
+
+    current_class_const = type(first)
+    return current_class_const(
+        assays=_new_assays,
+        row_data=_new_rows,
+        column_data=first._cols,
+        row_names=_new_row_names,
+        column_names=first._column_names,
+        metadata=first._metadata,
+    )
+
+
+@ut.combine_columns.register(SummarizedExperiment)
+def combine_columns(*x: SummarizedExperiment) -> SummarizedExperiment:
+    """Combine multiple ``SummarizedExperiment`` objects by column.
+
+    All assays must contain the same assay names. If you need a
+    flexible combine operation, checkout :py:func:`~relaxed_combine_columns`.
+
+    Returns:
+        A combined ``SummarizedExperiment``.
+    """
+    first = x[0]
+    _all_assays = [y.assays for y in x]
+    check_assays_are_equal(_all_assays)
+    _new_assays = merge_assays(_all_assays, by="column")
+
+    _all_cols = [y._cols for y in x]
+    _new_cols = ut.combine_rows(*_all_cols)
+    _new_col_names = merge_se_colnames(x)
+
+    current_class_const = type(first)
+    return current_class_const(
+        assays=_new_assays,
+        row_data=first._rows,
+        column_data=_new_cols,
+        row_names=first._row_names,
+        column_names=_new_col_names,
+        metadata=first._metadata,
+    )
+
+
+@ut.relaxed_combine_rows.register(SummarizedExperiment)
+def relaxed_combine_rows(*x: SummarizedExperiment) -> SummarizedExperiment:
+    """A relaxed version of the :py:func:`~biocutils.combine_rows.combine_rows` method for :py:class:`~SummarizedExperiment`
+    objects.  Whereas ``combine_rows`` expects that all objects have the same columns, ``relaxed_combine_rows`` allows
+    for different columns. Absent columns in any object are filled in with appropriate placeholder values before
+    combining.
+
+    Args:
+        x:
+            One or more ``SummarizedExperiment`` objects, possibly with differences in the
+            number and identity of their columns.
+
+    Returns:
+        A ``SummarizedExperiment`` that combines all ``experiments`` along their rows and contains
+        the union of all columns. Columns absent in any ``x`` are filled in
+        with placeholders consisting of Nones or masked NumPy values.
+    """
+    first = x[0]
+    _new_assays = relaxed_merge_assays(x, by="row")
+
+    _all_rows = [y._rows for y in x]
+    _new_rows = biocframe.relaxed_combine_rows(*_all_rows)
+    _new_row_names = merge_se_rownames(x)
+
+    current_class_const = type(first)
+    return current_class_const(
+        assays=_new_assays,
+        row_data=_new_rows,
+        column_data=first._cols,
+        row_names=_new_row_names,
+        column_names=first._column_names,
+        metadata=first._metadata,
+    )
+
+
+@ut.relaxed_combine_columns.register(SummarizedExperiment)
+def relaxed_combine_columns(*x: SummarizedExperiment) -> SummarizedExperiment:
+    """A relaxed version of the :py:func:`~biocutils.combine_rows.combine_columns` method for :py:class:`~SummarizedExperiment`
+    objects.  Whereas ``combine_columns`` expects that all objects have the same rows, ``relaxed_combine_columns`` allows
+    for different rows. Absent columns in any object are filled in with appropriate placeholder values before
+    combining.
+
+    Args:
+        x:
+            One or more ``SummarizedExperiment`` objects, possibly with differences in the
+            number and identity of their rows.
+
+    Returns:
+        A ``SummarizedExperiment`` that combines all ``experiments`` along their columns and contains
+        the union of all rows. Rows absent in any ``x`` are filled in
+        with placeholders consisting of Nones or masked NumPy values.
+    """
+    first = x[0]
+    _new_assays = relaxed_merge_assays(x, by="column")
+
+    _all_cols = [y._cols for y in x]
+    _new_cols = biocframe.relaxed_combine_rows(*_all_cols)
+    _new_col_names = merge_se_colnames(x)
+
+    current_class_const = type(first)
+    return current_class_const(
+        assays=_new_assays,
+        row_data=first._rows,
+        column_data=_new_cols,
+        row_names=first._row_names,
+        column_names=_new_col_names,
+        metadata=first._metadata,
+    )

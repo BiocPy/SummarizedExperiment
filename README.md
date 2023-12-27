@@ -74,10 +74,10 @@ tse = SummarizedExperiment(
     dimensions: (200, 6)
     assays(1): ['counts']
     row_data columns(6): ['seqnames', 'starts', 'ends', 'strand', 'score', 'GC']
-    row_names(0):  
+    row_names(0):
     column_data columns(1): ['treatment']
-    column_names(0):  
-    metadata(0): 
+    column_names(0):
+    metadata(0):
 
 To create a `RangedSummarizedExperiment`
 
@@ -95,10 +95,10 @@ trse = RangedSummarizedExperiment(
     dimensions: (200, 6)
     assays(1): ['counts']
     row_data columns(6): ['seqnames', 'starts', 'ends', 'strand', 'score', 'GC']
-    row_names(0):  
+    row_names(0):
     column_data columns(1): ['treatment']
-    column_names(0):  
-    metadata(0): 
+    column_names(0):
+    metadata(0):
 
 For more examples, checkout the [documentation](https://biocpy.github.io/SummarizedExperiment/).
 

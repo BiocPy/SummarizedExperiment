@@ -227,7 +227,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         output = f"{type(self).__name__}(number_of_rows={self.shape[0]}"
         output += f", number_of_columns={self.shape[1]}"
         output += ", assays=" + ut.print_truncated_list(self.assay_names)
-        
+
         output += ", row_data=" + self._rows.__repr__()
         if self._row_names is not None:
             output += ", row_names=" + ut.print_truncated_list(self._row_names)

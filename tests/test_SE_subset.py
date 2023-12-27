@@ -151,7 +151,7 @@ def test_SE_subset_with_bools(summarized_experiments):
     assert len(subset_se.col_data) == 3
 
     assert list(subset_se.row_data.columns) == ["seqnames", "start", "end"]
-    assert list(subset_se.col_data.columns) == ["sample", "disease"]
+    assert list(subset_se.col_data.columns) == ["sample", "disease", "doublet_score"]
 
     assert subset_se.assay("counts").shape == (2, 3)
 

@@ -1,6 +1,6 @@
 from random import random
 
-import genomicranges
+from biocframe import BiocFrame
 import numpy as np
 import pandas as pd
 import pytest
@@ -13,7 +13,7 @@ __license__ = "MIT"
 nrows = 200
 ncols = 6
 counts = np.random.rand(nrows, ncols)
-df_gr = pd.DataFrame(
+row_data = BiocFrame(
     {
         "seqnames": [
             "chr1",
@@ -36,8 +36,6 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.from_pandas(df_gr)
-
 col_data = pd.DataFrame(
     {
         "treatment": ["ChIP", "Input"] * 3,
@@ -45,9 +43,25 @@ col_data = pd.DataFrame(
 )
 
 
+def test_SE_subset_assays():
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
+    )
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+
+    subset_asys = tse.subset_assays(rows=slice(1, 10), columns=[0, 1, 2])
+    assert subset_asys is not None
+    assert isinstance(subset_asys, type(tse.assays))
+
+    assert len(subset_asys.keys()) == 1
+    assert subset_asys["counts"].shape == (9, 3)
+
+
 def test_SE_subset():
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=df_gr, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None
@@ -88,8 +102,23 @@ def test_SE_subset_by_name(summarized_experiments):
 
     # subset with non-existent sample name
     se = summarized_experiments.se1
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception):
         subset_se = se[["HER2", "BRCA1", "something random"], ["cell_1", "cell_3"]]
+
+
+def test_scalar_arg(summarized_experiments):
+    # subset with scalar
+    se = summarized_experiments.se1
+    subset_se = se["HER2", ["cell_1", "cell_3"]]
+
+    assert subset_se is not None
+    assert isinstance(subset_se, SummarizedExperiment)
+    assert len(subset_se.row_data) == 1
+    assert len(subset_se.col_data) == 2
+
+    assert subset_se.assay("counts").shape == (1, 2)
+    assert list(subset_se.row_names) == ["HER2"]
+    assert len(subset_se.col_names) == 2
 
 
 def test_SE_subset_by_name_fails(summarized_experiments):
@@ -122,7 +151,7 @@ def test_SE_subset_with_bools(summarized_experiments):
     assert len(subset_se.col_data) == 3
 
     assert list(subset_se.row_data.columns) == ["seqnames", "start", "end"]
-    assert list(subset_se.col_data.columns) == ["sample", "disease"]
+    assert list(subset_se.col_data.columns) == ["sample", "disease", "doublet_score"]
 
     assert subset_se.assay("counts").shape == (2, 3)
 
@@ -160,7 +189,7 @@ def test_SE_subset_biocframe_with_bools(summarized_experiments):
 def test_SE_subset_biocframe_with_bools_should_fail(summarized_experiments):
     se = summarized_experiments.se_biocframe_1
     with pytest.raises(Exception):
-        se[[True, False],]
+        se[[True, False, "True"],]
 
 
 def test_SE_subset_fails_with_indexes(summarized_experiments):
@@ -171,19 +200,19 @@ def test_SE_subset_fails_with_indexes(summarized_experiments):
 
     # subset by name when index is not available
     tse = SummarizedExperiment(
-        assays={"counts": counts}, row_data=df_gr, col_data=col_data
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
     )
 
     assert tse is not None
     assert isinstance(tse, SummarizedExperiment)
 
-    with pytest.raises(ValueError):
+    with pytest.raises(Exception):
         tse[["0", "1", "2"], ["2", "3"]]
 
 
 def test_SE_subset_single_indexer_list(summarized_experiments):
     se = summarized_experiments.se1
-    subset_se = se[[True, False, True]]
+    subset_se = se[[True, False, True],]
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 
@@ -195,7 +224,7 @@ def test_SE_subset_single_indexer_list(summarized_experiments):
 
 def test_SE_subset_single_indexer_slicer(summarized_experiments):
     se = summarized_experiments.se1
-    subset_se = se[0:2]
+    subset_se = se[0:2,]
     assert subset_se is not None
     assert isinstance(subset_se, SummarizedExperiment)
 

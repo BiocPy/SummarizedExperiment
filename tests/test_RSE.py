@@ -109,3 +109,25 @@ def test_RSE_grl():
 def test_RSE_grl_should_fail():
     with pytest.raises(Exception):
         RangedSummarizedExperiment(assays={"counts": counts}, row_ranges=grl)
+
+def test_RSE_empty():
+    tse = RangedSummarizedExperiment()
+
+    assert tse is not None
+    assert isinstance(tse, RangedSummarizedExperiment)
+    assert tse.shape == (0, 0)
+    
+    assert tse.row_data is not None
+    assert isinstance(tse.row_data, BiocFrame)
+    assert len(tse.row_data) == 0
+    
+    assert tse.col_data is not None
+    assert isinstance(tse.col_data, BiocFrame)
+    assert len(tse.col_data) == 0
+
+    assert tse.row_ranges is not None
+    assert isinstance(tse.row_ranges, genomicranges.GenomicRangesList)
+    assert len(tse.row_ranges) == 0
+
+    assert tse.row_names is None
+    assert tse.col_names is None

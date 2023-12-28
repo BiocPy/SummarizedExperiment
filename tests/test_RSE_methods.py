@@ -37,7 +37,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.from_pandas(df_gr)
+gr = genomicranges.GenomicRanges.from_pandas(df_gr)
 
 col_data = pd.DataFrame(
     {
@@ -48,7 +48,7 @@ col_data = pd.DataFrame(
 
 def test_RSE_props():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -62,23 +62,23 @@ def test_RSE_props():
 
     assert tse.dims == tse.shape
 
-    assert tse.metadata is None
+    assert tse.metadata is not None
 
     assert tse.start is not None
     assert tse.end is not None
 
-    assert tse.seq_info is None
+    assert tse.seq_info is not None
     assert tse.seqnames is not None
     assert tse.strand is not None
     assert tse.width is not None
 
-    assert tse.row_names is None
-    assert tse.colnames is not None
+    assert tse.rownames is None
+    assert tse.colnames is None
 
 
 def test_RSE_subset():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -96,13 +96,13 @@ def test_RSE_subset():
 
 def test_RSE_subset_assays():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
     assert isinstance(tse, RangedSummarizedExperiment)
 
-    subset_asys = tse.subset_assays(row_indices=slice(1, 10), col_indices=[0, 1, 2])
+    subset_asys = tse.subset_assays(rows=slice(1, 10), columns=[0, 1, 2])
     assert subset_asys is not None
     assert isinstance(subset_asys, type(tse.assays))
 
@@ -112,7 +112,7 @@ def test_RSE_subset_assays():
 
 def test_RSE_coverage():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -125,7 +125,7 @@ def test_RSE_coverage():
 
 def test_RSE_distance_methods():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -140,13 +140,10 @@ def test_RSE_distance_methods():
     follow = tse.follow(tse)
     assert follow is not None
 
-    distNear = tse.distance_to_nearest(tse)
-    assert distNear is not None
-
 
 def test_RSE_range_methods():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -158,8 +155,8 @@ def test_RSE_range_methods():
     res = tse.resize(width=15)
     assert res is not None
 
-    with pytest.raises(Exception):
-        res = tse.restrict(start=400)
+    res = tse.restrict(start=400)
+    assert res is not None
 
     res = tse.shift(shift=25)
     assert res is not None
@@ -167,13 +164,13 @@ def test_RSE_range_methods():
     res = tse.promoters()
     assert res is not None
 
-    res = tse.narrow(start=40)
-    assert res is not None
+    with pytest.raises(Exception):
+        res = tse.narrow(start=40)
 
 
 def test_RSE_search():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -188,7 +185,7 @@ def test_RSE_search():
 
 def test_RSE_sort_order():
     tse = RangedSummarizedExperiment(
-        assays={"counts": counts}, row_ranges=gr, col_data=col_data
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
 
     assert tse is not None
@@ -200,4 +197,4 @@ def test_RSE_sort_order():
 
     res = tse.sort(decreasing=True)
     assert res is not None
-    assert res.row_ranges.shape == tse.row_ranges.shape
+    assert len(res.row_ranges) == len(tse.row_ranges)

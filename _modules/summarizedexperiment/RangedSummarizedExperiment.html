@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>summarizedexperiment.RangedSummarizedExperiment - SummarizedExperiment 0.3.7 documentation</title>
+        <title>summarizedexperiment.RangedSummarizedExperiment - SummarizedExperiment 0.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.3.7 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.4.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.3.7 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.4.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -157,11 +157,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/summarizedexperiment.html">summarizedexperiment package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of summarizedexperiment package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="../../api/summarizedexperiment.dispatchers.html">summarizedexperiment.dispatchers package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../../api/summarizedexperiment.utils.html">summarizedexperiment.utils package</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/summarizedexperiment.html">summarizedexperiment package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributions &amp; Help</a></li>
@@ -202,13 +198,23 @@
         </div>
         <article role="main">
           <h1>Source code for summarizedexperiment.RangedSummarizedExperiment</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Union</span>
+<span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
+<span class="kn">import</span> <span class="nn">biocframe</span>
+<span class="kn">import</span> <span class="nn">biocutils</span> <span class="k">as</span> <span class="nn">ut</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">,</span> <span class="n">SeqInfo</span>
 
+<span class="kn">from</span> <span class="nn">._combineutils</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">check_assays_are_equal</span><span class="p">,</span>
+    <span class="n">merge_assays</span><span class="p">,</span>
+    <span class="n">merge_se_colnames</span><span class="p">,</span>
+    <span class="n">merge_se_rownames</span><span class="p">,</span>
+    <span class="n">relaxed_merge_assays</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">._frameutils</span> <span class="kn">import</span> <span class="n">is_pandas</span>
 <span class="kn">from</span> <span class="nn">.SummarizedExperiment</span> <span class="kn">import</span> <span class="n">SummarizedExperiment</span>
-<span class="kn">from</span> <span class="nn">.types</span> <span class="kn">import</span> <span class="n">BiocOrPandasFrame</span><span class="p">,</span> <span class="n">MatrixTypes</span><span class="p">,</span> <span class="n">SlicerArgTypes</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
@@ -218,23 +224,27 @@
 <span class="n">GRangesOrRangeSE</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">GRangesOrGRangesList</span><span class="p">,</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">]</span>
 
 
-<span class="c1"># TODO: technically should be in _type_checks but fails due to circular imports.</span>
 <span class="k">def</span> <span class="nf">_check_gr_or_rse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if ``x`` is either a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (Union[GenomicRanges, RangedSummarizedExperiment]): Object to check.</span>
+<span class="sd">        x:</span>
+<span class="sd">            Object to check.</span>
 
 <span class="sd">    Raises:</span>
-<span class="sd">        TypeError: Object is not a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
+<span class="sd">        TypeError:</span>
+<span class="sd">            Object is not a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-        <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
-        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span>
-        <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+        <span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">)</span>
     <span class="p">):</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="s2">&quot;object is not a `RangedSummarizedExperiment`, `GenomicRanges` or `GenomicRangesList`.&quot;</span>
+            <span class="s2">&quot;&#39;x&#39; is not a `RangedSummarizedExperiment`, `GenomicRanges` or `GenomicRangesList`.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;&#39;range&#39; operations are not implemented for `GenomicRangesList`.&quot;</span>
         <span class="p">)</span>
 
 
@@ -242,16 +252,39 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Access ranges from the object.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        x (Union[GenomicRanges, RangedSummarizedExperiment]): Input object.</span>
+<span class="sd">        x:</span>
+<span class="sd">            Input object.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        GenomicRanges: Genomic ranges object.</span>
+<span class="sd">        `GenomicRanges` object.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">qranges</span> <span class="o">=</span> <span class="n">x</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">RangedSummarizedExperiment</span><span class="p">):</span>
         <span class="n">qranges</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">row_ranges</span>
 
     <span class="k">return</span> <span class="n">qranges</span>
+
+
+<span class="k">def</span> <span class="nf">_validate_rowranges</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">,</span> <span class="p">(</span><span class="n">GenomicRanges</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">))):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s2">&quot;`row_ranges` must be a `GenomicRanges` or `GenomicRangesList`&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot; , provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">)</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Number of features in `row_ranges` and number of rows in assays do not match.&quot;</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_sanitize_ranges_frame</span><span class="p">(</span><span class="n">frame</span><span class="p">,</span> <span class="n">num_rows</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span> <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">GenomicRangesList</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">num_rows</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">is_pandas</span><span class="p">(</span><span class="n">frame</span><span class="p">):</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">frame</span>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment">
@@ -261,147 +294,270 @@
 <span class="sd">    :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or</span>
 <span class="sd">    :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList` sample data and any additional experimental metadata.</span>
 
-<span class="sd">    The key difference between this and `SummarizedExperiment` is enforcing type for</span>
-<span class="sd">    feature information (`row_ranges`), must be a `GenomicRanges` object. This allows us to</span>
-<span class="sd">    provides new methods, to perform genomic range based operations over experimental data.</span>
-
 <span class="sd">    Note: If ``row_ranges`` is empty, None or not a</span>
 <span class="sd">    :py:class:`genomicranges.GenomicRanges.GenomicRanges` object, use a</span>
 <span class="sd">    :py:class:`~summarizedexperiment.SummarizedExperiment.SummarizedExperiment` instead.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        assays (Dict[str, MatrixTypes]): A dictionary containing matrices, with assay names as keys</span>
-<span class="sd">            and 2-dimensional matrices represented as either</span>
-<span class="sd">            :py:class:`~numpy.ndarray` or :py:class:`~scipy.sparse.spmatrix`.</span>
-
-<span class="sd">            Alternatively, you may use any 2-dimensional matrix that has the ``shape`` property and</span>
-<span class="sd">            implements the slice operation using the ``__getitem__`` dunder method.</span>
-
-<span class="sd">            All matrices in assays must be 2-dimensional and have the same shape</span>
-<span class="sd">            (number of rows, number of columns).</span>
-
-<span class="sd">        row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as</span>
-<span class="sd">            rows of the matrices in assays.</span>
-
-<span class="sd">        row_data (BiocOrPandasFrame, optional): Features, which must be of the same length as the rows of</span>
-<span class="sd">            the matrices in assays. Features can be either a :py:class:`~pandas.DataFrame` or</span>
-<span class="sd">            :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.</span>
-
-<span class="sd">        col_data (BiocOrPandasFrame, optional): Sample data, which must be of the same length as the</span>
-<span class="sd">            columns of the matrices in assays. Sample Information can be either a :py:class:`~pandas.DataFrame`</span>
-<span class="sd">            or :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.</span>
-
-<span class="sd">        metadata (Dict, optional): Additional experimental metadata describing the methods. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">MatrixTypes</span><span class="p">],</span>
+        <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">row_ranges</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GRangesOrGRangesList</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">row_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">col_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BiocOrPandasFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">row_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">column_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">row_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">column_names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">validate</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize a `RangedSummarizedExperiment` (RSE) object.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            assays (Dict[str, MatrixTypes]): Dictionary</span>
-<span class="sd">                of matrices, with assay names as keys and 2-dimensional matrices represented as</span>
-<span class="sd">                :py:class:`~numpy.ndarray` or :py:class:`scipy.sparse.spmatrix` matrices.</span>
+<span class="sd">            assays:</span>
+<span class="sd">                A dictionary containing matrices, with assay names as keys</span>
+<span class="sd">                and 2-dimensional matrices represented as either</span>
+<span class="sd">                :py:class:`~numpy.ndarray` or :py:class:`~scipy.sparse.spmatrix`.</span>
 
-<span class="sd">                Alternatively, you may use any 2-dimensional matrix that contains the property ``shape``</span>
-<span class="sd">                and implements the slice operation using the ``__getitem__`` dunder method.</span>
+<span class="sd">                Alternatively, you may use any 2-dimensional matrix that has</span>
+<span class="sd">                the ``shape`` property and implements the slice operation</span>
+<span class="sd">                using the ``__getitem__`` dunder method.</span>
 
-<span class="sd">                All matrices in ``assays`` must be 2-dimensional and have the same</span>
-<span class="sd">                shape (number of rows, number of columns).</span>
+<span class="sd">                All matrices in assays must be 2-dimensional and have the</span>
+<span class="sd">                same shape (number of rows, number of columns).</span>
 
-<span class="sd">            row_ranges (GRangesOrGRangesList, optional): Genomic features, must be the same length as</span>
-<span class="sd">                rows of the matrices in assays.</span>
+<span class="sd">            row_ranges:</span>
+<span class="sd">                Genomic features, must be the same length as the number of rows of</span>
+<span class="sd">                the matrices in assays.</span>
 
-<span class="sd">            row_data (BiocOrPandasFrame, optional): Features, must be the same length as</span>
-<span class="sd">                rows of the matrices in assays.</span>
+<span class="sd">            row_data:</span>
+<span class="sd">                Features, must be the same length as the number of rows of</span>
+<span class="sd">                the matrices in assays.</span>
 
-<span class="sd">                Features may be either a :py:class:`~pandas.DataFrame` or</span>
-<span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
+<span class="sd">                Feature information is coerced to a</span>
+<span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.</span>
 
+<span class="sd">            column_data:</span>
+<span class="sd">                Sample data, must be the same length as the number of</span>
+<span class="sd">                columns of the matrices in assays.</span>
+
+<span class="sd">                Sample information is coerced to a</span>
+<span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.</span>
+
+<span class="sd">            row_names:</span>
+<span class="sd">                A list of strings, same as the number of rows.Defaults to None.</span>
+
+<span class="sd">            column_names:</span>
+<span class="sd">                A list of string, same as the number of columns. Defaults to None.</span>
+
+<span class="sd">            metadata:</span>
+<span class="sd">                Additional experimental metadata describing the methods.</span>
 <span class="sd">                Defaults to None.</span>
-<span class="sd">            col_data (BiocOrPandasFrame, optional): Sample data, must be</span>
-<span class="sd">                the same length as columns of the matrices in assays.</span>
 
-<span class="sd">                Sample Information may be either a :py:class:`~pandas.DataFrame` or</span>
-<span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`.</span>
-
-<span class="sd">                Defaults to None.</span>
-<span class="sd">            metadata (Dict, optional): Additional experimental metadata describing the</span>
-<span class="sd">                methods. Defaults to None.</span>
+<span class="sd">            validate:</span>
+<span class="sd">                Internal use only.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">col_data</span><span class="p">,</span> <span class="n">metadata</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">assays</span><span class="p">,</span>
+            <span class="n">row_data</span><span class="o">=</span><span class="n">row_data</span><span class="p">,</span>
+            <span class="n">column_data</span><span class="o">=</span><span class="n">column_data</span><span class="p">,</span>
+            <span class="n">row_names</span><span class="o">=</span><span class="n">row_names</span><span class="p">,</span>
+            <span class="n">column_names</span><span class="o">=</span><span class="n">column_names</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="n">validate</span><span class="o">=</span><span class="n">validate</span><span class="p">,</span>
+        <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">row_ranges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">row_ranges</span> <span class="o">=</span> <span class="n">GenomicRangesList</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">_sanitize_ranges_frame</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
+            <span class="n">_validate_rowranges</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_row_ranges</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">row_ranges</span>
+    <span class="c1">#########################</span>
+    <span class="c1">######&gt;&gt; Copying &lt;&lt;######</span>
+    <span class="c1">#########################</span>
 
-    <span class="k">def</span> <span class="nf">_validate_row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_ranges</span><span class="p">:</span> <span class="n">GRangesOrGRangesList</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal method to validate feature information (``row_ranges``).</span>
+<div class="viewcode-block" id="RangedSummarizedExperiment.__deepcopy__">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__deepcopy__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A deep copy of the current ``RangedSummarizedExperiment``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+
+        <span class="n">_assays_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">)</span>
+        <span class="n">_rows_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">)</span>
+        <span class="n">_rowranges_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span><span class="p">)</span>
+        <span class="n">_cols_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">)</span>
+        <span class="n">_row_names_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">)</span>
+        <span class="n">_col_names_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span>
+        <span class="n">_metadata_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">)</span>
+
+        <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+            <span class="n">assays</span><span class="o">=</span><span class="n">_assays_copy</span><span class="p">,</span>
+            <span class="n">row_ranges</span><span class="o">=</span><span class="n">_rowranges_copy</span><span class="p">,</span>
+            <span class="n">row_data</span><span class="o">=</span><span class="n">_rows_copy</span><span class="p">,</span>
+            <span class="n">column_data</span><span class="o">=</span><span class="n">_cols_copy</span><span class="p">,</span>
+            <span class="n">row_names</span><span class="o">=</span><span class="n">_row_names_copy</span><span class="p">,</span>
+            <span class="n">column_names</span><span class="o">=</span><span class="n">_col_names_copy</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="n">_metadata_copy</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RangedSummarizedExperiment.__copy__">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__copy__">[docs]</a>
+    <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A shallow copy of the current ``RangedSummarizedExperiment``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+            <span class="n">assays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">,</span>
+            <span class="n">row_ranges</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span><span class="p">,</span>
+            <span class="n">row_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span>
+            <span class="n">column_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span>
+            <span class="n">row_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">,</span>
+            <span class="n">column_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="RangedSummarizedExperiment.copy">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.copy">[docs]</a>
+    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~__copy__`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span></div>
+
+
+    <span class="c1">##########################</span>
+    <span class="c1">######&gt;&gt; Printing &lt;&lt;######</span>
+    <span class="c1">##########################</span>
+
+<div class="viewcode-block" id="RangedSummarizedExperiment.__repr__">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__repr__">[docs]</a>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A string representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(number_of_rows=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;, number_of_columns=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, assays=&quot;</span> <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assay_names</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, row_data=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, row_names=&quot;</span> <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, column_data=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, column_names=&quot;</span> <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;row_ranges=&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;, metadata=&quot;</span> <span class="o">+</span> <span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="s2">&quot;)&quot;</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A pretty-printed string containing the contents of this object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;class: </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;dimensions: (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;assays(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assay_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assay_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;row_data columns(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;row_names(</span><span class="si">{</span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;column_data columns(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;column_names(</span><span class="si">{</span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;metadata(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">include_brackets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="w"> </span><span class="n">transform</span><span class="o">=</span><span class="k">lambda</span><span class="w"> </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="c1">############################</span>
+    <span class="c1">######&gt;&gt; row_ranges &lt;&lt;######</span>
+    <span class="c1">############################</span>
+
+<div class="viewcode-block" id="RangedSummarizedExperiment.get_row_ranges">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.get_row_ranges">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GRangesOrGRangesList</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get genomic feature information.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Genomic feature information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span></div>
+
+
+<div class="viewcode-block" id="RangedSummarizedExperiment.set_row_ranges">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.set_row_ranges">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_row_ranges</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">row_ranges</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GRangesOrGRangesList</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new genomic features.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            rows (GRangesOrGRangesList): Genomic features.</span>
+<span class="sd">            row_ranges:</span>
+<span class="sd">                Genomic features, must be the same length as the number of rows of</span>
+<span class="sd">                the matrices in assays.</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: If number of rows does not match the number of features in</span>
-<span class="sd">            `row_ranges` &amp; `assays`.</span>
-<span class="sd">            TypeError: If `row_ranges` is not a `GenomicRanges` or `GenomicRangesList`.</span>
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``RangeSummarizedExperiment`` in place.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            A modified ``RangeSummarizedExperiment`` object, either as a copy of the original</span>
+<span class="sd">            or as a reference to the (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
-            <span class="nb">isinstance</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">,</span> <span class="n">GenomicRanges</span><span class="p">)</span>
-            <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">,</span> <span class="n">GenomicRangesList</span><span class="p">)</span>
-        <span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="s2">&quot;`row_ranges` must be a `GenomicRanges` or `GenomicRangesList`&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; , provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="n">_sanitize_ranges_frame</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">_validate_rowranges</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">row_ranges</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;Number of features and number of rows in assays do not match.&quot;</span>
-            <span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="n">rows</span>
+        <span class="k">return</span> <span class="n">output</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GRangesOrGRangesList</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get features.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            GRangesOrGRangesList: Genomic features.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~get_rowranges`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_row_ranges</span><span class="p">()</span>
 
     <span class="nd">@row_ranges</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ranges</span><span class="p">:</span> <span class="n">GRangesOrGRangesList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set features.</span>
+    <span class="k">def</span> <span class="nf">row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_ranges</span><span class="p">:</span> <span class="n">GRangesOrGRangesList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~set_rowranges`.&quot;&quot;&quot;</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;Setting property &#39;row_ranges&#39; is an in-place operation, use &#39;set_rowranges&#39; instead&quot;</span><span class="p">,</span>
+            <span class="ne">UserWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_row_ranges</span><span class="p">(</span><span class="n">row_ranges</span><span class="o">=</span><span class="n">row_ranges</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            ranges (GRangesOrGRangesList): Features to update.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_row_ranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">ranges</span>
+    <span class="c1">#################################</span>
+    <span class="c1">######&gt;&gt; range accessors &lt;&lt;######</span>
+    <span class="c1">#################################</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get genomic end positions for each feature or row in experimental data.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[int]: List of end positions.</span>
+<span class="sd">            A :py:class:`numpy.ndarray` of end positions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">end</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get genomic start positions for each feature or row in experimental data.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[int]: List of start positions.</span>
+<span class="sd">            A :py:class:`numpy.ndarray` of start positions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">start</span>
 
@@ -410,87 +566,73 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence or chromosome names.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[str]: List of all chromosome names.</span>
+<span class="sd">            List of all chromosome names.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">seqnames</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">strand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">strand</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get strand information.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[str]: List of strand information across all features.</span>
+<span class="sd">            A :py:class:`numpy.ndarray` of strand information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">strand</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">width</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get widths of ``row_ranges``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[int]: List of widths for each interval.</span>
+<span class="sd">            A :py:class:`numpy.ndarray` of widths for each interval.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">width</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">seq_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">SeqInfo</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">seq_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SeqInfo</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sequence information object (if available).</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (SeqInfo, optional): Sequence information if available, otherwise None.</span>
+<span class="sd">            Sequence information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">seq_info</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">seqinfo</span>
 
-<div class="viewcode-block" id="RangedSummarizedExperiment.__getitem__">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__getitem__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span>
+    <span class="c1">##########################</span>
+    <span class="c1">######&gt;&gt; slicers &lt;&lt;#######</span>
+    <span class="c1">##########################</span>
+
+    <span class="c1"># rest of them are inherited from BaseSE.</span>
+
+<div class="viewcode-block" id="RangedSummarizedExperiment.get_slice">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.get_slice">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_slice</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">args</span><span class="p">:</span> <span class="n">SlicerArgTypes</span><span class="p">,</span>
+        <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]],</span>
+        <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]],</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset a `RangedSummarizedExperiment`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:attr:`~__getitem__`, for back-compatibility.&quot;&quot;&quot;</span>
 
-<span class="sd">        Args:</span>
-<span class="sd">            args (SlicerArgTypes): Indices or names to slice. The tuple contains</span>
-<span class="sd">                slices along dimensions (rows, cols).</span>
-
-<span class="sd">                Each element in the tuple, might be either a integer vector (integer positions),</span>
-<span class="sd">                boolean vector or :py:class:`~slice` object.</span>
-
-<span class="sd">                Defaults to None.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: If too many or too few slices are provided.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            RangedSummarizedExperiment: Sliced `RangedSummarizedExperiment` object.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">sliced_objs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_slice</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">slicer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_slice</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
 
         <span class="n">new_row_ranges</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="k">if</span> <span class="n">sliced_objs</span><span class="o">.</span><span class="n">row_indices</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">new_row_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="p">[</span><span class="n">sliced_objs</span><span class="o">.</span><span class="n">row_indices</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">slicer</span><span class="o">.</span><span class="n">row_indices</span> <span class="o">!=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
+            <span class="n">new_row_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="p">[</span><span class="n">slicer</span><span class="o">.</span><span class="n">row_indices</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
-            <span class="n">assays</span><span class="o">=</span><span class="n">sliced_objs</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
+        <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+            <span class="n">assays</span><span class="o">=</span><span class="n">slicer</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
             <span class="n">row_ranges</span><span class="o">=</span><span class="n">new_row_ranges</span><span class="p">,</span>
-            <span class="n">row_data</span><span class="o">=</span><span class="n">sliced_objs</span><span class="o">.</span><span class="n">row_data</span><span class="p">,</span>
-            <span class="n">col_data</span><span class="o">=</span><span class="n">sliced_objs</span><span class="o">.</span><span class="n">col_data</span><span class="p">,</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
+            <span class="n">row_data</span><span class="o">=</span><span class="n">slicer</span><span class="o">.</span><span class="n">rows</span><span class="p">,</span>
+            <span class="n">column_data</span><span class="o">=</span><span class="n">slicer</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span>
+            <span class="n">row_names</span><span class="o">=</span><span class="n">slicer</span><span class="o">.</span><span class="n">row_names</span><span class="p">,</span>
+            <span class="n">column_names</span><span class="o">=</span><span class="n">slicer</span><span class="o">.</span><span class="n">column_names</span><span class="p">,</span>
+            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
         <span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="RangedSummarizedExperiment.__repr__">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__repr__">[docs]</a>
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-        <span class="n">pattern</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;Class RangedSummarizedExperiment with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> features and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> &quot;</span>
-            <span class="s2">&quot;samples </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  assays: </span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  row_data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">row_data</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">row_data</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="sa">f</span><span class="s2">&quot;  col_data: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="o">.</span><span class="n">columns</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="kc">None</span><span class="si">}</span><span class="s2">&quot;</span>
-        <span class="p">)</span>
-        <span class="k">return</span> <span class="n">pattern</span></div>
-
+    <span class="c1">############################</span>
+    <span class="c1">######&gt;&gt; range ops &lt;&lt;#######</span>
+    <span class="c1">############################</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.coverage">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.coverage">[docs]</a>
@@ -500,15 +642,19 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            shift (int, optional): Shifts all genomic positions by specified number</span>
-<span class="sd">                of positions. Defaults to 0.</span>
-<span class="sd">            width (int, optional): Restrict the width of all chromosomes.</span>
-<span class="sd">                Defaults to None.</span>
-<span class="sd">            weight (int, optional): Weight to use. Defaults to 1.</span>
+<span class="sd">            shift:</span>
+<span class="sd">                Shift all genomic positions. Defaults to 0.</span>
+
+<span class="sd">            width:</span>
+<span class="sd">                Restrict the width of all</span>
+<span class="sd">                chromosomes. Defaults to None.</span>
+
+<span class="sd">            weight:</span>
+<span class="sd">                Weight to use. Defaults to 1.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, np.ndarray]: A dictionary containing chromosome names</span>
-<span class="sd">            as keys and the coverage vector as value.</span>
+<span class="sd">            A dictionary with chromosome names as keys and the</span>
+<span class="sd">            coverage vector as value.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">coverage</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">)</span></div>
 
@@ -518,34 +664,44 @@
     <span class="k">def</span> <span class="nf">nearest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;arbitrary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, both upstream and downstream that overlap with each genomic interval in ``query``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions both upstream and downstream that overlap with each range in ``query``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (GRangesOrRangeSE): Query intervals to find nearest positions.</span>
+<span class="sd">            query:</span>
+<span class="sd">                Query intervals to find nearest positions.</span>
+
 <span class="sd">                ``query`` may be a :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or a</span>
 <span class="sd">                :py:class:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`</span>
 <span class="sd">                object.</span>
 
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand during looksups.</span>
-<span class="sd">                Defaults to False.</span>
+<span class="sd">            select:</span>
+<span class="sd">                Determine what hit to choose when there are</span>
+<span class="sd">                multiple hits for an interval in ``query``.</span>
+
+<span class="sd">            ignore_strand:</span>
+<span class="sd">                Whether to ignore strand. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If ``query`` is not a ``RangedSummarizedExperiment``</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                If ``query`` is not a ``RangedSummarizedExperiment``</span>
 <span class="sd">                or ``GenomicRanges``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (List[Optional[int]], optional): List of possible `hit` indices</span>
-<span class="sd">            for each interval in `query`, Otherwise returns None.</span>
+<span class="sd">            A list with the same length as ``query``,</span>
+<span class="sd">            containing hits to nearest indices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
         <span class="n">qranges</span> <span class="o">=</span> <span class="n">_access_granges</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;hits&quot;</span><span class="p">)</span></div>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">nearest</span><span class="p">(</span>
+            <span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.precede">
@@ -553,32 +709,44 @@
     <span class="k">def</span> <span class="nf">precede</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;arbitrary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, only downstream that overlap with each range in ``query``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with each range in ``query``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (GRangesOrRangeSE): Query intervals to find nearest positions.</span>
+<span class="sd">            query:</span>
+<span class="sd">                Query intervals to find nearest positions.</span>
+
 <span class="sd">                ``query`` may be a :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or a</span>
 <span class="sd">                :py:class:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`</span>
 <span class="sd">                object.</span>
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand. Defaults to False.</span>
+
+<span class="sd">            select:</span>
+<span class="sd">                Determine what hit to choose when there are</span>
+<span class="sd">                multiple hits for an interval in ``query``.</span>
+
+<span class="sd">            ignore_strand:</span>
+<span class="sd">                Whether to ignore strand. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If ``query`` is not a ``RangedSummarizedExperiment`` or</span>
-<span class="sd">            ``GenomicRanges``.</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                If ``query`` is not a ``RangedSummarizedExperiment`` or</span>
+<span class="sd">                ``GenomicRanges``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (List[Optional[int]], optional): List of possible hit indices</span>
-<span class="sd">            for each interval in ``query``. If there are no hits, returns None.</span>
+<span class="sd">            A List with the same length as ``query``,</span>
+<span class="sd">            containing hits to nearest indices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
         <span class="n">qranges</span> <span class="o">=</span> <span class="n">_access_granges</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;hits&quot;</span><span class="p">)</span></div>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">precede</span><span class="p">(</span>
+            <span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.follow">
@@ -586,68 +754,42 @@
     <span class="k">def</span> <span class="nf">follow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;arbitrary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions, only upstream that overlap with the each range in ``query``.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only upstream that overlap with each range in ``query``.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (GRangesOrRangeSE): Query intervals to find nearest positions.</span>
+<span class="sd">            query:</span>
+<span class="sd">                Query intervals to find nearest positions.</span>
+
 <span class="sd">                ``query`` may be a :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or a</span>
 <span class="sd">                :py:class:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`</span>
 <span class="sd">                object.</span>
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand. Defaults to False.</span>
+
+<span class="sd">            select:</span>
+<span class="sd">                Determine what hit to choose when there are</span>
+<span class="sd">                multiple hits for an interval in ``query``.</span>
+
+<span class="sd">            ignore_strand:</span>
+<span class="sd">                Whether to ignore strand. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If ``query`` is not a ``RangedSummarizedExperiment`` or</span>
+<span class="sd">            If ``query`` is not a ``RangedSummarizedExperiment`` or</span>
 <span class="sd">            ``GenomicRanges``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (List[Optional[int]], optional): List of possible hit indices</span>
-<span class="sd">            for each interval in ``query``. If there are no hits, returns None.</span>
+<span class="sd">            A List with the same length as ``query``,</span>
+<span class="sd">            containing hits to nearest indices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
         <span class="n">qranges</span> <span class="o">=</span> <span class="n">_access_granges</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;hits&quot;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="RangedSummarizedExperiment.distance_to_nearest">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.distance_to_nearest">[docs]</a>
-    <span class="k">def</span> <span class="nf">distance_to_nearest</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span>
-        <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
-        <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search nearest positions only downstream that overlap with the each genomics interval in ``query``.</span>
-
-<span class="sd">        Technically same as</span>
-<span class="sd">        :py:meth:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.nearest`</span>
-<span class="sd">        since we also return `distance` to the nearest match.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            query (GRangesOrRangeSE): Query intervals to find nearest positions.</span>
-<span class="sd">                ``query`` may be a :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or a</span>
-<span class="sd">                :py:class:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`</span>
-<span class="sd">                object.</span>
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand. Defaults to False.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If ``query`` is not a ``RangedSummarizedExperiment`` or ``GenomicRanges``.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (List[Optional[int]], optional): List of possible hit indices</span>
-<span class="sd">            for each interval in ``query``. If there are no hits, returns None.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-
-        <span class="n">qranges</span> <span class="o">=</span> <span class="n">_access_granges</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-
-        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">distance_to_nearest</span><span class="p">(</span>
-            <span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">follow</span><span class="p">(</span>
+            <span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span> <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;distance&quot;</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">res</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.flank">
@@ -658,191 +800,230 @@
         <span class="n">start</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
         <span class="n">both</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates flanking ranges for each range in</span>
-<span class="sd">        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute flanking ranges for each range.</span>
 
 <span class="sd">        Refer to either :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.flank` or the</span>
-<span class="sd">        Bioconductor documentation for what it this method does.</span>
+<span class="sd">        Bioconductor documentation for more details.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            width (int): Width to flank by.</span>
-<span class="sd">            start (bool, optional): Whether to only flank starts positions. Defaults to True.</span>
-<span class="sd">            both (bool, optional): Whether to flank both starts and ends positions.</span>
-<span class="sd">                Defaults to False.</span>
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand. Defaults to False.</span>
+<span class="sd">            width:</span>
+<span class="sd">                Width to flank by. May be negative.</span>
+
+<span class="sd">            start:</span>
+<span class="sd">                Whether to only flank starts. Defaults to True.</span>
+
+<span class="sd">            both:</span>
+<span class="sd">                Whether to flank both starts and ends. Defaults to False.</span>
+
+<span class="sd">            ignore_strand:</span>
+<span class="sd">                Whether to ignore strands. Defaults to False.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRanges`` object in place.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangedSummarizedExperiment: A new `RangedSummarizedExperiment` object</span>
-<span class="sd">            with the flanked ranges.</span>
+<span class="sd">            A new `RangedSummarizedExperiment` object with the flanked ranges,</span>
+<span class="sd">            either as a copy of the original or as a reference to the</span>
+<span class="sd">            (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">flank</span><span class="p">(</span>
-            <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">both</span><span class="o">=</span><span class="n">both</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span>
+            <span class="n">both</span><span class="o">=</span><span class="n">both</span><span class="p">,</span>
+            <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">,</span>
+            <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
-            <span class="n">assays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
-            <span class="n">row_ranges</span><span class="o">=</span><span class="n">new_ranges</span><span class="p">,</span>
-            <span class="n">col_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="p">,</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">new_ranges</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.resize">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.resize">[docs]</a>
     <span class="k">def</span> <span class="nf">resize</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
         <span class="n">fix</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;end&quot;</span><span class="p">,</span> <span class="s2">&quot;center&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;start&quot;</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges` to</span>
-<span class="sd">        the specified ``width`` where either the ``start``, ``end``, or ``center`` is used as an anchor.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resize ranges to the specified ``width`` where either the ``start``, ``end``, or ``center`` is used as an</span>
+<span class="sd">        anchor.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            width (int): Width to resize by.</span>
-<span class="sd">            fix (Literal[&quot;start&quot;, &quot;end&quot;, &quot;center&quot;], optional): Fix positions by &quot;start&quot;, &quot;end&quot;</span>
-<span class="sd">                or &quot;center&quot;. Defaults to &quot;start&quot;.</span>
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand. Defaults to False.</span>
+<span class="sd">            width:</span>
+<span class="sd">                Width to resize, cannot be negative!</span>
+
+<span class="sd">            fix:</span>
+<span class="sd">                Fix positions by &quot;start&quot;, &quot;end&quot;, or &quot;center&quot;.</span>
+<span class="sd">                Defaults to &quot;start&quot;.</span>
+
+<span class="sd">            ignore_strand:</span>
+<span class="sd">                Whether to ignore strands. Defaults to False.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRanges`` object in place.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            ValueError: If ``fix`` is neither ``start``, ``center``, or ``end``.</span>
+<span class="sd">            ValueError:</span>
+<span class="sd">                If ``fix`` is neither ``start``, ``center``, or ``end``.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangedSummarizedExperiment: A new `RangedSummarizedExperiment` object</span>
-<span class="sd">            with the resized ranges.</span>
+<span class="sd">            A new `RangedSummarizedExperiment` object with the resized ranges,</span>
+<span class="sd">            either as a copy of the original or as a reference to the</span>
+<span class="sd">            (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">resize</span><span class="p">(</span>
-            <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">fix</span><span class="o">=</span><span class="n">fix</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span>
+            <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">fix</span><span class="o">=</span><span class="n">fix</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
-            <span class="n">assays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
-            <span class="n">row_ranges</span><span class="o">=</span><span class="n">new_ranges</span><span class="p">,</span>
-            <span class="n">col_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="p">,</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">new_ranges</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.shift">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.shift">[docs]</a>
-    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift all ranges in</span>
-<span class="sd">        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges` by the</span>
-<span class="sd">        specified ``shift`` parameter.</span>
+    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift all intervals.</span>
 
 <span class="sd">        ``shift`` may be be negative.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            shift (int, optional): Shift interval. Defaults to 0.</span>
+<span class="sd">            shift:</span>
+<span class="sd">                Shift interval. If shift is 0, the current</span>
+<span class="sd">                object is returned. Defaults to 0.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRanges`` object in place.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangedSummarizedExperiment: A new `RangedSummarizedExperiment`</span>
-<span class="sd">            object with the shifted ranges.</span>
+<span class="sd">            A new `RangedSummarizedExperiment` object with the shifted ranges,</span>
+<span class="sd">            either as a copy of the original or as a reference to the</span>
+<span class="sd">            (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">)</span>
+        <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">shift</span><span class="p">(</span><span class="n">shift</span><span class="o">=</span><span class="n">shift</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
-            <span class="n">assays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
-            <span class="n">row_ranges</span><span class="o">=</span><span class="n">new_ranges</span><span class="p">,</span>
-            <span class="n">col_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="p">,</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">new_ranges</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.promoters">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.promoters">[docs]</a>
     <span class="k">def</span> <span class="nf">promoters</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges` to</span>
-<span class="sd">        promoter regions.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extend intervals to promoter regions.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            upstream (int, optional): Number of positions to extend in the 5&#39; direction.</span>
+<span class="sd">            upstream:</span>
+<span class="sd">                Number of positions to extend in the 5&#39; direction.</span>
 <span class="sd">                Defaults to 2000.</span>
-<span class="sd">            downstream (int, optional): Number of positions to extend in the 3&#39; direction.</span>
+
+<span class="sd">            downstream:</span>
+<span class="sd">                Number of positions to extend in the 3&#39; direction.</span>
 <span class="sd">                Defaults to 200.</span>
 
-<span class="sd">        Returns:</span>
-<span class="sd">            RangedSummarizedExperiment: A new `RangedSummarizedExperiment`</span>
-<span class="sd">            object with the extended ranges for promoter regions.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">promoters</span><span class="p">(</span><span class="n">upstream</span><span class="o">=</span><span class="n">upstream</span><span class="p">,</span> <span class="n">downstream</span><span class="o">=</span><span class="n">downstream</span><span class="p">)</span>
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRanges`` object in place.</span>
 
-        <span class="k">return</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
-            <span class="n">assays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
-            <span class="n">row_ranges</span><span class="o">=</span><span class="n">new_ranges</span><span class="p">,</span>
-            <span class="n">col_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="p">,</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-        <span class="p">)</span></div>
+<span class="sd">        Returns:</span>
+<span class="sd">            A new `RangedSummarizedExperiment` object with the extended ranges for</span>
+<span class="sd">            promoter regions, either as a copy of the original or as a reference to the</span>
+<span class="sd">            (in-place-modified) original.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">promoters</span><span class="p">(</span>
+            <span class="n">upstream</span><span class="o">=</span><span class="n">upstream</span><span class="p">,</span> <span class="n">downstream</span><span class="o">=</span><span class="n">downstream</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">new_ranges</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.restrict">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.restrict">[docs]</a>
     <span class="k">def</span> <span class="nf">restrict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">keep_all_ranges</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges` to</span>
-<span class="sd">        a given start and end positions.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restrict ranges to a given start and end positions.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            start (int, optional): Start position. Defaults to None.</span>
-<span class="sd">            end (int, optional): End position. Defaults to None.</span>
-<span class="sd">            keep_all_ranges (bool, optional): Whether to keep intervals that do not</span>
-<span class="sd">                overlap with start and end. Defaults to False.</span>
+<span class="sd">            start:</span>
+<span class="sd">                Start position. Defaults to None.</span>
+
+<span class="sd">            end:</span>
+<span class="sd">                End position. Defaults to None.</span>
+
+<span class="sd">            keep_all_ranges:</span>
+<span class="sd">                Whether to keep intervals that do not overlap with start and end.</span>
+<span class="sd">                Defaults to False.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRanges`` object in place.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangedSummarizedExperiment: A new `RangedSummarizedExperiment`</span>
-<span class="sd">            object with restricted intervals.</span>
+<span class="sd">            A new `RangedSummarizedExperiment` object with restricted intervals,</span>
+<span class="sd">            either as a copy of the original or as a reference to the</span>
+<span class="sd">            (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">restrict</span><span class="p">(</span>
-            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">keep_all_ranges</span><span class="o">=</span><span class="n">keep_all_ranges</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">keep_all_ranges</span><span class="o">=</span><span class="n">keep_all_ranges</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
-            <span class="n">assays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
-            <span class="n">row_ranges</span><span class="o">=</span><span class="n">new_ranges</span><span class="p">,</span>
-            <span class="n">col_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="p">,</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">new_ranges</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.narrow">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.narrow">[docs]</a>
     <span class="k">def</span> <span class="nf">narrow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">end</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Narrow :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Narrow genomic positions by provided ``start``, ``width`` and ``end`` parameters.</span>
 
 <span class="sd">        Important: these parameters are relative shift in positions for each range.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            start (int, optional): Relative start position. Defaults to None.</span>
-<span class="sd">            width (int, optional): Relative end position. Defaults to None.</span>
-<span class="sd">            end (int, optional): Relative width of the interval. Defaults to None.</span>
+<span class="sd">            start:</span>
+<span class="sd">                Relative start position. Defaults to None.</span>
 
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: When parameters were set incorrectly or row_ranges is empty</span>
+<span class="sd">            width:</span>
+<span class="sd">                Relative end position. Defaults to None.</span>
+
+<span class="sd">            end:</span>
+<span class="sd">                Relative width of the interval. Defaults to None.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the ``GenomicRanges`` object in place.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            RangedSummarizedExperiment:  A new `RangedSummarizedExperiment`</span>
-<span class="sd">            object with narrow positions.</span>
+<span class="sd">            A new `RangedSummarizedExperiment` object with narrow positions,</span>
+<span class="sd">            either as a copy of the original or as a reference to the</span>
+<span class="sd">            (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span><span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">)</span>
+        <span class="n">new_ranges</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">narrow</span><span class="p">(</span>
+            <span class="n">start</span><span class="o">=</span><span class="n">start</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="n">width</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="n">end</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span>
+        <span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
-            <span class="n">assays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="p">,</span>
-            <span class="n">row_ranges</span><span class="o">=</span><span class="n">new_ranges</span><span class="p">,</span>
-            <span class="n">col_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">col_data</span><span class="p">,</span>
-            <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">,</span>
-        <span class="p">)</span></div>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="n">output</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="o">=</span> <span class="n">new_ranges</span>
+        <span class="k">return</span> <span class="n">output</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.find_overlaps">
@@ -851,36 +1032,52 @@
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
         <span class="n">query_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;any&quot;</span><span class="p">,</span>
+        <span class="n">select</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;all&quot;</span><span class="p">,</span> <span class="s2">&quot;first&quot;</span><span class="p">,</span> <span class="s2">&quot;last&quot;</span><span class="p">,</span> <span class="s2">&quot;arbitrary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;all&quot;</span><span class="p">,</span>
         <span class="n">max_gap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">min_overlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Find overlaps between subject (self) and query ranges.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (GRangesOrRangeSE): Query intervals to find overlapping positions.</span>
+<span class="sd">            query:</span>
+<span class="sd">                Query intervals to find nearest positions.</span>
+
 <span class="sd">                ``query`` may be a :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or a</span>
 <span class="sd">                :py:class:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`</span>
 <span class="sd">                object.</span>
-<span class="sd">            query_type (str, optional): Overlap query type, must be one of</span>
 
-<span class="sd">                - &quot;any&quot;: any overlap is good</span>
-<span class="sd">                - &quot;start&quot;: overlap at the beginning of the intervals</span>
-<span class="sd">                - &quot;end&quot;: must overlap at the end of the intervals</span>
-<span class="sd">                - &quot;within&quot;: fully contain the query interval</span>
+<span class="sd">            query_type:</span>
+<span class="sd">                Overlap query type, must be one of</span>
+
+<span class="sd">                - &quot;any&quot;: Any overlap is good</span>
+<span class="sd">                - &quot;start&quot;: Overlap at the beginning of the intervals</span>
+<span class="sd">                - &quot;end&quot;: Must overlap at the end of the intervals</span>
+<span class="sd">                - &quot;within&quot;: Fully contain the query interval</span>
 
 <span class="sd">                Defaults to &quot;any&quot;.</span>
-<span class="sd">            max_gap (int, optional): Maximum gap allowed in the overlap.</span>
+
+<span class="sd">            select:</span>
+<span class="sd">                Determine what hit to choose when</span>
+<span class="sd">                there are multiple hits for an interval in ``subject``.</span>
+
+<span class="sd">            max_gap:</span>
+<span class="sd">                Maximum gap allowed in the overlap.</span>
 <span class="sd">                Defaults to -1 (no gap allowed).</span>
-<span class="sd">            min_overlap (int, optional): Minimum overlap with query. Defaults to 1.</span>
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand.. Defaults to False.</span>
+
+<span class="sd">            min_overlap:</span>
+<span class="sd">                Minimum overlap with query. Defaults to 1.</span>
+
+<span class="sd">            ignore_strand:</span>
+<span class="sd">                Whether to ignore strands. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If query is not a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                If `query` is not a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            (&quot;RangedSummarizedExperiment&quot;, optional): A `RangedSummarizedExperiment` object</span>
-<span class="sd">            with the same length as query, containing hits to overlapping indices.</span>
+<span class="sd">            A list with the same length as ``query``,</span>
+<span class="sd">            containing hits to overlapping indices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
@@ -889,6 +1086,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
             <span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span>
             <span class="n">query_type</span><span class="o">=</span><span class="n">query_type</span><span class="p">,</span>
+            <span class="n">select</span><span class="o">=</span><span class="n">select</span><span class="p">,</span>
             <span class="n">max_gap</span><span class="o">=</span><span class="n">max_gap</span><span class="p">,</span>
             <span class="n">min_overlap</span><span class="o">=</span><span class="n">min_overlap</span><span class="p">,</span>
             <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">,</span>
@@ -904,32 +1102,43 @@
         <span class="n">max_gap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
         <span class="n">min_overlap</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
         <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Subset a `RangedSummarizedExperiment` by feature overlaps.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            query (GRangesOrRangeSE): Query intervals to subset by overlapping positions.</span>
+<span class="sd">            query:</span>
+<span class="sd">                Query `GenomicRanges`.</span>
+
 <span class="sd">                ``query`` may be a :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or a</span>
 <span class="sd">                :py:class:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`</span>
 <span class="sd">                object.</span>
-<span class="sd">            query_type (str, optional): Overlap query type, must be one of</span>
 
-<span class="sd">                - &quot;any&quot;: any overlap is good</span>
-<span class="sd">                - &quot;start&quot;: overlap at the beginning of the intervals</span>
-<span class="sd">                - &quot;end&quot;: must overlap at the end of the intervals</span>
-<span class="sd">                - &quot;within&quot;: fully contain the query interval</span>
+<span class="sd">            query_type:</span>
+<span class="sd">                Overlap query type, must be one of</span>
+
+<span class="sd">                - &quot;any&quot;: Any overlap is good</span>
+<span class="sd">                - &quot;start&quot;: Overlap at the beginning of the intervals</span>
+<span class="sd">                - &quot;end&quot;: Must overlap at the end of the intervals</span>
+<span class="sd">                - &quot;within&quot;: Fully contain the query interval</span>
 
 <span class="sd">                Defaults to &quot;any&quot;.</span>
-<span class="sd">            max_gap (int, optional): Maximum gap allowed in the overlap.</span>
+
+<span class="sd">            max_gap:</span>
+<span class="sd">                Maximum gap allowed in the overlap.</span>
 <span class="sd">                Defaults to -1 (no gap allowed).</span>
-<span class="sd">            min_overlap (int, optional): Minimum overlap with query. Defaults to 1.</span>
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand.. Defaults to False.</span>
+
+<span class="sd">            min_overlap:</span>
+<span class="sd">                Minimum overlap with query. Defaults to 1.</span>
+
+<span class="sd">            ignore_strand:</span>
+<span class="sd">                Whether to ignore strands. Defaults to False.</span>
 
 <span class="sd">        Raises:</span>
-<span class="sd">            TypeError: If query is not a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
+<span class="sd">            TypeError:</span>
+<span class="sd">                If query is not a `RangedSummarizedExperiment` or `GenomicRanges`.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[&quot;RangedSummarizedExperiment&quot;]: A new `RangedSummarizedExperiment`</span>
+<span class="sd">            A new `RangedSummarizedExperiment`</span>
 <span class="sd">            object. None if there are no indices to slice.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
@@ -944,29 +1153,24 @@
             <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">,</span>
         <span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
+        <span class="kn">import</span> <span class="nn">itertools</span>
 
-        <span class="n">hits</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">column</span><span class="p">(</span><span class="s2">&quot;hits&quot;</span><span class="p">)</span>
-        <span class="n">hit_counts</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">ht</span><span class="p">)</span> <span class="k">for</span> <span class="n">ht</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">]</span>
-        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">idx</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hit_counts</span><span class="p">))</span> <span class="k">if</span> <span class="n">hit_counts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">chain</span><span class="o">.</span><span class="n">from_iterable</span><span class="p">(</span><span class="n">result</span><span class="p">))</span>
 
-        <span class="k">if</span> <span class="n">indices</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">None</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">indices</span><span class="p">,</span> <span class="p">:]</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">indices</span><span class="p">,]</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.order">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.order">[docs]</a>
-    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the order of indices to sort.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            decreasing (bool, optional): Whether to sort in descending order. Defaults to False.</span>
+<span class="sd">            decreasing:</span>
+<span class="sd">                Whether to sort in descending order. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            List[int]: Order of indices.</span>
+<span class="sd">            NumPy vector containing index positions in the sorted order.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="n">decreasing</span><span class="o">=</span><span class="n">decreasing</span><span class="p">)</span></div>
 
@@ -974,28 +1178,195 @@
 <div class="viewcode-block" id="RangedSummarizedExperiment.sort">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.sort">[docs]</a>
     <span class="k">def</span> <span class="nf">sort</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">ignore_strand</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RangedSummarizedExperiment&quot;</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sort `RangedSummarizedExperiment` by</span>
-<span class="sd">        :py:attr:`~summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.row_ranges`.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sort by ranges.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            decreasing (bool, optional): Whether to sort in decreasing order. Defaults to False.</span>
-<span class="sd">            ignore_strand (bool, optional): Whether to ignore strand. Defaults to False.</span>
+<span class="sd">            decreasing:</span>
+<span class="sd">                Whether to sort in descending order. Defaults to False.</span>
+
+<span class="sd">            in_place:</span>
+<span class="sd">                Whether to modify the object in place. Defaults to False.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            &quot;RangedSummarizedExperiment&quot;: A new sorted</span>
-<span class="sd">            `RangedSummarizedExperiment` object.</span>
+<span class="sd">            A new sorted `RangedSummarizedExperiment` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">_generic_order</span><span class="p">(</span><span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">)</span>
+        <span class="n">_order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">order</span><span class="p">(</span><span class="n">decreasing</span><span class="o">=</span><span class="n">decreasing</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">decreasing</span><span class="p">:</span>
-            <span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="n">new_order</span> <span class="o">=</span> <span class="n">order</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">new_order</span><span class="p">,</span> <span class="p">:]</span></div>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="n">in_place</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span><span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">_order</span><span class="p">),]</span></div>
 </div>
 
+
+
+<span class="c1">############################</span>
+<span class="c1">######&gt;&gt; combine ops &lt;&lt;#####</span>
+<span class="c1">############################</span>
+
+
+<div class="viewcode-block" id="combine_rows">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.combine_rows">[docs]</a>
+<span class="nd">@ut</span><span class="o">.</span><span class="n">combine_rows</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">combine_rows</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine multiple ``RangedSummarizedExperiment`` objects by row.</span>
+
+<span class="sd">    All assays must contain the same assay names. If you need a</span>
+<span class="sd">    flexible combine operation, checkout :py:func:`~relaxed_combine_rows`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A combined ``RangedSummarizedExperiment``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">_all_assays</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">assays</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">check_assays_are_equal</span><span class="p">(</span><span class="n">_all_assays</span><span class="p">)</span>
+    <span class="n">_new_assays</span> <span class="o">=</span> <span class="n">merge_assays</span><span class="p">(</span><span class="n">_all_assays</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s2">&quot;row&quot;</span><span class="p">)</span>
+
+    <span class="n">_all_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_rows</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">_new_rows</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_rows</span><span class="p">(</span><span class="o">*</span><span class="n">_all_rows</span><span class="p">)</span>
+    <span class="n">_new_row_names</span> <span class="o">=</span> <span class="n">merge_se_rownames</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">_all_row_ranges</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">_new_row_ranges</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="n">_all_row_ranges</span><span class="p">)</span>
+
+    <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+        <span class="n">assays</span><span class="o">=</span><span class="n">_new_assays</span><span class="p">,</span>
+        <span class="n">row_ranges</span><span class="o">=</span><span class="n">_new_row_ranges</span><span class="p">,</span>
+        <span class="n">row_data</span><span class="o">=</span><span class="n">_new_rows</span><span class="p">,</span>
+        <span class="n">column_data</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span>
+        <span class="n">row_names</span><span class="o">=</span><span class="n">_new_row_names</span><span class="p">,</span>
+        <span class="n">column_names</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_column_names</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="combine_columns">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.combine_columns">[docs]</a>
+<span class="nd">@ut</span><span class="o">.</span><span class="n">combine_columns</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">combine_columns</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine multiple ``RangedSummarizedExperiment`` objects by column.</span>
+
+<span class="sd">    All assays must contain the same assay names. If you need a</span>
+<span class="sd">    flexible combine operation, checkout :py:func:`~relaxed_combine_columns`.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A combined ``RangedSummarizedExperiment``.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">_all_assays</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">assays</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">check_assays_are_equal</span><span class="p">(</span><span class="n">_all_assays</span><span class="p">)</span>
+    <span class="n">_new_assays</span> <span class="o">=</span> <span class="n">merge_assays</span><span class="p">(</span><span class="n">_all_assays</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s2">&quot;column&quot;</span><span class="p">)</span>
+
+    <span class="n">_all_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_cols</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">_new_cols</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_rows</span><span class="p">(</span><span class="o">*</span><span class="n">_all_cols</span><span class="p">)</span>
+    <span class="n">_new_col_names</span> <span class="o">=</span> <span class="n">merge_se_colnames</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+        <span class="n">assays</span><span class="o">=</span><span class="n">_new_assays</span><span class="p">,</span>
+        <span class="n">row_ranges</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_row_ranges</span><span class="p">,</span>
+        <span class="n">row_data</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span>
+        <span class="n">column_data</span><span class="o">=</span><span class="n">_new_cols</span><span class="p">,</span>
+        <span class="n">row_names</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_row_names</span><span class="p">,</span>
+        <span class="n">column_names</span><span class="o">=</span><span class="n">_new_col_names</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="relaxed_combine_rows">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.relaxed_combine_rows">[docs]</a>
+<span class="nd">@ut</span><span class="o">.</span><span class="n">relaxed_combine_rows</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">relaxed_combine_rows</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A relaxed version of the :py:func:`~biocutils.combine_rows.combine_rows` method for</span>
+<span class="sd">    :py:class:`~RangedSummarizedExperiment` objects.  Whereas ``combine_rows`` expects that all objects have the same</span>
+<span class="sd">    columns, ``relaxed_combine_rows`` allows for different columns. Absent columns in any object are filled in with</span>
+<span class="sd">    appropriate placeholder values before combining.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x:</span>
+<span class="sd">            One or more ``RangedSummarizedExperiment`` objects, possibly with differences in the</span>
+<span class="sd">            number and identity of their columns.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A ``RangedSummarizedExperiment`` that combines all ``experiments`` along their rows and contains</span>
+<span class="sd">        the union of all columns. Columns absent in any ``x`` are filled in</span>
+<span class="sd">        with placeholders consisting of Nones or masked NumPy values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">_new_assays</span> <span class="o">=</span> <span class="n">relaxed_merge_assays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s2">&quot;row&quot;</span><span class="p">)</span>
+
+    <span class="n">_all_rows</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_rows</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">_new_rows</span> <span class="o">=</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">relaxed_combine_rows</span><span class="p">(</span><span class="o">*</span><span class="n">_all_rows</span><span class="p">)</span>
+    <span class="n">_new_row_names</span> <span class="o">=</span> <span class="n">merge_se_rownames</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">_all_row_ranges</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_row_ranges</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">_new_row_ranges</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">combine_sequences</span><span class="p">(</span><span class="o">*</span><span class="n">_all_row_ranges</span><span class="p">)</span>
+
+    <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+        <span class="n">assays</span><span class="o">=</span><span class="n">_new_assays</span><span class="p">,</span>
+        <span class="n">row_ranges</span><span class="o">=</span><span class="n">_new_row_ranges</span><span class="p">,</span>
+        <span class="n">row_data</span><span class="o">=</span><span class="n">_new_rows</span><span class="p">,</span>
+        <span class="n">column_data</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span>
+        <span class="n">row_names</span><span class="o">=</span><span class="n">_new_row_names</span><span class="p">,</span>
+        <span class="n">column_names</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_column_names</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="relaxed_combine_columns">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.relaxed_combine_columns">[docs]</a>
+<span class="nd">@ut</span><span class="o">.</span><span class="n">relaxed_combine_columns</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">relaxed_combine_columns</span><span class="p">(</span>
+    <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A relaxed version of the :py:func:`~biocutils.combine_rows.combine_columns` method for</span>
+<span class="sd">    :py:class:`~RangedSummarizedExperiment` objects.  Whereas ``combine_columns`` expects that all objects have the same</span>
+<span class="sd">    rows, ``relaxed_combine_columns`` allows for different rows. Absent columns in any object are filled in with</span>
+<span class="sd">    appropriate placeholder values before combining.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        x:</span>
+<span class="sd">            One or more ``RangedSummarizedExperiment`` objects, possibly with differences in the</span>
+<span class="sd">            number and identity of their rows.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A ``RangedSummarizedExperiment`` that combines all ``experiments`` along their columns and contains</span>
+<span class="sd">        the union of all rows. Rows absent in any ``x`` are filled in</span>
+<span class="sd">        with placeholders consisting of Nones or masked NumPy values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">first</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">_new_assays</span> <span class="o">=</span> <span class="n">relaxed_merge_assays</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">by</span><span class="o">=</span><span class="s2">&quot;column&quot;</span><span class="p">)</span>
+
+    <span class="n">_all_cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">y</span><span class="o">.</span><span class="n">_cols</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]</span>
+    <span class="n">_new_cols</span> <span class="o">=</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">relaxed_combine_rows</span><span class="p">(</span><span class="o">*</span><span class="n">_all_cols</span><span class="p">)</span>
+    <span class="n">_new_col_names</span> <span class="o">=</span> <span class="n">merge_se_colnames</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+    <span class="n">current_class_const</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">first</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">current_class_const</span><span class="p">(</span>
+        <span class="n">assays</span><span class="o">=</span><span class="n">_new_assays</span><span class="p">,</span>
+        <span class="n">row_ranges</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_row_ranges</span><span class="p">,</span>
+        <span class="n">row_data</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span>
+        <span class="n">column_data</span><span class="o">=</span><span class="n">_new_cols</span><span class="p">,</span>
+        <span class="n">row_names</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_row_names</span><span class="p">,</span>
+        <span class="n">column_names</span><span class="o">=</span><span class="n">_new_col_names</span><span class="p">,</span>
+        <span class="n">metadata</span><span class="o">=</span><span class="n">first</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
+    <span class="p">)</span></div>
+
+
+
+<span class="nd">@ut</span><span class="o">.</span><span class="n">extract_row_names</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_rownames_rse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">get_row_names</span><span class="p">()</span>
+
+
+<span class="nd">@ut</span><span class="o">.</span><span class="n">extract_column_names</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_colnames_rse</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">get_column_names</span><span class="p">()</span>
 </pre></div>
         </article>
       </div>
@@ -1028,7 +1399,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=29d04658"></script>
+</div><script src="../../_static/documentation_options.js?v=6c02275b"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="summarizedexperiment" href="api/modules.html" /><link rel="prev" title="SummarizedExperiment" href="readme.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>Tutorial - SummarizedExperiment 0.3.7 documentation</title>
+        <title>Tutorial - SummarizedExperiment 0.4.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
@@ -123,7 +123,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.3.7 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.4.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -146,7 +146,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.3.7 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.4.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -158,11 +158,7 @@
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Overview</a></li>
 <li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Tutorial</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l2 has-children"><a class="reference internal" href="api/summarizedexperiment.html">summarizedexperiment package</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" role="switch" type="checkbox"/><label for="toctree-checkbox-2"><div class="visually-hidden">Toggle navigation of summarizedexperiment package</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/summarizedexperiment.dispatchers.html">summarizedexperiment.dispatchers package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="api/summarizedexperiment.utils.html">summarizedexperiment.utils package</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="api/summarizedexperiment.html">summarizedexperiment package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributions &amp; Help</a></li>
@@ -209,18 +205,22 @@
 <p>A <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> contains three slots,</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">row_data</span></code>: Feature information e.g. genes, transcripts, exons, etc.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">col_data</span></code>: Sample information about the columns of the matrices.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">column_data</span></code>: Sample information about the columns of the matrices.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">assays</span></code>: A dictionary of matrices with assay names as keys, e.g. counts, logcounts etc.</p></li>
 </ul>
 <p>The package currently provides both <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code> representations. A key difference between these two is the rows of a <code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code> object is a <a class="reference external" href="https://github.com/BiocPy/GenomicRanges">GenomicRanges</a>, representing genomic regions of interest.</p>
 <section id="construct-a-summarizedexperiment-object">
 <h2>Construct a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> object<a class="headerlink" href="#construct-a-summarizedexperiment-object" title="Link to this heading">#</a></h2>
 <p>First, lets create random experimental “count” data along with feature and sample information.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">nrows</span> <span class="o">=</span> <span class="mi">200</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">biocframe</span> <span class="kn">import</span> <span class="n">BiocFrame</span>
+
+<span class="n">nrows</span> <span class="o">=</span> <span class="mi">200</span>
 <span class="n">ncols</span> <span class="o">=</span> <span class="mi">6</span>
 <span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span><span class="p">)</span>
-
-<span class="n">df_gr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="n">row_data</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="p">(</span>
     <span class="p">{</span>
         <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span>
             <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
@@ -254,7 +254,7 @@
 <h3><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code><a class="headerlink" href="#summarizedexperiment" title="Link to this heading">#</a></h3>
 <p>A <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> is a base class to represent any genomic experiment. This class expects features (<code class="docutils literal notranslate"><span class="pre">row_data</span></code>) to be either a pandas <code class="docutils literal notranslate"><span class="pre">DataFrame</span></code> or any variant of <code class="docutils literal notranslate"><span class="pre">BiocFrame</span></code>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">se</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
-    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">row_data</span><span class="o">=</span><span class="n">df_gr</span><span class="p">,</span> <span class="n">col_data</span><span class="o">=</span><span class="n">col_data</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">row_data</span><span class="o">=</span><span class="n">row_data</span><span class="p">,</span> <span class="n">column_data</span><span class="o">=</span><span class="n">col_data</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -263,51 +263,11 @@
 <h3><code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code><a class="headerlink" href="#rangedsummarizedexperiment" title="Link to this heading">#</a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code> requires features to be a <a class="reference external" href="https://github.com/BiocPy/GenomicRanges"><code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code></a> object.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># convert our pandas dataframe to genomic ranges.</span>
-<span class="n">gr</span> <span class="o">=</span> <span class="n">genomicranges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df_gr</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">genomicranges</span> <span class="kn">import</span> <span class="n">GenomicRanges</span>
+<span class="n">gr</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">row_data</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">())</span>
 
-<span class="n">rse</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
-    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">row_ranges</span><span class="o">=</span><span class="n">gr</span><span class="p">,</span> <span class="n">col_data</span><span class="o">=</span><span class="n">col_data</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="file-backed-mode-for-large-datasets">
-<h3>File backed mode for large datasets<a class="headerlink" href="#file-backed-mode-for-large-datasets" title="Link to this heading">#</a></h3>
-<p>Alternatively, SE and RSE supports any matrix that implements the shape property (<code class="docutils literal notranslate"><span class="pre">shape</span></code>) and the slice operation (<code class="docutils literal notranslate"><span class="pre">__getitem__</span></code>).
-For large datasets that won’t fit into memory, lazy representations provided by <a class="reference external" href="https://github.com/BiocPy/FileBackedArray">FileBackedArray</a> can be used as assays. <strong><em>Note: This package currently only supports h5 based formats.</em></strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">filebackedarray</span> <span class="kn">import</span> <span class="n">H5BackedSparseData</span>
-
-<span class="n">df_gr</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr2&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr1&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;chr3&quot;</span><span class="p">,</span>
-        <span class="p">]</span>
-        <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
-        <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
-        <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;-&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
-        <span class="s2">&quot;score&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">),</span>
-        <span class="s2">&quot;GC&quot;</span><span class="p">:</span> <span class="p">[</span><span class="n">random</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span>
-    <span class="p">}</span>
-<span class="p">)</span>
-
-<span class="n">col_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;treatment&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;ChIP&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3005</span><span class="p">,})</span>
-
-<span class="n">assay</span> <span class="o">=</span> <span class="n">H5BackedSparseData</span><span class="p">(</span><span class="s2">&quot;tests/data/tenx.sub.h5&quot;</span><span class="p">,</span> <span class="s2">&quot;matrix&quot;</span><span class="p">)</span>
-
-<span class="n">tse</span> <span class="o">=</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
-    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts_backed&quot;</span><span class="p">:</span> <span class="n">assay</span><span class="p">},</span>
-    <span class="n">row_data</span><span class="o">=</span><span class="n">df_gr</span><span class="p">,</span>
-    <span class="n">col_data</span><span class="o">=</span><span class="n">col_data</span><span class="p">,</span>
+<span class="n">trse</span> <span class="o">=</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
+    <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">},</span> <span class="n">row_data</span><span class="o">=</span><span class="n">row_data</span><span class="p">,</span> <span class="n">row_ranges</span><span class="o">=</span><span class="n">gr</span><span class="p">,</span> <span class="n">column_data</span><span class="o">=</span><span class="n">col_data</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -318,7 +278,7 @@ For large datasets that won’t fit into memory, lazy representations provided b
 <p>Properties can be accessed directly from the class instance.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tse</span><span class="o">.</span><span class="n">assays</span>
 <span class="n">tse</span><span class="o">.</span><span class="n">row_data</span> <span class="ow">or</span> <span class="c1"># tse.row_ranges</span>
-<span class="n">tse</span><span class="o">.</span><span class="n">col_data</span>
+<span class="n">tse</span><span class="o">.</span><span class="n">column_data</span>
 <span class="n">tse</span><span class="o">.</span><span class="n">metadata</span>
 
 <span class="c1"># Access the counts assay</span>
@@ -330,24 +290,23 @@ For large datasets that won’t fit into memory, lazy representations provided b
 <h2>Subset an experiment<a class="headerlink" href="#subset-an-experiment" title="Link to this heading">#</a></h2>
 <p>You can subset a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> object using the <code class="docutils literal notranslate"><span class="pre">[]</span></code> slice operator.</p>
 <section id="slice-by-index-position">
-<h3>slice by index position<a class="headerlink" href="#slice-by-index-position" title="Link to this heading">#</a></h3>
+<h3>Slice by index position<a class="headerlink" href="#slice-by-index-position" title="Link to this heading">#</a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># subset the first 10 rows and the first 3 samples</span>
 <span class="n">subset_tse</span> <span class="o">=</span> <span class="n">tse</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>
 <section id="slice-by-row-names-or-column-names">
-<h3>slice by row names or column names<a class="headerlink" href="#slice-by-row-names-or-column-names" title="Link to this heading">#</a></h3>
+<h3>Slice by row names or column names<a class="headerlink" href="#slice-by-row-names-or-column-names" title="Link to this heading">#</a></h3>
 <p>Alternatively, we can use a sequence of row (feature) or column (sample) names to subset a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> . To demonstrate this, we create a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> object with index names.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">rowData_with_index_names</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">row_data</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="p">(</span>
     <span class="p">{</span>
         <span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr_5&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_3&quot;</span><span class="p">,</span> <span class="s2">&quot;chr_2&quot;</span><span class="p">],</span>
         <span class="s2">&quot;start&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">,</span> <span class="mi">300</span><span class="p">],</span>
         <span class="s2">&quot;end&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">110</span><span class="p">,</span> <span class="mi">210</span><span class="p">,</span> <span class="mi">310</span><span class="p">]</span>
-    <span class="p">},</span>
-    <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA1&quot;</span><span class="p">,</span> <span class="s2">&quot;TPFK&quot;</span><span class="p">],</span>
+    <span class="p">}</span>
 <span class="p">)</span>
-<span class="n">colData_with_index_names</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+<span class="n">col_data</span> <span class="o">=</span> <span class="n">BiocFrame</span><span class="p">(</span>
     <span class="p">{</span>
         <span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SAM_1&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_3&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_3&quot;</span><span class="p">],</span>
         <span class="s2">&quot;disease&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">],</span>
@@ -359,12 +318,14 @@ For large datasets that won’t fit into memory, lazy representations provided b
         <span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">poisson</span><span class="p">(</span><span class="n">lam</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)),</span>
         <span class="s2">&quot;lognorm&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
     <span class="p">},</span>
-    <span class="n">row_data</span><span class="o">=</span><span class="n">rowData_with_index_names</span><span class="p">,</span>
-    <span class="n">col_data</span><span class="o">=</span><span class="n">colData_with_index_names</span>
+    <span class="n">row_data</span><span class="o">=</span><span class="n">row_data</span><span class="p">,</span>
+    <span class="n">column_data</span><span class="o">=</span><span class="n">col_data</span><span class="p">,</span>
+    <span class="n">row_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA1&quot;</span><span class="p">,</span> <span class="s2">&quot;TPFK&quot;</span><span class="p">],</span>
+    <span class="n">column_names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cell_1&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_2&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_3&quot;</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="c1"># subset by name</span>
-<span class="n">subset_se_with_index_names</span> <span class="o">=</span> <span class="n">se_with_index_names</span><span class="p">[</span>
+<span class="n">subset</span> <span class="o">=</span> <span class="n">se_with_index_names</span><span class="p">[</span>
     <span class="p">[</span><span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;BRCA1&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;cell_1&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_3&quot;</span><span class="p">]</span>
 <span class="p">]</span>
 </pre></div>
@@ -378,7 +339,7 @@ For large datasets that won’t fit into memory, lazy representations provided b
 </div>
 </section>
 <section id="slice-by-a-boolean-vector">
-<h3>slice by a boolean vector<a class="headerlink" href="#slice-by-a-boolean-vector" title="Link to this heading">#</a></h3>
+<h3>Slice by a boolean vector<a class="headerlink" href="#slice-by-a-boolean-vector" title="Link to this heading">#</a></h3>
 <p>Similarly you could also slice by a boolean array. <strong><em>Note, the boolean vectors should contain the same number of features for the row slice and the same number of samples for the column slice.</em></strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># subset with boolean array</span>
 <span class="n">subset_se_with_bools</span> <span class="o">=</span> <span class="n">se_with_index_names</span><span class="p">[</span>
@@ -391,9 +352,9 @@ For large datasets that won’t fit into memory, lazy representations provided b
 <section id="range-based-operations">
 <h2>Range based operations<a class="headerlink" href="#range-based-operations" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code> objects on the other hand supports many interval based operations similar to <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code>.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">]}</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">query</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;seqnames&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">,],</span> <span class="s2">&quot;starts&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;ends&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="s2">&quot;strand&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">]})</span>
 
-<span class="n">query</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="n">query</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 
 <span class="n">tse</span><span class="o">.</span><span class="n">subset_by_overlaps</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
 </pre></div>
@@ -424,7 +385,7 @@ For large datasets that won’t fit into memory, lazy representations provided b
         <span class="s2">&quot;lognorm&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
     <span class="p">},</span>
     <span class="n">row_data</span><span class="o">=</span><span class="n">rowData1</span><span class="p">,</span>
-    <span class="n">col_data</span><span class="o">=</span><span class="n">colData1</span><span class="p">,</span>
+    <span class="n">column_data</span><span class="o">=</span><span class="n">colData1</span><span class="p">,</span>
     <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seq_type&quot;</span><span class="p">:</span> <span class="s2">&quot;paired&quot;</span><span class="p">},</span>
 <span class="p">)</span>
 
@@ -440,7 +401,6 @@ For large datasets that won’t fit into memory, lazy representations provided b
     <span class="p">{</span>
         <span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;SAM_4&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_5&quot;</span><span class="p">,</span> <span class="s2">&quot;SAM_6&quot;</span><span class="p">],</span>
         <span class="s2">&quot;disease&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;True&quot;</span><span class="p">,</span> <span class="s2">&quot;False&quot;</span><span class="p">,</span> <span class="s2">&quot;True&quot;</span><span class="p">],</span>
-        <span class="s2">&quot;doublet_score&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mf">.05</span><span class="p">,</span> <span class="mf">.23</span><span class="p">,</span> <span class="mf">.54</span><span class="p">]</span>
     <span class="p">},</span>
     <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;cell_4&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_5&quot;</span><span class="p">,</span> <span class="s2">&quot;cell_6&quot;</span><span class="p">],</span>
 <span class="p">)</span>
@@ -450,7 +410,7 @@ For large datasets that won’t fit into memory, lazy representations provided b
         <span class="s2">&quot;lognorm&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">lognormal</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
     <span class="p">},</span>
     <span class="n">row_data</span><span class="o">=</span><span class="n">rowData2</span><span class="p">,</span>
-    <span class="n">col_data</span><span class="o">=</span><span class="n">colData2</span><span class="p">,</span>
+    <span class="n">column_data</span><span class="o">=</span><span class="n">colData2</span><span class="p">,</span>
     <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seq_platform&quot;</span><span class="p">:</span> <span class="s2">&quot;Illumina NovaSeq 6000&quot;</span><span class="p">},</span>
 <span class="p">)</span>
 
@@ -477,20 +437,18 @@ For large datasets that won’t fit into memory, lazy representations provided b
         <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">beta</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
     <span class="p">},</span>
     <span class="n">row_data</span><span class="o">=</span><span class="n">rowData3</span><span class="p">,</span>
-    <span class="n">col_data</span><span class="o">=</span><span class="n">colData3</span><span class="p">,</span>
+    <span class="n">column_data</span><span class="o">=</span><span class="n">colData3</span><span class="p">,</span>
     <span class="n">metadata</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;seq_platform&quot;</span><span class="p">:</span> <span class="s2">&quot;Illumina NovaSeq 6000&quot;</span><span class="p">},</span>
 <span class="p">)</span>
 </pre></div>
 </div>
-<section id="combine-experiments-by-column">
-<h3>Combine Experiments by column<a class="headerlink" href="#combine-experiments-by-column" title="Link to this heading">#</a></h3>
-<p>Concatenate columns (samples or cells) of multiple <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> objects, returning a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> with columns equal to the concatenation of columns across all inputs. <code class="docutils literal notranslate"><span class="pre">combineCols()</span></code> allows for differences in the number and names of rows, differences in the available <code class="docutils literal notranslate"><span class="pre">col_data</span></code> fields, and even differences in the available <code class="docutils literal notranslate"><span class="pre">assays</span></code> among the objects being combined.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">se_combined</span> <span class="o">=</span> <span class="n">se1</span><span class="o">.</span><span class="n">combine_cols</span><span class="p">(</span><span class="n">se2</span><span class="p">,</span> <span class="n">se3</span><span class="p">)</span> <span class="c1"># OR se1.combineCols([se2, se3])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">biocutils</span> <span class="kn">import</span> <span class="n">relaxed_combine_columns</span><span class="p">,</span> <span class="n">combine_columns</span>
+<span class="n">se_combined</span> <span class="o">=</span> <span class="n">combine_columns</span><span class="p">(</span><span class="n">se2</span><span class="p">,</span> <span class="n">se1</span><span class="p">)</span>
+
+<span class="n">se_relaxed_combine</span> <span class="o">=</span> <span class="n">relaxed_combine_columns</span><span class="p">(</span><span class="n">se1</span><span class="p">,</span> <span class="n">se2</span><span class="p">,</span> <span class="n">se3</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Parameters are available to keep duplicate rows, or perform row-wise concatenation instead of index available on the rows.</p>
-<p><strong><em>Note: currently does not support range based concatenation.</em></strong></p>
-</section>
+<p>Similarly one can perform <code class="docutils literal notranslate"><span class="pre">combine_rows</span></code> and <code class="docutils literal notranslate"><span class="pre">relaxed_combine_rows</span></code> operations.</p>
 </section>
 </section>
 
@@ -553,21 +511,17 @@ For large datasets that won’t fit into memory, lazy representations provided b
 <li><a class="reference internal" href="#construct-a-summarizedexperiment-object">Construct a <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> object</a><ul>
 <li><a class="reference internal" href="#summarizedexperiment"><code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code></a></li>
 <li><a class="reference internal" href="#rangedsummarizedexperiment"><code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code></a></li>
-<li><a class="reference internal" href="#file-backed-mode-for-large-datasets">File backed mode for large datasets</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#accessors">Accessors</a></li>
 <li><a class="reference internal" href="#subset-an-experiment">Subset an experiment</a><ul>
-<li><a class="reference internal" href="#slice-by-index-position">slice by index position</a></li>
-<li><a class="reference internal" href="#slice-by-row-names-or-column-names">slice by row names or column names</a></li>
-<li><a class="reference internal" href="#slice-by-a-boolean-vector">slice by a boolean vector</a></li>
+<li><a class="reference internal" href="#slice-by-index-position">Slice by index position</a></li>
+<li><a class="reference internal" href="#slice-by-row-names-or-column-names">Slice by row names or column names</a></li>
+<li><a class="reference internal" href="#slice-by-a-boolean-vector">Slice by a boolean vector</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#range-based-operations">Range based operations</a></li>
-<li><a class="reference internal" href="#combine-operations">Combine operations</a><ul>
-<li><a class="reference internal" href="#combine-experiments-by-column">Combine Experiments by column</a></li>
-</ul>
-</li>
+<li><a class="reference internal" href="#combine-operations">Combine operations</a></li>
 </ul>
 </li>
 </ul>
@@ -579,7 +533,7 @@ For large datasets that won’t fit into memory, lazy representations provided b
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=29d04658"></script>
+</div><script src="_static/documentation_options.js?v=6c02275b"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=32e29ea5"></script>

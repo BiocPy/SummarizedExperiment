@@ -21,14 +21,15 @@ Currently supports `SummarizedExperiment` & `RangedSummarizedExperiment` classes
 First create necessary sample data
 
 ```python
+from random import random
 import pandas as pd
 import numpy as np
-from genomicranges import GenomicRanges
+from biocframe import BiocFrame
 
 nrows = 200
 ncols = 6
 counts = np.random.rand(nrows, ncols)
-df_gr = pd.DataFrame(
+row_data = BiocFrame(
     {
         "seqnames": [
             "chr1",
@@ -51,9 +52,7 @@ df_gr = pd.DataFrame(
     }
 )
 
-gr = genomicranges.from_pandas(df_gr)
-
-colData = pd.DataFrame(
+col_data = pd.DataFrame(
     {
         "treatment": ["ChIP", "Input"] * 3,
     }
@@ -66,19 +65,42 @@ To create a `SummarizedExperiment`,
 from summarizedexperiment import SummarizedExperiment
 
 tse = SummarizedExperiment(
-    assays={"counts": counts}, row_data=df_gr, col_data=colData
+    assays={"counts": counts}, row_data=row_data, column_data=col_data,
+    metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 ```
+
+    ## output
+    class: SummarizedExperiment
+    dimensions: (200, 6)
+    assays(1): ['counts']
+    row_data columns(6): ['seqnames', 'starts', 'ends', 'strand', 'score', 'GC']
+    row_names(0):
+    column_data columns(1): ['treatment']
+    column_names(0):
+    metadata(1): seq_platform
 
 To create a `RangedSummarizedExperiment`
 
 ```python
 from summarizedexperiment import RangedSummarizedExperiment
+from genomicranges import GenomicRanges
 
 trse = RangedSummarizedExperiment(
-    assays={"counts": counts}, row_ranges=gr, col_data=colData
+    assays={"counts": counts}, row_data=row_data,
+    row_ranges=GenomicRanges.from_pandas(row_data.to_pandas()), column_data=col_data
 )
 ```
+
+    ## output
+    class: RangedSummarizedExperiment
+    dimensions: (200, 6)
+    assays(1): ['counts']
+    row_data columns(6): ['seqnames', 'starts', 'ends', 'strand', 'score', 'GC']
+    row_names(0):
+    column_data columns(1): ['treatment']
+    column_names(0):
+    metadata(0):
 
 For more examples, checkout the [documentation](https://biocpy.github.io/SummarizedExperiment/).
 

@@ -160,3 +160,18 @@ def test_SE_only_names():
     assert len(tse.col_data) == 3
     assert tse.row_names is not None
     assert tse.col_names is not None
+
+def test_SE_empty():
+    tse = SummarizedExperiment()
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+    assert tse.shape == (0, 0)
+    assert tse.row_data is not None
+    assert isinstance(tse.row_data, BiocFrame)
+    assert len(tse.row_data) == 0
+    assert tse.col_data is not None
+    assert isinstance(tse.col_data, BiocFrame)
+    assert len(tse.col_data) == 0
+    assert tse.row_names is None
+    assert tse.col_names is None

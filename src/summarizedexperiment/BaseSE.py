@@ -49,7 +49,7 @@ def _guess_assay_shape(assays, rows, cols, row_names, col_names) -> tuple:
 
 
 def _validate_assays(assays, shape) -> tuple:
-    if assays is None or not isinstance(assays, dict): # or len(assays.keys()) == 0
+    if assays is None or not isinstance(assays, dict):  # or len(assays.keys()) == 0
         raise Exception(
             "`assays` must be a dictionary and contain atleast one 2-dimensional matrix."
         )
@@ -179,7 +179,9 @@ class BaseSE:
         """
         self._assays = assays if assays is not None else {}
 
-        self._shape = _guess_assay_shape(self._assays, row_data, column_data, row_names, column_names)
+        self._shape = _guess_assay_shape(
+            self._assays, row_data, column_data, row_names, column_names
+        )
 
         if self._shape is None:
             raise RuntimeError(

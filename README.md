@@ -65,7 +65,8 @@ To create a `SummarizedExperiment`,
 from summarizedexperiment import SummarizedExperiment
 
 tse = SummarizedExperiment(
-    assays={"counts": counts}, row_data=row_data, column_data=col_data, metadata={"seq_platform": "Illumina NovaSeq 6000"},
+    assays={"counts": counts}, row_data=row_data, column_data=col_data, 
+    metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 ```
 
@@ -86,7 +87,8 @@ from summarizedexperiment import RangedSummarizedExperiment
 from genomicranges import GenomicRanges
 
 trse = RangedSummarizedExperiment(
-    assays={"counts": counts}, row_data=row_data, row_ranges=GenomicRanges.from_pandas(row_data.to_pandas()), column_data=col_data
+    assays={"counts": counts}, row_data=row_data, 
+    row_ranges=GenomicRanges.from_pandas(row_data.to_pandas()), column_data=col_data
 )
 ```
 

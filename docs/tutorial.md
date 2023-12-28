@@ -5,7 +5,7 @@ This package provides classes to represent genomic experiments, commonly generat
 A `SummarizedExperiment` contains three slots,
 
 - `row_data`: Feature information e.g. genes, transcripts, exons, etc.
-- `col_data`: Sample information about the columns of the matrices.
+- `column_data`: Sample information about the columns of the matrices.
 - `assays`: A dictionary of matrices with assay names as keys, e.g. counts, logcounts etc.
 
 The package currently provides both `SummarizedExperiment` & `RangedSummarizedExperiment` representations. A key difference between these two is the rows of a `RangedSummarizedExperiment` object is a [GenomicRanges](https://github.com/BiocPy/GenomicRanges), representing genomic regions of interest.
@@ -15,11 +15,15 @@ The package currently provides both `SummarizedExperiment` & `RangedSummarizedEx
 First, lets create random experimental "count" data along with feature and sample information.
 
 ```python
+from random import random
+import pandas as pd
+import numpy as np
+from biocframe import BiocFrame
+
 nrows = 200
 ncols = 6
 counts = np.random.rand(nrows, ncols)
-
-df_gr = pd.DataFrame(
+row_data = BiocFrame(
     {
         "seqnames": [
             "chr1",
@@ -55,7 +59,7 @@ A `SummarizedExperiment` is a base class to represent any genomic experiment. Th
 
 ```python
 se = SummarizedExperiment(
-    assays={"counts": counts}, row_data=df_gr, col_data=col_data
+    assays={"counts": counts}, row_data=row_data, column_data=col_data
 )
 ```
 
@@ -65,52 +69,11 @@ se = SummarizedExperiment(
 
 ```python
 # convert our pandas dataframe to genomic ranges.
-gr = genomicranges.from_pandas(df_gr)
+from genomicranges import GenomicRanges
+gr = GenomicRanges.from_pandas(row_data.to_pandas())
 
-rse = SummarizedExperiment(
-    assays={"counts": counts}, row_ranges=gr, col_data=col_data
-)
-```
-
-### File backed mode for large datasets
-
-Alternatively, SE and RSE supports any matrix that implements the shape property (`shape`) and the slice operation (`__getitem__`).
-For large datasets that won't fit into memory, lazy representations provided by [FileBackedArray](https://github.com/BiocPy/FileBackedArray) can be used as assays. **_Note: This package currently only supports h5 based formats._**
-
-```python
-from filebackedarray import H5BackedSparseData
-
-df_gr = pd.DataFrame(
-    {
-        "seqnames": [
-            "chr1",
-            "chr2",
-            "chr2",
-            "chr2",
-            "chr1",
-            "chr1",
-            "chr3",
-            "chr3",
-            "chr3",
-            "chr3",
-        ]
-        * 100,
-        "starts": range(0, 1000),
-        "ends": range(0, 1000),
-        "strand": ["-", "+", "+", "*", "*", "+", "+", "+", "-", "-"] * 100,
-        "score": range(0, 1000),
-        "GC": [random() for _ in range(10)] * 100,
-    }
-)
-
-col_data = pd.DataFrame({"treatment": ["ChIP"] * 3005,})
-
-assay = H5BackedSparseData("tests/data/tenx.sub.h5", "matrix")
-
-tse = SummarizedExperiment(
-    assays={"counts_backed": assay},
-    row_data=df_gr,
-    col_data=col_data,
+trse = RangedSummarizedExperiment(
+    assays={"counts": counts}, row_data=row_data, row_ranges=gr, column_data=col_data
 )
 ```
 
@@ -121,7 +84,7 @@ Properties can be accessed directly from the class instance.
 ```python
 tse.assays
 tse.row_data or # tse.row_ranges
-tse.col_data
+tse.column_data
 tse.metadata
 
 # Access the counts assay
@@ -132,27 +95,26 @@ tse.assay("counts")
 
 You can subset a `SummarizedExperiment` object using the `[]` slice operator.
 
-### slice by index position
+### Slice by index position
 
 ```python
 # subset the first 10 rows and the first 3 samples
 subset_tse = tse[0:10, 0:3]
 ```
 
-### slice by row names or column names
+### Slice by row names or column names
 
 Alternatively, we can use a sequence of row (feature) or column (sample) names to subset a `SummarizedExperiment` . To demonstrate this, we create a `SummarizedExperiment` object with index names.
 
 ```python
-rowData_with_index_names = pd.DataFrame(
+row_data = BiocFrame(
     {
         "seqnames": ["chr_5", "chr_3", "chr_2"],
         "start": [100, 200, 300],
         "end": [110, 210, 310]
-    },
-    index=["HER2", "BRCA1", "TPFK"],
+    }
 )
-colData_with_index_names = pd.DataFrame(
+col_data = BiocFrame(
     {
         "sample": ["SAM_1", "SAM_3", "SAM_3"],
         "disease": ["True", "True", "True"],
@@ -164,12 +126,14 @@ se_with_index_names = SummarizedExperiment(
         "counts": np.random.poisson(lam=5, size=(3, 3)),
         "lognorm": np.random.lognormal(size=(3, 3))
     },
-    row_data=rowData_with_index_names,
-    col_data=colData_with_index_names
+    row_data=row_data,
+    column_data=col_data,
+    row_names=["HER2", "BRCA1", "TPFK"],
+    column_names=["cell_1", "cell_2", "cell_3"]
 )
 
 # subset by name
-subset_se_with_index_names = se_with_index_names[
+subset = se_with_index_names[
     ["HER2", "BRCA1"], ["cell_1", "cell_3"]
 ]
 ```
@@ -183,7 +147,7 @@ subset_se_with_index_names = se_with_index_names[
 ]
 ```
 
-### slice by a boolean vector
+### Slice by a boolean vector
 
 Similarly you could also slice by a boolean array. **_Note, the boolean vectors should contain the same number of features for the row slice and the same number of samples for the column slice._**
 
@@ -199,9 +163,9 @@ subset_se_with_bools = se_with_index_names[
 `RangedSummarizedExperiment` objects on the other hand supports many interval based operations similar to `GenomicRanges`.
 
 ```python
-query = {"seqnames": ["chr2",], "starts": [4], "ends": [6], "strand": ["+"]}
+query = pd.DataFrame({"seqnames": ["chr2",], "starts": [4], "ends": [6], "strand": ["+"]})
 
-query = GenomicRanges(query)
+query = GenomicRanges.from_pandas(query)
 
 tse.subset_by_overlaps(query)
 ```
@@ -234,7 +198,7 @@ se1 = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3))
     },
     row_data=rowData1,
-    col_data=colData1,
+    column_data=colData1,
     metadata={"seq_type": "paired"},
 )
 
@@ -250,7 +214,6 @@ colData2 = pd.DataFrame(
     {
         "sample": ["SAM_4", "SAM_5", "SAM_6"],
         "disease": ["True", "False", "True"],
-        "doublet_score": [.05, .23, .54]
     },
     index=["cell_4", "cell_5", "cell_6"],
 )
@@ -260,7 +223,7 @@ se2 = SummarizedExperiment(
         "lognorm": np.random.lognormal(size=(3, 3))
     },
     row_data=rowData2,
-    col_data=colData2,
+    column_data=colData2,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 
@@ -287,19 +250,16 @@ se3 = SummarizedExperiment(
         "beta": np.random.beta(a=1, b=1, size=(3, 3))
     },
     row_data=rowData3,
-    col_data=colData3,
+    column_data=colData3,
     metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 ```
 
-### Combine Experiments by column
-
-Concatenate columns (samples or cells) of multiple `SummarizedExperiment` objects, returning a `SummarizedExperiment` with columns equal to the concatenation of columns across all inputs. `combineCols()` allows for differences in the number and names of rows, differences in the available `col_data` fields, and even differences in the available `assays` among the objects being combined.
-
 ```python
-se_combined = se1.combine_cols(se2, se3) # OR se1.combineCols([se2, se3])
+from biocutils import relaxed_combine_columns, combine_columns
+se_combined = combine_columns(se2, se1)
+
+se_relaxed_combine = relaxed_combine_columns(se1, se2, se3)
 ```
 
-Parameters are available to keep duplicate rows, or perform row-wise concatenation instead of index available on the rows.
-
-**_Note: currently does not support range based concatenation._**
+Similarly one can perform `combine_rows` and `relaxed_combine_rows` operations.

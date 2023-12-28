@@ -65,7 +65,7 @@ To create a `SummarizedExperiment`,
 from summarizedexperiment import SummarizedExperiment
 
 tse = SummarizedExperiment(
-    assays={"counts": counts}, row_data=row_data, column_data=col_data
+    assays={"counts": counts}, row_data=row_data, column_data=col_data, metadata={"seq_platform": "Illumina NovaSeq 6000"},
 )
 ```
 
@@ -77,7 +77,7 @@ tse = SummarizedExperiment(
     row_names(0):
     column_data columns(1): ['treatment']
     column_names(0):
-    metadata(0):
+    metadata(1): seq_platform
 
 To create a `RangedSummarizedExperiment`
 

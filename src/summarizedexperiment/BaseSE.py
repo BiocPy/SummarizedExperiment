@@ -1,5 +1,5 @@
 import warnings
-from collections import OrderedDict
+from collections import OrderedDict, namedtuple
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 from warnings import warn
 
@@ -8,11 +8,23 @@ import biocutils as ut
 
 from ._frameutils import _sanitize_frame
 from .type_checks import is_matrix_like
-from .types import SliceResult
 
 __author__ = "jkanche, keviny2"
 __copyright__ = "jkanche"
 __license__ = "MIT"
+
+SliceResult = namedtuple(
+    "SlicerResult",
+    [
+        "rows",
+        "columns",
+        "assays",
+        "row_names",
+        "column_names",
+        "row_indices",
+        "col_indices",
+    ],
+)
 
 
 def _guess_assay_shape(assays, rows, cols) -> tuple:
@@ -164,6 +176,12 @@ class BaseSE:
         self._assays = assays
 
         self._shape = _guess_assay_shape(assays, row_data, column_data)
+
+        if self._shape is None:
+            raise RuntimeError(
+                "Failed to guess the 'shape' from the provided parameters!"
+            )
+
         self._rows = _sanitize_frame(row_data, self._shape[0])
         self._cols = _sanitize_frame(column_data, self._shape[1])
 
@@ -181,7 +199,7 @@ class BaseSE:
             _validate_assays(self._assays, self._shape)
 
             if self._shape is None:
-                raise RuntimeError("Cannot extract 'shape' from assays!")
+                raise RuntimeError("Cannot guess 'shape' from assays!")
 
             _validate_rows(self._rows, self._row_names, self._shape)
             _validate_cols(self._cols, self._column_names, self._shape)
@@ -375,7 +393,7 @@ class BaseSE:
     ######>> row_data <<######
     ##########################
 
-    def get_rowdata(self) -> biocframe.BiocFrame:
+    def get_row_data(self) -> biocframe.BiocFrame:
         """Get features.
 
         Returns:
@@ -383,7 +401,7 @@ class BaseSE:
         """
         return self._rows
 
-    def set_rowdata(
+    def set_row_data(
         self, rows: Optional[biocframe.BiocFrame], in_place: bool = False
     ) -> "BaseSE":
         """Set new feature information.
@@ -413,7 +431,7 @@ class BaseSE:
     @property
     def rowdata(self) -> Dict[str, Any]:
         """Alias for :py:meth:`~get_rowdata`."""
-        return self.get_rowdata()
+        return self.get_row_data()
 
     @rowdata.setter
     def rowdata(self, rows: Optional[biocframe.BiocFrame]):
@@ -425,12 +443,12 @@ class BaseSE:
             "Setting property 'rowdata' is an in-place operation, use 'set_rowdata' instead",
             UserWarning,
         )
-        self.set_rowdata(rows, in_place=True)
+        self.set_row_data(rows, in_place=True)
 
     @property
     def row_data(self) -> Dict[str, Any]:
         """Alias for :py:meth:`~get_rowdata`."""
-        return self.get_rowdata()
+        return self.get_row_data()
 
     @row_data.setter
     def row_data(self, rows: Optional[biocframe.BiocFrame]):
@@ -442,13 +460,13 @@ class BaseSE:
             "Setting property 'rowdata' is an in-place operation, use 'set_rowdata' instead",
             UserWarning,
         )
-        self.set_rowdata(rows, in_place=True)
+        self.set_row_data(rows, in_place=True)
 
     ##########################
     ######>> col_data <<######
     ##########################
 
-    def get_columndata(self) -> biocframe.BiocFrame:
+    def get_column_data(self) -> biocframe.BiocFrame:
         """Get sample data.
 
         Returns:
@@ -456,7 +474,7 @@ class BaseSE:
         """
         return self._cols
 
-    def set_columndata(
+    def set_column_data(
         self, cols: Optional[biocframe.BiocFrame], in_place: bool = False
     ) -> "BaseSE":
         """Set sample data.
@@ -486,10 +504,10 @@ class BaseSE:
     @property
     def columndata(self) -> Dict[str, Any]:
         """Alias for :py:meth:`~get_coldata`."""
-        return self.get_columndata()
+        return self.get_column_data()
 
     @columndata.setter
-    def columndata(self, rows: Optional[biocframe.BiocFrame]):
+    def columndata(self, cols: Optional[biocframe.BiocFrame]):
         """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -498,15 +516,15 @@ class BaseSE:
             "Setting property 'coldata' is an in-place operation, use 'set_columndata' instead",
             UserWarning,
         )
-        self.set_columndata(rows, in_place=True)
+        self.set_column_data(cols, in_place=True)
 
     @property
     def coldata(self) -> Dict[str, Any]:
         """Alias for :py:meth:`~get_coldata`."""
-        return self.get_columndata()
+        return self.get_column_data()
 
     @coldata.setter
-    def coldata(self, rows: Optional[biocframe.BiocFrame]):
+    def coldata(self, cols: Optional[biocframe.BiocFrame]):
         """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -515,15 +533,15 @@ class BaseSE:
             "Setting property 'coldata' is an in-place operation, use 'set_columndata' instead",
             UserWarning,
         )
-        self.set_columndata(rows, in_place=True)
+        self.set_column_data(cols, in_place=True)
 
     @property
     def column_data(self) -> Dict[str, Any]:
         """Alias for :py:meth:`~get_coldata`."""
-        return self.get_columndata()
+        return self.get_column_data()
 
     @column_data.setter
-    def column_data(self, rows: Optional[biocframe.BiocFrame]):
+    def column_data(self, cols: Optional[biocframe.BiocFrame]):
         """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -532,15 +550,15 @@ class BaseSE:
             "Setting property 'coldata' is an in-place operation, use 'set_coldata' instead",
             UserWarning,
         )
-        self.set_columndata(rows, in_place=True)
+        self.set_column_data(cols, in_place=True)
 
     @property
     def col_data(self) -> Dict[str, Any]:
         """Alias for :py:meth:`~get_coldata`."""
-        return self.get_columndata()
+        return self.get_column_data()
 
     @col_data.setter
-    def col_data(self, rows: Optional[biocframe.BiocFrame]):
+    def col_data(self, cols: Optional[biocframe.BiocFrame]):
         """Alias for :py:meth:`~set_coldata` with ``in_place = True``.
 
         As this mutates the original object, a warning is raised.
@@ -549,7 +567,7 @@ class BaseSE:
             "Setting property 'coldata' is an in-place operation, use 'set_columndata' instead",
             UserWarning,
         )
-        self.set_columndata(rows, in_place=True)
+        self.set_column_data(cols, in_place=True)
 
     ##########################
     ######>> row names <<#####
@@ -855,7 +873,10 @@ class BaseSE:
             Experiment data.
         """
         if isinstance(assay, int):
-            if assay < 0 or assay > len(self.assay_names):
+            if assay < 0:
+                raise IndexError("Index cannot be negative.")
+
+            if assay > len(self.assay_names):
                 raise IndexError("Index greater than the number of assays.")
 
             return self.assays[self.assay_names[assay]]
@@ -865,7 +886,9 @@ class BaseSE:
 
             return self.assays[assay]
 
-        raise TypeError(f"'assay' must be a string or integer, provided {type(assay)}.")
+        raise TypeError(
+            f"'assay' must be a string or integer, provided '{type(assay)}'."
+        )
 
     ##########################
     ######>> slicers <<#######
@@ -1025,7 +1048,7 @@ class BaseSE:
         self,
         args: Union[int, str, Sequence, tuple],
     ) -> "BaseSE":
-        """Subset a `SummarizedExperiment`.
+        """Subset a ``SummarizedExperiment``.
 
         Args:
             args:
@@ -1041,7 +1064,8 @@ class BaseSE:
                 columns to retain, based on their names or indices.
 
         Raises:
-            ValueError: If too many or too few slices provided.
+            ValueError:
+                If too many or too few slices provided.
 
         Returns:
             Same type as caller with the sliced rows and columns.
@@ -1074,7 +1098,7 @@ class BaseSE:
         """Transform :py:class:`~BaseSE`-like into a :py:class:`~anndata.AnnData` representation.
 
         Returns:
-            An `AnnData` representation of the experiment.
+            An ``AnnData`` representation of the experiment.
         """
         from anndata import AnnData
 

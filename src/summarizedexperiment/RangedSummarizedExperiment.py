@@ -453,7 +453,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 Whether to ignore strand. Defaults to False.
 
         Raises:
-            If ``query`` is not a ``RangedSummarizedExperiment``
+            TypeError:
+                If ``query`` is not a ``RangedSummarizedExperiment``
                 or ``GenomicRanges``.
 
         Returns:
@@ -494,8 +495,9 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 Whether to ignore strand. Defaults to False.
 
         Raises:
-            If ``query`` is not a ``RangedSummarizedExperiment`` or
-            ``GenomicRanges``.
+            TypeError:
+                If ``query`` is not a ``RangedSummarizedExperiment`` or
+                ``GenomicRanges``.
 
         Returns:
             A List with the same length as ``query``,
@@ -754,9 +756,6 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             in_place:
                 Whether to modify the ``GenomicRanges`` object in place.
 
-        Raises:
-            When parameters were set incorrectly or row_ranges is empty
-
         Returns:
             A new `RangedSummarizedExperiment` object with narrow positions,
             either as a copy of the original or as a reference to the
@@ -814,7 +813,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 Whether to ignore strands. Defaults to False.
 
         Raises:
-            TypeError: If query is not a `RangedSummarizedExperiment` or `GenomicRanges`.
+            TypeError: 
+                If `query` is not a `RangedSummarizedExperiment` or `GenomicRanges`.
 
         Returns:
             A list with the same length as ``query``,
@@ -922,8 +922,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 Whether to modify the object in place. Defaults to False.
 
         Returns:
-            A new sorted
-            `RangedSummarizedExperiment` object.
+            A new sorted `RangedSummarizedExperiment` object.
         """
         _order = self.row_ranges.order(decreasing=decreasing)
 

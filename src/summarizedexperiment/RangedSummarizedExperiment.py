@@ -813,7 +813,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 Whether to ignore strands. Defaults to False.
 
         Raises:
-            TypeError: 
+            TypeError:
                 If `query` is not a `RangedSummarizedExperiment` or `GenomicRanges`.
 
         Returns:

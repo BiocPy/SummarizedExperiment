@@ -161,6 +161,7 @@ def test_SE_only_names():
     assert tse.row_names is not None
     assert tse.col_names is not None
 
+
 def test_SE_empty():
     tse = SummarizedExperiment()
 

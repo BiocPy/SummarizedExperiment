@@ -269,7 +269,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     ######>> row_ranges <<######
     ############################
 
-    def get_rowranges(self) -> GRangesOrGRangesList:
+    def get_row_ranges(self) -> GRangesOrGRangesList:
         """Get genomic feature information.
 
         Returns:
@@ -277,7 +277,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         """
         return self._row_ranges
 
-    def set_rowranges(
+    def set_row_ranges(
         self, row_ranges: Optional[GRangesOrGRangesList], in_place: bool = False
     ) -> "RangedSummarizedExperiment":
         """Set new genomic features.
@@ -304,7 +304,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     @property
     def row_ranges(self) -> GRangesOrGRangesList:
         """Alias for :py:meth:`~get_rowranges`."""
-        return self.get_rowranges()
+        return self.get_row_ranges()
 
     @row_ranges.setter
     def row_ranges(self, row_ranges: GRangesOrGRangesList) -> None:
@@ -313,7 +313,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             "Setting property 'row_ranges' is an in-place operation, use 'set_rowranges' instead",
             UserWarning,
         )
-        return self.set_rowranges(row_ranges=row_ranges, in_place=True)
+        return self.set_row_ranges(row_ranges=row_ranges, in_place=True)
 
     #################################
     ######>> range accessors <<######

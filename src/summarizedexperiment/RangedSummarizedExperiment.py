@@ -24,7 +24,6 @@ GRangesOrGRangesList = Union[GenomicRanges, GenomicRangesList]
 GRangesOrRangeSE = Union[GRangesOrGRangesList, "RangedSummarizedExperiment"]
 
 
-# TODO: technically should be in _type_checks but causes circular imports.
 def _check_gr_or_rse(x: GRangesOrRangeSE):
     """Check if ``x`` is either a `RangedSummarizedExperiment` or `GenomicRanges`.
 
@@ -41,6 +40,11 @@ def _check_gr_or_rse(x: GRangesOrRangeSE):
     ):
         raise TypeError(
             "'x' is not a `RangedSummarizedExperiment`, `GenomicRanges` or `GenomicRangesList`."
+        )
+
+    if isinstance(x, GenomicRangesList):
+        raise NotImplementedError(
+            "'range' operations are not implemented for `GenomicRangesList`."
         )
 
 

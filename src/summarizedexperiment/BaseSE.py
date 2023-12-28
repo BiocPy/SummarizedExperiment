@@ -27,7 +27,7 @@ SliceResult = namedtuple(
 )
 
 
-def _guess_assay_shape(assays, rows, cols) -> tuple:
+def _guess_assay_shape(assays, rows, cols, row_names, col_names) -> tuple:
     _keys = list(assays.keys())
     if len(_keys) > 0:
         _first = _keys[0]
@@ -36,16 +36,20 @@ def _guess_assay_shape(assays, rows, cols) -> tuple:
     _r = 0
     if rows is not None:
         _r = rows.shape[0]
+    elif row_names is not None:
+        _r = len(row_names)
 
     _c = 0
     if cols is not None:
         _c = cols.shape[0]
+    elif col_names is not None:
+        _c = len(col_names)
 
     return (_r, _c)
 
 
 def _validate_assays(assays, shape) -> tuple:
-    if assays is None or not isinstance(assays, dict) or len(assays.keys()) == 0:
+    if assays is None or not isinstance(assays, dict): # or len(assays.keys()) == 0
         raise Exception(
             "`assays` must be a dictionary and contain atleast one 2-dimensional matrix."
         )
@@ -123,7 +127,7 @@ class BaseSE:
 
     def __init__(
         self,
-        assays: Dict[str, Any],
+        assays: Dict[str, Any] = None,
         row_data: Optional[biocframe.BiocFrame] = None,
         column_data: Optional[biocframe.BiocFrame] = None,
         row_names: Optional[List[str]] = None,
@@ -173,9 +177,9 @@ class BaseSE:
             validate:
                 Internal use only.
         """
-        self._assays = assays
+        self._assays = assays if assays is not None else {}
 
-        self._shape = _guess_assay_shape(assays, row_data, column_data)
+        self._shape = _guess_assay_shape(self._assays, row_data, column_data, row_names, column_names)
 
         if self._shape is None:
             raise RuntimeError(

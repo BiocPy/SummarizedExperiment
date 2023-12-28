@@ -28,7 +28,7 @@ class SummarizedExperiment(BaseSE):
 
     def __init__(
         self,
-        assays: Dict[str, Any],
+        assays: Dict[str, Any] = None,
         row_data: Optional[biocframe.BiocFrame] = None,
         column_data: Optional[biocframe.BiocFrame] = None,
         row_names: Optional[List[str]] = None,

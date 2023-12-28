@@ -95,7 +95,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     def __init__(
         self,
-        assays: Dict[str, Any],
+        assays: Dict[str, Any] = None,
         row_ranges: Optional[GRangesOrGRangesList] = None,
         row_data: Optional[biocframe.BiocFrame] = None,
         column_data: Optional[biocframe.BiocFrame] = None,

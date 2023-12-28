@@ -125,3 +125,38 @@ def test_SE_export():
     assert isinstance(tse.row_data, BiocFrame)
     assert tse.col_data is not None
     assert isinstance(tse.col_data, BiocFrame)
+
+
+def test_SE_no_assays():
+    tse = SummarizedExperiment(
+        row_data=BiocFrame(number_of_rows=10), column_data=BiocFrame(number_of_rows=3)
+    )
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+    assert tse.shape == (10, 3)
+    assert tse.row_data is not None
+    assert isinstance(tse.row_data, BiocFrame)
+    assert tse.col_data is not None
+    assert isinstance(tse.col_data, BiocFrame)
+    assert tse.row_names is None
+    assert tse.col_names is None
+
+
+def test_SE_only_names():
+    tse = SummarizedExperiment(
+        row_names=["row_" + str(i) for i in range(10)],
+        column_names=["col_" + str(i) for i in range(3)],
+    )
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+    assert tse.shape == (10, 3)
+    assert tse.row_data is not None
+    assert isinstance(tse.row_data, BiocFrame)
+    assert len(tse.row_data) == 10
+    assert tse.col_data is not None
+    assert isinstance(tse.col_data, BiocFrame)
+    assert len(tse.col_data) == 3
+    assert tse.row_names is not None
+    assert tse.col_names is not None

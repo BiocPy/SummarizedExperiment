@@ -436,7 +436,7 @@ class BaseSE:
         _row_copy = self._rows.copy()
 
         if replace_row_names:
-            _row_copy.row_names = self._row_names
+            return _row_copy.set_row_names(self._row_names, in_place=False)
 
         return _row_copy
 
@@ -472,8 +472,10 @@ class BaseSE:
 
         output = self._define_output(in_place)
         output._rows = rows
+
         if replace_row_names:
-            output._row_names = rows._row_names
+            return output.set_row_names(rows._row_names, in_place=False)
+
         return output
 
     @property
@@ -530,7 +532,7 @@ class BaseSE:
         _col_copy = self._cols.copy()
 
         if replace_row_names:
-            _col_copy.row_names = self._column_names
+            return _col_copy.set_row_names(self._column_names, in_place=False)
 
         return _col_copy
 
@@ -566,8 +568,10 @@ class BaseSE:
 
         output = self._define_output(in_place)
         output._cols = cols
+
         if replace_column_names:
-            output._column_names = cols.row_names
+            return output.set_column_names(cols.row_names, in_place=False)
+
         return output
 
     @property

@@ -117,12 +117,17 @@ def _validate_metadata(metadata):
 
 
 class BaseSE:
-    """Base class for ``SummarizedExperiment``. This class provides common properties and methods that can be utilized
-    across all derived classes.
+    """Base class for ``SummarizedExperiment``. This class provides common
+    properties and methods that can be utilized across all derived classes.
 
     This container represents genomic experiment data in the form of
     ``assays``, features in ``row_data``, sample data in ``column_data``,
     and any other relevant ``metadata``.
+
+    If row_names are not provided, the row_names from row_data are used as
+    the experiment's row names. Similarly if column_names are not provided
+    the row_names of the column_data are used as the experiment's column
+    names.
     """
 
     def __init__(
@@ -150,14 +155,14 @@ class BaseSE:
                 All matrices in assays must be 2-dimensional and have the
                 same shape (number of rows, number of columns).
 
-            rows:
+            row_data:
                 Features, must be the same length as the number of rows of
                 the matrices in assays.
 
                 Feature information is coerced to a
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
-            cols:
+            column_data:
                 Sample data, must be the same length as the number of
                 columns of the matrices in assays.
 
@@ -165,10 +170,20 @@ class BaseSE:
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
             row_names:
-                A list of strings, same as the number of rows.Defaults to None.
+                A list of strings, same as the number of rows.
+
+                If ``row_names`` are not provided, these are inferred from
+                ``row_data``.
+
+                Defaults to None.
 
             column_names:
-                A list of string, same as the number of columns. Defaults to None.
+                A list of string, same as the number of columns.
+
+                if ``column_names`` are not provided, these are inferred from
+                ``column_data``.
+
+                Defaults to None.
 
             metadata:
                 Additional experimental metadata describing the methods.
@@ -191,9 +206,15 @@ class BaseSE:
         self._rows = _sanitize_frame(row_data, self._shape[0])
         self._cols = _sanitize_frame(column_data, self._shape[1])
 
+        if row_names is None:
+            row_names = self._rows.row_names
+
         if row_names is not None and not isinstance(row_names, ut.Names):
             row_names = ut.Names(row_names)
         self._row_names = row_names
+
+        if column_names is None:
+            column_names = self._cols.row_names
 
         if column_names is not None and not isinstance(column_names, ut.Names):
             column_names = ut.Names(column_names)
@@ -399,16 +420,32 @@ class BaseSE:
     ######>> row_data <<######
     ##########################
 
-    def get_row_data(self) -> biocframe.BiocFrame:
-        """Get features.
+    def get_row_data(self, replace_row_names: bool = True) -> biocframe.BiocFrame:
+        """Get features, the `row_names` of row_data are replaced by the row_names
+        from the experiment.
+
+        Args:
+            replace_row_names:
+                Whether to replace `row_data`'s row_names with the row_names
+                from the experiment.
+
+                Defaults to True.
 
         Returns:
             Feature information.
         """
-        return self._rows
+        _row_copy = self._rows.copy()
+
+        if replace_row_names:
+            _row_copy.row_names = self._row_names
+
+        return _row_copy
 
     def set_row_data(
-        self, rows: Optional[biocframe.BiocFrame], in_place: bool = False
+        self,
+        rows: Optional[biocframe.BiocFrame],
+        replace_row_names: bool = False,
+        in_place: bool = False,
     ) -> "BaseSE":
         """Set new feature information.
 
@@ -419,6 +456,10 @@ class BaseSE:
                 If ``rows`` is None, an empty
                 :py:class:`~biocframe.BiocFrame.BiocFrame`
                 object is created.
+
+            replace_row_names:
+                Whether to replace experiment's row_names with the names from the
+                new object. Defaults to False.
 
             in_place:
                 Whether to modify the ``BaseSE`` in place.
@@ -432,6 +473,8 @@ class BaseSE:
 
         output = self._define_output(in_place)
         output._rows = rows
+        if replace_row_names:
+            output._row_names = rows._row_names
         return output
 
     @property
@@ -472,16 +515,31 @@ class BaseSE:
     ######>> col_data <<######
     ##########################
 
-    def get_column_data(self) -> biocframe.BiocFrame:
+    def get_column_data(self, replace_row_names: bool = True) -> biocframe.BiocFrame:
         """Get sample data.
+
+        Args:
+            replace_row_names:
+                Whether to replace `column_data`'s row_names with the
+                row_names from the experiment.
+
+                Defaults to True.
 
         Returns:
             Sample information.
         """
-        return self._cols
+        _col_copy = self._cols.copy()
+
+        if replace_row_names:
+            _col_copy.row_names = self._column_names
+
+        return _col_copy
 
     def set_column_data(
-        self, cols: Optional[biocframe.BiocFrame], in_place: bool = False
+        self,
+        cols: Optional[biocframe.BiocFrame],
+        replace_column_names: bool = False,
+        in_place: bool = False,
     ) -> "BaseSE":
         """Set sample data.
 
@@ -492,6 +550,10 @@ class BaseSE:
                 If ``cols`` is None, an empty
                 :py:class:`~biocframe.BiocFrame.BiocFrame`
                 object is created.
+
+            replace_column_names:
+                Whether to replace experiment's column_names with the names from the
+                new object. Defaults to False.
 
             in_place:
                 Whether to modify the ``BaseSE`` in place.
@@ -505,6 +567,8 @@ class BaseSE:
 
         output = self._define_output(in_place)
         output._cols = cols
+        if replace_column_names:
+            output._column_names = cols.row_names
         return output
 
     @property

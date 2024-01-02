@@ -142,10 +142,20 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.
 
             row_names:
-                A list of strings, same as the number of rows.Defaults to None.
+                A list of strings, same as the number of rows.
+
+                If ``row_names`` are not provided, these are inferred from
+                ``row_data``.
+
+                Defaults to None.
 
             column_names:
-                A list of string, same as the number of columns. Defaults to None.
+                A list of string, same as the number of columns.
+
+                if ``column_names`` are not provided, these are inferred from
+                ``column_data``.
+
+                Defaults to None.
 
             metadata:
                 Additional experimental metadata describing the methods.

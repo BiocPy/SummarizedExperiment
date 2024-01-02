@@ -73,7 +73,7 @@ def test_RSE_props():
     assert tse.width is not None
 
     assert tse.rownames is None
-    assert tse.colnames is None
+    assert tse.colnames is not None
 
 
 def test_RSE_subset():

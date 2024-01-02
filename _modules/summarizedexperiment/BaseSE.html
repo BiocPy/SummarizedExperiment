@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.2.6 and Furo 2023.09.10 -->
-        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.4.0 documentation</title>
+        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.4.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=135e06be" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
@@ -122,7 +122,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.4.0 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.4.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -145,7 +145,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.4.0 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.4.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -325,6 +325,11 @@
 <span class="sd">    This container represents genomic experiment data in the form of</span>
 <span class="sd">    ``assays``, features in ``row_data``, sample data in ``column_data``,</span>
 <span class="sd">    and any other relevant ``metadata``.</span>
+
+<span class="sd">    If row_names are not provided, the row_names from row_data are used as</span>
+<span class="sd">    the experiment&#39;s row names. Similarly if column_names are not provided</span>
+<span class="sd">    the row_names of the column_data are used as the experiment&#39;s column</span>
+<span class="sd">    names.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
@@ -352,14 +357,14 @@
 <span class="sd">                All matrices in assays must be 2-dimensional and have the</span>
 <span class="sd">                same shape (number of rows, number of columns).</span>
 
-<span class="sd">            rows:</span>
+<span class="sd">            row_data:</span>
 <span class="sd">                Features, must be the same length as the number of rows of</span>
 <span class="sd">                the matrices in assays.</span>
 
 <span class="sd">                Feature information is coerced to a</span>
 <span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.</span>
 
-<span class="sd">            cols:</span>
+<span class="sd">            column_data:</span>
 <span class="sd">                Sample data, must be the same length as the number of</span>
 <span class="sd">                columns of the matrices in assays.</span>
 
@@ -367,10 +372,20 @@
 <span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`. Defaults to None.</span>
 
 <span class="sd">            row_names:</span>
-<span class="sd">                A list of strings, same as the number of rows.Defaults to None.</span>
+<span class="sd">                A list of strings, same as the number of rows.</span>
+
+<span class="sd">                If ``row_names`` are not provided, these are inferred from</span>
+<span class="sd">                ``row_data``.</span>
+
+<span class="sd">                Defaults to None.</span>
 
 <span class="sd">            column_names:</span>
-<span class="sd">                A list of string, same as the number of columns. Defaults to None.</span>
+<span class="sd">                A list of string, same as the number of columns.</span>
+
+<span class="sd">                if ``column_names`` are not provided, these are inferred from</span>
+<span class="sd">                ``column_data``.</span>
+
+<span class="sd">                Defaults to None.</span>
 
 <span class="sd">            metadata:</span>
 <span class="sd">                Additional experimental metadata describing the methods.</span>
@@ -393,9 +408,15 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="n">_sanitize_frame</span><span class="p">(</span><span class="n">row_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="o">=</span> <span class="n">_sanitize_frame</span><span class="p">(</span><span class="n">column_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
+        <span class="k">if</span> <span class="n">row_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">row_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">row_names</span>
+
         <span class="k">if</span> <span class="n">row_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">row_names</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">):</span>
             <span class="n">row_names</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">(</span><span class="n">row_names</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span> <span class="o">=</span> <span class="n">row_names</span>
+
+        <span class="k">if</span> <span class="n">column_names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">column_names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">row_names</span>
 
         <span class="k">if</span> <span class="n">column_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">column_names</span><span class="p">,</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">):</span>
             <span class="n">column_names</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">Names</span><span class="p">(</span><span class="n">column_names</span><span class="p">)</span>
@@ -624,19 +645,34 @@
 
 <div class="viewcode-block" id="BaseSE.get_row_data">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.get_row_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_row_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get features.</span>
+    <span class="k">def</span> <span class="nf">get_row_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replace_row_names</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get features, the `row_names` of row_data are replaced by the row_names from the experiment.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            replace_row_names:</span>
+<span class="sd">                Whether to replace `row_data`&#39;s row_names with the row_names</span>
+<span class="sd">                from the experiment.</span>
+
+<span class="sd">                Defaults to True.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Feature information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span></div>
+        <span class="n">_row_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">replace_row_names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_row_copy</span><span class="o">.</span><span class="n">set_row_names</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_row_copy</span></div>
 
 
 <div class="viewcode-block" id="BaseSE.set_row_data">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.set_row_data">[docs]</a>
     <span class="k">def</span> <span class="nf">set_row_data</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">],</span>
+        <span class="n">replace_row_names</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new feature information.</span>
 
@@ -647,6 +683,10 @@
 <span class="sd">                If ``rows`` is None, an empty</span>
 <span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`</span>
 <span class="sd">                object is created.</span>
+
+<span class="sd">            replace_row_names:</span>
+<span class="sd">                Whether to replace experiment&#39;s row_names with the names from the</span>
+<span class="sd">                new object. Defaults to False.</span>
 
 <span class="sd">            in_place:</span>
 <span class="sd">                Whether to modify the ``BaseSE`` in place.</span>
@@ -660,6 +700,10 @@
 
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
         <span class="n">output</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="n">rows</span>
+
+        <span class="k">if</span> <span class="n">replace_row_names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">set_row_names</span><span class="p">(</span><span class="n">rows</span><span class="o">.</span><span class="n">_row_names</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">output</span></div>
 
 
@@ -703,19 +747,34 @@
 
 <div class="viewcode-block" id="BaseSE.get_column_data">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.get_column_data">[docs]</a>
-    <span class="k">def</span> <span class="nf">get_column_data</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">get_column_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">replace_row_names</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get sample data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            replace_row_names:</span>
+<span class="sd">                Whether to replace `column_data`&#39;s row_names with the</span>
+<span class="sd">                row_names from the experiment.</span>
+
+<span class="sd">                Defaults to True.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            Sample information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span></div>
+        <span class="n">_col_copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">replace_row_names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_col_copy</span><span class="o">.</span><span class="n">set_row_names</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_col_copy</span></div>
 
 
 <div class="viewcode-block" id="BaseSE.set_column_data">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.set_column_data">[docs]</a>
     <span class="k">def</span> <span class="nf">set_column_data</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">],</span>
+        <span class="n">replace_column_names</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+        <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set sample data.</span>
 
@@ -726,6 +785,10 @@
 <span class="sd">                If ``cols`` is None, an empty</span>
 <span class="sd">                :py:class:`~biocframe.BiocFrame.BiocFrame`</span>
 <span class="sd">                object is created.</span>
+
+<span class="sd">            replace_column_names:</span>
+<span class="sd">                Whether to replace experiment&#39;s column_names with the names from the</span>
+<span class="sd">                new object. Defaults to False.</span>
 
 <span class="sd">            in_place:</span>
 <span class="sd">                Whether to modify the ``BaseSE`` in place.</span>
@@ -739,6 +802,10 @@
 
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
         <span class="n">output</span><span class="o">.</span><span class="n">_cols</span> <span class="o">=</span> <span class="n">cols</span>
+
+        <span class="k">if</span> <span class="n">replace_column_names</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">output</span><span class="o">.</span><span class="n">set_column_names</span><span class="p">(</span><span class="n">cols</span><span class="o">.</span><span class="n">row_names</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
         <span class="k">return</span> <span class="n">output</span></div>
 
 
@@ -1435,7 +1502,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=6c02275b"></script>
+</div><script src="../../_static/documentation_options.js?v=c87aa342"></script>
     <script src="../../_static/doctools.js?v=888ff710"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=32e29ea5"></script>

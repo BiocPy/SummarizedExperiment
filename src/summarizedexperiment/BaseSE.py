@@ -117,8 +117,8 @@ def _validate_metadata(metadata):
 
 
 class BaseSE:
-    """Base class for ``SummarizedExperiment``. This class provides common
-    properties and methods that can be utilized across all derived classes.
+    """Base class for ``SummarizedExperiment``. This class provides common properties and methods that can be utilized
+    across all derived classes.
 
     This container represents genomic experiment data in the form of
     ``assays``, features in ``row_data``, sample data in ``column_data``,
@@ -421,8 +421,7 @@ class BaseSE:
     ##########################
 
     def get_row_data(self, replace_row_names: bool = True) -> biocframe.BiocFrame:
-        """Get features, the `row_names` of row_data are replaced by the row_names
-        from the experiment.
+        """Get features, the `row_names` of row_data are replaced by the row_names from the experiment.
 
         Args:
             replace_row_names:

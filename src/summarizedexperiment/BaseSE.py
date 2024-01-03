@@ -92,6 +92,9 @@ def _validate_rows(rows, names, shape):
                 f" but provided '{len(names)}'."
             )
 
+        if len(set(names)) != len(names):
+            warn("'row_data' does not contain unique 'row_names'.", UserWarning)
+
 
 def _validate_cols(cols, names, shape):
     if not isinstance(cols, biocframe.BiocFrame):
@@ -109,6 +112,9 @@ def _validate_cols(cols, names, shape):
                 f"Length of 'column_names' mismatch with number of columns. Must be '{shape[1]}'"
                 f" but provided '{len(names)}'."
             )
+
+        if len(set(names)) != len(names):
+            warn("'column_data' does not contain unique 'row_names'.", UserWarning)
 
 
 def _validate_metadata(metadata):

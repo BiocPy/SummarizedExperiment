@@ -18,6 +18,7 @@ In addition the following rules are set to access or update `row_names` and `col
 - On extraction of these objects, the `row_names` in `row_data` and `column_data` are replaced by the equivalents from the SE level.
 - On setting these objects, especially with the functional style (`set_row_data` and `set_column_data` methods), additional options are available to replace the names in the SE object.
 
+Other changes
 - Reduce dependency on a number of external packages.
 - Update docstrings, tests and docs.
 

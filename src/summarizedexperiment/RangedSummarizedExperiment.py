@@ -312,7 +312,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         _validate_rowranges(rows, self._shape)
 
         output = self._define_output(in_place)
-        output._rows = rows
+        output._row_ranges = rows
         return output
 
     @property

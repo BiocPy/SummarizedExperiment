@@ -1180,18 +1180,36 @@ class BaseSE:
             An ``AnnData`` representation of the experiment.
         """
         from anndata import AnnData
+        from delayedarray import (
+            DelayedArray,
+            to_scipy_sparse_matrix,
+            to_dense_array,
+            is_sparse,
+        )
 
         layers = OrderedDict()
         for asy, mat in self.assays.items():
+            if isinstance(mat, DelayedArray) or issubclass(type(mat), DelayedArray):
+                if is_sparse(mat):
+                    mat = to_scipy_sparse_matrix(mat)
+                else:
+                    mat = to_dense_array(mat)
+
             layers[asy] = mat.transpose()
 
         trows = self._rows.to_pandas()
         if self._row_names is not None:
             trows.index = self._row_names
 
+        if trows.empty:
+            trows.index = range(self._shape[0])
+
         tcols = self._cols.to_pandas()
         if self._column_names is not None:
             tcols.index = self._column_names
+
+        if tcols.empty:
+            tcols.index = range(self._shape[1])
 
         obj = AnnData(
             obs=tcols,

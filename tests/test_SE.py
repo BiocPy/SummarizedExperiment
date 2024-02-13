@@ -1,10 +1,11 @@
 from random import random
 
-import genomicranges
 from biocframe import BiocFrame
 import numpy as np
 import pandas as pd
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
+import delayedarray
+from anndata import AnnData
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -176,3 +177,19 @@ def test_SE_empty():
     assert len(tse.col_data) == 0
     assert tse.row_names is None
     assert tse.col_names is None
+
+
+def test_SE_delayed():
+    x = np.random.rand(100, 20)
+    dx = delayedarray.wrap(x)
+
+    tse = SummarizedExperiment({"counts": dx, "lognorm": x})
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+    assert tse.shape == (100, 20)
+
+    adata = tse.to_anndata()
+    assert adata is not None
+    assert isinstance(adata, AnnData)
+    assert adata.shape == (20, 100)

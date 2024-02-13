@@ -1182,17 +1182,26 @@ class BaseSE:
         from anndata import AnnData
         from delayedarray import (
             DelayedArray,
-            to_scipy_sparse_matrix,
-            to_dense_array,
             is_sparse,
+            to_dense_array,
+            to_scipy_sparse_matrix,
         )
 
         layers = OrderedDict()
         for asy, mat in self.assays.items():
             if isinstance(mat, DelayedArray) or issubclass(type(mat), DelayedArray):
                 if is_sparse(mat):
+                    warnings.warn(
+                        "Converting delayedarray into sparse, may require more memory",
+                        RuntimeWarning,
+                    )
+
                     mat = to_scipy_sparse_matrix(mat)
                 else:
+                    warnings.warn(
+                        "Converting delayedarray into dense, may require more memory",
+                        RuntimeWarning,
+                    )
                     mat = to_dense_array(mat)
 
             layers[asy] = mat.transpose()

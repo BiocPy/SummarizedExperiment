@@ -1210,9 +1210,6 @@ class BaseSE:
         if self._row_names is not None:
             trows.index = self._row_names
 
-        if trows.empty:
-            trows.index = range(self._shape[0])
-
         tcols = self._cols.to_pandas()
         if self._column_names is not None:
             tcols.index = self._column_names

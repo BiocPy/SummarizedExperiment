@@ -118,7 +118,7 @@ print(se_delayed)
 
 ## Interop with `anndata`
 
-Converting a `SummarizedExperiment` to an `AnnData` representation is straightforward: 
+Converting a `SummarizedExperiment` to an `AnnData` representation is straightforward:
 
 ```{code-cell}
 adata = se.to_anndata()
@@ -218,11 +218,11 @@ subset_se = se_with_names[:2, ["cell_1", "cell_3"]]
 print(subset_se)
 ```
 
-An `Exception` is raised if a names does not exist. 
+An `Exception` is raised if a names does not exist.
 
 ### Subset by boolean vector
 
-Similarly, you can also slice by a boolean array. 
+Similarly, you can also slice by a boolean array.
 
 Note that the boolean vectors should contain the same number of features for the row slice and the same number of samples for the column slice.
 
@@ -349,7 +349,7 @@ print(se3)
 ```
 
 :::{.callout-important}
-The `combine_rows` or `combine_columns` operations, expect all experiments to contain the same assay names. 
+The `combine_rows` or `combine_columns` operations, expect all experiments to contain the same assay names.
 :::
 
 To combine experiments by row:

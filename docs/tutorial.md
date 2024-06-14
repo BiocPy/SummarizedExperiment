@@ -348,9 +348,7 @@ print(se2)
 print(se3)
 ```
 
-:::{.callout-important}
 The `combine_rows` or `combine_columns` operations, expect all experiments to contain the same assay names.
-:::
 
 To combine experiments by row:
 

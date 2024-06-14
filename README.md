@@ -4,11 +4,13 @@
 
 # SummarizedExperiment
 
-Container to represent genomic experiments, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html).
+This package provides containers to represent genomic experimental data as 2-dimensional matrices, follows Bioconductor's [SummarizedExperiment](https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html). In these matrices, the rows typically denote features or genomic regions of interest, while columns represent samples or cells.
+
+The package currently includes representations for both `SummarizedExperiment` and `RangedSummarizedExperiment`. A distinction lies in the fact `RangedSummarizedExperiment` object provides an additional slot to store genomic regions for each feature and is expected to be `GenomicRanges` (more [here](https://github.com/BiocPy/GenomicRanges/)).
 
 ## Install
 
-Package is published to [PyPI](https://pypi.org/project/summarizedexperiment/),
+To get started, Install the package from [PyPI](https://pypi.org/project/summarizedexperiment/),
 
 ```shell
 pip install summarizedexperiment
@@ -16,9 +18,13 @@ pip install summarizedexperiment
 
 ## Usage
 
-Currently supports `SummarizedExperiment` & `RangedSummarizedExperiment` classes
+A `SummarizedExperiment` contains three key attributes,
 
-First create necessary sample data
+- `assays`: A dictionary of matrices with assay names as keys, e.g. counts, logcounts etc.
+- `row_data`: Feature information e.g. genes, transcripts, exons, etc.
+- `column_data`: Sample information about the columns of the matrices.
+
+First lets mock feature and sample data:
 
 ```python
 from random import random

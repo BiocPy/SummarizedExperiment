@@ -16,7 +16,7 @@ class BioSampleSE(SummarizedExperiment):
 
 ## Add a new slot or attribute
 
-To add a new slot to this class, we accept a new parameter `bio_sample_information` when the class is initialized through the __init__ method. We also provide type hints to set expectations on the accepted types for these arguments. Type hints are helpful for users and are automatically annotated in the documentation. More information on type hints can be found in our [developer guide](https://github.com/BiocPy/developer_guide). 
+To add a new slot to this class, we accept a new parameter `bio_sample_information` when the class is initialized through the __init__ method. We also provide type hints to set expectations on the accepted types for these arguments. Type hints are helpful for users and are automatically annotated in the documentation. More information on type hints can be found in our [developer guide](https://github.com/BiocPy/developer_guide).
 
 We forward the default parameters to the base `SummarizedExperiment` class (using the `super` method) and store the new attribute.
 
@@ -26,7 +26,7 @@ import biocframe
 from typing import Dict, Any, List, Optional
 
 class BioSampleSE(SummarizedExperiment):
-    
+
     def __init__(
         self,
         assays: Dict[str, Any] = None,
@@ -58,15 +58,15 @@ def _validate_bio_sample_information(bio_sample_info):
     if not isinstance(bio_sample_info, biocframe.BiocFrame):
         raise Exception("Biosample information must be a BiocFrame object.")
 
-    # any other validations. for example, if you have expectations on the columns 
-    # of this frame or the number of rows. 
+    # any other validations. for example, if you have expectations on the columns
+    # of this frame or the number of rows.
 ```
 
 Our class now validates the new slot:
 
 ```python
 class BioSampleSE(SummarizedExperiment):
-    
+
     def __init__(
         self,
         assays: Dict[str, Any] = None,
@@ -247,7 +247,7 @@ def _validate_bio_sample_information(bio_sample_info):
         raise Exception("Biosample information must be a BiocFrame object.")
 
 class BioSampleSE(SummarizedExperiment):
-    
+
     def __init__(
         self,
         assays: Dict[str, Any] = None,

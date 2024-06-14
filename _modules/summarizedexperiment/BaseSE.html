@@ -5,9 +5,10 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.4.4 documentation</title>
+        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.4.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -178,7 +179,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.4.4 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.4.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -202,7 +203,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.4.4 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.4.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -211,8 +212,8 @@
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
   <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorial.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../extend_se.html">Extending Classes</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="../../api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../api/summarizedexperiment.html">summarizedexperiment package</a></li>
 </ul>
@@ -396,6 +397,8 @@
 <span class="sd">    names.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
+<div class="viewcode-block" id="BaseSE.__init__">
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.__init__">[docs]</a>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -496,7 +499,8 @@
 
             <span class="n">_validate_rows</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
             <span class="n">_validate_cols</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">)</span>
-            <span class="n">_validate_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span>
+            <span class="n">_validate_metadata</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span></div>
+
 
     <span class="k">def</span> <span class="nf">_define_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">in_place</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
@@ -1590,7 +1594,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=90733dfc"></script>
+</div><script src="../../_static/documentation_options.js?v=340bb9e5"></script>
     <script src="../../_static/doctools.js?v=9a2dae69"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=4e2eecee"></script>

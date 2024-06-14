@@ -3,12 +3,13 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Tutorial" href="tutorial.html" /><link rel="prev" title="SummarizedExperiment" href="index.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
     <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
-        <title>SummarizedExperiment - SummarizedExperiment 0.4.4 documentation</title>
+        <title>SummarizedExperiment - SummarizedExperiment 0.4.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=36a5483c" />
     
     
@@ -179,7 +180,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.4.4 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.4.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -203,7 +204,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.4.4 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.4.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -211,9 +212,9 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul class="current">
-<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+  <ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="extend_se.html">Extending Classes</a></li>
 <li class="toctree-l1 has-children"><a class="reference internal" href="api/modules.html">Module Reference</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Module Reference</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="api/summarizedexperiment.html">summarizedexperiment package</a></li>
 </ul>
@@ -267,18 +268,24 @@
 <img alt="Unit tests" src="https://github.com/BiocPy/SummarizedExperiment/actions/workflows/pypi-test.yml/badge.svg" /></p>
 <section class="tex2jax_ignore mathjax_ignore" id="summarizedexperiment">
 <h1>SummarizedExperiment<a class="headerlink" href="#summarizedexperiment" title="Link to this heading">¶</a></h1>
-<p>Container to represent genomic experiments, follows Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html">SummarizedExperiment</a>.</p>
+<p>This package provides containers to represent genomic experimental data as 2-dimensional matrices, follows Bioconductor’s <a class="reference external" href="https://bioconductor.org/packages/release/bioc/html/SummarizedExperiment.html">SummarizedExperiment</a>. In these matrices, the rows typically denote features or genomic regions of interest, while columns represent samples or cells.</p>
+<p>The package currently includes representations for both <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> and <code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code>. A distinction lies in the fact <code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code> object provides an additional slot to store genomic regions for each feature and is expected to be <code class="docutils literal notranslate"><span class="pre">GenomicRanges</span></code> (more <a class="reference external" href="https://github.com/BiocPy/GenomicRanges/">here</a>).</p>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Link to this heading">¶</a></h2>
-<p>Package is published to <a class="reference external" href="https://pypi.org/project/summarizedexperiment/">PyPI</a>,</p>
+<p>To get started, Install the package from <a class="reference external" href="https://pypi.org/project/summarizedexperiment/">PyPI</a>,</p>
 <div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>summarizedexperiment
 </pre></div>
 </div>
 </section>
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Link to this heading">¶</a></h2>
-<p>Currently supports <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">RangedSummarizedExperiment</span></code> classes</p>
-<p>First create necessary sample data</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> contains three key attributes,</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">assays</span></code>: A dictionary of matrices with assay names as keys, e.g. counts, logcounts etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">row_data</span></code>: Feature information e.g. genes, transcripts, exons, etc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">column_data</span></code>: Sample information about the columns of the matrices.</p></li>
+</ul>
+<p>First lets mock feature and sample data:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">random</span> <span class="kn">import</span> <span class="n">random</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -373,26 +380,8 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="tutorial.html">
-              <div class="page-info">
-                <div class="context">
-                  <span>Next</span>
-                </div>
-                <div class="title">Tutorial</div>
-              </div>
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-            </a>
-          <a class="prev-page" href="index.html">
-              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
-              <div class="page-info">
-                <div class="context">
-                  <span>Previous</span>
-                </div>
-                
-                <div class="title">Home</div>
-                
-              </div>
-            </a>
+          
+          
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -438,7 +427,7 @@ information on PyScaffold see <a class="reference external" href="https://pyscaf
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=90733dfc"></script>
+</div><script src="_static/documentation_options.js?v=340bb9e5"></script>
     <script src="_static/doctools.js?v=9a2dae69"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=4e2eecee"></script>

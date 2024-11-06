@@ -480,7 +480,7 @@ class BaseSE:
         output._rows = rows
 
         if replace_row_names:
-            return output.set_row_names(rows._row_names, in_place=False)
+            return output.set_row_names(rows._row_names, in_place=in_place)
 
         return output
 
@@ -576,7 +576,7 @@ class BaseSE:
         output._cols = cols
 
         if replace_column_names:
-            return output.set_column_names(cols.row_names, in_place=False)
+            return output.set_column_names(cols.row_names, in_place=in_place)
 
         return output
 

@@ -35,17 +35,11 @@ def _check_gr_or_rse(x: GRangesOrRangeSE):
         TypeError:
             Object is not a `RangedSummarizedExperiment` or `GenomicRanges`.
     """
-    if not isinstance(
-        x, (RangedSummarizedExperiment, GenomicRanges, GenomicRangesList)
-    ):
-        raise TypeError(
-            "'x' is not a `RangedSummarizedExperiment`, `GenomicRanges` or `GenomicRangesList`."
-        )
+    if not isinstance(x, (RangedSummarizedExperiment, GenomicRanges, GenomicRangesList)):
+        raise TypeError("'x' is not a `RangedSummarizedExperiment`, `GenomicRanges` or `GenomicRangesList`.")
 
     if isinstance(x, GenomicRangesList):
-        raise NotImplementedError(
-            "'range' operations are not implemented for `GenomicRangesList`."
-        )
+        raise NotImplementedError("'range' operations are not implemented for `GenomicRangesList`.")
 
 
 def _access_granges(x: GRangesOrRangeSE) -> GenomicRanges:
@@ -68,14 +62,11 @@ def _access_granges(x: GRangesOrRangeSE) -> GenomicRanges:
 def _validate_rowranges(row_ranges, shape):
     if not (isinstance(row_ranges, (GenomicRanges, GenomicRangesList))):
         raise TypeError(
-            "`row_ranges` must be a `GenomicRanges` or `GenomicRangesList`"
-            f" , provided {type(row_ranges)}."
+            "`row_ranges` must be a `GenomicRanges` or `GenomicRangesList`" f" , provided {type(row_ranges)}."
         )
 
     if len(row_ranges) != shape[0]:
-        raise ValueError(
-            "Number of features in `row_ranges` and number of rows in assays do not match."
-        )
+        raise ValueError("Number of features in `row_ranges` and number of rows in assays do not match.")
 
 
 def _sanitize_ranges_frame(frame, num_rows: int):
@@ -269,10 +260,14 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         output += f"assays({len(self.assay_names)}): {ut.print_truncated_list(self.assay_names)}\n"
 
-        output += f"row_data columns({len(self._rows.column_names)}): {ut.print_truncated_list(self._rows.column_names)}\n"
+        output += (
+            f"row_data columns({len(self._rows.column_names)}): {ut.print_truncated_list(self._rows.column_names)}\n"
+        )
         output += f"row_names({0 if self._row_names is None else len(self._row_names)}): {' ' if self._row_names is None else ut.print_truncated_list(self._row_names)}\n"
 
-        output += f"column_data columns({len(self._cols.column_names)}): {ut.print_truncated_list(self._cols.column_names)}\n"
+        output += (
+            f"column_data columns({len(self._cols.column_names)}): {ut.print_truncated_list(self._cols.column_names)}\n"
+        )
         output += f"column_names({0 if self._column_names is None else len(self._column_names)}): {' ' if self._column_names is None else ut.print_truncated_list(self._column_names)}\n"
 
         output += f"metadata({str(len(self.metadata))}): {ut.print_truncated_list(list(self.metadata.keys()), sep=' ', include_brackets=False, transform=lambda y: y)}\n"
@@ -421,9 +416,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     ######>> range ops <<#######
     ############################
 
-    def coverage(
-        self, shift: int = 0, width: Optional[int] = None, weight: int = 1
-    ) -> Dict[str, np.ndarray]:
+    def coverage(self, shift: int = 0, width: Optional[int] = None, weight: int = 1) -> Dict[str, np.ndarray]:
         """Calculate coverage for each chromosome.
 
         Args:
@@ -480,9 +473,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         qranges = _access_granges(query)
 
-        res = self.row_ranges.nearest(
-            query=qranges, select=select, ignore_strand=ignore_strand
-        )
+        res = self.row_ranges.nearest(query=qranges, select=select, ignore_strand=ignore_strand)
         return res
 
     def precede(
@@ -522,9 +513,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         qranges = _access_granges(query)
 
-        res = self.row_ranges.precede(
-            query=qranges, select=select, ignore_strand=ignore_strand
-        )
+        res = self.row_ranges.precede(query=qranges, select=select, ignore_strand=ignore_strand)
         return res
 
     def follow(
@@ -562,9 +551,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
         qranges = _access_granges(query)
 
-        res = self.row_ranges.follow(
-            query=qranges, select=select, ignore_strand=ignore_strand
-        )
+        res = self.row_ranges.follow(query=qranges, select=select, ignore_strand=ignore_strand)
         return res
 
     def flank(
@@ -646,9 +633,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             either as a copy of the original or as a reference to the
             (in-place-modified) original.
         """
-        new_ranges = self.row_ranges.resize(
-            width=width, fix=fix, ignore_strand=ignore_strand, in_place=False
-        )
+        new_ranges = self.row_ranges.resize(width=width, fix=fix, ignore_strand=ignore_strand, in_place=False)
 
         output = self._define_output(in_place=in_place)
         output._row_ranges = new_ranges
@@ -702,9 +687,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             promoter regions, either as a copy of the original or as a reference to the
             (in-place-modified) original.
         """
-        new_ranges = self.row_ranges.promoters(
-            upstream=upstream, downstream=downstream, in_place=False
-        )
+        new_ranges = self.row_ranges.promoters(upstream=upstream, downstream=downstream, in_place=False)
 
         output = self._define_output(in_place=in_place)
         output._row_ranges = new_ranges
@@ -738,9 +721,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             either as a copy of the original or as a reference to the
             (in-place-modified) original.
         """
-        new_ranges = self.row_ranges.restrict(
-            start=start, end=end, keep_all_ranges=keep_all_ranges, in_place=False
-        )
+        new_ranges = self.row_ranges.restrict(start=start, end=end, keep_all_ranges=keep_all_ranges, in_place=False)
 
         output = self._define_output(in_place=in_place)
         output._row_ranges = new_ranges
@@ -775,9 +756,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             either as a copy of the original or as a reference to the
             (in-place-modified) original.
         """
-        new_ranges = self.row_ranges.narrow(
-            start=start, width=width, end=end, in_place=False
-        )
+        new_ranges = self.row_ranges.narrow(start=start, width=width, end=end, in_place=False)
 
         output = self._define_output(in_place=in_place)
         output._row_ranges = new_ranges
@@ -923,9 +902,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         """
         return self.row_ranges.order(decreasing=decreasing)
 
-    def sort(
-        self, decreasing: bool = False, in_place: bool = False
-    ) -> "RangedSummarizedExperiment":
+    def sort(self, decreasing: bool = False, in_place: bool = False) -> "RangedSummarizedExperiment":
         """Sort by ranges.
 
         Args:

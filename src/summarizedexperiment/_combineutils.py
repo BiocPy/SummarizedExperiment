@@ -63,13 +63,8 @@ def check_assays_are_equal(assays):
     _first_keys = set(list(_first.keys()))
 
     for x in assays[1:]:
-        if (
-            len(list(_first_keys - set(x.keys()))) != 0
-            or len(list(set(x.keys()) - _first_keys)) != 0
-        ):
-            raise ValueError(
-                "Not all experiments contain all the assays, try 'relaxed_combine_*' methods."
-            )
+        if len(list(_first_keys - set(x.keys()))) != 0 or len(list(set(x.keys()) - _first_keys)) != 0:
+            raise ValueError("Not all experiments contain all the assays, try 'relaxed_combine_*' methods.")
 
 
 def merge_frame_names(frames: BiocFrame):

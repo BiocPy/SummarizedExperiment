@@ -4,8 +4,8 @@
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
-    <!-- Generated with Sphinx 7.4.7 and Furo 2024.08.06 -->
-        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.4.6 documentation</title>
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.4.6 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.4.6 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -296,9 +296,7 @@
 
 <span class="k">def</span> <span class="nf">_validate_assays</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">assays</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">assays</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>  <span class="c1"># or len(assays.keys()) == 0</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;`assays` must be a dictionary and contain atleast one 2-dimensional matrix.&quot;</span>
-        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;`assays` must be a dictionary and contain atleast one 2-dimensional matrix.&quot;</span><span class="p">)</span>
 
     <span class="k">for</span> <span class="n">asy</span><span class="p">,</span> <span class="n">mat</span> <span class="ow">in</span> <span class="n">assays</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_matrix_like</span><span class="p">(</span><span class="n">mat</span><span class="p">):</span>
@@ -315,10 +313,7 @@
             <span class="k">continue</span>
 
         <span class="k">if</span> <span class="n">mat</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">shape</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;Assay: &#39;</span><span class="si">{</span><span class="n">asy</span><span class="si">}</span><span class="s2">&#39; must be of shape &#39;</span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s2">&#39;&quot;</span>
-                <span class="sa">f</span><span class="s2">&quot; but provided &#39;</span><span class="si">{</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Assay: &#39;</span><span class="si">{</span><span class="n">asy</span><span class="si">}</span><span class="s2">&#39; must be of shape &#39;</span><span class="si">{</span><span class="n">shape</span><span class="si">}</span><span class="s2">&#39;&quot;</span> <span class="sa">f</span><span class="s2">&quot; but provided &#39;</span><span class="si">{</span><span class="n">mat</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_validate_rows</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">shape</span><span class="p">):</span>
@@ -450,14 +445,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span> <span class="o">=</span> <span class="n">assays</span> <span class="k">if</span> <span class="n">assays</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">{}</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">_guess_assay_shape</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">column_data</span><span class="p">,</span> <span class="n">row_names</span><span class="p">,</span> <span class="n">column_names</span>
-        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="n">_guess_assay_shape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">,</span> <span class="n">row_data</span><span class="p">,</span> <span class="n">column_data</span><span class="p">,</span> <span class="n">row_names</span><span class="p">,</span> <span class="n">column_names</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Failed to guess the &#39;shape&#39; from the provided parameters!&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Failed to guess the &#39;shape&#39; from the provided parameters!&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_rows</span> <span class="o">=</span> <span class="n">_sanitize_frame</span><span class="p">(</span><span class="n">row_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_cols</span> <span class="o">=</span> <span class="n">_sanitize_frame</span><span class="p">(</span><span class="n">column_data</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
@@ -628,10 +619,14 @@
 
         <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;assays(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assay_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">assay_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;row_data columns(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;row_data columns(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
         <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;row_names(</span><span class="si">{</span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;column_data columns(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;column_data columns(</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="o">.</span><span class="n">column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
         <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;column_names(</span><span class="si">{</span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;metadata(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">include_brackets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="w"> </span><span class="n">transform</span><span class="o">=</span><span class="k">lambda</span><span class="w"> </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -948,9 +943,7 @@
 
 <div class="viewcode-block" id="BaseSE.set_row_names">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.set_row_names">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_row_names</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">set_row_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new row names.</span>
 
 <span class="sd">        Args:</span>
@@ -1026,9 +1019,7 @@
 
 <div class="viewcode-block" id="BaseSE.set_column_names">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.set_column_names">[docs]</a>
-    <span class="k">def</span> <span class="nf">set_column_names</span><span class="p">(</span>
-        <span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">set_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">names</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new column names.</span>
 
 <span class="sd">        Args:</span>
@@ -1153,9 +1144,7 @@
 <span class="sd">            or as a reference to the (in-place-modified) original.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;`metadata` must be a dictionary, provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span>
-            <span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`metadata` must be a dictionary, provided </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">metadata</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
         <span class="n">output</span><span class="o">.</span><span class="n">_metadata</span> <span class="o">=</span> <span class="n">metadata</span>
         <span class="k">return</span> <span class="n">output</span></div>
@@ -1275,9 +1264,7 @@
 
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assays</span><span class="p">[</span><span class="n">assay</span><span class="p">]</span>
 
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;&#39;assay&#39; must be a string or integer, provided &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">assay</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;.&quot;</span>
-        <span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&#39;assay&#39; must be a string or integer, provided &#39;</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">assay</span><span class="p">)</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span></div>
 
 
     <span class="c1">##########################</span>
@@ -1287,18 +1274,14 @@
     <span class="k">def</span> <span class="nf">_normalize_row_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rows</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]):</span>
         <span class="n">_scalar</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">rows</span> <span class="o">!=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
-            <span class="n">rows</span><span class="p">,</span> <span class="n">_scalar</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">normalize_subscript</span><span class="p">(</span>
-                <span class="n">rows</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span>
-            <span class="p">)</span>
+            <span class="n">rows</span><span class="p">,</span> <span class="n">_scalar</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">normalize_subscript</span><span class="p">(</span><span class="n">rows</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rows</span><span class="p">,</span> <span class="n">_scalar</span>
 
     <span class="k">def</span> <span class="nf">_normalize_column_slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]):</span>
         <span class="n">_scalar</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">if</span> <span class="n">columns</span> <span class="o">!=</span> <span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">):</span>
-            <span class="n">columns</span><span class="p">,</span> <span class="n">_scalar</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">normalize_subscript</span><span class="p">(</span>
-                <span class="n">columns</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span>
-            <span class="p">)</span>
+            <span class="n">columns</span><span class="p">,</span> <span class="n">_scalar</span> <span class="o">=</span> <span class="n">ut</span><span class="o">.</span><span class="n">normalize_subscript</span><span class="p">(</span><span class="n">columns</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">columns</span><span class="p">,</span> <span class="n">_scalar</span>
 
@@ -1414,9 +1397,7 @@
 
         <span class="n">new_assays</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subset_assays</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">columns</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="n">SliceResult</span><span class="p">(</span>
-            <span class="n">new_rows</span><span class="p">,</span> <span class="n">new_cols</span><span class="p">,</span> <span class="n">new_assays</span><span class="p">,</span> <span class="n">new_row_names</span><span class="p">,</span> <span class="n">new_col_names</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span>
-        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">SliceResult</span><span class="p">(</span><span class="n">new_rows</span><span class="p">,</span> <span class="n">new_cols</span><span class="p">,</span> <span class="n">new_assays</span><span class="p">,</span> <span class="n">new_row_names</span><span class="p">,</span> <span class="n">new_col_names</span><span class="p">,</span> <span class="n">rows</span><span class="p">,</span> <span class="n">columns</span><span class="p">)</span>
 
 <div class="viewcode-block" id="BaseSE.get_slice">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.get_slice">[docs]</a>
@@ -1480,13 +1461,9 @@
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_slice</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">` only supports 2-dimensional slicing.&quot;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">` only supports 2-dimensional slicing.&quot;</span><span class="p">)</span>
 
-        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="s2">&quot;args must be a sequence or a scalar integer or string or a tuple of atmost 2 values.&quot;</span>
-        <span class="p">)</span></div>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;args must be a sequence or a scalar integer or string or a tuple of atmost 2 values.&quot;</span><span class="p">)</span></div>
 
 
     <span class="c1">################################</span>
@@ -1581,8 +1558,8 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=03f3338f"></script>
-    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+</div><script src="../../_static/documentation_options.js?v=1dd76d02"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>
     </body>

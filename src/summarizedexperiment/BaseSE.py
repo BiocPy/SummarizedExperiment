@@ -50,9 +50,7 @@ def _guess_assay_shape(assays, rows, cols, row_names, col_names) -> tuple:
 
 def _validate_assays(assays, shape) -> tuple:
     if assays is None or not isinstance(assays, dict):  # or len(assays.keys()) == 0
-        raise Exception(
-            "`assays` must be a dictionary and contain atleast one 2-dimensional matrix."
-        )
+        raise Exception("`assays` must be a dictionary and contain atleast one 2-dimensional matrix.")
 
     for asy, mat in assays.items():
         if not is_matrix_like(mat):
@@ -69,10 +67,7 @@ def _validate_assays(assays, shape) -> tuple:
             continue
 
         if mat.shape != shape:
-            raise ValueError(
-                f"Assay: '{asy}' must be of shape '{shape}'"
-                f" but provided '{mat.shape}'."
-            )
+            raise ValueError(f"Assay: '{asy}' must be of shape '{shape}'" f" but provided '{mat.shape}'.")
 
 
 def _validate_rows(rows, names, shape):
@@ -200,14 +195,10 @@ class BaseSE:
         """
         self._assays = assays if assays is not None else {}
 
-        self._shape = _guess_assay_shape(
-            self._assays, row_data, column_data, row_names, column_names
-        )
+        self._shape = _guess_assay_shape(self._assays, row_data, column_data, row_names, column_names)
 
         if self._shape is None:
-            raise RuntimeError(
-                "Failed to guess the 'shape' from the provided parameters!"
-            )
+            raise RuntimeError("Failed to guess the 'shape' from the provided parameters!")
 
         self._rows = _sanitize_frame(row_data, self._shape[0])
         self._cols = _sanitize_frame(column_data, self._shape[1])
@@ -362,10 +353,14 @@ class BaseSE:
 
         output += f"assays({len(self.assay_names)}): {ut.print_truncated_list(self.assay_names)}\n"
 
-        output += f"row_data columns({len(self._rows.column_names)}): {ut.print_truncated_list(self._rows.column_names)}\n"
+        output += (
+            f"row_data columns({len(self._rows.column_names)}): {ut.print_truncated_list(self._rows.column_names)}\n"
+        )
         output += f"row_names({0 if self._row_names is None else len(self._row_names)}): {' ' if self._row_names is None else ut.print_truncated_list(self._row_names)}\n"
 
-        output += f"column_data columns({len(self._cols.column_names)}): {ut.print_truncated_list(self._cols.column_names)}\n"
+        output += (
+            f"column_data columns({len(self._cols.column_names)}): {ut.print_truncated_list(self._cols.column_names)}\n"
+        )
         output += f"column_names({0 if self._column_names is None else len(self._column_names)}): {' ' if self._column_names is None else ut.print_truncated_list(self._column_names)}\n"
 
         output += f"metadata({str(len(self.metadata))}): {ut.print_truncated_list(list(self.metadata.keys()), sep=' ', include_brackets=False, transform=lambda y: y)}\n"
@@ -659,9 +654,7 @@ class BaseSE:
         """
         return self._row_names
 
-    def set_row_names(
-        self, names: Optional[List[str]], in_place: bool = False
-    ) -> "BaseSE":
+    def set_row_names(self, names: Optional[List[str]], in_place: bool = False) -> "BaseSE":
         """Set new row names.
 
         Args:
@@ -731,9 +724,7 @@ class BaseSE:
         """
         return self._column_names
 
-    def set_column_names(
-        self, names: Optional[List[str]], in_place: bool = False
-    ) -> "BaseSE":
+    def set_column_names(self, names: Optional[List[str]], in_place: bool = False) -> "BaseSE":
         """Set new column names.
 
         Args:
@@ -852,9 +843,7 @@ class BaseSE:
             or as a reference to the (in-place-modified) original.
         """
         if not isinstance(metadata, dict):
-            raise TypeError(
-                f"`metadata` must be a dictionary, provided {type(metadata)}."
-            )
+            raise TypeError(f"`metadata` must be a dictionary, provided {type(metadata)}.")
         output = self._define_output(in_place)
         output._metadata = metadata
         return output
@@ -965,9 +954,7 @@ class BaseSE:
 
             return self.assays[assay]
 
-        raise TypeError(
-            f"'assay' must be a string or integer, provided '{type(assay)}'."
-        )
+        raise TypeError(f"'assay' must be a string or integer, provided '{type(assay)}'.")
 
     ##########################
     ######>> slicers <<#######
@@ -976,18 +963,14 @@ class BaseSE:
     def _normalize_row_slice(self, rows: Union[str, int, bool, Sequence]):
         _scalar = None
         if rows != slice(None):
-            rows, _scalar = ut.normalize_subscript(
-                rows, len(self._rows), self._row_names
-            )
+            rows, _scalar = ut.normalize_subscript(rows, len(self._rows), self._row_names)
 
         return rows, _scalar
 
     def _normalize_column_slice(self, columns: Union[str, int, bool, Sequence]):
         _scalar = None
         if columns != slice(None):
-            columns, _scalar = ut.normalize_subscript(
-                columns, len(self._cols), self._column_names
-            )
+            columns, _scalar = ut.normalize_subscript(columns, len(self._cols), self._column_names)
 
         return columns, _scalar
 
@@ -1100,9 +1083,7 @@ class BaseSE:
 
         new_assays = self.subset_assays(rows=rows, columns=columns)
 
-        return SliceResult(
-            new_rows, new_cols, new_assays, new_row_names, new_col_names, rows, columns
-        )
+        return SliceResult(new_rows, new_cols, new_assays, new_row_names, new_col_names, rows, columns)
 
     def get_slice(
         self,
@@ -1161,13 +1142,9 @@ class BaseSE:
             elif len(args) == 2:
                 return self.get_slice(args[0], args[1])
             else:
-                raise ValueError(
-                    f"`{type(self).__name__}` only supports 2-dimensional slicing."
-                )
+                raise ValueError(f"`{type(self).__name__}` only supports 2-dimensional slicing.")
 
-        raise TypeError(
-            "args must be a sequence or a scalar integer or string or a tuple of atmost 2 values."
-        )
+        raise TypeError("args must be a sequence or a scalar integer or string or a tuple of atmost 2 values.")
 
     ################################
     ######>> AnnData interop <<#####

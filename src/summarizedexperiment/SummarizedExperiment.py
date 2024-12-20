@@ -90,9 +90,7 @@ class SummarizedExperiment(BaseSE):
         """
 
         if isinstance(row_data, GenomicRanges):
-            warn(
-                "`row_data` is `GenomicRanges`, consider using `RangeSummarizedExperiment`."
-            )
+            warn("`row_data` is `GenomicRanges`, consider using `RangeSummarizedExperiment`.")
 
         super().__init__(
             assays,

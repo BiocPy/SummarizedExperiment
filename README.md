@@ -1,6 +1,6 @@
 [![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)
 [![PyPI-Server](https://img.shields.io/pypi/v/SummarizedExperiment.svg)](https://pypi.org/project/SummarizedExperiment/)
-![Unit tests](https://github.com/BiocPy/SummarizedExperiment/actions/workflows/pypi-test.yml/badge.svg)
+![Unit tests](https://github.com/BiocPy/SummarizedExperiment/actions/workflows/run-tests.yml/badge.svg)
 
 # SummarizedExperiment
 

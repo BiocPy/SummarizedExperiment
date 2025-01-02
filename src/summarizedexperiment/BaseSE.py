@@ -250,8 +250,8 @@ class BaseSE:
         _rows_copy = deepcopy(self._rows)
         _cols_copy = deepcopy(self._cols)
         _metadata_copy = deepcopy(self.metadata)
-        _row_names_copy = None if self._row_names is None else deepcopy(self._row_names)
-        _col_names_copy = None if self._column_names is None else deepcopy(self._column_names)
+        _row_names_copy = deepcopy(self._row_names)
+        _col_names_copy = deepcopy(self._column_names)
 
         current_class_const = type(self)
         return current_class_const(
@@ -270,12 +270,12 @@ class BaseSE:
         """
         current_class_const = type(self)
         return current_class_const(
-            assays=self._assays.copy(),
-            row_data=self._rows.__copy__(),
-            column_data=self._cols.__copy__(),
-            row_names=None if self._row_names is None else self._row_names.copy(),
-            column_names=None if self._column_names is None else self._column_names.copy(),
-            metadata=self._metadata.copy(),
+            assays=self._assays,
+            row_data=self._rows,
+            column_data=self._cols,
+            row_names=self._row_names,
+            column_names=self._column_names,
+            metadata=self._metadata,
         )
 
     def copy(self):
@@ -961,7 +961,7 @@ class BaseSE:
         return self.get_assay(assay)
 
     def set_assay(self, name: str, assay: Any, in_place: bool = False) -> "BaseSE":
-        """Add or Replace :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s.
+        """Add or replace :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s.
 
         Args:
             name:
@@ -989,6 +989,8 @@ class BaseSE:
             raise ValueError("Porvided assay does not match the dimensions of the experiment.")
 
         output = self._define_output(in_place)
+        if in_place is False:
+            output._assays = output._assays.copy()
         output._assays[name] = assay
         return output
 

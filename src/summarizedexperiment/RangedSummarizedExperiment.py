@@ -184,8 +184,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         _rows_copy = deepcopy(self._rows)
         _rowranges_copy = deepcopy(self._row_ranges)
         _cols_copy = deepcopy(self._cols)
-        _row_names_copy = None if self._row_names is None else deepcopy(self._row_names)
-        _col_names_copy = None if self._column_names is None else deepcopy(self._column_names)
+        _row_names_copy = deepcopy(self._row_names)
+        _col_names_copy = deepcopy(self._column_names)
         _metadata_copy = deepcopy(self.metadata)
 
         current_class_const = type(self)
@@ -206,13 +206,13 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         """
         current_class_const = type(self)
         return current_class_const(
-            assays=self._assays.copy(),
-            row_ranges=self._row_ranges.__copy__(),
-            row_data=self._rows.__copy__(),
-            column_data=self._cols.__copy__(),
-            row_names=None if self._row_names is None else self._row_names.copy(),
-            column_names=None if self._column_names is None else self._column_names.copy(),
-            metadata=self._metadata.copy(),
+            assays=self._assays,
+            row_ranges=self._row_ranges,
+            row_data=self._rows,
+            column_data=self._cols,
+            row_names=self._row_names,
+            column_names=self._column_names,
+            metadata=self._metadata,
         )
 
     def copy(self):
@@ -933,11 +933,11 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         return relaxed_combine_columns(self, *other)
 
     def combine_rows(self, *other) -> "RangedSummarizedExperiment":
-        """Wrapper around :py:func:`~biocutils.combine_rows`."""
+        """Wrapper around :py:func:`~combine_rows`."""
         return combine_rows(self, *other)
 
     def combine_columns(self, *other) -> "RangedSummarizedExperiment":
-        """Wrapper around :py:func:`~biocutils.combine_columns`."""
+        """Wrapper around :py:func:`~combine_columns`."""
         return combine_columns(self, *other)
 
 

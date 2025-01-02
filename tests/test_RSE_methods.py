@@ -212,10 +212,10 @@ def test_SE_assay_getters_and_setters():
     new_tse = tse.set_assay("new_counts", assay=np.random.rand(nrows, ncols), in_place=False)
     assert new_tse.get_assay_names() != tse.get_assay_names()
     with pytest.raises(Exception):
-        tse.get_assay("new_counts") 
+        tse.get_assay("new_counts")
     assert new_tse.get_assay("new_counts") is not None
 
     tse.set_assay("new_counts", assay=np.random.rand(nrows, ncols), in_place=True)
     assert new_tse.get_assay_names() == tse.get_assay_names()
-    assert tse.get_assay("new_counts") is not None 
+    assert tse.get_assay("new_counts") is not None
     assert new_tse.get_assay("new_counts") is not None

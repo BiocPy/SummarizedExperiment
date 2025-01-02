@@ -1,5 +1,10 @@
 # Changelog
 
+## Version 0.5.1
+
+- Add wrapper methods to combine Summarized and RangedSummarized by rows or columns.
+- Implement getters and setters to access and modify an assay.
+
 ## Version 0.5.0
 
 - chore: Remove Python 3.8 (EOL)

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Extending summarized experiments" href="extend_se.html" /><link rel="prev" title="SummarizedExperiment" href="index.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Represent genomic experimental data - SummarizedExperiment 0.5.0 documentation</title>
+        <title>Represent genomic experimental data - SummarizedExperiment 0.5.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.5.0 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.5.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.5.0 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.5.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -478,13 +478,13 @@ assay names (functional style):  [&#39;counts&#39;]
 BiocFrame with 200 rows and 6 columns
       seqnames  starts    ends strand   score                  GC
         &lt;list&gt; &lt;range&gt; &lt;range&gt; &lt;list&gt; &lt;range&gt;              &lt;list&gt;
-  [0]     chr1     100     110      -       0 0.37503991252783586
-  [1]     chr2     101     111      +       1  0.6175600466773677
-  [2]     chr2     102     112      +       2  0.4201424037075876
+  [0]     chr1     100     110      -       0  0.8673681188216336
+  [1]     chr2     101     111      +       1  0.4065035157737843
+  [2]     chr2     102     112      +       2  0.5327447134995476
            ...     ...     ...    ...     ...                 ...
-[197]     chr3     297     307      +     197 0.40139855669777924
-[198]     chr3     298     308      -     198  0.3722467867538948
-[199]     chr3     299     309      -     199 0.42477100508146803
+[197]     chr3     297     307      +     197  0.2407767104481533
+[198]     chr3     298     308      -     198 0.15026460680564435
+[199]     chr3     299     309      -     199 0.27159897814320766
 </pre></div>
 </div>
 </div>
@@ -499,19 +499,19 @@ BiocFrame with 200 rows and 6 columns
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.59795609, 0.62155825, 0.8727085 , 0.00395406, 0.74159132,
-        0.1066596 ],
-       [0.20588628, 0.97506708, 0.07007381, 0.69548945, 0.45808066,
-        0.851549  ],
-       [0.3135661 , 0.01751217, 0.35943802, 0.32832273, 0.01482557,
-        0.21476985],
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.39240472, 0.67682937, 0.54044512, 0.85937853, 0.53653392,
+        0.57032339],
+       [0.29386434, 0.21347611, 0.6683107 , 0.57858459, 0.01909133,
+        0.20315438],
+       [0.87263391, 0.70884166, 0.79334317, 0.04326114, 0.96362158,
+        0.43202422],
        ...,
-       [0.65045949, 0.85052304, 0.43881317, 0.13028278, 0.09381853,
-        0.55696146],
-       [0.86190603, 0.79272012, 0.92247548, 0.7497825 , 0.3103856 ,
-        0.45492286],
-       [0.87260517, 0.19041163, 0.43947095, 0.05731805, 0.10287887,
-        0.81491052]], shape=(200, 6))
+       [0.97805456, 0.37367596, 0.06190818, 0.44011284, 0.50315026,
+        0.14090611],
+       [0.21043756, 0.39755325, 0.90823671, 0.51620949, 0.58209097,
+        0.29014709],
+       [0.3892211 , 0.43460188, 0.05299932, 0.85388759, 0.14453313,
+        0.74197302]], shape=(200, 6))
 </pre></div>
 </div>
 </div>
@@ -885,7 +885,7 @@ metadata(1): seq_platform
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: SummarizedExperiment
 dimensions: (6, 3)
-assays(2): [&#39;lognorm&#39;, &#39;counts&#39;]
+assays(2): [&#39;counts&#39;, &#39;lognorm&#39;]
 row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
 row_names(6): [&#39;HER2&#39;, &#39;BRCA1&#39;, &#39;TPFK&#39;, &#39;HER2&#39;, &#39;BRCA1&#39;, &#39;TPFK&#39;]
 column_data columns(2): [&#39;sample&#39;, &#39;disease&#39;]
@@ -910,7 +910,7 @@ metadata(1): seq_platform
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: SummarizedExperiment
 dimensions: (3, 6)
-assays(2): [&#39;lognorm&#39;, &#39;counts&#39;]
+assays(2): [&#39;counts&#39;, &#39;lognorm&#39;]
 row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
 row_names(3): [&#39;HER2&#39;, &#39;BRCA1&#39;, &#39;TPFK&#39;]
 column_data columns(2): [&#39;sample&#39;, &#39;disease&#39;]
@@ -935,7 +935,7 @@ metadata(1): seq_platform
 <div class="cell_output docutils container">
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: SummarizedExperiment
 dimensions: (3, 6)
-assays(3): [&#39;beta&#39;, &#39;lognorm&#39;, &#39;counts&#39;]
+assays(3): [&#39;counts&#39;, &#39;beta&#39;, &#39;lognorm&#39;]
 row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
 row_names(3): [&#39;MYC&#39;, &#39;BRCA2&#39;, &#39;TPFK&#39;]
 column_data columns(3): [&#39;sample&#39;, &#39;disease&#39;, &#39;doublet_score&#39;]
@@ -1085,7 +1085,7 @@ metadata(0):
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=1dd76d02"></script>
+</div><script src="_static/documentation_options.js?v=b9afe91b"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

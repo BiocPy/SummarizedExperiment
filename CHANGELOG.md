@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.5.1
+## Version 0.5.1 - 0.5.2
 
 - Add wrapper methods to combine Summarized and RangedSummarized by rows or columns.
 - Implement getters and setters to access and modify an assay.

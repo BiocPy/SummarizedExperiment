@@ -102,6 +102,26 @@ class SummarizedExperiment(BaseSE):
             validate=validate,
         )
 
+    ############################
+    ######>> combine ops <<#####
+    ############################
+
+    def relaxed_combine_rows(self, *other) -> "SummarizedExperiment":
+        """Wrapper around :py:func:`~relaxed_combine_rows`."""
+        return relaxed_combine_rows(self, *other)
+
+    def relaxed_combine_columns(self, *other) -> "SummarizedExperiment":
+        """Wrapper around :py:func:`~relaxed_combine_columns`."""
+        return relaxed_combine_columns(self, *other)
+
+    def combine_rows(self, *other) -> "SummarizedExperiment":
+        """Wrapper around :py:func:`~biocutils.combine_rows`."""
+        return combine_rows(self, *other)
+
+    def combine_columns(self, *other) -> "SummarizedExperiment":
+        """Wrapper around :py:func:`~biocutils.combine_columns`."""
+        return combine_columns(self, *other)
+
 
 ############################
 ######>> combine ops <<#####

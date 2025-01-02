@@ -198,3 +198,24 @@ def test_RSE_sort_order():
     res = tse.sort(decreasing=True)
     assert res is not None
     assert len(res.row_ranges) == len(tse.row_ranges)
+
+def test_SE_assay_getters_and_setters():
+    tse = RangedSummarizedExperiment(
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
+    )
+
+    assert tse is not None
+    assert isinstance(tse, RangedSummarizedExperiment)
+
+    assert tse.assay(0) is not None
+
+    new_tse = tse.set_assay("new_counts", assay=np.random.rand(nrows, ncols), in_place=False)
+    assert new_tse.get_assay_names() != tse.get_assay_names()
+    with pytest.raises(Exception):
+        tse.get_assay("new_counts")
+    assert new_tse.get_assay("new_counts") is not None
+
+    tse.set_assay("new_counts", assay=np.random.rand(nrows, ncols), in_place=True)
+    assert new_tse.get_assay_names() == tse.get_assay_names()
+    assert tse.get_assay("new_counts") is not None
+    assert new_tse.get_assay("new_counts") is not None

@@ -28,6 +28,16 @@ def test_SE_relaxed_combine_rows(summarized_experiments):
     assert list(combined.row_data.column_names) == ["A", "B"]
     assert list(combined.column_data.column_names) == ["A"]
 
+    combined2 = summarized_experiments.se_unnamed.relaxed_combine_rows(
+        summarized_experiments.se_unnamed_2
+    )
+
+    assert combined2 is not None
+    assert isinstance(combined2, SummarizedExperiment)
+    assert combined2.shape == (200, 10)
+    assert set(combined2.assay_names).issubset(["counts", "normalized"])
+    assert list(combined2.row_data.column_names) == ["A", "B"]
+    assert list(combined2.column_data.column_names) == ["A"]
 
 def test_SE_combine_rows_with_names_mixed(summarized_experiments):
     combined = biocutils.combine_rows(
@@ -67,6 +77,26 @@ def test_SE_combine_rows_with_names_mixed(summarized_experiments):
     assert len(combined.row_names) == 6
     assert combined.column_names is not None
     assert len(combined.column_names) == 3
+
+    combined2 = summarized_experiments.se1.relaxed_combine_rows(
+        summarized_experiments.se3
+    )
+
+    assert combined2 is not None
+    assert isinstance(combined2, SummarizedExperiment)
+    assert combined2.shape == (6, 3)
+    assert set(combined2.assay_names).issubset(["counts", "lognorm"])
+    assert list(combined2.row_data.column_names) == ["seqnames", "start", "end"]
+    assert list(combined2.column_data.column_names) == [
+        "sample",
+        "disease",
+        "doublet_score",
+    ]
+    assert combined2.row_names is not None
+    assert len(combined2.row_names) == 6
+    assert combined2.column_names is not None
+    assert len(combined2.column_names) == 3
+
 
 
 def test_SE_both_combine_rows_with_names(summarized_experiments):

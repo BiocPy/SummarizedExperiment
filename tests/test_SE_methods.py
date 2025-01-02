@@ -3,6 +3,7 @@ from random import random
 from biocframe import BiocFrame
 import numpy as np
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
+import pytest
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -103,3 +104,24 @@ def test_SE_assay():
 
     assert tse.assay("counts") is not None
     assert tse.assay(0) is not None
+
+def test_SE_assay_getters_and_setters():
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
+    )
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+
+    assert tse.assay(0) is not None
+
+    new_tse = tse.set_assay("new_counts", assay=np.random.rand(nrows, ncols), in_place=False)
+    assert new_tse.get_assay_names() != tse.get_assay_names()
+    with pytest.raises(Exception):
+        tse.get_assay("new_counts")
+    assert new_tse.get_assay("new_counts") is not None
+
+    tse.set_assay("new_counts", assay=np.random.rand(nrows, ncols), in_place=True)
+    assert new_tse.get_assay_names() == tse.get_assay_names()
+    assert tse.get_assay("new_counts") is not None
+    assert new_tse.get_assay("new_counts") is not None

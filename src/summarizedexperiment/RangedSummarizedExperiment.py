@@ -398,8 +398,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         slicer = self._generic_slice(rows=rows, columns=columns)
 
         new_row_ranges = None
-        if slicer.row_indices != slice(None):
-            new_row_ranges = self.row_ranges[slicer.row_indices]
+        if not (isinstance(slicer.row_indices, slice) and slicer.row_indices == slice(None)):
+            new_row_ranges = ut.subset_sequence(self.row_ranges, slicer.row_indices)
 
         current_class_const = type(self)
         return current_class_const(

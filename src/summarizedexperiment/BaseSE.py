@@ -986,7 +986,7 @@ class BaseSE:
             or as a reference to the (in-place-modified) original.
         """
         if assay.shape != self.shape:
-            raise ValueError("Porvided assay does not match the dimensions of the experiment.")
+            raise ValueError("Provided assay does not match the dimensions of the experiment.")
 
         output = self._define_output(in_place)
         if in_place is False:
@@ -1000,14 +1000,14 @@ class BaseSE:
 
     def _normalize_row_slice(self, rows: Union[str, int, bool, Sequence]):
         _scalar = None
-        if rows != slice(None):
+        if not (isinstance(rows, slice) and rows == slice(None)):
             rows, _scalar = ut.normalize_subscript(rows, len(self._rows), self._row_names)
 
         return rows, _scalar
 
     def _normalize_column_slice(self, columns: Union[str, int, bool, Sequence]):
         _scalar = None
-        if columns != slice(None):
+        if not (isinstance(columns, slice) and columns == slice(None)):
             columns, _scalar = ut.normalize_subscript(columns, len(self._cols), self._column_names)
 
         return columns, _scalar
@@ -1056,10 +1056,10 @@ class BaseSE:
 
         new_assays = OrderedDict()
         for asy, mat in self.assays.items():
-            if rows != slice(None):
+            if not (isinstance(rows, slice) and rows == slice(None)):
                 mat = mat[rows, :]
 
-            if columns != slice(None):
+            if not (isinstance(columns, slice) and columns == slice(None)):
                 mat = mat[:, columns]
 
             new_assays[asy] = mat
@@ -1105,19 +1105,19 @@ class BaseSE:
         if columns is None:
             columns = slice(None)
 
-        if rows is not None:
+        if not (isinstance(rows, slice) and rows == slice(None)):
             rows, _ = self._normalize_row_slice(rows=rows)
-            new_rows = new_rows[rows, :]
+            new_rows = ut.subset(new_rows, rows)
 
             if new_row_names is not None:
-                new_row_names = new_row_names[rows]
+                new_row_names = ut.subset_sequence(new_row_names, rows)
 
-        if columns is not None and self.column_data is not None:
+        if not (isinstance(columns, slice) and columns == slice(None)) and self.column_data is not None:
             columns, _ = self._normalize_column_slice(columns=columns)
-            new_cols = new_cols[columns, :]
+            new_cols = ut.subset(new_cols, columns)
 
             if new_col_names is not None:
-                new_col_names = new_col_names[columns]
+                new_col_names = ut.subset_sequence(new_col_names, columns)
 
         new_assays = self.subset_assays(rows=rows, columns=columns)
 

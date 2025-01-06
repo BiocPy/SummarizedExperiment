@@ -6,8 +6,8 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="summarizedexperiment" href="api/modules.html" /><link rel="prev" title="Represent genomic experimental data" href="tutorial.html" />
 
     <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Extending summarized experiments - SummarizedExperiment 0.5.2 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+        <title>Extending summarized experiments - SummarizedExperiment 0.5.3 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.5.2 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.5.3 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.5.2 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.5.3 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -256,9 +256,9 @@
 <section id="define-the-new-class">
 <h2>Define the new class<a class="headerlink" href="#define-the-new-class" title="Link to this heading">¶</a></h2>
 <p>As a simple example, let’s create a new class called <code class="docutils literal notranslate"><span class="pre">BioSampleSE</span></code> that stores biosample information on which the experiment was conducted. This may contain anonymized information about the patient(s) or sample(s). First, we extend the <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> class:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">summarizedexperiment</span> <span class="kn">import</span> <span class="n">SummarizedExperiment</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">summarizedexperiment</span><span class="w"> </span><span class="kn">import</span> <span class="n">SummarizedExperiment</span>
 
-<span class="k">class</span> <span class="nc">BioSampleSE</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BioSampleSE</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
     <span class="k">pass</span>
 </pre></div>
 </div>
@@ -267,13 +267,13 @@
 <h2>Add a new slot or attribute<a class="headerlink" href="#add-a-new-slot-or-attribute" title="Link to this heading">¶</a></h2>
 <p>To add a new slot to this class, we accept a new parameter <code class="docutils literal notranslate"><span class="pre">bio_sample_information</span></code> when the class is initialized through the <strong>init</strong> method. We also provide type hints to set expectations on the accepted types for these arguments. Type hints are helpful for users and are automatically annotated in the documentation. More information on type hints can be found in our <a class="reference external" href="https://github.com/BiocPy/developer_guide">developer guide</a>.</p>
 <p>We forward the default parameters to the base <code class="docutils literal notranslate"><span class="pre">SummarizedExperiment</span></code> class (using the <code class="docutils literal notranslate"><span class="pre">super</span></code> method) and store the new attribute.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">summarizedexperiment</span> <span class="kn">import</span> <span class="n">SummarizedExperiment</span>
-<span class="kn">import</span> <span class="nn">biocframe</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">summarizedexperiment</span><span class="w"> </span><span class="kn">import</span> <span class="n">SummarizedExperiment</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">biocframe</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="k">class</span> <span class="nc">BioSampleSE</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BioSampleSE</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">row_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -298,7 +298,7 @@
 </pre></div>
 </div>
 <p>The new slot can be validated using a dedicated validator:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">_validate_bio_sample_information</span><span class="p">(</span><span class="n">bio_sample_info</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">_validate_bio_sample_information</span><span class="p">(</span><span class="n">bio_sample_info</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bio_sample_info</span><span class="p">,</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Biosample information must be a BiocFrame object.&quot;</span><span class="p">)</span>
 
@@ -307,9 +307,9 @@
 </pre></div>
 </div>
 <p>Our class now validates the new slot:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">BioSampleSE</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">BioSampleSE</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">row_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -340,7 +340,7 @@
 <section id="define-getters-setters">
 <h2>Define getters/setters<a class="headerlink" href="#define-getters-setters" title="Link to this heading">¶</a></h2>
 <p>We need accessors and setters so users can interact with this new property. We provide these accessors in both functional and property-based approaches. More details can be found in our <a class="reference external" href="https://biocpy.github.io/tutorial/chapters/philosophy.html#functional-discipline">class design</a> document.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">get_bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]:</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get biosample information.</span>
 
 <span class="sd">    Returns:</span>
@@ -348,7 +348,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bio_sample_information</span>
 
-<span class="k">def</span> <span class="nf">set_bio_sample_information</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">set_bio_sample_information</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">bio_sample_information</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BioSampleSE&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set new biosample information.</span>
@@ -373,12 +373,12 @@
 </div>
 <p>Additionally, let’s provide property-based accessors to the new attribute:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@property</span>
-<span class="k">def</span> <span class="nf">bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~get_bio_sample_info`.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bio_sample_info</span><span class="p">()</span>
 
 <span class="nd">@bio_sample_information</span><span class="o">.</span><span class="n">setter</span>
-<span class="k">def</span> <span class="nf">bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bio_sample_info</span><span class="p">:</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bio_sample_info</span><span class="p">:</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~set_bio_sample_info`.&quot;&quot;&quot;</span>
     <span class="n">warn</span><span class="p">(</span>
         <span class="s2">&quot;Setting property &#39;bio_sample_information&#39; is an in-place operation, use &#39;set_bio_sample_info&#39; instead&quot;</span><span class="p">,</span>
@@ -393,12 +393,12 @@
 <section id="define-shallow-and-deep-copy-methods">
 <h2>Define shallow and deep copy methods<a class="headerlink" href="#define-shallow-and-deep-copy-methods" title="Link to this heading">¶</a></h2>
 <p>To avoid mutating objects in-place, methods for making shallow and deep copies of the class attributes are implemented.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        A deep copy of the current ``BioSampleSE``.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 
     <span class="n">_assays_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">)</span>
     <span class="n">_rows_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">)</span>
@@ -419,7 +419,7 @@
         <span class="n">metadata</span><span class="o">=</span><span class="n">_metadata_copy</span><span class="p">,</span>
     <span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns:</span>
 <span class="sd">        A shallow copy of the current ``BioSampleSE``.</span>
@@ -435,7 +435,7 @@
         <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
     <span class="p">)</span>
 
-<span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~__copy__`.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span>
 </pre></div>
@@ -444,9 +444,9 @@
 <section id="subset-operation">
 <h2>Subset operation<a class="headerlink" href="#subset-operation" title="Link to this heading">¶</a></h2>
 <p>When the experiment is subsetted using the <code class="docutils literal notranslate"><span class="pre">[]</span></code> operator, we may also have to subset the new slots added to the extended class. Developers only need to extend the <code class="docutils literal notranslate"><span class="pre">get_slice</span></code> function from the base class that accepts row and column subsets. The <code class="docutils literal notranslate"><span class="pre">_generic_slice</span></code> function returns a <code class="docutils literal notranslate"><span class="pre">slicer</span></code> object containing normalized row and column indices, and properties from the base class.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Sequence</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span>
 
-<span class="k">def</span> <span class="nf">get_slice</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_slice</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]],</span>
     <span class="n">columns</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]],</span>
@@ -476,13 +476,13 @@
 <section id="putting-it-all-together">
 <h2>Putting it all together<a class="headerlink" href="#putting-it-all-together" title="Link to this heading">¶</a></h2>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span>
-<span class="k">def</span> <span class="nf">_validate_bio_sample_information</span><span class="p">(</span><span class="n">bio_sample_info</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_bio_sample_information</span><span class="p">(</span><span class="n">bio_sample_info</span><span class="p">):</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bio_sample_info</span><span class="p">,</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Biosample information must be a BiocFrame object.&quot;</span><span class="p">)</span>
 
-<span class="k">class</span> <span class="nc">BioSampleSE</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">BioSampleSE</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">row_data</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -508,12 +508,12 @@
         <span class="k">if</span> <span class="n">validate</span><span class="p">:</span>
             <span class="n">_validate_bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bio_sample_information</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A deep copy of the current ``BioSampleSE``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">copy</span><span class="w"> </span><span class="kn">import</span> <span class="n">deepcopy</span>
 
         <span class="n">_assays_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">)</span>
         <span class="n">_rows_copy</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">)</span>
@@ -534,7 +534,7 @@
             <span class="n">metadata</span><span class="o">=</span><span class="n">_metadata_copy</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
 <span class="sd">            A shallow copy of the current ``BioSampleSE``.</span>
@@ -550,12 +550,12 @@
             <span class="n">metadata</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_metadata</span><span class="p">,</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~__copy__`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span>
 
 
-    <span class="k">def</span> <span class="nf">get_bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get biosample information.</span>
 
 <span class="sd">        Returns:</span>
@@ -563,7 +563,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bio_sample_information</span>
 
-    <span class="k">def</span> <span class="nf">set_bio_sample_information</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_bio_sample_information</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">bio_sample_information</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BioSampleSE&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set new biosample information.</span>
@@ -587,12 +587,12 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~get_bio_sample_info`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bio_sample_info</span><span class="p">()</span>
 
     <span class="nd">@bio_sample_information</span><span class="o">.</span><span class="n">setter</span>
-    <span class="k">def</span> <span class="nf">bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bio_sample_info</span><span class="p">:</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bio_sample_information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bio_sample_info</span><span class="p">:</span> <span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~set_bio_sample_info`.&quot;&quot;&quot;</span>
         <span class="n">warn</span><span class="p">(</span>
             <span class="s2">&quot;Setting property &#39;bio_sample_information&#39; is an in-place operation, use &#39;set_bio_sample_info&#39; instead&quot;</span><span class="p">,</span>
@@ -680,7 +680,7 @@
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=8e576371"></script>
+</div><script src="_static/documentation_options.js?v=2a2fe768"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

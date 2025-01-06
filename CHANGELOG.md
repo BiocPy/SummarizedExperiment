@@ -1,9 +1,10 @@
 # Changelog
 
-## Version 0.5.1 - 0.5.2
+## Version 0.5.1 - 0.5.3
 
 - Add wrapper methods to combine Summarized and RangedSummarized by rows or columns.
 - Implement getters and setters to access and modify an assay.
+- Fixed an issue with numpy arrays as slice arguments. Code now uses Biocutils's subset functions to perform these operations.
 
 ## Version 0.5.0
 

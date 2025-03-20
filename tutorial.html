@@ -5,8 +5,8 @@
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Extending summarized experiments" href="extend_se.html" /><link rel="prev" title="SummarizedExperiment" href="index.html" />
 
-    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
-        <title>Represent genomic experimental data - SummarizedExperiment 0.5.3 documentation</title>
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>Represent genomic experimental data - SummarizedExperiment 0.5.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -167,7 +167,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">SummarizedExperiment 0.5.3 documentation</div></a>
+      <a href="index.html"><div class="brand">SummarizedExperiment 0.5.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.5.3 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.5.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -478,13 +478,13 @@ assay names (functional style):  [&#39;counts&#39;]
 BiocFrame with 200 rows and 6 columns
       seqnames  starts    ends strand   score                  GC
         &lt;list&gt; &lt;range&gt; &lt;range&gt; &lt;list&gt; &lt;range&gt;              &lt;list&gt;
-  [0]     chr1     100     110      -       0  0.5021027032251704
-  [1]     chr2     101     111      +       1 0.11315767945779376
-  [2]     chr2     102     112      +       2  0.6856567171517574
+  [0]     chr1     100     110      -       0  0.3198107010518143
+  [1]     chr2     101     111      +       1  0.8483567852533034
+  [2]     chr2     102     112      +       2  0.9219032677995332
            ...     ...     ...    ...     ...                 ...
-[197]     chr3     297     307      +     197  0.6187942318721821
-[198]     chr3     298     308      -     198  0.6006342380871723
-[199]     chr3     299     309      -     199  0.5026034089630075
+[197]     chr3     297     307      +     197  0.8942271983924933
+[198]     chr3     298     308      -     198 0.44201556588285573
+[199]     chr3     299     309      -     199  0.7404709415323198
 </pre></div>
 </div>
 </div>
@@ -499,19 +499,19 @@ BiocFrame with 200 rows and 6 columns
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[8.47617084e-01, 1.41818725e-01, 8.80281453e-01, 2.40265063e-01,
-        8.68808112e-01, 5.24471696e-02],
-       [8.84237314e-01, 3.16558083e-01, 8.74361868e-01, 8.09549643e-01,
-        6.17999048e-01, 8.80996819e-01],
-       [5.93596681e-01, 9.71742228e-01, 8.98851414e-01, 2.56496425e-01,
-        9.22791075e-01, 1.24107551e-01],
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>array([[0.51429341, 0.54184023, 0.16596558, 0.78264256, 0.62623082,
+        0.61035478],
+       [0.79468695, 0.36262979, 0.45120988, 0.59818002, 0.89219842,
+        0.08470789],
+       [0.19467352, 0.96918153, 0.30564327, 0.83974825, 0.02334665,
+        0.10654715],
        ...,
-       [8.16900783e-01, 4.61170709e-02, 2.13884096e-01, 6.58021495e-01,
-        9.62391637e-01, 1.59028841e-01],
-       [1.47188775e-01, 2.02690708e-01, 4.75456048e-01, 6.48863881e-01,
-        2.15161648e-01, 4.61195571e-01],
-       [8.26708808e-01, 1.55946421e-01, 5.87897745e-01, 8.17005659e-01,
-        6.84922678e-01, 4.46766510e-05]], shape=(200, 6))
+       [0.90762617, 0.35557496, 0.7674455 , 0.59779049, 0.04495346,
+        0.61621557],
+       [0.55149653, 0.86267911, 0.88776225, 0.6827858 , 0.65211024,
+        0.86912263],
+       [0.17521157, 0.68291002, 0.6732641 , 0.89520667, 0.83360793,
+        0.1807409 ]], shape=(200, 6))
 </pre></div>
 </div>
 </div>
@@ -734,14 +734,42 @@ metadata(0):
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: RangedSummarizedExperiment
-dimensions: (0, 6)
-assays(1): [&#39;counts&#39;]
-row_data columns(6): [&#39;seqnames&#39;, &#39;starts&#39;, &#39;ends&#39;, &#39;strand&#39;, &#39;score&#39;, &#39;GC&#39;]
-row_names(0):  
-column_data columns(1): [&#39;treatment&#39;]
-column_names(6): [&#39;0&#39;, &#39;1&#39;, &#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;5&#39;]
-metadata(0): 
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">TypeError</span><span class="g g-Whitespace">                                 </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">15</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span><span class="w"> </span><span class="nn">iranges</span><span class="w"> </span><span class="kn">import</span> <span class="n">IRanges</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">query</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="p">(</span><span class="n">seqnames</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chr2&quot;</span><span class="p">],</span> <span class="n">ranges</span><span class="o">=</span><span class="n">IRanges</span><span class="p">([</span><span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">6</span><span class="p">]),</span> <span class="n">strand</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;+&quot;</span><span class="p">])</span>
+<span class="ne">----&gt; </span><span class="mi">4</span> <span class="n">result</span> <span class="o">=</span> <span class="n">rse</span><span class="o">.</span><span class="n">subset_by_overlaps</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+
+<span class="nn">File ~/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/summarizedexperiment/RangedSummarizedExperiment.py:879,</span> in <span class="ni">RangedSummarizedExperiment.subset_by_overlaps</span><span class="nt">(self, query, query_type, max_gap, min_overlap, ignore_strand)</span>
+<span class="g g-Whitespace">    </span><span class="mi">875</span> <span class="n">_check_gr_or_rse</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">877</span> <span class="n">qranges</span> <span class="o">=</span> <span class="n">_access_granges</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+<span class="ne">--&gt; </span><span class="mi">879</span> <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
+<span class="g g-Whitespace">    </span><span class="mi">880</span>     <span class="n">query</span><span class="o">=</span><span class="n">qranges</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">881</span>     <span class="n">query_type</span><span class="o">=</span><span class="n">query_type</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">882</span>     <span class="n">max_gap</span><span class="o">=</span><span class="n">max_gap</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">883</span>     <span class="n">min_overlap</span><span class="o">=</span><span class="n">min_overlap</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">884</span>     <span class="n">ignore_strand</span><span class="o">=</span><span class="n">ignore_strand</span><span class="p">,</span>
+<span class="g g-Whitespace">    </span><span class="mi">885</span> <span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">887</span> <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">result</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;self_hits&quot;</span><span class="p">),</span> <span class="p">:]</span>
+
+<span class="nn">File ~/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/genomicranges/GenomicRanges.py:2233,</span> in <span class="ni">GenomicRanges.find_overlaps</span><span class="nt">(self, query, query_type, select, max_gap, min_overlap, ignore_strand)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2222</span>         <span class="n">_query_subset</span> <span class="o">=</span> <span class="n">query</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+<span class="g g-Whitespace">   </span><span class="mi">2224</span>         <span class="n">res_idx</span> <span class="o">=</span> <span class="n">_sub_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="o">.</span><span class="n">find_overlaps</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">2225</span>             <span class="n">query</span><span class="o">=</span><span class="n">_query_subset</span><span class="o">.</span><span class="n">_ranges</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2226</span>             <span class="n">query_type</span><span class="o">=</span><span class="n">query_type</span><span class="p">,</span>
+   <span class="p">(</span><span class="o">...</span><span class="p">)</span>   <span class="mi">2230</span>             <span class="n">delete_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+<span class="g g-Whitespace">   </span><span class="mi">2231</span>         <span class="p">)</span>
+<span class="ne">-&gt; </span><span class="mi">2233</span>         <span class="n">all_qhits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">2234</span>             <span class="p">(</span><span class="n">all_qhits</span><span class="p">,</span> <span class="p">[</span><span class="n">indices</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;query_hits&quot;</span><span class="p">)]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+<span class="g g-Whitespace">   </span><span class="mi">2235</span>         <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2236</span>         <span class="n">all_shits</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span>
+<span class="g g-Whitespace">   </span><span class="mi">2237</span>             <span class="p">(</span><span class="n">all_shits</span><span class="p">,</span> <span class="p">[</span><span class="n">_subset</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">res_idx</span><span class="o">.</span><span class="n">get_column</span><span class="p">(</span><span class="s2">&quot;self_hits&quot;</span><span class="p">)]),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+<span class="g g-Whitespace">   </span><span class="mi">2238</span>         <span class="p">)</span>
+<span class="g g-Whitespace">   </span><span class="mi">2240</span> <span class="n">order</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">all_qhits</span><span class="p">,</span> <span class="n">stable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="ne">TypeError</span>: Cannot cast array data from dtype(&#39;float64&#39;) to dtype(&#39;int32&#39;) according to the rule &#39;same_kind&#39;
 </pre></div>
 </div>
 </div>
@@ -838,36 +866,6 @@ metadata(0):
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: SummarizedExperiment
-dimensions: (3, 3)
-assays(2): [&#39;counts&#39;, &#39;lognorm&#39;]
-row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
-row_names(3): [&#39;HER2&#39;, &#39;BRCA1&#39;, &#39;TPFK&#39;]
-column_data columns(2): [&#39;sample&#39;, &#39;disease&#39;]
-column_names(3): [&#39;cell_1&#39;, &#39;cell_2&#39;, &#39;cell_3&#39;]
-metadata(1): seq_type
-
-class: SummarizedExperiment
-dimensions: (3, 3)
-assays(2): [&#39;counts&#39;, &#39;lognorm&#39;]
-row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
-row_names(3): [&#39;HER2&#39;, &#39;BRCA1&#39;, &#39;TPFK&#39;]
-column_data columns(2): [&#39;sample&#39;, &#39;disease&#39;]
-column_names(3): [&#39;cell_4&#39;, &#39;cell_5&#39;, &#39;cell_6&#39;]
-metadata(1): seq_platform
-
-class: SummarizedExperiment
-dimensions: (3, 3)
-assays(3): [&#39;counts&#39;, &#39;lognorm&#39;, &#39;beta&#39;]
-row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
-row_names(3): [&#39;MYC&#39;, &#39;BRCA2&#39;, &#39;TPFK&#39;]
-column_data columns(3): [&#39;sample&#39;, &#39;disease&#39;, &#39;doublet_score&#39;]
-column_names(3): [&#39;cell_7&#39;, &#39;cell_8&#39;, &#39;cell_9&#39;]
-metadata(1): seq_platform
-</pre></div>
-</div>
-</div>
 </div>
 <div class="admonition important">
 <p class="admonition-title">Important</p>
@@ -882,40 +880,12 @@ metadata(1): seq_platform
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: SummarizedExperiment
-dimensions: (6, 3)
-assays(2): [&#39;counts&#39;, &#39;lognorm&#39;]
-row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
-row_names(6): [&#39;HER2&#39;, &#39;BRCA1&#39;, &#39;TPFK&#39;, &#39;HER2&#39;, &#39;BRCA1&#39;, &#39;TPFK&#39;]
-column_data columns(2): [&#39;sample&#39;, &#39;disease&#39;]
-column_names(3): [&#39;cell_4&#39;, &#39;cell_5&#39;, &#39;cell_6&#39;]
-metadata(1): seq_platform
-</pre></div>
-</div>
-<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/home/runner/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/summarizedexperiment/BaseSE.py:91: UserWarning: &#39;row_data&#39; does not contain unique &#39;row_names&#39;.
-  warn(&quot;&#39;row_data&#39; does not contain unique &#39;row_names&#39;.&quot;, UserWarning)
-</pre></div>
-</div>
-</div>
 </div>
 <p>Similarly to combine by column:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">se_combined</span> <span class="o">=</span> <span class="n">combine_columns</span><span class="p">(</span><span class="n">se2</span><span class="p">,</span> <span class="n">se1</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">se_combined</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: SummarizedExperiment
-dimensions: (3, 6)
-assays(2): [&#39;counts&#39;, &#39;lognorm&#39;]
-row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
-row_names(3): [&#39;HER2&#39;, &#39;BRCA1&#39;, &#39;TPFK&#39;]
-column_data columns(2): [&#39;sample&#39;, &#39;disease&#39;]
-column_names(6): [&#39;cell_4&#39;, &#39;cell_5&#39;, &#39;cell_6&#39;, &#39;cell_1&#39;, &#39;cell_2&#39;, &#39;cell_3&#39;]
-metadata(1): seq_platform
 </pre></div>
 </div>
 </div>
@@ -932,18 +902,6 @@ metadata(1): seq_platform
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: SummarizedExperiment
-dimensions: (3, 6)
-assays(3): [&#39;counts&#39;, &#39;lognorm&#39;, &#39;beta&#39;]
-row_data columns(3): [&#39;seqnames&#39;, &#39;start&#39;, &#39;end&#39;]
-row_names(3): [&#39;MYC&#39;, &#39;BRCA2&#39;, &#39;TPFK&#39;]
-column_data columns(3): [&#39;sample&#39;, &#39;disease&#39;, &#39;doublet_score&#39;]
-column_names(6): [&#39;cell_7&#39;, &#39;cell_8&#39;, &#39;cell_9&#39;, &#39;cell_1&#39;, &#39;cell_2&#39;, &#39;cell_3&#39;]
-metadata(1): seq_platform
-</pre></div>
-</div>
-</div>
 </div>
 <section id="empty-experiments">
 <h3>Empty experiments<a class="headerlink" href="#empty-experiments" title="Link to this heading">¶</a></h3>
@@ -956,36 +914,12 @@ metadata(1): seq_platform
 </pre></div>
 </div>
 </div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: SummarizedExperiment
-dimensions: (0, 0)
-assays(0): []
-row_data columns(0): []
-row_names(0):  
-column_data columns(0): []
-column_names(0):  
-metadata(0): 
-</pre></div>
-</div>
-</div>
 </div>
 <p>Similarly an empty <code class="docutils literal notranslate"><span class="pre">RangeSummarizedExperiment</span></code>:</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">empty_rse</span> <span class="o">=</span> <span class="n">RangedSummarizedExperiment</span><span class="p">()</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">empty_rse</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>class: RangedSummarizedExperiment
-dimensions: (0, 0)
-assays(0): []
-row_data columns(0): []
-row_names(0):  
-column_data columns(0): []
-column_names(0):  
-metadata(0): 
 </pre></div>
 </div>
 </div>
@@ -1085,7 +1019,7 @@ metadata(0):
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=2a2fe768"></script>
+</div><script src="_static/documentation_options.js?v=e1a677a5"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=5fa4622c"></script>

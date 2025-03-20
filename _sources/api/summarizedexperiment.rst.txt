@@ -9,37 +9,37 @@ summarizedexperiment.BaseSE module
 
 .. automodule:: summarizedexperiment.BaseSE
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 summarizedexperiment.RangedSummarizedExperiment module
 ------------------------------------------------------
 
 .. automodule:: summarizedexperiment.RangedSummarizedExperiment
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 summarizedexperiment.SummarizedExperiment module
 ------------------------------------------------
 
 .. automodule:: summarizedexperiment.SummarizedExperiment
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 summarizedexperiment.type\_checks module
 ----------------------------------------
 
 .. automodule:: summarizedexperiment.type_checks
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:
 
 Module contents
 ---------------
 
 .. automodule:: summarizedexperiment
    :members:
-   :undoc-members:
    :show-inheritance:
+   :undoc-members:

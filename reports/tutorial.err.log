@@ -1,0 +1,65 @@
+Traceback (most recent call last):
+  File "/home/runner/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/home/runner/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/nbclient/client.py", line 1319, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.11.11/x64/lib/python3.11/asyncio/base_events.py", line 654, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/home/runner/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/nbclient/client.py", line 709, in async_execute
+    await self.async_execute_cell(
+  File "/home/runner/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/home/runner/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+from iranges import IRanges
+query = GenomicRanges(seqnames=["chr2"], ranges=IRanges([4], [6]), strand=["+"])
+
+result = rse.subset_by_overlaps(query)
+print(result)
+------------------
+
+
+[31m---------------------------------------------------------------------------[39m
+[31mTypeError[39m                                 Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[15][39m[32m, line 4[39m
+[32m      1[39m [38;5;28;01mfrom[39;00m[38;5;250m [39m[34;01miranges[39;00m[38;5;250m [39m[38;5;28;01mimport[39;00m IRanges
+[32m      2[39m query = GenomicRanges(seqnames=[[33m"[39m[33mchr2[39m[33m"[39m], ranges=IRanges([[32m4[39m], [[32m6[39m]), strand=[[33m"[39m[33m+[39m[33m"[39m])
+[32m----> [39m[32m4[39m result = [43mrse[49m[43m.[49m[43msubset_by_overlaps[49m[43m([49m[43mquery[49m[43m)[49m
+[32m      5[39m [38;5;28mprint[39m(result)
+
+[36mFile [39m[32m~/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/summarizedexperiment/RangedSummarizedExperiment.py:879[39m, in [36mRangedSummarizedExperiment.subset_by_overlaps[39m[34m(self, query, query_type, max_gap, min_overlap, ignore_strand)[39m
+[32m    875[39m _check_gr_or_rse(query)
+[32m    877[39m qranges = _access_granges(query)
+[32m--> [39m[32m879[39m result = [38;5;28;43mself[39;49m[43m.[49m[43mrow_ranges[49m[43m.[49m[43mfind_overlaps[49m[43m([49m
+[32m    880[39m [43m    [49m[43mquery[49m[43m=[49m[43mqranges[49m[43m,[49m
+[32m    881[39m [43m    [49m[43mquery_type[49m[43m=[49m[43mquery_type[49m[43m,[49m
+[32m    882[39m [43m    [49m[43mmax_gap[49m[43m=[49m[43mmax_gap[49m[43m,[49m
+[32m    883[39m [43m    [49m[43mmin_overlap[49m[43m=[49m[43mmin_overlap[49m[43m,[49m
+[32m    884[39m [43m    [49m[43mignore_strand[49m[43m=[49m[43mignore_strand[49m[43m,[49m
+[32m    885[39m [43m[49m[43m)[49m
+[32m    887[39m [38;5;28;01mreturn[39;00m [38;5;28mself[39m[result.get_column([33m"[39m[33mself_hits[39m[33m"[39m), :]
+
+[36mFile [39m[32m~/work/SummarizedExperiment/SummarizedExperiment/.tox/docs/lib/python3.11/site-packages/genomicranges/GenomicRanges.py:2233[39m, in [36mGenomicRanges.find_overlaps[39m[34m(self, query, query_type, select, max_gap, min_overlap, ignore_strand)[39m
+[32m   2222[39m         _query_subset = query[indices]
+[32m   2224[39m         res_idx = _sub_subset._ranges.find_overlaps(
+[32m   2225[39m             query=_query_subset._ranges,
+[32m   2226[39m             query_type=query_type,
+[32m   (...)[39m[32m   2230[39m             delete_index=[38;5;28;01mFalse[39;00m,
+[32m   2231[39m         )
+[32m-> [39m[32m2233[39m         all_qhits = [43mnp[49m[43m.[49m[43mconcatenate[49m[43m([49m
+[32m   2234[39m [43m            [49m[43m([49m[43mall_qhits[49m[43m,[49m[43m [49m[43m[[49m[43mindices[49m[43m[[49m[43mj[49m[43m][49m[43m [49m[38;5;28;43;01mfor[39;49;00m[43m [49m[43mj[49m[43m [49m[38;5;129;43;01min[39;49;00m[43m [49m[43mres_idx[49m[43m.[49m[43mget_column[49m[43m([49m[33;43m"[39;49m[33;43mquery_hits[39;49m[33;43m"[39;49m[43m)[49m[43m][49m[43m)[49m[43m,[49m[43m [49m[43mdtype[49m[43m=[49m[43mnp[49m[43m.[49m[43mint32[49m
+[32m   2235[39m [43m        [49m[43m)[49m
+[32m   2236[39m         all_shits = np.concatenate(
+[32m   2237[39m             (all_shits, [_subset[x] [38;5;28;01mfor[39;00m x [38;5;129;01min[39;00m res_idx.get_column([33m"[39m[33mself_hits[39m[33m"[39m)]), dtype=np.int32
+[32m   2238[39m         )
+[32m   2240[39m order = np.argsort(all_qhits, stable=[38;5;28;01mTrue[39;00m)
+
+[31mTypeError[39m: Cannot cast array data from dtype('float64') to dtype('int32') according to the rule 'same_kind'
+

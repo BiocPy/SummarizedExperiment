@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
+from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -164,8 +165,8 @@ def test_RSE_range_methods():
     res = tse.promoters()
     assert res is not None
 
-    with pytest.raises(Exception):
-        res = tse.narrow(start=40)
+    res = tse.narrow(start=40)
+    assert res is not None
 
 
 def test_RSE_search():
@@ -199,7 +200,7 @@ def test_RSE_sort_order():
     assert res is not None
     assert len(res.row_ranges) == len(tse.row_ranges)
 
-def test_SE_assay_getters_and_setters():
+def test_RSE_assay_getters_and_setters():
     tse = RangedSummarizedExperiment(
         assays={"counts": counts}, row_ranges=gr, column_data=col_data
     )
@@ -219,3 +220,14 @@ def test_SE_assay_getters_and_setters():
     assert new_tse.get_assay_names() == tse.get_assay_names()
     assert tse.get_assay("new_counts") is not None
     assert new_tse.get_assay("new_counts") is not None
+
+def test_RSE_to_se():
+    rse = RangedSummarizedExperiment(
+        assays={"counts": counts}, row_ranges=gr, column_data=col_data
+    )
+
+    se = rse.to_summarizedexperiment()
+
+    assert se is not None
+    assert isinstance(se, SummarizedExperiment)
+    assert rse.shape == se.shape

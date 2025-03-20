@@ -3,6 +3,8 @@ from random import random
 from biocframe import BiocFrame
 import numpy as np
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
+from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
+
 import pytest
 
 __author__ = "jkanche"
@@ -125,3 +127,14 @@ def test_SE_assay_getters_and_setters():
     assert new_tse.get_assay_names() == tse.get_assay_names()
     assert tse.get_assay("new_counts") is not None
     assert new_tse.get_assay("new_counts") is not None
+
+def test_SE_to_rse():
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
+    )
+
+    rse = tse.to_rangedsummarizedexperiment()
+
+    assert rse is not None
+    assert isinstance(rse, RangedSummarizedExperiment)
+    assert rse.shape == tse.shape

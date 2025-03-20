@@ -721,7 +721,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             either as a copy of the original or as a reference to the
             (in-place-modified) original.
         """
-        new_ranges = self.row_ranges.restrict(start=start, end=end, keep_all_ranges=keep_all_ranges, in_place=False)
+        new_ranges = self.row_ranges.restrict(start=start, end=end, keep_all_ranges=keep_all_ranges)
 
         output = self._define_output(in_place=in_place)
         output._row_ranges = new_ranges
@@ -884,11 +884,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             ignore_strand=ignore_strand,
         )
 
-        import itertools
-
-        indices = list(itertools.chain.from_iterable(result))
-
-        return self[indices,]
+        return self[result.get_column("self_hits"), :]
 
     def order(self, decreasing: bool = False) -> np.ndarray:
         """Get the order of indices to sort.
@@ -939,6 +935,28 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     def combine_columns(self, *other) -> "RangedSummarizedExperiment":
         """Wrapper around :py:func:`~combine_columns`."""
         return combine_columns(self, *other)
+
+    ######################
+    ######>> to se <<#####
+    ######################
+
+    def to_summarizedexperiment(self):
+        """Coerce to :py:class:`summarizedexperiment.SummarizedExperiment.SummarizedExperiment`"""
+
+        warn("SE does not containg a slot for ranges, dropping ranges.", UserWarning)
+
+        return SummarizedExperiment(
+            assays=self._assays,
+            row_data=self._rows,
+            column_data=self._cols,
+            row_names=self._row_names,
+            column_names=self._column_names,
+            metadata=self._metadata,
+        )
+
+    def to_se(self):
+        """Alias for :py:meth:`~to_summarizedexperiment`."""
+        return self.to_summarizedexperiment()
 
 
 ############################

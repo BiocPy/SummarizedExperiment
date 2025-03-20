@@ -2,7 +2,7 @@
 
 ## Version 0.5.4
 
-- Coercions from SE to RSE and vice-versa. 
+- Coercions from SE to RSE and vice-versa.
 - Adapting changes from genomic ranges's search and overlap methods.
 
 ## Version 0.5.1 - 0.5.3

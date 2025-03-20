@@ -122,6 +122,28 @@ class SummarizedExperiment(BaseSE):
         """Wrapper around :py:func:`~combine_columns`."""
         return combine_columns(self, *other)
 
+    #######################
+    ######>> to rse <<#####
+    #######################
+
+    def to_rangedsummarizedexperiment(self):
+        """Coerce to :py:class:`summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`"""
+
+        from .RangedSummarizedExperiment import RangedSummarizedExperiment
+
+        return RangedSummarizedExperiment(
+            assays=self._assays,
+            row_data=self._rows,
+            column_data=self._cols,
+            row_names=self._row_names,
+            column_names=self._column_names,
+            metadata=self._metadata,
+        )
+
+    def to_rse(self):
+        """Alias for :py:meth:`~to_rangedsummarizedexperiment`."""
+        return self.to_rangedsummarizedexperiment()
+
 
 ############################
 ######>> combine ops <<#####

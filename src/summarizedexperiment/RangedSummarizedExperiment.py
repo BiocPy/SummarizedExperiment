@@ -61,9 +61,7 @@ def _access_granges(x: GRangesOrRangeSE) -> GenomicRanges:
 
 def _validate_rowranges(row_ranges, shape):
     if not (isinstance(row_ranges, (GenomicRanges, GenomicRangesList))):
-        raise TypeError(
-            "`row_ranges` must be a `GenomicRanges` or `GenomicRangesList`" f" , provided {type(row_ranges)}."
-        )
+        raise TypeError(f"`row_ranges` must be a `GenomicRanges` or `GenomicRangesList` , provided {type(row_ranges)}.")
 
     if len(row_ranges) != shape[0]:
         raise ValueError("Number of features in `row_ranges` and number of rows in assays do not match.")

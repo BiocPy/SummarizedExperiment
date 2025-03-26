@@ -965,9 +965,9 @@ class BaseSE:
 
         Args:
             name:
-                New or existing assay name. 
-                
-                Alternatively, may provide an index position of the assay 
+                New or existing assay name.
+
+                Alternatively, may provide an index position of the assay
                 to replace.
 
             assay:
@@ -998,10 +998,10 @@ class BaseSE:
         if isinstance(name, int):
             if name > len(output._assays):
                 raise IndexError("'name' is greather than the number of assays.")
-            
+
             if name < 0:
                 raise ValueError("'name' cannot be less than 0.")
-            
+
             output._assays[output.get_assay_names()[name]] = assay
         elif isinstance(name, str):
             output._assays[name] = assay

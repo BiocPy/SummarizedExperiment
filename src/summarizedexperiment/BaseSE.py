@@ -960,12 +960,15 @@ class BaseSE:
         """Alias for :py:attr:`~assay`. For backwards compatibility"""
         return self.get_assay(assay)
 
-    def set_assay(self, name: str, assay: Any, in_place: bool = False) -> "BaseSE":
+    def set_assay(self, name: Union[str, int], assay: Any, in_place: bool = False) -> "BaseSE":
         """Add or replace :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s.
 
         Args:
             name:
                 New or existing assay name.
+
+                Alternatively, may provide an index position of the assay
+                to replace.
 
             assay:
                 A 2-dimensional matrix represented as either
@@ -991,7 +994,19 @@ class BaseSE:
         output = self._define_output(in_place)
         if in_place is False:
             output._assays = output._assays.copy()
-        output._assays[name] = assay
+
+        if isinstance(name, int):
+            if name > len(output._assays):
+                raise IndexError("'name' is greather than the number of assays.")
+
+            if name < 0:
+                raise ValueError("'name' cannot be less than 0.")
+
+            output._assays[output.get_assay_names()[name]] = assay
+        elif isinstance(name, str):
+            output._assays[name] = assay
+        else:
+            raise ValueError("'name' must be either a string or an index value.")
         return output
 
     ##########################

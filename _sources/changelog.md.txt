@@ -1,9 +1,10 @@
 # Changelog
 
-## Version 0.5.4
+## Version 0.5.4 - 0.5.5
 
 - Coercions from SE to RSE and vice-versa.
 - Adapting changes from genomic ranges's search and overlap methods.
+- Update `set_assay` to accept either an assay name or an index position of the assay to replace.
 
 ## Version 0.5.1 - 0.5.3
 

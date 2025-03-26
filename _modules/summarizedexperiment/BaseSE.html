@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html" /><link rel="search" title="Search" href="../../search.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
-        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.5.4 documentation</title>
+        <title>summarizedexperiment.BaseSE - SummarizedExperiment 0.5.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=354aac6f" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
@@ -166,7 +166,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.5.4 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.5.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -190,7 +190,7 @@
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.5.4 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.5.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -1276,12 +1276,15 @@
 
 <div class="viewcode-block" id="BaseSE.set_assay">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.BaseSE.BaseSE.set_assay">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">set_assay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">assay</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_assay</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="n">assay</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BaseSE&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add or replace :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`&#39;s.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            name:</span>
 <span class="sd">                New or existing assay name.</span>
+
+<span class="sd">                Alternatively, may provide an index position of the assay</span>
+<span class="sd">                to replace.</span>
 
 <span class="sd">            assay:</span>
 <span class="sd">                A 2-dimensional matrix represented as either</span>
@@ -1307,7 +1310,19 @@
         <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_define_output</span><span class="p">(</span><span class="n">in_place</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">in_place</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">output</span><span class="o">.</span><span class="n">_assays</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">_assays</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">output</span><span class="o">.</span><span class="n">_assays</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">assay</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="o">.</span><span class="n">_assays</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">IndexError</span><span class="p">(</span><span class="s2">&quot;&#39;name&#39; is greather than the number of assays.&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">name</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;name&#39; cannot be less than 0.&quot;</span><span class="p">)</span>
+
+            <span class="n">output</span><span class="o">.</span><span class="n">_assays</span><span class="p">[</span><span class="n">output</span><span class="o">.</span><span class="n">get_assay_names</span><span class="p">()[</span><span class="n">name</span><span class="p">]]</span> <span class="o">=</span> <span class="n">assay</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">output</span><span class="o">.</span><span class="n">_assays</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">assay</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;&#39;name&#39; must be either a string or an index value.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">output</span></div>
 
 
@@ -1602,7 +1617,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=e1a677a5"></script>
+</div><script src="../../_static/documentation_options.js?v=45def3bc"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=5fa4622c"></script>

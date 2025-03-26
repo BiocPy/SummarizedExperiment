@@ -128,6 +128,17 @@ def test_SE_assay_getters_and_setters():
     assert tse.get_assay("new_counts") is not None
     assert new_tse.get_assay("new_counts") is not None
 
+    mod_tse = tse.set_assay(0, assay=np.random.rand(nrows, ncols), in_place=False)
+    assert mod_tse.get_assay_names() == tse.get_assay_names()
+    assert tse.get_assay("new_counts") is not None
+    assert mod_tse.get_assay("new_counts") is not None
+
+    with pytest.raises(Exception):
+        tse.set_assay(4, assay=np.random.rand(nrows, ncols), in_place=False)
+
+    with pytest.raises(Exception):
+        tse.set_assay(-1, assay=np.random.rand(nrows, ncols), in_place=False)
+
 def test_SE_to_rse():
     tse = SummarizedExperiment(
         assays={"counts": counts}, row_data=row_data, column_data=col_data

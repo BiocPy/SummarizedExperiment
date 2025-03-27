@@ -58,8 +58,7 @@ def _validate_assays(assays, shape) -> tuple:
 
         if len(mat.shape) > 2:
             raise ValueError(
-                "Only 2-dimensional matrices are accepted, "
-                f"provided {len(mat.shape)} dimensions for `assay`: '{asy}'."
+                f"Only 2-dimensional matrices are accepted, provided {len(mat.shape)} dimensions for `assay`: '{asy}'."
             )
 
         if shape is None:
@@ -67,7 +66,7 @@ def _validate_assays(assays, shape) -> tuple:
             continue
 
         if mat.shape != shape:
-            raise ValueError(f"Assay: '{asy}' must be of shape '{shape}'" f" but provided '{mat.shape}'.")
+            raise ValueError(f"Assay: '{asy}' must be of shape '{shape}' but provided '{mat.shape}'.")
 
 
 def _validate_rows(rows, names, shape):
@@ -83,8 +82,7 @@ def _validate_rows(rows, names, shape):
     if names is not None:
         if len(names) != shape[0]:
             raise ValueError(
-                f"Length of 'row_names' mismatch with number of rows. Must be '{shape[0]}'"
-                f" but provided '{len(names)}'."
+                f"Length of 'row_names' mismatch with number of rows. Must be '{shape[0]}' but provided '{len(names)}'."
             )
 
         if len(set(names)) != len(names):

@@ -1,4 +1,6 @@
-from typing import Any, Dict, List, Optional
+from __future__ import annotations
+
+from typing import Any, Dict, List, Optional, Union
 from warnings import warn
 
 import biocframe
@@ -12,7 +14,7 @@ from ._combineutils import (
     merge_se_rownames,
     relaxed_merge_assays,
 )
-from .BaseSE import BaseSE
+from .base import BaseSE
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -33,8 +35,8 @@ class SummarizedExperiment(BaseSE):
         column_data: Optional[biocframe.BiocFrame] = None,
         row_names: Optional[List[str]] = None,
         column_names: Optional[List[str]] = None,
-        metadata: Optional[dict] = None,
-        validate: bool = True,
+        metadata: Optional[Union[Dict[str, Any], ut.NamedList]] = None,
+        _validate: bool = True,
     ) -> None:
         """Initialize a Summarized Experiment (SE).
 
@@ -85,7 +87,7 @@ class SummarizedExperiment(BaseSE):
                 Additional experimental metadata describing the methods.
                 Defaults to None.
 
-            validate:
+            _validate:
                 Internal use only.
         """
 
@@ -99,26 +101,26 @@ class SummarizedExperiment(BaseSE):
             row_names=row_names,
             column_names=column_names,
             metadata=metadata,
-            validate=validate,
+            _validate=_validate,
         )
 
     ############################
     ######>> combine ops <<#####
     ############################
 
-    def relaxed_combine_rows(self, *other) -> "SummarizedExperiment":
+    def relaxed_combine_rows(self, *other) -> SummarizedExperiment:
         """Wrapper around :py:func:`~relaxed_combine_rows`."""
         return relaxed_combine_rows(self, *other)
 
-    def relaxed_combine_columns(self, *other) -> "SummarizedExperiment":
+    def relaxed_combine_columns(self, *other) -> SummarizedExperiment:
         """Wrapper around :py:func:`~relaxed_combine_columns`."""
         return relaxed_combine_columns(self, *other)
 
-    def combine_rows(self, *other) -> "SummarizedExperiment":
+    def combine_rows(self, *other) -> SummarizedExperiment:
         """Wrapper around :py:func:`~combine_rows`."""
         return combine_rows(self, *other)
 
-    def combine_columns(self, *other) -> "SummarizedExperiment":
+    def combine_columns(self, *other) -> SummarizedExperiment:
         """Wrapper around :py:func:`~combine_columns`."""
         return combine_columns(self, *other)
 
@@ -129,7 +131,7 @@ class SummarizedExperiment(BaseSE):
     def to_rangedsummarizedexperiment(self):
         """Coerce to :py:class:`summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`"""
 
-        from .RangedSummarizedExperiment import RangedSummarizedExperiment
+        from .rse import RangedSummarizedExperiment
 
         return RangedSummarizedExperiment(
             assays=self._assays,
@@ -138,6 +140,7 @@ class SummarizedExperiment(BaseSE):
             row_names=self._row_names,
             column_names=self._column_names,
             metadata=self._metadata,
+            _validate=False,
         )
 
     def to_rse(self):

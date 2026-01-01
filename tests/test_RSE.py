@@ -5,7 +5,7 @@ from biocframe import BiocFrame
 import numpy as np
 import pandas as pd
 import pytest
-from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
+from summarizedexperiment.rse import RangedSummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
@@ -70,7 +70,7 @@ b = genomicranges.GenomicRanges.from_pandas(
     )
 )
 
-grl = genomicranges.GenomicRangesList(ranges=[a, b], names=["a", "b"])
+grl = genomicranges.CompressedGenomicRangesList.from_list(lst=[a, b], names=["a", "b"])
 
 
 def test_RSE_creation():
@@ -127,7 +127,7 @@ def test_RSE_empty():
     assert len(tse.col_data) == 0
 
     assert tse.row_ranges is not None
-    assert isinstance(tse.row_ranges, genomicranges.GenomicRangesList)
+    assert isinstance(tse.row_ranges, genomicranges.CompressedGenomicRangesList)
     assert len(tse.row_ranges) == 0
 
     assert tse.row_names is None

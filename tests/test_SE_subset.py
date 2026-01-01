@@ -4,7 +4,7 @@ from biocframe import BiocFrame
 import numpy as np
 import pandas as pd
 import pytest
-from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
+from summarizedexperiment.se import SummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

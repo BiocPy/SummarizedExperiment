@@ -3,7 +3,7 @@ from random import random
 from biocframe import BiocFrame
 import numpy as np
 import pandas as pd
-from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
+from summarizedexperiment.se import SummarizedExperiment
 import delayedarray
 from anndata import AnnData
 

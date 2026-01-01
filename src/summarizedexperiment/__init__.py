@@ -15,5 +15,5 @@ except PackageNotFoundError:  # pragma: no cover
 finally:
     del version, PackageNotFoundError
 
-from .SummarizedExperiment import SummarizedExperiment
-from .RangedSummarizedExperiment import RangedSummarizedExperiment
+from .se import SummarizedExperiment
+from .rse import RangedSummarizedExperiment

@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import warnings
 from collections import OrderedDict, namedtuple
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
@@ -110,12 +112,7 @@ def _validate_cols(cols, names, shape):
             warn("'column_data' does not contain unique 'row_names'.", UserWarning)
 
 
-def _validate_metadata(metadata):
-    if not isinstance(metadata, dict):
-        raise TypeError("'metadata' should be a dictionary")
-
-
-class BaseSE:
+class BaseSE(ut.BiocObject):
     """Base class for ``SummarizedExperiment``. This class provides common properties and methods that can be utilized
     across all derived classes.
 
@@ -136,8 +133,8 @@ class BaseSE:
         column_data: Optional[biocframe.BiocFrame] = None,
         row_names: Optional[List[str]] = None,
         column_names: Optional[List[str]] = None,
-        metadata: Optional[dict] = None,
-        validate: bool = True,
+        metadata: Optional[Union[Dict[str, Any], ut.NamedList]] = None,
+        _validate: bool = True,
     ) -> None:
         """Initialize an instance of ``BaseSE``.
 
@@ -188,9 +185,11 @@ class BaseSE:
                 Additional experimental metadata describing the methods.
                 Defaults to None.
 
-            validate:
+            _validate:
                 Internal use only.
         """
+        super().__init__(metadata=metadata, _validate=_validate)
+
         self._assays = assays if assays is not None else {}
 
         self._shape = _guess_assay_shape(self._assays, row_data, column_data, row_names, column_names)
@@ -215,9 +214,7 @@ class BaseSE:
             column_names = ut.Names(column_names)
         self._column_names = column_names
 
-        self._metadata = metadata if metadata is not None else {}
-
-        if validate:
+        if _validate:
             _validate_assays(self._assays, self._shape)
 
             if self._shape is None:
@@ -225,13 +222,6 @@ class BaseSE:
 
             _validate_rows(self._rows, self._row_names, self._shape)
             _validate_cols(self._cols, self._column_names, self._shape)
-            _validate_metadata(self._metadata)
-
-    def _define_output(self, in_place: bool = False) -> "BaseSE":
-        if in_place is True:
-            return self
-        else:
-            return self.__copy__()
 
     #########################
     ######>> Copying <<######
@@ -259,6 +249,7 @@ class BaseSE:
             row_names=_row_names_copy,
             column_names=_col_names_copy,
             metadata=_metadata_copy,
+            _validate=False,
         )
 
     def __copy__(self):
@@ -274,6 +265,7 @@ class BaseSE:
             row_names=self._row_names,
             column_names=self._column_names,
             metadata=self._metadata,
+            _validate=False,
         )
 
     def copy(self):
@@ -378,7 +370,7 @@ class BaseSE:
         """
         return self._assays
 
-    def set_assays(self, assays: Dict[str, Any], in_place: bool = False) -> "BaseSE":
+    def set_assays(self, assays: Dict[str, Any], in_place: bool = False) -> BaseSE:
         """Set new experiment data (assays).
 
         Args:
@@ -444,7 +436,7 @@ class BaseSE:
         rows: Optional[biocframe.BiocFrame],
         replace_row_names: bool = False,
         in_place: bool = False,
-    ) -> "BaseSE":
+    ) -> BaseSE:
         """Set new feature information.
 
         Args:
@@ -540,7 +532,7 @@ class BaseSE:
         cols: Optional[biocframe.BiocFrame],
         replace_column_names: bool = False,
         in_place: bool = False,
-    ) -> "BaseSE":
+    ) -> BaseSE:
         """Set sample data.
 
         Args:
@@ -652,7 +644,7 @@ class BaseSE:
         """
         return self._row_names
 
-    def set_row_names(self, names: Optional[List[str]], in_place: bool = False) -> "BaseSE":
+    def set_row_names(self, names: Optional[List[str]], in_place: bool = False) -> BaseSE:
         """Set new row names.
 
         Args:
@@ -722,7 +714,7 @@ class BaseSE:
         """
         return self._column_names
 
-    def set_column_names(self, names: Optional[List[str]], in_place: bool = False) -> "BaseSE":
+    def set_column_names(self, names: Optional[List[str]], in_place: bool = False) -> BaseSE:
         """Set new column names.
 
         Args:
@@ -815,54 +807,6 @@ class BaseSE:
         )
         self.set_column_names(names, in_place=True)
 
-    ###########################
-    ######>> metadata <<#######
-    ###########################
-
-    def get_metadata(self) -> dict:
-        """
-        Returns:
-            Dictionary of metadata for this object.
-        """
-        return self._metadata
-
-    def set_metadata(self, metadata: dict, in_place: bool = False) -> "BaseSE":
-        """Set additional metadata.
-
-        Args:
-            metadata:
-                New metadata for this object.
-
-            in_place:
-                Whether to modify the ``BaseSE`` in place.
-
-        Returns:
-            A modified ``BaseSE`` object, either as a copy of the original
-            or as a reference to the (in-place-modified) original.
-        """
-        if not isinstance(metadata, dict):
-            raise TypeError(f"`metadata` must be a dictionary, provided {type(metadata)}.")
-        output = self._define_output(in_place)
-        output._metadata = metadata
-        return output
-
-    @property
-    def metadata(self) -> dict:
-        """Alias for :py:attr:`~get_metadata`."""
-        return self.get_metadata()
-
-    @metadata.setter
-    def metadata(self, metadata: dict):
-        """Alias for :py:attr:`~set_metadata` with ``in_place = True``.
-
-        As this mutates the original object, a warning is raised.
-        """
-        warn(
-            "Setting property 'metadata' is an in-place operation, use 'set_metadata' instead",
-            UserWarning,
-        )
-        self.set_metadata(metadata, in_place=True)
-
     #############################
     ######>> assay names <<######
     #############################
@@ -875,7 +819,7 @@ class BaseSE:
         """
         return list(self.assays.keys())
 
-    def set_assay_names(self, names: List[str], in_place: bool = False) -> "BaseSE":
+    def set_assay_names(self, names: List[str], in_place: bool = False) -> BaseSE:
         """Replace :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s names.
 
         Args:
@@ -958,7 +902,7 @@ class BaseSE:
         """Alias for :py:attr:`~assay`. For backwards compatibility"""
         return self.get_assay(assay)
 
-    def set_assay(self, name: Union[str, int], assay: Any, in_place: bool = False) -> "BaseSE":
+    def set_assay(self, name: Union[str, int], assay: Any, in_place: bool = False) -> BaseSE:
         """Add or replace :py:attr:`~summarizedexperiment.BaseSE.BaseSE.assays`'s.
 
         Args:
@@ -1140,7 +1084,7 @@ class BaseSE:
         self,
         rows: Optional[Union[str, int, bool, Sequence]],
         columns: Optional[Union[str, int, bool, Sequence]],
-    ) -> "BaseSE":
+    ) -> BaseSE:
         """Alias for :py:attr:`~__getitem__`, for back-compatibility."""
 
         slicer = self._generic_slice(rows=rows, columns=columns)
@@ -1158,7 +1102,7 @@ class BaseSE:
     def __getitem__(
         self,
         args: Union[int, str, Sequence, tuple],
-    ) -> "BaseSE":
+    ) -> BaseSE:
         """Subset a ``SummarizedExperiment``.
 
         Args:

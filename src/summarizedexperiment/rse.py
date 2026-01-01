@@ -1,10 +1,12 @@
+from __future__ import annotations
+
 from typing import Any, Dict, List, Literal, Optional, Sequence, Union
 from warnings import warn
 
 import biocframe
 import biocutils as ut
 import numpy as np
-from genomicranges import GenomicRanges, GenomicRangesList, SeqInfo
+from genomicranges import CompressedGenomicRangesList, GenomicRanges, SeqInfo
 
 from ._combineutils import (
     check_assays_are_equal,
@@ -14,13 +16,13 @@ from ._combineutils import (
     relaxed_merge_assays,
 )
 from ._frameutils import is_pandas
-from .SummarizedExperiment import SummarizedExperiment
+from .se import SummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"
 __license__ = "MIT"
 
-GRangesOrGRangesList = Union[GenomicRanges, GenomicRangesList]
+GRangesOrGRangesList = Union[GenomicRanges, CompressedGenomicRangesList]
 GRangesOrRangeSE = Union[GRangesOrGRangesList, "RangedSummarizedExperiment"]
 
 
@@ -35,11 +37,11 @@ def _check_gr_or_rse(x: GRangesOrRangeSE):
         TypeError:
             Object is not a `RangedSummarizedExperiment` or `GenomicRanges`.
     """
-    if not isinstance(x, (RangedSummarizedExperiment, GenomicRanges, GenomicRangesList)):
-        raise TypeError("'x' is not a `RangedSummarizedExperiment`, `GenomicRanges` or `GenomicRangesList`.")
+    if not isinstance(x, (RangedSummarizedExperiment, GenomicRanges, CompressedGenomicRangesList)):
+        raise TypeError("'x' is not a `RangedSummarizedExperiment`, `GenomicRanges` or `CompressedGenomicRangesList`.")
 
-    if isinstance(x, GenomicRangesList):
-        raise NotImplementedError("'range' operations are not implemented for `GenomicRangesList`.")
+    if isinstance(x, CompressedGenomicRangesList):
+        raise NotImplementedError("'range' operations are not implemented for `CompressedGenomicRangesList`.")
 
 
 def _access_granges(x: GRangesOrRangeSE) -> GenomicRanges:
@@ -60,15 +62,17 @@ def _access_granges(x: GRangesOrRangeSE) -> GenomicRanges:
 
 
 def _validate_rowranges(row_ranges, shape):
-    if not (isinstance(row_ranges, (GenomicRanges, GenomicRangesList))):
-        raise TypeError(f"`row_ranges` must be a `GenomicRanges` or `GenomicRangesList` , provided {type(row_ranges)}.")
+    if not (isinstance(row_ranges, (GenomicRanges, CompressedGenomicRangesList))):
+        raise TypeError(
+            f"`row_ranges` must be a `GenomicRanges` or `CompressedGenomicRangesList` , provided {type(row_ranges)}."
+        )
 
     if len(row_ranges) != shape[0]:
         raise ValueError("Number of features in `row_ranges` and number of rows in assays do not match.")
 
 
 def _sanitize_ranges_frame(frame, num_rows: int):
-    frame = frame if frame is not None else GenomicRangesList.empty(n=num_rows)
+    frame = frame if frame is not None else CompressedGenomicRangesList.empty(n=num_rows)
 
     if is_pandas(frame):
         frame = GenomicRanges.from_pandas(frame)
@@ -79,7 +83,7 @@ def _sanitize_ranges_frame(frame, num_rows: int):
 class RangedSummarizedExperiment(SummarizedExperiment):
     """RangedSummarizedExperiment class to represent genomic experiment data, genomic features as
     :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or
-    :py:class:`~genomicranges.GenomicRangesList.GenomicRangesList` sample data and any additional experimental metadata.
+    :py:class:`~genomicranges.CompressedGenomicRangesList.CompressedGenomicRangesList` sample data and any additional experimental metadata.
 
     Note: If ``row_ranges`` is empty, None or not a
     :py:class:`genomicranges.GenomicRanges.GenomicRanges` object, use a
@@ -94,8 +98,8 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         column_data: Optional[biocframe.BiocFrame] = None,
         row_names: Optional[List[str]] = None,
         column_names: Optional[List[str]] = None,
-        metadata: Optional[dict] = None,
-        validate: bool = True,
+        metadata: Optional[Union[Dict[str, Any], ut.NamedList]] = None,
+        _validate: bool = True,
     ) -> None:
         """Initialize a `RangedSummarizedExperiment` (RSE) object.
 
@@ -150,7 +154,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
                 Additional experimental metadata describing the methods.
                 Defaults to None.
 
-            validate:
+            _validate:
                 Internal use only.
         """
         super().__init__(
@@ -160,11 +164,11 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             row_names=row_names,
             column_names=column_names,
             metadata=metadata,
-            validate=validate,
+            _validate=_validate,
         )
 
         self._row_ranges = _sanitize_ranges_frame(row_ranges, self._shape[0])
-        if validate:
+        if _validate:
             _validate_rowranges(self._row_ranges, self._shape)
 
     #########################
@@ -195,6 +199,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             row_names=_row_names_copy,
             column_names=_col_names_copy,
             metadata=_metadata_copy,
+            _validate=False,
         )
 
     def __copy__(self):
@@ -211,6 +216,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
             row_names=self._row_names,
             column_names=self._column_names,
             metadata=self._metadata,
+            _validate=False,
         )
 
     def copy(self):
@@ -286,7 +292,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     def set_row_ranges(
         self, row_ranges: Optional[GRangesOrGRangesList], in_place: bool = False
-    ) -> "RangedSummarizedExperiment":
+    ) -> RangedSummarizedExperiment:
         """Set new genomic features.
 
         Args:
@@ -390,7 +396,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         self,
         rows: Optional[Union[str, int, bool, Sequence]],
         columns: Optional[Union[str, int, bool, Sequence]],
-    ) -> "RangedSummarizedExperiment":
+    ) -> RangedSummarizedExperiment:
         """Alias for :py:attr:`~__getitem__`, for back-compatibility."""
 
         slicer = self._generic_slice(rows=rows, columns=columns)
@@ -559,7 +565,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         both: bool = False,
         ignore_strand: bool = False,
         in_place: bool = False,
-    ) -> "RangedSummarizedExperiment":
+    ) -> RangedSummarizedExperiment:
         """Compute flanking ranges for each range.
 
         Refer to either :py:meth:`~genomicranges.GenomicRanges.GenomicRanges.flank` or the
@@ -604,7 +610,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         fix: Literal["start", "end", "center"] = "start",
         ignore_strand: bool = False,
         in_place: bool = False,
-    ) -> "RangedSummarizedExperiment":
+    ) -> RangedSummarizedExperiment:
         """Resize ranges to the specified ``width`` where either the ``start``, ``end``, or ``center`` is used as an
         anchor.
 
@@ -637,9 +643,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         output._row_ranges = new_ranges
         return output
 
-    def shift(
-        self, shift: Union[int, List[int], np.ndarray] = 0, in_place: bool = False
-    ) -> "RangedSummarizedExperiment":
+    def shift(self, shift: Union[int, List[int], np.ndarray] = 0, in_place: bool = False) -> RangedSummarizedExperiment:
         """Shift all intervals.
 
         ``shift`` may be be negative.
@@ -665,7 +669,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
 
     def promoters(
         self, upstream: int = 2000, downstream: int = 200, in_place: bool = False
-    ) -> "RangedSummarizedExperiment":
+    ) -> RangedSummarizedExperiment:
         """Extend intervals to promoter regions.
 
         Args:
@@ -697,7 +701,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         end: Optional[Union[int, List[int], np.ndarray]] = None,
         keep_all_ranges: bool = False,
         in_place: bool = False,
-    ) -> "RangedSummarizedExperiment":
+    ) -> RangedSummarizedExperiment:
         """Restrict ranges to a given start and end positions.
 
         Args:
@@ -731,7 +735,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         width: Optional[Union[int, List[int], np.ndarray]] = None,
         end: Optional[Union[int, List[int], np.ndarray]] = None,
         in_place: bool = False,
-    ) -> "RangedSummarizedExperiment":
+    ) -> RangedSummarizedExperiment:
         """Narrow genomic positions by provided ``start``, ``width`` and ``end`` parameters.
 
         Important: these parameters are relative shift in positions for each range.
@@ -763,12 +767,12 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     def find_overlaps(
         self,
         query: GRangesOrRangeSE,
-        query_type: str = "any",
+        query_type: Literal["any", "start", "end", "within"] = "any",
         select: Literal["all", "first", "last", "arbitrary"] = "all",
         max_gap: int = -1,
         min_overlap: int = 1,
         ignore_strand: bool = False,
-    ) -> List[List[int]]:
+    ) -> biocframe.BiocFrame:
         """Find overlaps between subject (self) and query ranges.
 
         Args:
@@ -827,11 +831,11 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     def subset_by_overlaps(
         self,
         query: GRangesOrRangeSE,
-        query_type: str = "any",
+        query_type: Literal["any", "start", "end", "within"] = "any",
         max_gap: int = -1,
         min_overlap: int = 1,
         ignore_strand: bool = False,
-    ) -> "RangedSummarizedExperiment":
+    ) -> RangedSummarizedExperiment:
         """Subset a `RangedSummarizedExperiment` by feature overlaps.
 
         Args:
@@ -896,7 +900,7 @@ class RangedSummarizedExperiment(SummarizedExperiment):
         """
         return self.row_ranges.order(decreasing=decreasing)
 
-    def sort(self, decreasing: bool = False, in_place: bool = False) -> "RangedSummarizedExperiment":
+    def sort(self, decreasing: bool = False, in_place: bool = False) -> RangedSummarizedExperiment:
         """Sort by ranges.
 
         Args:
@@ -918,19 +922,19 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     ######>> combine ops <<#####
     ############################
 
-    def relaxed_combine_rows(self, *other) -> "RangedSummarizedExperiment":
+    def relaxed_combine_rows(self, *other) -> RangedSummarizedExperiment:
         """Wrapper around :py:func:`~relaxed_combine_rows`."""
         return relaxed_combine_rows(self, *other)
 
-    def relaxed_combine_columns(self, *other) -> "RangedSummarizedExperiment":
+    def relaxed_combine_columns(self, *other) -> RangedSummarizedExperiment:
         """Wrapper around :py:func:`~relaxed_combine_columns`."""
         return relaxed_combine_columns(self, *other)
 
-    def combine_rows(self, *other) -> "RangedSummarizedExperiment":
+    def combine_rows(self, *other) -> RangedSummarizedExperiment:
         """Wrapper around :py:func:`~combine_rows`."""
         return combine_rows(self, *other)
 
-    def combine_columns(self, *other) -> "RangedSummarizedExperiment":
+    def combine_columns(self, *other) -> RangedSummarizedExperiment:
         """Wrapper around :py:func:`~combine_columns`."""
         return combine_columns(self, *other)
 

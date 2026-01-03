@@ -16,7 +16,7 @@ from ._combineutils import (
     relaxed_merge_assays,
 )
 from ._frameutils import is_pandas
-from .SummarrizedExperiment import SummarizedExperiment
+from .SummarizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

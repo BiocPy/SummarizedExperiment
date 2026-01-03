@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 import pytest
 from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
-from summarizedexperiment.SummarrizedExperiment import SummarizedExperiment
+from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

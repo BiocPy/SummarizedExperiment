@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 import scipy.sparse as sp
 from biocframe import BiocFrame
-from summarizedexperiment.SummarrizedExperiment import SummarizedExperiment
+from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 
 ncols = 10

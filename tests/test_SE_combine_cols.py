@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import pytest
 import biocutils
-from summarizedexperiment.SummarrizedExperiment import SummarizedExperiment
+from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 
 __author__ = "keviny2, jkanche"
 __copyright__ = "keviny2"

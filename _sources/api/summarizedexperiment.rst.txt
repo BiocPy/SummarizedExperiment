@@ -12,10 +12,10 @@ summarizedexperiment.RangedSummarizedExperiment module
    :show-inheritance:
    :undoc-members:
 
-summarizedexperiment.SummarrizedExperiment module
--------------------------------------------------
+summarizedexperiment.SummarizedExperiment module
+------------------------------------------------
 
-.. automodule:: summarizedexperiment.SummarrizedExperiment
+.. automodule:: summarizedexperiment.SummarizedExperiment
    :members:
    :show-inheritance:
    :undoc-members:

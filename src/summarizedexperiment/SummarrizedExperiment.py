@@ -131,7 +131,7 @@ class SummarizedExperiment(BaseSE):
     def to_rangedsummarizedexperiment(self):
         """Coerce to :py:class:`summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`"""
 
-        from .rse import RangedSummarizedExperiment
+        from .RangedSummarizedExperiment import RangedSummarizedExperiment
 
         return RangedSummarizedExperiment(
             assays=self._assays,

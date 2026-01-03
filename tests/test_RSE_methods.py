@@ -4,8 +4,8 @@ import genomicranges
 import numpy as np
 import pandas as pd
 import pytest
-from summarizedexperiment.rse import RangedSummarizedExperiment
-from summarizedexperiment.se import SummarizedExperiment
+from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
+from summarizedexperiment.SummarrizedExperiment import SummarizedExperiment
 
 __author__ = "jkanche"
 __copyright__ = "jkanche"

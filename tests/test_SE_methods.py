@@ -2,8 +2,8 @@ from random import random
 
 from biocframe import BiocFrame
 import numpy as np
-from summarizedexperiment.se import SummarizedExperiment
-from summarizedexperiment.rse import RangedSummarizedExperiment
+from summarizedexperiment.SummarrizedExperiment import SummarizedExperiment
+from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
 
 import pytest
 

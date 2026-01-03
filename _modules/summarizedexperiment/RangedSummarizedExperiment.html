@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>summarizedexperiment.rse - SummarizedExperiment 0.6.0 documentation</title>
+        <title>summarizedexperiment.RangedSummarizedExperiment - SummarizedExperiment 0.6.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.6.0 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.6.1 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.6.0 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.6.1 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -233,7 +233,7 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <h1>Source code for summarizedexperiment.rse</h1><div class="highlight"><pre>
+          <h1>Source code for summarizedexperiment.RangedSummarizedExperiment</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Literal</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
@@ -252,7 +252,7 @@
     <span class="n">relaxed_merge_assays</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">._frameutils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_pandas</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">.se</span><span class="w"> </span><span class="kn">import</span> <span class="n">SummarizedExperiment</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.SummarrizedExperiment</span><span class="w"> </span><span class="kn">import</span> <span class="n">SummarizedExperiment</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;jkanche&quot;</span>
@@ -317,7 +317,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">RangedSummarizedExperiment</span><span class="p">(</span><span class="n">SummarizedExperiment</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;RangedSummarizedExperiment class to represent genomic experiment data, genomic features as</span>
 <span class="sd">    :py:class:`~genomicranges.GenomicRanges.GenomicRanges` or</span>
@@ -329,7 +329,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.__init__">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.__init__">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__init__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">assays</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -417,7 +417,7 @@
     <span class="c1">#########################</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.__deepcopy__">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.__deepcopy__">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__deepcopy__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__deepcopy__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">memo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_nil</span><span class="o">=</span><span class="p">[]):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -447,7 +447,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.__copy__">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.__copy__">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__copy__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">__copy__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -467,7 +467,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.copy">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.copy">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.copy">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~__copy__`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__copy__</span><span class="p">()</span></div>
@@ -478,7 +478,7 @@
     <span class="c1">##########################</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.__repr__">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.__repr__">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.__repr__">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns:</span>
@@ -527,7 +527,7 @@
         <span class="p">)</span>
         <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;column_names(</span><span class="si">{</span><span class="mi">0</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="s1">&#39; &#39;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="w"> </span><span class="ow">is</span><span class="w"> </span><span class="kc">None</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_column_names</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;metadata(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">include_brackets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="w"> </span><span class="n">transform</span><span class="o">=</span><span class="k">lambda</span><span class="w"> </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;metadata(</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="p">))</span><span class="si">}</span><span class="s2">): </span><span class="si">{</span><span class="n">ut</span><span class="o">.</span><span class="n">print_truncated_list</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span><span class="w"> </span><span class="n">sep</span><span class="o">=</span><span class="s1">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">include_brackets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="w"> </span><span class="n">transform</span><span class="o">=</span><span class="k">lambda</span><span class="w"> </span><span class="n">y</span><span class="p">:</span><span class="w"> </span><span class="n">y</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
 
         <span class="k">return</span> <span class="n">output</span>
 
@@ -536,7 +536,7 @@
     <span class="c1">############################</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.get_row_ranges">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.get_row_ranges">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.get_row_ranges">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_row_ranges</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">GRangesOrGRangesList</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get genomic feature information.</span>
 
@@ -547,7 +547,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.set_row_ranges">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.set_row_ranges">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.set_row_ranges">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">set_row_ranges</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">row_ranges</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">GRangesOrGRangesList</span><span class="p">],</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
@@ -652,7 +652,7 @@
     <span class="c1"># rest of them are inherited from BaseSE.</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.get_slice">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.get_slice">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.get_slice">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">get_slice</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">]],</span>
@@ -683,7 +683,7 @@
     <span class="c1">############################</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.coverage">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.coverage">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.coverage">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate coverage for each chromosome.</span>
 
@@ -706,7 +706,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.nearest">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.nearest">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.nearest">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">nearest</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
@@ -749,7 +749,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.precede">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.precede">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.precede">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">precede</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
@@ -792,7 +792,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.follow">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.follow">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.follow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">follow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
@@ -833,7 +833,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.flank">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.flank">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.flank">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">flank</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -882,7 +882,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.resize">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.resize">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.resize">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">resize</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">width</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span>
@@ -924,7 +924,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.shift">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.shift">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.shift">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">shift</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Shift all intervals.</span>
 
@@ -951,7 +951,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.promoters">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.promoters">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.promoters">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">promoters</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">upstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">,</span> <span class="n">downstream</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">200</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
@@ -982,7 +982,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.restrict">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.restrict">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.restrict">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">restrict</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1019,7 +1019,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.narrow">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.narrow">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.narrow">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">narrow</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">start</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1057,7 +1057,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.find_overlaps">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.find_overlaps">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.find_overlaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_overlaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
@@ -1124,7 +1124,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.subset_by_overlaps">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.subset_by_overlaps">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.subset_by_overlaps">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">subset_by_overlaps</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">query</span><span class="p">:</span> <span class="n">GRangesOrRangeSE</span><span class="p">,</span>
@@ -1187,7 +1187,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.order">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.order">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.order">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">order</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the order of indices to sort.</span>
 
@@ -1202,7 +1202,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.sort">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.sort">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.sort">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">sort</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">decreasing</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">in_place</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sort by ranges.</span>
 
@@ -1227,28 +1227,28 @@
     <span class="c1">############################</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.relaxed_combine_rows">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.relaxed_combine_rows">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.relaxed_combine_rows">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">relaxed_combine_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper around :py:func:`~relaxed_combine_rows`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">relaxed_combine_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.relaxed_combine_columns">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.relaxed_combine_columns">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.relaxed_combine_columns">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">relaxed_combine_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper around :py:func:`~relaxed_combine_columns`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">relaxed_combine_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.combine_rows">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.combine_rows">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.combine_rows">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">combine_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper around :py:func:`~combine_rows`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">combine_rows</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.combine_columns">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.combine_columns">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.combine_columns">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">combine_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrapper around :py:func:`~combine_columns`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">combine_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span></div>
@@ -1259,7 +1259,7 @@
     <span class="c1">######################</span>
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.to_summarizedexperiment">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.to_summarizedexperiment">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.to_summarizedexperiment">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_summarizedexperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce to :py:class:`summarizedexperiment.SummarizedExperiment.SummarizedExperiment`&quot;&quot;&quot;</span>
 
@@ -1276,7 +1276,7 @@
 
 
 <div class="viewcode-block" id="RangedSummarizedExperiment.to_se">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.RangedSummarizedExperiment.to_se">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment.to_se">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">to_se</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~to_summarizedexperiment`.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_summarizedexperiment</span><span class="p">()</span></div>
@@ -1290,7 +1290,7 @@
 
 
 <div class="viewcode-block" id="combine_rows">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.combine_rows">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.combine_rows">[docs]</a>
 <span class="nd">@ut</span><span class="o">.</span><span class="n">combine_rows</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">combine_rows</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine multiple ``RangedSummarizedExperiment`` objects by row.</span>
@@ -1327,7 +1327,7 @@
 
 
 <div class="viewcode-block" id="combine_columns">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.combine_columns">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.combine_columns">[docs]</a>
 <span class="nd">@ut</span><span class="o">.</span><span class="n">combine_columns</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">combine_columns</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Combine multiple ``RangedSummarizedExperiment`` objects by column.</span>
@@ -1361,7 +1361,7 @@
 
 
 <div class="viewcode-block" id="relaxed_combine_rows">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.relaxed_combine_rows">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.relaxed_combine_rows">[docs]</a>
 <span class="nd">@ut</span><span class="o">.</span><span class="n">relaxed_combine_rows</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">relaxed_combine_rows</span><span class="p">(</span><span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RangedSummarizedExperiment</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A relaxed version of the :py:func:`~biocutils.combine_rows.combine_rows` method for</span>
@@ -1403,7 +1403,7 @@
 
 
 <div class="viewcode-block" id="relaxed_combine_columns">
-<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.rse.relaxed_combine_columns">[docs]</a>
+<a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.RangedSummarizedExperiment.relaxed_combine_columns">[docs]</a>
 <span class="nd">@ut</span><span class="o">.</span><span class="n">relaxed_combine_columns</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">RangedSummarizedExperiment</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">relaxed_combine_columns</span><span class="p">(</span>
     <span class="o">*</span><span class="n">x</span><span class="p">:</span> <span class="n">RangedSummarizedExperiment</span><span class="p">,</span>
@@ -1483,7 +1483,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=8fa8b3e9"></script>
+</div><script src="../../_static/documentation_options.js?v=2bd037f0"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

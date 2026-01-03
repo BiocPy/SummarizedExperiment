@@ -1,6 +1,6 @@
 # Changelog
 
-## Version 0.6.0
+## Version 0.6.0 - 0.6.1
 
 - Classes now extend `BiocObject` from biocutils, which provides a metadata field.
 - `valdiate` is renamed to `_validate` for consistency with other classes and packages.

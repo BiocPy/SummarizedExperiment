@@ -942,6 +942,22 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     ######>> to se <<#####
     ######################
 
+    @classmethod
+    def from_summarizedexperiment(cls, se: SummarizedExperiment) -> RangedSummarizedExperiment:
+        return cls(
+            assays=se.get_assays(),
+            row_data=se.get_row_data(),
+            column_data=se.get_column_data(),
+            row_names=se.get_row_names(),
+            column_names=se.get_column_names(),
+            metadata=se.get_metadata(),
+        )
+
+    @classmethod
+    def from_se(cls, se: SummarizedExperiment) -> RangedSummarizedExperiment:
+        """Alias for :py:meth:`~to_summarizedexperiment`."""
+        return RangedSummarizedExperiment.from_summarizedexperiment(se)
+
     def to_summarizedexperiment(self):
         """Coerce to :py:class:`summarizedexperiment.SummarizedExperiment.SummarizedExperiment`"""
 

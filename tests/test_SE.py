@@ -4,6 +4,7 @@ from biocframe import BiocFrame
 import numpy as np
 import pandas as pd
 from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
+from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
 import delayedarray
 from anndata import AnnData
 

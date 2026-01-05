@@ -242,7 +242,7 @@ def test_RSE_to_se_with_ranges():
     assert se is not None
     assert isinstance(se, SummarizedExperiment)
     assert se.shape == tse.shape
-    
+
     assert se.row_data is not None
     assert "seqnames" in se.row_data.column_names
     assert "starts" in se.row_data.column_names

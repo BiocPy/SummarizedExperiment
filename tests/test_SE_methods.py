@@ -149,3 +149,25 @@ def test_SE_to_rse():
     assert rse is not None
     assert isinstance(rse, RangedSummarizedExperiment)
     assert rse.shape == tse.shape
+
+def test_SE_to_rse_parse_ranges():
+    rd = BiocFrame({
+        "seqnames": ["chr1"] * nrows,
+        "starts": range(nrows),
+        "ends": range(nrows),
+        "strand": ["+"] * nrows
+    })
+    
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=rd, column_data=col_data
+    )
+
+    rse = tse.to_rangedsummarizedexperiment()
+
+    assert rse is not None
+    assert isinstance(rse, RangedSummarizedExperiment)
+    assert rse.shape == tse.shape
+    
+    assert rse.row_ranges is not None
+    assert len(rse.row_ranges) == nrows
+    assert np.allclose(rse.row_ranges.start, np.array(range(nrows)))

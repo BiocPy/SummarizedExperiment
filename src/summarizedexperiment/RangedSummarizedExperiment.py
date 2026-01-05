@@ -942,18 +942,55 @@ class RangedSummarizedExperiment(SummarizedExperiment):
     ######>> to se <<#####
     ######################
 
+    @classmethod
+    def from_summarizedexperiment(cls, se: SummarizedExperiment) -> RangedSummarizedExperiment:
+        return cls(
+            assays=se.get_assays(),
+            row_data=se.get_row_data(),
+            column_data=se.get_column_data(),
+            row_names=se.get_row_names(),
+            column_names=se.get_column_names(),
+            metadata=se.get_metadata(),
+        )
+
+    @classmethod
+    def from_se(cls, se: SummarizedExperiment) -> RangedSummarizedExperiment:
+        """Alias for :py:meth:`~to_summarizedexperiment`."""
+        return RangedSummarizedExperiment.from_summarizedexperiment(se)
+
     def to_summarizedexperiment(self):
         """Coerce to :py:class:`summarizedexperiment.SummarizedExperiment.SummarizedExperiment`"""
 
-        warn("SE does not containg a slot for ranges, dropping ranges.", UserWarning)
+        warn("SE does not containg a slot for ranges, merging ranges with row_data.", UserWarning)
+
+        new_row_data = self._rows
+        if self._row_ranges is not None:
+            try:
+                import copy
+
+                if isinstance(self._row_ranges, CompressedGenomicRangesList):
+                    df = self._row_ranges.get_unlist_data().to_pandas()
+                else:
+                    df = self._row_ranges.to_pandas()
+
+                range_bf = biocframe.BiocFrame.from_pandas(df)
+                if new_row_data is None or new_row_data.shape[0] == 0:
+                    new_row_data = range_bf
+                else:
+                    new_row_data = copy.copy(new_row_data)
+                    for col in range_bf.column_names:
+                        new_row_data[col] = range_bf[col]
+            except Exception as e:
+                warn(f"Failed to transfer row_ranges to row_data: {e}", UserWarning)
 
         return SummarizedExperiment(
             assays=self._assays,
-            row_data=self._rows,
+            row_data=new_row_data,
             column_data=self._cols,
             row_names=self._row_names,
             column_names=self._column_names,
             metadata=self._metadata,
+            _validate=False,
         )
 
     def to_se(self):

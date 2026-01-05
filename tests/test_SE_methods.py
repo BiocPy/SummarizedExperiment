@@ -149,3 +149,41 @@ def test_SE_to_rse():
     assert rse is not None
     assert isinstance(rse, RangedSummarizedExperiment)
     assert rse.shape == tse.shape
+
+def test_SE_to_rse_parse_ranges():
+    rd = BiocFrame({
+        "seqnames": ["chr1"] * nrows,
+        "starts": range(nrows),
+        "ends": range(nrows),
+        "strand": ["+"] * nrows
+    })
+
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=rd, column_data=col_data
+    )
+
+    rse = tse.to_rangedsummarizedexperiment()
+
+    assert rse is not None
+    assert isinstance(rse, RangedSummarizedExperiment)
+    assert rse.shape == tse.shape
+
+    assert rse.row_ranges is not None
+    assert len(rse.row_ranges) == nrows
+    assert np.allclose(rse.row_ranges.start, np.array(range(nrows)))
+
+def test_SE_coldata_accessors():
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
+    )
+
+    assert tse.get_column_data_column("treatment") is not None
+    assert len(tse.get_column_data_column("treatment")) == 6
+
+    new_tse = tse.set_column_data_column("stuff", [1, 2, 3, 4, 5, 6])
+    assert new_tse.shape == tse.shape
+    assert "stuff" in new_tse.col_data.column_names
+    assert "stuff" not in tse.col_data.column_names
+
+    tse.set_column_data_column("stuff", [1, 2, 3, 4, 5, 6], in_place=True)
+    assert "stuff" in tse.col_data.column_names

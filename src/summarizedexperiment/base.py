@@ -1197,3 +1197,40 @@ class BaseSE(ut.BiocObject):
         )
 
         return obj
+
+    ######################################
+    ######>> col_data accessors <<########
+    ######################################
+
+    def get_column_data_column(self, column: str) -> Any:
+        """Access a column from the ``column_data``.
+
+        Args:
+            column:
+                Name of the column to retrieve.
+
+        Returns:
+            The content of the column.
+        """
+        return self._cols.get_column(column)
+
+    def set_column_data_column(self, column: str, value: Any, in_place: bool = False) -> BaseSE:
+        """Set or replace a column in ``column_data``.
+
+        Args:
+            column:
+                Name of the column to set.
+
+            value:
+                Values for the column. Must match the number of samples (columns).
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        output = self._define_output(in_place)
+        output._cols = output._cols.set_column(column, value, in_place=False)
+        return output

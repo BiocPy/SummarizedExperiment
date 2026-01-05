@@ -5,6 +5,7 @@ from biocframe import BiocFrame
 import numpy as np
 import pandas as pd
 import pytest
+from summarizedexperiment.SummarizedExperiment import SummarizedExperiment
 from summarizedexperiment.RangedSummarizedExperiment import RangedSummarizedExperiment
 
 __author__ = "jkanche"
@@ -132,3 +133,16 @@ def test_RSE_empty():
 
     assert tse.row_names is None
     assert tse.col_names is None
+
+def test_RSE_from_SE():
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=df_gr, column_data=col_data
+    )
+
+    assert tse is not None
+    assert isinstance(tse, SummarizedExperiment)
+    assert tse.shape == (200, 6)
+
+    rse = RangedSummarizedExperiment.from_se(tse)
+    assert isinstance(rse, RangedSummarizedExperiment)
+    assert rse.shape == (200, 6)

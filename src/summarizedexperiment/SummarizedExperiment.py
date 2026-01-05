@@ -128,13 +128,33 @@ class SummarizedExperiment(BaseSE):
     ######>> to rse <<#####
     #######################
 
-    def to_rangedsummarizedexperiment(self):
-        """Coerce to :py:class:`summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`"""
+    def to_rangedsummarizedexperiment(self, row_ranges=None):
+        """Coerce to :py:class:`summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`.
+
+        Args:
+            row_ranges:
+                Genomic features, must be the same length as the number of rows of
+                the matrices in assays.
+
+                If ``row_ranges`` is not provided, this method will attempt to
+                extract range information (e.g., 'seqnames', 'starts') from
+                ``row_data`` to construct the :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.
+        """
 
         from .RangedSummarizedExperiment import RangedSummarizedExperiment
 
+        if row_ranges is None:
+            try:
+                rd_cols = self.row_data.get_column_names()
+                if "seqnames" in rd_cols and "starts" in rd_cols:
+                    df = self.row_data.to_pandas()
+                    row_ranges = GenomicRanges.from_pandas(df)
+            except Exception as _:
+                pass
+
         return RangedSummarizedExperiment(
             assays=self._assays,
+            row_ranges=row_ranges,
             row_data=self._rows,
             column_data=self._cols,
             row_names=self._row_names,
@@ -143,9 +163,9 @@ class SummarizedExperiment(BaseSE):
             _validate=False,
         )
 
-    def to_rse(self):
+    def to_rse(self, row_ranges=None):
         """Alias for :py:meth:`~to_rangedsummarizedexperiment`."""
-        return self.to_rangedsummarizedexperiment()
+        return self.to_rangedsummarizedexperiment(row_ranges=row_ranges)
 
 
 ############################

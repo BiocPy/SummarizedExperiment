@@ -1,10 +1,12 @@
 # Changelog
 
-## Version 0.6.0 - 0.6.2
+## Version 0.6.0 - 0.6.3
 
 - Classes now extend `BiocObject` from biocutils, which provides a metadata field.
 - `valdiate` is renamed to `_validate` for consistency with other classes and packages.
 - Update github actions to run from 3.10 - 3.14.
+- Coerce: RSE to/from SE and vice-versa.
+- Implement getters and setters to extract columns from either row/column data (See [issue](https://github.com/BiocPy/SummarizedExperiment/issues/99)).
 
 ## Version 0.5.4 - 0.5.5
 

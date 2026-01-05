@@ -5,7 +5,7 @@
     <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../genindex.html"><link rel="search" title="Search" href="../../search.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>summarizedexperiment.SummarizedExperiment - SummarizedExperiment 0.6.3 documentation</title>
+        <title>summarizedexperiment.SummarizedExperiment - SummarizedExperiment 0.6.4 documentation</title>
       <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -161,7 +161,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.6.3 documentation</div></a>
+      <a href="../../index.html"><div class="brand">SummarizedExperiment 0.6.4 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -182,7 +182,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../../index.html">
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.6.3 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.6.4 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -383,13 +383,33 @@
 
 <div class="viewcode-block" id="SummarizedExperiment.to_rangedsummarizedexperiment">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.SummarizedExperiment.SummarizedExperiment.to_rangedsummarizedexperiment">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_rangedsummarizedexperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce to :py:class:`summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_rangedsummarizedexperiment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_ranges</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Coerce to :py:class:`summarizedexperiment.RangedSummarizedExperiment.RangedSummarizedExperiment`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            row_ranges:</span>
+<span class="sd">                Genomic features, must be the same length as the number of rows of</span>
+<span class="sd">                the matrices in assays.</span>
+
+<span class="sd">                If ``row_ranges`` is not provided, this method will attempt to</span>
+<span class="sd">                extract range information (e.g., &#39;seqnames&#39;, &#39;starts&#39;) from</span>
+<span class="sd">                ``row_data`` to construct the :py:class:`~genomicranges.GenomicRanges.GenomicRanges`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="kn">from</span><span class="w"> </span><span class="nn">.RangedSummarizedExperiment</span><span class="w"> </span><span class="kn">import</span> <span class="n">RangedSummarizedExperiment</span>
 
+        <span class="k">if</span> <span class="n">row_ranges</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">rd_cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_data</span><span class="o">.</span><span class="n">get_column_names</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s2">&quot;seqnames&quot;</span> <span class="ow">in</span> <span class="n">rd_cols</span> <span class="ow">and</span> <span class="s2">&quot;starts&quot;</span> <span class="ow">in</span> <span class="n">rd_cols</span><span class="p">:</span>
+                    <span class="n">df</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">row_data</span><span class="o">.</span><span class="n">to_pandas</span><span class="p">()</span>
+                    <span class="n">row_ranges</span> <span class="o">=</span> <span class="n">GenomicRanges</span><span class="o">.</span><span class="n">from_pandas</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">_</span><span class="p">:</span>
+                <span class="k">pass</span>
+
         <span class="k">return</span> <span class="n">RangedSummarizedExperiment</span><span class="p">(</span>
             <span class="n">assays</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_assays</span><span class="p">,</span>
+            <span class="n">row_ranges</span><span class="o">=</span><span class="n">row_ranges</span><span class="p">,</span>
             <span class="n">row_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_rows</span><span class="p">,</span>
             <span class="n">column_data</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_cols</span><span class="p">,</span>
             <span class="n">row_names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_row_names</span><span class="p">,</span>
@@ -401,9 +421,9 @@
 
 <div class="viewcode-block" id="SummarizedExperiment.to_rse">
 <a class="viewcode-back" href="../../api/summarizedexperiment.html#summarizedexperiment.SummarizedExperiment.SummarizedExperiment.to_rse">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">to_rse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_rse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row_ranges</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for :py:meth:`~to_rangedsummarizedexperiment`.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_rangedsummarizedexperiment</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_rangedsummarizedexperiment</span><span class="p">(</span><span class="n">row_ranges</span><span class="o">=</span><span class="n">row_ranges</span><span class="p">)</span></div>
 </div>
 
 
@@ -595,7 +615,7 @@
       
     </aside>
   </div>
-</div><script src="../../_static/documentation_options.js?v=b8503983"></script>
+</div><script src="../../_static/documentation_options.js?v=73d9a94e"></script>
     <script src="../../_static/doctools.js?v=9bcbadda"></script>
     <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/furo.js?v=46bd48cc"></script>

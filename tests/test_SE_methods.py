@@ -157,7 +157,7 @@ def test_SE_to_rse_parse_ranges():
         "ends": range(nrows),
         "strand": ["+"] * nrows
     })
-    
+
     tse = SummarizedExperiment(
         assays={"counts": counts}, row_data=rd, column_data=col_data
     )
@@ -167,7 +167,7 @@ def test_SE_to_rse_parse_ranges():
     assert rse is not None
     assert isinstance(rse, RangedSummarizedExperiment)
     assert rse.shape == tse.shape
-    
+
     assert rse.row_ranges is not None
     assert len(rse.row_ranges) == nrows
     assert np.allclose(rse.row_ranges.start, np.array(range(nrows)))

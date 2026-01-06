@@ -187,3 +187,19 @@ def test_SE_coldata_accessors():
 
     tse.set_column_data_column("stuff", [1, 2, 3, 4, 5, 6], in_place=True)
     assert "stuff" in tse.col_data.column_names
+
+def test_SE_rowdata_accessors():
+    tse = SummarizedExperiment(
+        assays={"counts": counts}, row_data=row_data, column_data=col_data
+    )
+
+    assert tse.get_row_data_column("strand") is not None
+    assert len(tse.get_row_data_column("strand")) == 200
+
+    new_tse = tse.set_row_data_column("new_scores", np.arange(200) * 2)
+    assert new_tse.shape == tse.shape
+    assert "new_scores" in new_tse.row_data.column_names
+    assert "new_scores" not in tse.row_data.column_names
+
+    tse.set_row_data_column("new_scores", np.arange(200) * 3, in_place=True)
+    assert "new_scores" in tse.row_data.column_names

@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="../genindex.html"><link rel="search" title="Search" href="../search.html"><link rel="next" title="Contributing" href="../contributing.html"><link rel="prev" title="summarizedexperiment" href="modules.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.12.19 -->
-        <title>summarizedexperiment package - SummarizedExperiment 0.6.4 documentation</title>
+        <title>summarizedexperiment package - SummarizedExperiment 0.6.5 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
     <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=7bdb33bb" />
     <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
@@ -162,7 +162,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="../index.html"><div class="brand">SummarizedExperiment 0.6.4 documentation</div></a>
+      <a href="../index.html"><div class="brand">SummarizedExperiment 0.6.5 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -183,7 +183,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
   
-  <span class="sidebar-brand-text">SummarizedExperiment 0.6.4 documentation</span>
+  <span class="sidebar-brand-text">SummarizedExperiment 0.6.5 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -1570,6 +1570,23 @@ from the experiment.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="summarizedexperiment.base.BaseSE.get_row_data_column">
+<span class="sig-name descname"><span class="pre">get_row_data_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/summarizedexperiment/base.html#BaseSE.get_row_data_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.base.BaseSE.get_row_data_column" title="Link to this definition">¶</a></dt>
+<dd><p>Access a column from the <code class="docutils literal notranslate"><span class="pre">row_data</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>column</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Name of the column to retrieve.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The content of the column.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="summarizedexperiment.base.BaseSE.get_row_names">
 <span class="sig-name descname"><span class="pre">get_row_names</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/summarizedexperiment/base.html#BaseSE.get_row_names"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.base.BaseSE.get_row_names" title="Link to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
@@ -1777,6 +1794,28 @@ object is created.</p>
 </p></li>
 <li><p><strong>replace_row_names</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to replace experiment’s row_names with the names from the
 new object. Defaults to False.</p></li>
+<li><p><strong>in_place</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to modify the <code class="docutils literal notranslate"><span class="pre">BaseSE</span></code> in place.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><span class="sphinx_autodoc_typehints-type"><a class="reference internal" href="#summarizedexperiment.base.BaseSE" title="summarizedexperiment.base.BaseSE"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseSE</span></code></a></span></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A modified <code class="docutils literal notranslate"><span class="pre">BaseSE</span></code> object, either as a copy of the original
+or as a reference to the (in-place-modified) original.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="summarizedexperiment.base.BaseSE.set_row_data_column">
+<span class="sig-name descname"><span class="pre">set_row_data_column</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">column</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_place</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/summarizedexperiment/base.html#BaseSE.set_row_data_column"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#summarizedexperiment.base.BaseSE.set_row_data_column" title="Link to this definition">¶</a></dt>
+<dd><p>Set or replace a column in <code class="docutils literal notranslate"><span class="pre">row_data</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>column</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/stdtypes.html#str" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a></span>) – Name of the column to set.</p></li>
+<li><p><strong>value</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/typing.html#typing.Any" title="(in Python v3.12)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></a></span>) – Values for the column. Must match the number of features (rows).</p></li>
 <li><p><strong>in_place</strong> (<span class="sphinx_autodoc_typehints-type"><a class="reference external" href="https://docs.python.org/3.12/library/functions.html#bool" title="(in Python v3.12)"><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></a></span>) – Whether to modify the <code class="docutils literal notranslate"><span class="pre">BaseSE</span></code> in place.</p></li>
 </ul>
 </dd>
@@ -2057,6 +2096,7 @@ and allows slicing by implementing the <cite>__getitem__</cite> dunder method.</
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.get_column_data_column"><code class="docutils literal notranslate"><span class="pre">BaseSE.get_column_data_column()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.get_column_names"><code class="docutils literal notranslate"><span class="pre">BaseSE.get_column_names()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.get_row_data"><code class="docutils literal notranslate"><span class="pre">BaseSE.get_row_data()</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.get_row_data_column"><code class="docutils literal notranslate"><span class="pre">BaseSE.get_row_data_column()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.get_row_names"><code class="docutils literal notranslate"><span class="pre">BaseSE.get_row_names()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.get_slice"><code class="docutils literal notranslate"><span class="pre">BaseSE.get_slice()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.row_data"><code class="docutils literal notranslate"><span class="pre">BaseSE.row_data</span></code></a></li>
@@ -2070,6 +2110,7 @@ and allows slicing by implementing the <cite>__getitem__</cite> dunder method.</
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.set_column_data_column"><code class="docutils literal notranslate"><span class="pre">BaseSE.set_column_data_column()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.set_column_names"><code class="docutils literal notranslate"><span class="pre">BaseSE.set_column_names()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.set_row_data"><code class="docutils literal notranslate"><span class="pre">BaseSE.set_row_data()</span></code></a></li>
+<li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.set_row_data_column"><code class="docutils literal notranslate"><span class="pre">BaseSE.set_row_data_column()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.set_row_names"><code class="docutils literal notranslate"><span class="pre">BaseSE.set_row_names()</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.shape"><code class="docutils literal notranslate"><span class="pre">BaseSE.shape</span></code></a></li>
 <li><a class="reference internal" href="#summarizedexperiment.base.BaseSE.subset_assays"><code class="docutils literal notranslate"><span class="pre">BaseSE.subset_assays()</span></code></a></li>
@@ -2095,7 +2136,7 @@ and allows slicing by implementing the <cite>__getitem__</cite> dunder method.</
       
     </aside>
   </div>
-</div><script src="../_static/documentation_options.js?v=73d9a94e"></script>
+</div><script src="../_static/documentation_options.js?v=d7a12d57"></script>
     <script src="../_static/doctools.js?v=9bcbadda"></script>
     <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/furo.js?v=46bd48cc"></script>

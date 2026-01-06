@@ -1198,9 +1198,9 @@ class BaseSE(ut.BiocObject):
 
         return obj
 
-    ######################################
-    ######>> col_data accessors <<########
-    ######################################
+    ##########################################
+    ######>> col/row data accessors <<########
+    ##########################################
 
     def get_column_data_column(self, column: str) -> Any:
         """Access a column from the ``column_data``.
@@ -1232,5 +1232,38 @@ class BaseSE(ut.BiocObject):
             or as a reference to the (in-place-modified) original.
         """
         output = self._define_output(in_place)
-        output._cols = output._cols.set_column(column, value, in_place=False)
+        output._cols = output._cols.set_column(column, value, in_place=in_place)
+        return output
+
+    def get_row_data_column(self, column: str) -> Any:
+        """Access a column from the ``row_data``.
+
+        Args:
+            column:
+                Name of the column to retrieve.
+
+        Returns:
+            The content of the column.
+        """
+        return self._rows.get_column(column)
+
+    def set_row_data_column(self, column: str, value: Any, in_place: bool = False) -> BaseSE:
+        """Set or replace a column in ``row_data``.
+
+        Args:
+            column:
+                Name of the column to set.
+
+            value:
+                Values for the column. Must match the number of features (rows).
+
+            in_place:
+                Whether to modify the ``BaseSE`` in place.
+
+        Returns:
+            A modified ``BaseSE`` object, either as a copy of the original
+            or as a reference to the (in-place-modified) original.
+        """
+        output = self._define_output(in_place)
+        output._rows = output._rows.set_column(column, value, in_place=in_place)
         return output

@@ -1232,7 +1232,7 @@ class BaseSE(ut.BiocObject):
             or as a reference to the (in-place-modified) original.
         """
         output = self._define_output(in_place)
-        output._cols.set_column(column, value, in_place=in_place)
+        output._cols = output._cols.set_column(column, value, in_place=in_place)
         return output
 
     def get_row_data_column(self, column: str) -> Any:
@@ -1245,7 +1245,7 @@ class BaseSE(ut.BiocObject):
         Returns:
             The content of the column.
         """
-        return self._cols.get_column(column)
+        return self._rows.get_column(column)
 
     def set_row_data_column(self, column: str, value: Any, in_place: bool = False) -> BaseSE:
         """Set or replace a column in ``row_data``.
@@ -1265,5 +1265,5 @@ class BaseSE(ut.BiocObject):
             or as a reference to the (in-place-modified) original.
         """
         output = self._define_output(in_place)
-        output._rows.set_column(column, value, in_place=in_place)
+        output._rows = output._rows.set_column(column, value, in_place=in_place)
         return output
